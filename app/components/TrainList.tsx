@@ -1,5 +1,5 @@
-function TrainList() {
-  return null;
+function TrainList({ trains }) {
+  return null
 }
 
-export default TrainList;
+export default TrainList

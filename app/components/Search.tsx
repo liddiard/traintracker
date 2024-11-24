@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Select from 'react-select'
 
 enum SearchType {
   Route,
@@ -42,18 +43,15 @@ function Search() {
     </>
   )
 
-  const handleSearchType = (e) => {
-    setSearchType(e.target.value)
-  }
-
   return (
     <form id="search">
       <div>
+        Find a train by
         <input
           type="radio"
           name="type"
           checked={searchType === SearchType.Route}
-          onChange={handleSearchType}
+          onChange={() => setSearchType(SearchType.Route)}
         />
         <label htmlFor="route">Route</label>
         <input
@@ -61,7 +59,7 @@ function Search() {
           name="type"
           value="number"
           checked={searchType === SearchType.Number}
-          onChange={handleSearchType}
+          onChange={() => setSearchType(SearchType.Number)}
         />
         <label htmlFor="number">Number</label>
       </div>
