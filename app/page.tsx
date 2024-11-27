@@ -6,11 +6,15 @@ import { useState, useEffect } from 'react'
 import Map from './components/Map'
 import Search from './components/Search'
 import TrainList from './components/TrainList'
-import { formatTrainResponse } from './utils'
-import { TrainRoute } from './types'
+import {
+  createRouteNumMap,
+  createStationList,
+  formatTrainResponse,
+} from './utils'
+import { Train } from './types'
 
 export default function Home() {
-  const [trains, setTrains] = useState<TrainRoute[]>()
+  const [trains, setTrains] = useState<Train[]>()
 
   useEffect(() => {
     fetchTrains()
@@ -32,12 +36,18 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-wrap">
-      <div className="h-full w-full lg:w-1/4 relative">
-        <Search />
-        <TrainList trains={trains} />
+      <div className="h-full w-full lg:w-1/4 relative p-3 overflow-y-auto shadow-lg z-10">
+        {trains && (
+          <Search
+            trains={trains}
+            stations={createStationList(trains)}
+            routes={createRouteNumMap(trains)}
+          />
+        )}
+        {trains && <TrainList trains={trains} />}
       </div>
       <div className="h-full w-full lg:w-3/4 relative">
-        <Map />
+        <Map trains={trains} />
       </div>
     </div>
   )

@@ -1,23 +1,58 @@
 'use client'
 
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import Select from 'react-select'
+import { Train, Station } from '../types'
 
 enum SearchType {
   Route,
   Number,
 }
 
-function Search() {
+function Search({
+  trains,
+  stations,
+  routes,
+}: {
+  trains: Train[]
+  stations: Station[]
+}) {
   const [searchType, setSearchType] = useState<SearchType>(SearchType.Route)
-  const [from, setFrom] = useState('')
-  const [to, setTo] = useState('')
-  const [route, setRoute] = useState('')
+  const [from, setFrom] = useState({})
+  const [to, setTo] = useState({})
   const [trainNumber, setTrainNumber] = useState('')
+
+  const getStationOptions = () =>
+    stations
+      .toSorted((a, b) => a.code.localeCompare(b.code))
+      .map((station) => ({
+        value: station.code,
+        label: `${station.code} - ${station.name}`,
+      }))
+
+  const getRouteOptions = () =>
+    routes
+      .toSorted((a, b) => a.code.localeCompare(b.code))
+      .map((route) => ({
+        value: route.code,
+        label: `${route.code} - ${route.name}`,
+      }))
 
   const renderRouteSearch = () => (
     <>
-      <label htmlFor="from">From</label>
+      <Select
+        options={getStationOptions()}
+        value={from}
+        className="w-1/2"
+        styles={{
+          menu: (base, props) => ({
+            ...base,
+            width: '100%',
+          }),
+        }}
+      />
+      <Select options={getStationOptions()} value={to} className="w-1/2" />
+      {/* <label htmlFor="from">From</label>
       <input
         name="from"
         id="from"
@@ -25,20 +60,25 @@ function Search() {
         value={from}
       />
       <label htmlFor="to">To</label>
-      <input name="to" id="to" />
+      <input
+        name="to"
+        id="to"
+        onChange={(e) => setTo(e.target.value)}
+        value={to}
+      /> */}
     </>
   )
 
   const renderNumberSearch = () => (
     <>
-      <select name="route"></select>
+      <Select options={getStationOptions()} className="flex-grow" />
       <input
-        type="number"
         name="number"
         inputMode="numeric"
         pattern="[0-9]*"
         onChange={(e) => setTrainNumber(e.target.value)}
         value={trainNumber}
+        className="w-12 p-2"
       />
     </>
   )
@@ -63,10 +103,12 @@ function Search() {
         />
         <label htmlFor="number">Number</label>
       </div>
-      {searchType === SearchType.Route
-        ? renderRouteSearch()
-        : renderNumberSearch()}
-      <button aria-label="Search">Search</button>
+      <div className="flex gap-2">
+        {searchType === SearchType.Route
+          ? renderRouteSearch()
+          : renderNumberSearch()}
+        <button aria-label="Search">Search</button>
+      </div>
     </form>
   )
 }
