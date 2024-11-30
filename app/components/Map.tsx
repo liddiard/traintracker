@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import maplibregl, { GeoJSONSource, Map as MapType } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
@@ -8,6 +8,7 @@ import './MapLegend'
 import { Train } from '../types'
 
 function Map({ trains }: { trains?: Train[] }) {
+  const [mapLoaded, setMapLoaded] = useState(false)
   const map = useRef<MapType | null>(null)
 
   useEffect(() => {
@@ -17,6 +18,7 @@ function Map({ trains }: { trains?: Train[] }) {
       zoom: 3,
       container: 'map',
     }).on('load', () => {
+      setMapLoaded(true)
       map.current!.addSource('amtrak-track', {
         type: 'geojson',
         data: './amtrak-track.geojson',
@@ -71,10 +73,17 @@ function Map({ trains }: { trains?: Train[] }) {
   }, [])
 
   useEffect(() => {
+    if (!trains || !mapLoaded) {
+      return
+    }
+    updateTrainLocations(trains)
+  }, [trains, mapLoaded])
+
+  const updateTrainLocations = (trains: Train[]) => {
     const trainSource = map.current?.getSource(
       'train-locations',
     ) as GeoJSONSource
-    if (!trains || !map.current || !trainSource) {
+    if (!trainSource) {
       return
     }
     trainSource.setData({
@@ -87,7 +96,7 @@ function Map({ trains }: { trains?: Train[] }) {
         },
       })),
     })
-  }, [trains, map.current])
+  }
 
   return (
     <>

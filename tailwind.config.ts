@@ -9,6 +9,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        // https://paletton.com/#uid=33q0u0ksYy0i2HrnkANxCrpAwlv
         'amtrak-blue-300': '#5BA8C5',
         'amtrak-blue-400': '#358FB1',
         'amtrak-blue-500': '#167EA6',
@@ -34,6 +35,8 @@ export default {
         'amtrak-indigo-500': '#263CB4',
         'amtrak-indigo-600': '#122795',
         'amtrak-indigo-700': '#0C1D75',
+        'amtrak-deep-blue': '#003b63',
+        'amtrak-midnight-blue': '#002538'
       },
     },
   },

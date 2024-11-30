@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
 import Map from './components/Map'
@@ -36,7 +35,7 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-wrap">
-      <div className="h-full w-full lg:w-1/4 relative p-3 overflow-y-auto shadow-lg z-10">
+      <div className="h-full w-full lg:w-1/4 relative overflow-y-auto shadow-lg z-10">
         {trains && (
           <Search
             trains={trains}

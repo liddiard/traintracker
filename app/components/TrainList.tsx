@@ -1,6 +1,9 @@
+import Image from 'next/image'
+
 import { Train } from '../types'
 import { getTrainId, getTrainStatus } from '../utils'
 import StatusBadge from './StatusBadge'
+import CaretRight from '../img/caret-right-gray.svg'
 
 function TrainList({ trains }: { trains: Train[] }) {
   const dateFormat = new Intl.DateTimeFormat('en-US', {
@@ -8,7 +11,7 @@ function TrainList({ trains }: { trains: Train[] }) {
     day: 'numeric',
   })
   return (
-    <ul>
+    <ul className="p-3">
       {trains
         .toSorted((a, b) => a.createdAt.valueOf() - b.createdAt.valueOf())
         .map((train) => (
@@ -18,13 +21,15 @@ function TrainList({ trains }: { trains: Train[] }) {
                 {train.routeName}{' '}
                 <span className="text-amtrak-blue-600">{train.trainNum}</span>
               </span>
-              <span className="text-nowrap font-normal text-gray-600">
-                {train.origCode} → {train.destCode}
+              <span className="text-nowrap font-normal text-gray-600 flex gap-1 items-center">
+                {train.origCode}
+                <Image src={CaretRight} alt="to" className="inline" />
+                {train.destCode}
               </span>
             </h2>
             <div className="flex items-center justify-between gap-2">
               <StatusBadge status={getTrainStatus(train)} className="text-sm" />
-              <span className="font-normal">
+              <span className="font-light">
                 {dateFormat.format(train.stations[0].schDep)}
               </span>
             </div>

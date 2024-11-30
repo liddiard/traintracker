@@ -40,9 +40,7 @@ function StatusBadge({
       >
         {text}
       </span>
-      {deviation && deviation > 0 ? (
-        <span className="font-normal">{deviation} min</span>
-      ) : null}
+      {deviation && deviation > 0 ? <span>{deviation} min</span> : null}
     </div>
   )
 }

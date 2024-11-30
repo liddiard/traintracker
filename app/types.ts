@@ -79,3 +79,8 @@ export interface TrainStatus {
   nextStation?: StationTrain
   deviation?: number
 }
+
+export interface Option {
+  value: string
+  label: string
+}
