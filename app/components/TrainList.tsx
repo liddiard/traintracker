@@ -13,7 +13,7 @@ function TrainList({ trains }: { trains: Train[] }) {
   return (
     <ul className="flex flex-col gap-5 p-3 my-2">
       {trains
-        .toSorted((a, b) => a.createdAt.valueOf() - b.createdAt.valueOf())
+        .toSorted((a, b) => a.updatedAt.valueOf() - b.updatedAt.valueOf())
         .map((train) => (
           <li key={getTrainId(train)} className="flex flex-col gap-2">
             <h2 className="font-bold flex items-start gap-2 leading-tight justify-between">
