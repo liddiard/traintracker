@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Select, { ActionMeta } from 'react-select'
+import Select, { ActionMeta, components, InputProps } from 'react-select'
 import Image from 'next/image'
 import cn from 'classnames'
 
@@ -18,11 +18,15 @@ const selectClassNames = {
   indicatorsContainer: () => '!hidden',
   menu: () => '!min-w-40',
   control: () =>
-    '!bg-white !bg-opacity-10 !border !border-white !border-opacity-50',
+    '!bg-white !bg-opacity-10 !border !border-white !border-opacity-60',
   singleValue: () => '!text-white',
   input: () => '!text-white cursor-text',
   placeholder: () => '!text-white !text-opacity-50',
 }
+
+const Input = (props: InputProps<Option>) => (
+  <components.Input {...props} inputMode="numeric" pattern="[0-9]*" />
+)
 
 function Search({
   trains,
@@ -31,12 +35,13 @@ function Search({
 }: {
   trains: Train[]
   stations: Station[]
+  routes: Route
 }) {
   const [searchType, setSearchType] = useState<SearchType>(SearchType.Segment)
   const [from, setFrom] = useState<Option | null>(null)
   const [to, setTo] = useState<Option | null>(null)
   const [trainName, setTrainName] = useState<Option | null>(null)
-  const [trainNumber, setTrainNumber] = useState('')
+  const [trainNumber, setTrainNumber] = useState<Option | null>(null)
 
   const getStationOptions = () =>
     stations
@@ -54,57 +59,13 @@ function Search({
         label: route,
       }))
 
-  const renderSegmentOption = (isFrom: boolean) => (
-    <Select
-      options={getStationOptions()}
-      value={isFrom ? from : to}
-      placeholder={isFrom ? 'From' : 'To'}
-      className="w-1/2 text-black"
-      onChange={(option: Option | null) => {
-        const setFunc = isFrom ? setFrom : setTo
-        setFunc(option)
-      }}
-      classNames={selectClassNames}
-      formatOptionLabel={(option: Option) => (
-        <>
-          <strong className="mr-2">{option.value}</strong>
-          {option.label}
-        </>
-      )}
-    />
-  )
-
-  const renderSegmentSearch = () => (
-    <div className="flex flex-grow items-center gap-1">
-      {renderSegmentOption(true)}
-      <Image src={CaretRight} alt="" />
-      {renderSegmentOption(false)}
-    </div>
-  )
-
-  const renderLineSearch = () => (
-    <div className="flex flex-grow gap-2">
-      <Select
-        options={getRouteOptions()}
-        value={trainName}
-        className="flex-grow text-black"
-        placeholder="Name"
-        classNames={selectClassNames}
-        onChange={(option: Option | null) => {
-          setTrainName(option)
-        }}
-      />
-      <input
-        name="number"
-        inputMode="numeric"
-        pattern="[0-9]*"
-        onChange={(e) => setTrainNumber(e.target.value)}
-        value={trainNumber}
-        className={cn(selectClassNames.control(), 'w-12 px-2 rounded')}
-        placeholder="#"
-      />
-    </div>
-  )
+  const getLineNumberOptions = () =>
+    Array.from(routes[trainName?.value || ''] || new Set())
+      ?.toSorted((a, b) => Number(a) - Number(b))
+      ?.map((num) => ({
+        value: num,
+        label: num,
+      }))
 
   const renderSearchOptions = () => {
     const labelClassNames =
@@ -153,6 +114,67 @@ function Search({
       </div>
     )
   }
+
+  const renderSegmentOption = (isFrom: boolean) => (
+    <Select
+      options={getStationOptions()}
+      value={isFrom ? from : to}
+      placeholder={isFrom ? 'From' : 'To'}
+      className="w-1/2 text-black"
+      onChange={(option: Option | null) => {
+        const setFunc = isFrom ? setFrom : setTo
+        setFunc(option)
+      }}
+      classNames={selectClassNames}
+      formatOptionLabel={(option: Option) => (
+        <>
+          <strong className="mr-2">{option.value}</strong>
+          {option.label}
+        </>
+      )}
+    />
+  )
+
+  const renderSegmentSearch = () => (
+    <div className="flex flex-grow items-center gap-1">
+      {renderSegmentOption(true)}
+      <Image src={CaretRight} alt="" />
+      {renderSegmentOption(false)}
+    </div>
+  )
+
+  const renderLineSearch = () => (
+    <div className="flex flex-grow gap-2">
+      <Select
+        options={getRouteOptions()}
+        value={trainName}
+        className="flex-grow text-black"
+        placeholder="Name"
+        classNames={selectClassNames}
+        onChange={(option) => {
+          setTrainName(option)
+          setTrainNumber(null)
+        }}
+      />
+      {trainName && (
+        <Select
+          options={getLineNumberOptions()}
+          value={trainNumber}
+          className="text-black grow-0 w-20"
+          placeholder="#"
+          classNames={{
+            ...selectClassNames,
+            menu: () => '',
+          }}
+          onChange={(option) => {
+            setTrainNumber(option as Option | null)
+          }}
+          onFocus={() => setTrainNumber(null)}
+          components={{ Input }}
+        />
+      )}
+    </div>
+  )
 
   return (
     <form
