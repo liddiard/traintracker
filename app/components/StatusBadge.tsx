@@ -1,4 +1,5 @@
 import cn from 'classnames'
+import interpolate from 'color-interpolate'
 
 import { TrainStatus, TimeStatus } from '../types'
 
@@ -9,34 +10,45 @@ function StatusBadge({
   status: TrainStatus
   className?: string
 }) {
+  // const delayPalette = interpolate(['#7d8d29', '#ab7a00', '#ff4018', '#ab1e00'])
+  const delayPalette = interpolate(['#7d8d29', '#ff4018', '#ab1e00'])
+  const maxDeviation = 60 * 2 // minutes
   const { code, deviation } = status
-  let color, text
+  let colorClass, colorValue, text
   switch (code) {
     case TimeStatus.PREDEPARTURE:
-      color = 'bg-amtrak-indigo-600'
+      colorClass = 'bg-amtrak-indigo-600'
       text = 'Pre-departure'
       break
     case TimeStatus.ON_TIME:
-      color = 'bg-amtrak-green-600'
+      colorClass = 'bg-amtrak-green-600'
       text = 'On Time'
       break
     case TimeStatus.DELAYED:
-      color = 'bg-amtrak-yellow-700'
+      colorValue = deviation
+        ? delayPalette(Math.min(deviation, maxDeviation) / maxDeviation)
+        : delayPalette(0)
       text = 'Late'
       break
     case TimeStatus.COMPLETE:
-      color = 'bg-amtrak-blue-600'
+      colorClass = 'bg-amtrak-blue-600'
       text = 'Completed'
       break
     default:
-      color = 'bg-gray-600'
+      colorClass = 'bg-gray-600'
       text = 'Unknown'
       break
   }
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <span
-        className={cn('px-3 py-1 rounded-full text-white font-semibold', color)}
+        className={cn(
+          'px-3 py-1 rounded-full text-white font-semibold',
+          colorClass,
+        )}
+        style={{
+          backgroundColor: colorValue,
+        }}
       >
         {text}
       </span>
