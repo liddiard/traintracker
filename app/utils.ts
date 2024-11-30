@@ -53,21 +53,25 @@ export const getTrainId = (train: Train) =>
   `${train.routeName}_${train.trainNum}_${train.origCode}_${train.stations[0].schDep.valueOf()}`
 
 export const getTrainStatus = (train: Train) => {
-  const prevStation = train.stations.findLast(s => s.status === 'Departed')
-  const curStation = train.stations.find(s => s.status === 'Station')
-  const nextStation = train.stations.find(s => s.status === 'Enroute')
+  const now = new Date()
+  const { stations } = train
+  const prevStation = stations.find(s => s.dep < now)
+  const curStation = stations.find(s => s.arr < now && s.dep > now)
+  const nextStation = stations.find(s => s.arr > now)
   const status: TrainStatus = {
     code: undefined,
     prevStation,
     curStation,
     nextStation,
-    deviation: undefined
+    deviation: undefined,
+    firstStation: stations[0],
+    lastStation: stations[stations.length - 1]
   }
   if (!nextStation) {
     status.code = TimeStatus.COMPLETE
     return status
   }
-  if (!prevStation && !nextStation) {
+  if (!prevStation && nextStation.code === stations[0].code) {
     status.code = TimeStatus.PREDEPARTURE
     return status
   }

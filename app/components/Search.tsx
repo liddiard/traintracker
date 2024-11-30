@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Select, { ActionMeta, components, InputProps } from 'react-select'
+import Select, { components, InputProps, Theme } from 'react-select'
 import Image from 'next/image'
 import cn from 'classnames'
 
@@ -23,6 +23,18 @@ const selectClassNames = {
   input: () => '!text-white cursor-text',
   placeholder: () => '!text-white !text-opacity-50',
 }
+
+const selectTheme = (theme: Theme) =>
+  ({
+    ...theme,
+    colors: {
+      ...theme.colors,
+      primary: 'rgba(22, 126, 166, 1)',
+      primary25: 'rgba(22, 126, 166, 0.25)',
+      primary50: 'rgba(22, 126, 166, 0.5)',
+      primary75: 'rgba(22, 126, 166, 0.75)',
+    },
+  }) as Theme
 
 const Input = (props: InputProps<Option>) => (
   <components.Input {...props} inputMode="numeric" pattern="[0-9]*" />
@@ -126,6 +138,7 @@ function Search({
         setFunc(option)
       }}
       classNames={selectClassNames}
+      theme={selectTheme}
       formatOptionLabel={(option: Option) => (
         <>
           <strong className="mr-2">{option.value}</strong>
@@ -136,7 +149,7 @@ function Search({
   )
 
   const renderSegmentSearch = () => (
-    <div className="flex flex-grow items-center gap-1">
+    <div className="flex flex-grow items-center gap-2">
       {renderSegmentOption(true)}
       <Image src={CaretRight} alt="" />
       {renderSegmentOption(false)}
@@ -151,6 +164,7 @@ function Search({
         className="flex-grow text-black"
         placeholder="Name"
         classNames={selectClassNames}
+        theme={selectTheme}
         onChange={(option) => {
           setTrainName(option)
           setTrainNumber(null)
@@ -166,6 +180,7 @@ function Search({
             ...selectClassNames,
             menu: () => '',
           }}
+          theme={selectTheme}
           onChange={(option) => {
             setTrainNumber(option as Option | null)
           }}
@@ -179,7 +194,7 @@ function Search({
   return (
     <form
       id="search"
-      className="bg-amtrak-deep-blue p-3 text-white flex flex-col gap-2"
+      className="bg-amtrak-midnight-blue px-3 py-4 text-white flex flex-col gap-3 shadow-md"
     >
       {renderSearchOptions()}
       <div className="flex gap-2">

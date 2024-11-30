@@ -11,17 +11,17 @@ function TrainList({ trains }: { trains: Train[] }) {
     day: 'numeric',
   })
   return (
-    <ul className="p-3">
+    <ul className="flex flex-col gap-5 p-3 my-2">
       {trains
         .toSorted((a, b) => a.createdAt.valueOf() - b.createdAt.valueOf())
         .map((train) => (
-          <li key={getTrainId(train)} className="my-4 flex flex-col gap-2">
-            <h2 className="font-bold flex gap-2 leading-tight justify-between">
+          <li key={getTrainId(train)} className="flex flex-col gap-2">
+            <h2 className="font-bold flex items-start gap-2 leading-tight justify-between">
               <span className="mr-2">
                 {train.routeName}{' '}
                 <span className="text-amtrak-blue-600">{train.trainNum}</span>
               </span>
-              <span className="text-nowrap font-normal text-gray-600 flex gap-1 items-center">
+              <span className="text-nowrap text-gray-600 flex gap-1 items-center font-semibold">
                 {train.origCode}
                 <Image src={CaretRight} alt="to" className="inline" />
                 {train.destCode}

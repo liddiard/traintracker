@@ -78,6 +78,8 @@ export interface TrainStatus {
   curStation?: StationTrain
   nextStation?: StationTrain
   deviation?: number
+  firstStation: Station,
+  lastStation: Station
 }
 
 export interface Option {
