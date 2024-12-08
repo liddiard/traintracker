@@ -68,8 +68,8 @@ export default function TrainDetail() {
         {trainStatus.curStation ? (
           <span className="text-positron-gray-700">At Station</span>
         ) : (
-          <span>
-            {Math.round(train.velocity)} MPH
+          <>
+            <span>{Math.round(train.velocity)} MPH</span>
             <Image
               src={Pointer}
               alt={train.heading}
@@ -79,7 +79,7 @@ export default function TrainDetail() {
                 transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
               }}
             />
-          </span>
+          </>
         )}
       </div>
       <h2 className="font-bold text-lg">Current segment</h2>
