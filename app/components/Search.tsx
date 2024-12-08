@@ -1,13 +1,21 @@
 'use client'
 
-import { useState } from 'react'
-import Select, { components, InputProps, Theme } from 'react-select'
+import { useMemo, useRef, useState } from 'react'
+import Select, {
+  components,
+  InputProps,
+  SelectInstance,
+  Theme,
+} from 'react-select'
 import Image from 'next/image'
 import cn from 'classnames'
-
-import { Train, Station, Route, Option } from '../types'
+import { Option } from '../types'
 import MagnifyingGlass from '../img/magnifying-glass.svg'
 import CaretRight from '../img/caret-right-white.svg'
+import { createRouteNumMap, createStationList } from '../utils'
+import { useTrains } from '../providers/train'
+import { useRouter } from 'next/navigation'
+import search from '../actions/search'
 
 enum SearchType {
   Segment,
@@ -21,7 +29,7 @@ const selectClassNames = {
     '!bg-white !bg-opacity-10 !border !border-white !border-opacity-60',
   singleValue: () => '!text-white',
   input: () => '!text-white cursor-text',
-  placeholder: () => '!text-white !text-opacity-50',
+  placeholder: () => '!text-white !text-opacity-60',
 }
 
 const selectTheme = (theme: Theme) =>
@@ -37,23 +45,37 @@ const selectTheme = (theme: Theme) =>
   }) as Theme
 
 const Input = (props: InputProps<Option>) => (
-  <components.Input {...props} inputMode="numeric" pattern="[0-9]*" />
+  <components.Input
+    {...props}
+    // fix React hydration issue: https://github.com/JedWatson/react-select/issues/5459#issuecomment-1875022105
+    aria-activedescendant={undefined}
+  />
 )
 
-function Search({
-  trains,
-  stations,
-  routes,
-}: {
-  trains: Train[]
-  stations: Station[]
-  routes: Route
-}) {
+const NumberInput = (props: InputProps<Option>) => (
+  <components.Input
+    {...props}
+    inputMode="numeric"
+    pattern="[0-9]*"
+    aria-activedescendant={undefined}
+  />
+)
+
+function Search() {
+  const router = useRouter()
+  const { trains } = useTrains()
+
   const [searchType, setSearchType] = useState<SearchType>(SearchType.Segment)
   const [from, setFrom] = useState<Option | null>(null)
   const [to, setTo] = useState<Option | null>(null)
   const [trainName, setTrainName] = useState<Option | null>(null)
   const [trainNumber, setTrainNumber] = useState<Option | null>(null)
+
+  const toSegmentSelect = useRef<SelectInstance<Option> | null>(null)
+  const trainNumberSelect = useRef<SelectInstance<Option> | null>(null)
+
+  const stations = useMemo(() => createStationList(trains), [trains])
+  const routes = useMemo(() => createRouteNumMap(trains), [trains])
 
   const getStationOptions = () =>
     stations
@@ -87,7 +109,7 @@ function Search({
     return (
       <div className="flex items-center gap-2">
         Find a train by
-        <div className="bg-gray-300 rounded-full">
+        <div className="bg-positron-gray-200 rounded-full">
           <input
             type="radio"
             name="type"
@@ -102,6 +124,7 @@ function Search({
             className={cn(labelClassNames, {
               [selectedLabelClassNames]: searchType === SearchType.Segment,
             })}
+            tabIndex={0}
           >
             Route
           </label>
@@ -119,6 +142,7 @@ function Search({
             className={cn(labelClassNames, {
               [selectedLabelClassNames]: searchType === SearchType.Line,
             })}
+            tabIndex={0}
           >
             Number
           </label>
@@ -129,13 +153,19 @@ function Search({
 
   const renderSegmentOption = (isFrom: boolean) => (
     <Select
+      instanceId={isFrom ? 'from' : 'to'}
+      ref={isFrom ? null : toSegmentSelect}
+      name={isFrom ? 'from' : 'to'}
       options={getStationOptions()}
       value={isFrom ? from : to}
       placeholder={isFrom ? 'From' : 'To'}
       className="w-1/2 text-black"
-      onChange={(option: Option | null) => {
+      onChange={(option) => {
         const setFunc = isFrom ? setFrom : setTo
-        setFunc(option)
+        setFunc(option as Option)
+        if (isFrom && option) {
+          toSegmentSelect.current?.focus()
+        }
       }}
       classNames={selectClassNames}
       theme={selectTheme}
@@ -145,6 +175,9 @@ function Search({
           {option.label}
         </>
       )}
+      components={{ Input }}
+      required={true}
+      isClearable={true}
     />
   )
 
@@ -159,19 +192,30 @@ function Search({
   const renderLineSearch = () => (
     <div className="flex flex-grow gap-2">
       <Select
+        instanceId="trainName"
+        name="trainName"
         options={getRouteOptions()}
         value={trainName}
         className="flex-grow text-black"
-        placeholder="Name"
+        placeholder="Train name"
         classNames={selectClassNames}
         theme={selectTheme}
         onChange={(option) => {
-          setTrainName(option)
+          setTrainName(option as Option)
           setTrainNumber(null)
+          if (option) {
+            trainNumberSelect.current?.focus()
+          }
         }}
+        components={{ Input }}
+        required={true}
+        isClearable={true}
       />
       {trainName && (
         <Select
+          instanceId="trainNumber"
+          ref={trainNumberSelect}
+          name="trainNumber"
           options={getLineNumberOptions()}
           value={trainNumber}
           className="text-black grow-0 w-20"
@@ -181,20 +225,37 @@ function Search({
             menu: () => '',
           }}
           theme={selectTheme}
+          autoFocus={true}
           onChange={(option) => {
-            setTrainNumber(option as Option | null)
+            setTrainNumber(option as Option)
           }}
           onFocus={() => setTrainNumber(null)}
-          components={{ Input }}
+          components={{ Input: NumberInput }}
+          isClearable={true}
         />
       )}
     </div>
   )
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const { from, to, trainName, trainNumber } = e.target
+    const url = new URL(window.location.origin)
+    if (searchType === SearchType.Segment) {
+      url.searchParams.set('from', from?.value)
+      url.searchParams.set('to', to?.value)
+    } else {
+      url.searchParams.set('trainName', trainName?.value)
+      url.searchParams.set('trainNumber', trainNumber?.value)
+    }
+    router.push(url.toString())
+  }
+
   return (
     <form
       id="search"
-      className="bg-amtrak-midnight-blue px-3 py-4 text-white flex flex-col gap-3 shadow-md"
+      className="bg-amtrak-midnight-blue px-3 py-4 text-white flex flex-col gap-3 shadow-md sticky top-0"
+      onSubmit={handleSubmit}
     >
       {renderSearchOptions()}
       <div className="flex gap-2">

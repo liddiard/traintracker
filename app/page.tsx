@@ -1,53 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-
-import Map from './components/Map'
-import Search from './components/Search'
+import { useSearchParams } from 'next/navigation'
 import TrainList from './components/TrainList'
-import {
-  createRouteNumMap,
-  createStationList,
-  formatTrainResponse,
-} from './utils'
-import { Train } from './types'
+import { useTrains } from './providers/train'
 
-export default function Home() {
-  const [trains, setTrains] = useState<Train[]>()
-
-  useEffect(() => {
-    fetchTrains()
-    const intervalId = setInterval(fetchTrains, 15 * 1000)
-    return () => clearInterval(intervalId)
-  }, [])
-
-  const fetchTrains = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/v3/trains').then(
-        (res) => res.json(),
-      )
-      const trains = formatTrainResponse(response)
-      setTrains(trains)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+export default function Home({}) {
+  const { trains } = useTrains()
+  const params = useSearchParams()
 
   return (
-    <div className="h-screen flex flex-wrap">
-      <div className="h-full w-full lg:w-1/4 relative overflow-y-auto shadow-lg z-10 min-w-[300px]">
-        {trains && (
-          <Search
-            trains={trains}
-            stations={createStationList(trains)}
-            routes={createRouteNumMap(trains)}
-          />
-        )}
-        {trains && <TrainList trains={trains} />}
-      </div>
-      <div className="h-full w-full lg:w-3/4 relative">
-        <Map trains={trains} />
-      </div>
-    </div>
+    trains && (
+      <TrainList
+        trains={trains}
+        filters={{
+          from: params.get('from'),
+          to: params.get('to'),
+          trainName: params.get('trainName'),
+          trainNumber: params.get('trainNumber'),
+        }}
+      />
+    )
   )
 }

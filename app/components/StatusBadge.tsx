@@ -1,23 +1,34 @@
 import cn from 'classnames'
 import interpolate from 'color-interpolate'
 
-import { TrainStatus, TimeStatus } from '../types'
+import { TrainStatus, TimeStatus, Train } from '../types'
+import { getTrainStatus } from '../utils'
 
-function StatusBadge({
-  status,
-  className,
-}: {
-  status: TrainStatus
-  className?: string
-}) {
-  // const delayPalette = interpolate(['#7d8d29', '#ab7a00', '#ff4018', '#ab1e00'])
-  const delayPalette = interpolate(['#7d8d29', '#ff4018', '#ab1e00'])
-  const timeFormatter = Intl.DateTimeFormat('en-US', {
+const formatTime = (date: Date, tz: string) =>
+  Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, {
     hour: 'numeric',
     minute: 'numeric',
-  })
+    timeZone: tz,
+  }).format(date)
+
+function StatusBadge({
+  train,
+  className,
+}: {
+  train: Train
+  className?: string
+}) {
+  const delayPalette = interpolate([
+    '#7d8d29',
+    '#ab7a00',
+    '#ab4c00',
+    '#ab1e00',
+    '#ff4018',
+  ])
   const maxDeviation = 60 * 2 // minutes
-  const { code, deviation, firstStation, lastStation } = status
+
+  const { code, deviation, firstStation, lastStation } = getTrainStatus(train)
+
   let colorClass, colorValue, text
   switch (code) {
     case TimeStatus.PREDEPARTURE:
@@ -39,7 +50,7 @@ function StatusBadge({
       text = 'Arrived'
       break
     default:
-      colorClass = 'bg-gray-600'
+      colorClass = 'bg-positron-gray-600'
       text = 'Unknown'
       break
   }
@@ -56,12 +67,12 @@ function StatusBadge({
       >
         {text}
       </span>
-      {code === TimeStatus.PREDEPARTURE ? (
-        <span>{timeFormatter.format(firstStation.dep)}</span>
+      {code === TimeStatus.PREDEPARTURE && firstStation.dep ? (
+        <span>{formatTime(firstStation.dep, firstStation.tz)}</span>
       ) : null}
       {code === TimeStatus.DELAYED ? <span>{deviation} min</span> : null}
-      {code === TimeStatus.COMPLETE ? (
-        <span>{timeFormatter.format(lastStation.arr)}</span>
+      {code === TimeStatus.COMPLETE && lastStation.arr ? (
+        <span>{formatTime(lastStation.arr, lastStation.tz)}</span>
       ) : null}
     </div>
   )

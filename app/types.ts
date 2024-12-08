@@ -15,7 +15,7 @@ interface TrainRaw {
   eventTZ: string
   eventName: string
   origCode: string
-  origTZ: string
+  originTZ: string
   origName: string
   destCode: string
   destTZ: string
@@ -26,11 +26,16 @@ interface TrainRaw {
   createdAt: string
   updatedAt: string
   lastValTS: string
-  objectID: number
+  objectID: number | null
   provider: string
 }
 
-export interface Train extends Omit<TrainRaw, 'createdAt' | 'updatedAt' | 'lastValTS' | 'stations'> {
+export interface Train
+  extends Omit<
+    TrainRaw,
+    'objectID' | 'createdAt' | 'updatedAt' | 'lastValTS' | 'stations'
+  > {
+  objectID: string
   createdAt: Date
   updatedAt: Date
   lastValTS: Date
@@ -47,19 +52,20 @@ export interface StationTrainRaw extends Station {
   bus: boolean
   schArr: string
   schDep: string
-  arr: string
-  dep: string
+  arr: string | null
+  dep: string | null
   arrCmnt: string
   depCmnt: string
   status: 'Departed' | 'Station' | 'Enroute'
   platform: string
 }
 
-export interface StationTrain extends Omit<StationTrainRaw, 'schArr' | 'schDep' | 'arr' | 'dep'> {
+export interface StationTrain
+  extends Omit<StationTrainRaw, 'schArr' | 'schDep' | 'arr' | 'dep'> {
   schArr: Date
   schDep: Date
-  arr: Date
-  dep: Date
+  arr: Date | null
+  dep: Date | null
 }
 
 export type Route = Record<string, Set<string>>
@@ -69,7 +75,7 @@ export enum TimeStatus {
   AHEAD,
   ON_TIME,
   DELAYED,
-  COMPLETE
+  COMPLETE,
 }
 
 export interface TrainStatus {
@@ -78,8 +84,8 @@ export interface TrainStatus {
   curStation?: StationTrain
   nextStation?: StationTrain
   deviation?: number
-  firstStation: Station,
-  lastStation: Station
+  firstStation: StationTrain
+  lastStation: StationTrain
 }
 
 export interface Option {

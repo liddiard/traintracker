@@ -6,8 +6,10 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 
 import './MapLegend'
 import { Train } from '../types'
+import { useTrains } from '../providers/train'
 
-function Map({ trains }: { trains?: Train[] }) {
+function Map() {
+  const { trains } = useTrains()
   const [mapLoaded, setMapLoaded] = useState(false)
   const map = useRef<MapType | null>(null)
 
@@ -21,7 +23,7 @@ function Map({ trains }: { trains?: Train[] }) {
       setMapLoaded(true)
       map.current!.addSource('amtrak-track', {
         type: 'geojson',
-        data: './amtrak-track.geojson',
+        data: '/amtrak-track.geojson',
       })
       map.current!.addLayer({
         id: 'amtrak-track',
@@ -38,7 +40,7 @@ function Map({ trains }: { trains?: Train[] }) {
       })
       map.current!.addSource('amtrak-stations', {
         type: 'geojson',
-        data: './amtrak-stations.geojson',
+        data: '/amtrak-stations.geojson',
       })
       map.current!.addLayer({
         id: 'amtrak-stations',
