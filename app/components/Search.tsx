@@ -15,7 +15,6 @@ import CaretRight from '../img/caret-right-white.svg'
 import { createRouteNumMap, createStationList } from '../utils'
 import { useTrains } from '../providers/train'
 import { useRouter } from 'next/navigation'
-import search from '../actions/search'
 
 enum SearchType {
   Segment,
