@@ -1,6 +1,6 @@
 'use client'
 
-import { getOffset } from '@/app/utils'
+import { getOffset, getTrainStatus } from '@/app/utils'
 import Image from 'next/image'
 import { notFound, useParams } from 'next/navigation'
 import StatusBadge from '@/app/components/StatusBadge'
@@ -15,6 +15,8 @@ export default function TrainDetail() {
 
   const train = trains.find((t) => t.objectID === id)
   if (!train) return notFound()
+
+  const trainStatus = getTrainStatus(train)
 
   const renderRouteEndpoint = ({
     stationName,
@@ -42,7 +44,7 @@ export default function TrainDetail() {
 
   const timezonesDiffer = train.originTZ !== train.destTZ
   return (
-    <div className="p-3 flex gap-3 flex-col">
+    <div className="p-3 flex gap-4 flex-col">
       <h1 className="text-2xl font-bold">
         {train.routeName} {train.trainNum}
       </h1>
@@ -63,16 +65,22 @@ export default function TrainDetail() {
       </div>
       <div className="flex items-center gap-3">
         <StatusBadge train={train} />
-        <div>{Math.round(train.velocity)} MPH</div>
-        <Image
-          src={Pointer}
-          alt={train.heading}
-          title={train.heading}
-          className="w-4"
-          style={{
-            transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
-          }}
-        />
+        {trainStatus.curStation ? (
+          <span className="text-positron-gray-700">At Station</span>
+        ) : (
+          <span>
+            {Math.round(train.velocity)} MPH
+            <Image
+              src={Pointer}
+              alt={train.heading}
+              title={train.heading}
+              className="w-4"
+              style={{
+                transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
+              }}
+            />
+          </span>
+        )}
       </div>
       <h2 className="font-bold text-lg">Current segment</h2>
       <h2 className="font-bold text-lg">Full route</h2>
