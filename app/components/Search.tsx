@@ -22,6 +22,9 @@ enum SearchType {
 }
 
 const selectClassNames = {
+  // fix fields displaying too wide on Firefox when all filled with values
+  // https://github.com/JedWatson/react-select/issues/5170
+  container: () => 'grid grid-cols-[minmax(0,1fr)] gap-2',
   indicatorsContainer: () => '!hidden',
   menu: () => '!min-w-40',
   control: () =>
