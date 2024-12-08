@@ -16,6 +16,30 @@ export default function TrainDetail() {
   const train = trains.find((t) => t.objectID === id)
   if (!train) return notFound()
 
+  const renderRouteEndpoint = ({
+    stationName,
+    stationCode,
+    tz,
+    displayTz,
+  }: {
+    stationName: string
+    stationCode: string
+    tz: string
+    displayTz: boolean
+  }) => (
+    <div className="flex flex-col gap-1">
+      <div className="text-3xl">{stationCode}</div>
+      <div className="font-semibold text-positron-gray-700 leading-tight">
+        {stationName}
+      </div>
+      {displayTz && (
+        <div className="text-sm text-positron-gray-700">
+          {'UTC' + getOffset(tz) / 60}
+        </div>
+      )}
+    </div>
+  )
+
   const timezonesDiffer = train.originTZ !== train.destTZ
   return (
     <div className="p-3 flex gap-3 flex-col">
@@ -23,29 +47,19 @@ export default function TrainDetail() {
         {train.routeName} {train.trainNum}
       </h1>
       <div className="grid gap-2 text-center grid-cols-[1fr_max-content_1fr]">
-        <div className="flex flex-col gap-1">
-          <div className="text-3xl">{train.origCode}</div>
-          <div className="font-semibold text-positron-gray-700 leading-tight">
-            {train.origName}
-          </div>
-          {timezonesDiffer && (
-            <div className="text-sm text-positron-gray-700">
-              {'UTC' + getOffset(train.originTZ) / 60}
-            </div>
-          )}
-        </div>
+        {renderRouteEndpoint({
+          stationName: train.origName,
+          stationCode: train.origCode,
+          tz: train.originTZ,
+          displayTz: timezonesDiffer,
+        })}
         <Image src={CaretRight} alt="to" className="my-3 w-3" />
-        <div className="flex flex-col gap-1">
-          <div className="text-3xl">{train.destCode}</div>
-          <div className="font-semibold text-positron-gray-700 leading-tight">
-            {train.destName}
-          </div>
-          {timezonesDiffer && (
-            <div className="text-sm text-positron-gray-700">
-              {'UTC' + getOffset(train.destTZ) / 60}
-            </div>
-          )}
-        </div>
+        {renderRouteEndpoint({
+          stationName: train.destName,
+          stationCode: train.destCode,
+          tz: train.destTZ,
+          displayTz: timezonesDiffer,
+        })}
       </div>
       <div className="flex items-center gap-3">
         <StatusBadge train={train} />
