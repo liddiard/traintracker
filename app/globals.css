@@ -2,13 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --segmentBarHeight: 20px;
+}
+
 body {
   font-family:
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    "Helvetica Neue",
+    'Helvetica Neue',
     Helvetica,
     Arial,
     sans-serif;
+}
+
+progress,
+::-webkit-progress-bar {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: var(--segmentBarHeight);
+  border-radius: calc(var(--segmentBarHeight) / 2);
+  background-color: #ccc;
+}
+
+::-moz-progress-bar {
+  background-color: theme('colors.amtrak-blue-500');
+  border-radius: calc(var(--segmentBarHeight) / 2);
+}
+
+::-webkit-progress-value {
+  background-color: theme('colors.amtrak-blue-500');
+  border-radius: calc(var(--segmentBarHeight) / 2);
 }
