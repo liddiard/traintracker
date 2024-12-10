@@ -1,5 +1,6 @@
 import { TrainStatus } from '@/app/types'
 import { formatTime } from '../utils'
+import cn from 'classnames'
 
 interface CurrentSegmentProps {
   trainStatus: TrainStatus
@@ -16,6 +17,7 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
   let label
   let totalMinsBetweenStations = 100
   let minsElapsed = 0
+  let isDeparting = false
 
   if (
     !trainStatus.prevStation &&
@@ -29,6 +31,7 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
       (segmentEndStation.schDep.valueOf() - Date.now().valueOf()) / 1000 / 60,
     )
     label = `Departing in ${formatMinutes(minsToDeparture)} at ${formatTime(segmentEndStation.schDep, segmentEndStation.tz)}`
+    isDeparting = true
   } else if (
     trainStatus.prevStation &&
     !trainStatus.curStation &&
@@ -72,12 +75,19 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
         <span className="text-right">{segmentEndStation?.name}</span>
       </div>
 
-      <progress
-        id="segmentProgress"
-        value={minsElapsed}
-        max={totalMinsBetweenStations}
-      />
-      <label htmlFor="segmentProgress">{label}</label>
+      <div className="segmentProgressWrapper">
+        <progress
+          id="segmentProgress"
+          value={minsElapsed}
+          max={totalMinsBetweenStations}
+        />
+      </div>
+      <label
+        htmlFor="segmentProgress"
+        className={cn('block', { 'text-right': !isDeparting })}
+      >
+        {label}
+      </label>
     </section>
   )
 }
