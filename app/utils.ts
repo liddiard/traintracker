@@ -128,9 +128,19 @@ export const getOffset = (timeZone = 'UTC', date = new Date()) => {
   return (tzDate.getTime() - utcDate.getTime()) / 6e4
 }
 
-export const formatTime = (date: Date, tz: string) =>
-  Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, {
+export const formatTime = (date: Date, tz: string) => {
+  const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric',
     minute: 'numeric',
     timeZone: tz,
-  }).format(date)
+  }
+  // include the date if it's not today
+  if (new Date().getDate() !== date.getDate()) {
+    options.month = 'short'
+    options.day = 'numeric'
+  }
+  return Intl.DateTimeFormat(
+    Intl.DateTimeFormat().resolvedOptions().locale,
+    options,
+  ).format(date)
+}
