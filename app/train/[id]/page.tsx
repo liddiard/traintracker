@@ -8,6 +8,7 @@ import CaretRight from '@/app/img/caret-right-gray.svg'
 import Pointer from '@/app/img/pointer.svg'
 import { headingToRotationMap } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
+import CurrentSegment from '@/app/components/CurrentSegment'
 
 export default function TrainDetail() {
   const { id } = useParams()
@@ -82,7 +83,9 @@ export default function TrainDetail() {
           </>
         )}
       </div>
-      <h2 className="font-bold text-lg">Current segment</h2>
+
+      <CurrentSegment trainStatus={trainStatus} />
+
       <h2 className="font-bold text-lg">Full route</h2>
     </div>
   )

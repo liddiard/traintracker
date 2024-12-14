@@ -1,15 +1,8 @@
 import cn from 'classnames'
 import interpolate from 'color-interpolate'
 
-import { TrainStatus, TimeStatus, Train } from '../types'
-import { getTrainStatus } from '../utils'
-
-const formatTime = (date: Date, tz: string) =>
-  Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, {
-    hour: 'numeric',
-    minute: 'numeric',
-    timeZone: tz,
-  }).format(date)
+import { TimeStatus, Train } from '@/app/types'
+import { formatTime, getTrainStatus } from '@/app/utils'
 
 function StatusBadge({
   train,
