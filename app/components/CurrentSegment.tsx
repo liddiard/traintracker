@@ -5,10 +5,12 @@ interface CurrentSegmentProps {
   trainStatus: TrainStatus
 }
 
-const formatMinutes = (minutes: number) =>
-  minutes < 60
+const formatMinutes = (minutes: number) => {
+  minutes = Math.round(minutes)
+  return minutes < 60
     ? `${minutes} min`
     : `${Math.floor(minutes / 60)} hr ${minutes % 60} min`
+}
 
 const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
   let segmentStartStation
@@ -22,9 +24,8 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
     // train is at station
     segmentStartStation = trainStatus.curStation
     segmentEndStation = trainStatus.nextStation
-    const minsToDeparture = Math.round(
-      (segmentEndStation.schDep.valueOf() - Date.now().valueOf()) / 1000 / 60,
-    )
+    const minsToDeparture =
+      (segmentEndStation.schDep.valueOf() - Date.now().valueOf()) / 1000 / 60
     label = `Departing in ${formatMinutes(minsToDeparture)}`
     isDeparting = true
   } else if (
@@ -35,15 +36,13 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
     // train is between stations
     segmentStartStation = trainStatus.prevStation
     segmentEndStation = trainStatus.nextStation
-    const minsToArrival = Math.round(
-      (segmentEndStation.schArr.valueOf() - Date.now().valueOf()) / 1000 / 60,
-    )
-    totalMinsBetweenStations = Math.round(
+    const minsToArrival =
+      (segmentEndStation.schArr.valueOf() - Date.now().valueOf()) / 1000 / 60
+    totalMinsBetweenStations =
       (segmentEndStation.schArr.valueOf() -
         segmentStartStation.schDep.valueOf()) /
-        1000 /
-        60,
-    )
+      1000 /
+      60
     minsElapsed = totalMinsBetweenStations - minsToArrival
     label = `arriving in ${formatMinutes(minsToArrival)}`
   } else {
