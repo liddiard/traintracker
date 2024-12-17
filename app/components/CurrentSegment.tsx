@@ -18,7 +18,7 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
   let minsElapsed = 0
   let isDeparting = false
 
-  if (trainStatus.curStation) {
+  if (trainStatus.curStation && trainStatus.nextStation) {
     // train is at station
     segmentStartStation = trainStatus.curStation
     segmentEndStation = trainStatus.nextStation
@@ -66,7 +66,7 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
           id="segmentProgress"
           value={minsElapsed}
           max={totalMinsBetweenStations}
-          className="relative w-full progress-unfilled:rounded-full progress-unfilled:appearance-none h-4 progress-unfilled:bg-positron-gray-200 progress-filled:bg-amtrak-blue-500 progress-filled:rounded-full before-after:content-[''] before-after:block before-after:absolute before-after:bg-white before-after:w-4 before-after:aspect-square before-after:rounded-full before-after:top-0 before-after:border-2 before:left-0 before:border-amtrak-blue-500 after:right-0 after:border-positron-gray-200"
+          className="relative w-full progress-unfilled:rounded-full progress-unfilled:appearance-none h-4 progress-unfilled:bg-positron-gray-200 progress-filled:bg-amtrak-blue-500 progress-filled:rounded-full progress-filled:transition-all before-after:content-[''] before-after:block before-after:absolute before-after:bg-white before-after:w-4 before-after:aspect-square before-after:rounded-full before-after:top-0 before-after:border-2 before:left-0 before:border-amtrak-blue-500 after:right-0 after:border-positron-gray-200"
         />
       </div>
       <label

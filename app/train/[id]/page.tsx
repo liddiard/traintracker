@@ -9,6 +9,7 @@ import Pointer from '@/app/img/pointer.svg'
 import { headingToRotationMap } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
 import CurrentSegment from '@/app/components/CurrentSegment'
+import { TrainStatus } from '@/app/types'
 
 export default function TrainDetail() {
   const { id } = useParams()
@@ -43,6 +44,29 @@ export default function TrainDetail() {
     </div>
   )
 
+  const renderTrainVelocity = (velocity: number, trainStatus: TrainStatus) => {
+    if (trainStatus.curStation) {
+      return <span className="text-positron-gray-700">At Station</span>
+    }
+    if (velocity) {
+      return (
+        <>
+          <span>{Math.round(velocity)} MPH</span>
+          <Image
+            src={Pointer}
+            alt={train.heading}
+            title={train.heading}
+            className="w-4"
+            style={{
+              transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
+            }}
+          />
+        </>
+      )
+    }
+    return null
+  }
+
   const timezonesDiffer = train.originTZ !== train.destTZ
   return (
     <div className="p-3 flex gap-6 flex-col">
@@ -66,22 +90,7 @@ export default function TrainDetail() {
       </div>
       <div className="flex items-center gap-3">
         <StatusBadge train={train} />
-        {trainStatus.curStation ? (
-          <span className="text-positron-gray-700">At Station</span>
-        ) : (
-          <>
-            <span>{Math.round(train.velocity)} MPH</span>
-            <Image
-              src={Pointer}
-              alt={train.heading}
-              title={train.heading}
-              className="w-4"
-              style={{
-                transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
-              }}
-            />
-          </>
-        )}
+        {renderTrainVelocity(train.velocity, trainStatus)}
       </div>
 
       <CurrentSegment trainStatus={trainStatus} />
