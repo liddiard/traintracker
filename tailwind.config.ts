@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import plugin from 'tailwindcss/plugin'
 
 export default {
   content: [
@@ -49,5 +50,14 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant('progress-unfilled', ['&::-webkit-progress-bar', '&'])
+      addVariant('progress-filled', [
+        '&::-webkit-progress-value',
+        '&::-moz-progress-bar',
+      ])
+      addVariant('before-after', ['&::before', '&::after'])
+    }),
+  ],
 } satisfies Config

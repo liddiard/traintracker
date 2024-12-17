@@ -45,7 +45,7 @@ export default function TrainDetail() {
 
   const timezonesDiffer = train.originTZ !== train.destTZ
   return (
-    <div className="p-3 flex gap-4 flex-col">
+    <div className="p-3 flex gap-6 flex-col">
       <h1 className="text-2xl font-bold">
         {train.routeName} {train.trainNum}
       </h1>

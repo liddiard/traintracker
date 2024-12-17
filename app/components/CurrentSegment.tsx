@@ -1,5 +1,4 @@
 import { TrainStatus } from '@/app/types'
-import { formatTime } from '../utils'
 import cn from 'classnames'
 
 interface CurrentSegmentProps {
@@ -8,8 +7,8 @@ interface CurrentSegmentProps {
 
 const formatMinutes = (minutes: number) =>
   minutes < 60
-    ? `${minutes} min.`
-    : `${Math.floor(minutes / 60)} hr. ${minutes % 60} min.`
+    ? `${minutes} min`
+    : `${Math.floor(minutes / 60)} hr ${minutes % 60} min`
 
 const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
   let segmentStartStation
@@ -50,7 +49,7 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
         60,
     )
     minsElapsed = totalMinsBetweenStations - minsToArrival
-    label = `Arriving in ${formatMinutes(minsToArrival)} at ${formatTime(segmentEndStation.schArr, segmentEndStation.tz)}`
+    label = `arriving in ${formatMinutes(minsToArrival)}`
   } else if (
     trainStatus.prevStation &&
     !trainStatus.curStation &&
@@ -63,23 +62,25 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
       (Date.now().valueOf() - segmentEndStation.arr.valueOf()) / 1000 / 60,
     )
     minsElapsed = totalMinsBetweenStations
-    label = `Arrived ${formatMinutes(minsSinceArrival)} ago at ${formatTime(segmentEndStation.arr, segmentEndStation.tz)}`
+    label = `arrived ${formatMinutes(minsSinceArrival)} ago at ${formatTime(segmentEndStation.arr, segmentEndStation.tz)}`
   }
 
   return (
-    <section>
+    <section className="flex flex-col gap-2">
       <h2 className="font-bold text-lg">Current segment</h2>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-2 leading-snug">
         <span>{segmentStartStation?.name}</span>
+        <span>→</span>
         <span className="text-right">{segmentEndStation?.name}</span>
       </div>
 
-      <div className="segmentProgressWrapper">
+      <div className="relative h-4">
         <progress
           id="segmentProgress"
           value={minsElapsed}
           max={totalMinsBetweenStations}
+          className="relative w-full progress-unfilled:rounded-full progress-unfilled:appearance-none h-4 progress-unfilled:bg-positron-gray-200 progress-filled:bg-amtrak-blue-500 progress-filled:rounded-full before-after:content-[''] before-after:block before-after:absolute before-after:bg-white before-after:w-4 before-after:aspect-square before-after:rounded-full before-after:top-0 before-after:border-2 before:left-0 before:border-amtrak-blue-500 after:right-0 after:border-positron-gray-200"
         />
       </div>
       <label
