@@ -18,18 +18,14 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
   let minsElapsed = 0
   let isDeparting = false
 
-  if (
-    !trainStatus.prevStation &&
-    trainStatus.curStation &&
-    trainStatus.nextStation
-  ) {
+  if (trainStatus.curStation) {
     // train is at station
     segmentStartStation = trainStatus.curStation
     segmentEndStation = trainStatus.nextStation
     const minsToDeparture = Math.round(
       (segmentEndStation.schDep.valueOf() - Date.now().valueOf()) / 1000 / 60,
     )
-    label = `Departing in ${formatMinutes(minsToDeparture)} at ${formatTime(segmentEndStation.schDep, segmentEndStation.tz)}`
+    label = `Departing in ${formatMinutes(minsToDeparture)}`
     isDeparting = true
   } else if (
     trainStatus.prevStation &&
@@ -50,19 +46,9 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
     )
     minsElapsed = totalMinsBetweenStations - minsToArrival
     label = `arriving in ${formatMinutes(minsToArrival)}`
-  } else if (
-    trainStatus.prevStation &&
-    !trainStatus.curStation &&
-    !trainStatus.nextStation
-  ) {
-    // train at the last station
-    segmentStartStation = { name: 'TODO: get prev station' }
-    segmentEndStation = trainStatus.prevStation
-    const minsSinceArrival = Math.round(
-      (Date.now().valueOf() - segmentEndStation.arr.valueOf()) / 1000 / 60,
-    )
-    minsElapsed = totalMinsBetweenStations
-    label = `arrived ${formatMinutes(minsSinceArrival)} ago at ${formatTime(segmentEndStation.arr, segmentEndStation.tz)}`
+  } else {
+    // train hasn't departed or is at the last station
+    return null
   }
 
   return (
