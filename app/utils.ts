@@ -128,7 +128,10 @@ export const getOffset = (timeZone = 'UTC', date = new Date()) => {
   return (tzDate.getTime() - utcDate.getTime()) / 6e4
 }
 
-export const formatTime = (date: Date, tz: string) => {
+export const formatTime = (
+  date: Date,
+  tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+) => {
   const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric',
     minute: 'numeric',

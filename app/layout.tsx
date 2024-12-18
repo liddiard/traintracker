@@ -1,19 +1,18 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 
 import './globals.css'
 import Map from './components/Map'
 import Search from './components/Search'
-import {
-  createRouteNumMap,
-  createStationList,
-  formatTrainResponse,
-} from './utils'
+import { formatTrainResponse } from './utils'
 import { TrainProvider } from './providers/train'
 
 export const metadata: Metadata = {
   title: 'TrainTracker',
   description: 'Track your US Amtrak train with a live map and notifications',
 }
+
+const inter = Inter({ subsets: ['latin'] })
 
 async function getTrains() {
   try {
@@ -42,7 +41,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         <TrainProvider initialTrains={trains}>
           <div className="h-screen flex flex-wrap md:flex-nowrap">
             <div className="h-full w-full md:w-1/4 relative overflow-y-auto shadow-lg z-10 md:min-w-[300px]">

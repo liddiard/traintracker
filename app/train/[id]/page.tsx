@@ -1,10 +1,11 @@
 'use client'
 
-import { getOffset, getTrainStatus } from '@/app/utils'
+import { formatTime, getOffset, getTrainStatus } from '@/app/utils'
 import Image from 'next/image'
 import { notFound, useParams } from 'next/navigation'
 import StatusBadge from '@/app/components/StatusBadge'
 import CaretRight from '@/app/img/caret-right-gray.svg'
+import Pie from '@/app/img/pie.svg'
 import Pointer from '@/app/img/pointer.svg'
 import { headingToRotationMap } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
@@ -33,11 +34,11 @@ export default function TrainDetail() {
   }) => (
     <div className="flex flex-col gap-1">
       <div className="text-3xl">{stationCode}</div>
-      <div className="font-semibold text-positron-gray-700 leading-tight">
+      <div className="font-semibold text-positron-gray-600 leading-tight">
         {stationName}
       </div>
       {displayTz && (
-        <div className="text-sm text-positron-gray-700">
+        <div className="text-sm text-positron-gray-600">
           {'UTC' + getOffset(tz) / 60}
         </div>
       )}
@@ -46,7 +47,7 @@ export default function TrainDetail() {
 
   const renderTrainVelocity = (velocity: number, trainStatus: TrainStatus) => {
     if (trainStatus.curStation) {
-      return <span className="text-positron-gray-700">At Station</span>
+      return <span className="text-positron-gray-600">At Station</span>
     }
     if (velocity) {
       return (
@@ -94,6 +95,18 @@ export default function TrainDetail() {
       </div>
 
       <CurrentSegment trainStatus={trainStatus} />
+
+      <div className="flex justify-between text-positron-gray-600">
+        <span>Last update {formatTime(train.updatedAt)}</span>
+        <span className="flex items-center gap-1">
+          Next check
+          <Image
+            src={Pie}
+            alt=""
+            className="rounded-full w-4 aspect-square border border-positron-gray-600 shrink-0"
+          />
+        </span>
+      </div>
 
       <h2 className="font-bold text-lg">Full route</h2>
     </div>
