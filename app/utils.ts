@@ -147,3 +147,31 @@ export const formatTime = (
     options,
   ).format(date)
 }
+
+export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
+  const { prevStation, curStation, nextStation } = trainStatus
+  const progress = {
+    minsToDeparture: 0,
+    minsToArrival: 0,
+    percent: 0,
+  }
+  const departureTime =
+    prevStation?.dep?.valueOf() ?? prevStation?.schDep.valueOf()
+
+  if (curStation && nextStation && departureTime) {
+    // train is at a station
+    progress.minsToDeparture =
+      (departureTime - Date.now().valueOf()) / 1000 / 60
+    progress.percent = 0 // no progress has been made on "current" (upcoming) segment
+  } else if (departureTime && !curStation && nextStation) {
+    // train is enroute between stations
+    const arrivalTime =
+      nextStation.arr?.valueOf() ?? nextStation.schArr.valueOf()
+    const minsToArrival = (arrivalTime - Date.now().valueOf()) / 1000 / 60
+    const minsBetweenStations = (arrivalTime - departureTime) / 1000 / 60
+    const minsElapsed = minsBetweenStations - minsToArrival
+    progress.minsToArrival = minsToArrival
+    progress.percent = minsElapsed / minsBetweenStations
+  }
+  return progress
+}

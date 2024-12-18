@@ -256,7 +256,7 @@ function Search() {
   return (
     <form
       id="search"
-      className="bg-amtrak-midnight-blue px-3 py-4 text-white flex flex-col gap-3 shadow-md sticky top-0"
+      className="bg-amtrak-midnight-blue px-3 py-4 text-white flex flex-col gap-3 shadow-md sticky top-0 z-10"
       onSubmit={handleSubmit}
     >
       {renderSearchOptions()}

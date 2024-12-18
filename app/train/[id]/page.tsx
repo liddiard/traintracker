@@ -11,6 +11,7 @@ import { headingToRotationMap } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
 import CurrentSegment from '@/app/components/CurrentSegment'
 import { TrainStatus } from '@/app/types'
+import Timeline from '@/app/components/Timeline'
 
 export default function TrainDetail() {
   const { id } = useParams()
@@ -70,7 +71,7 @@ export default function TrainDetail() {
 
   const timezonesDiffer = train.originTZ !== train.destTZ
   return (
-    <div className="p-3 flex gap-6 flex-col">
+    <div className="p-3 flex gap-6 flex-col mb-4">
       <h1 className="text-2xl font-bold">
         {train.routeName} {train.trainNum}
       </h1>
@@ -96,9 +97,9 @@ export default function TrainDetail() {
 
       <CurrentSegment trainStatus={trainStatus} />
 
-      <div className="flex justify-between text-positron-gray-600">
+      <div className="flex justify-between text-positron-gray-600 text-sm">
         <span>Last update {formatTime(train.updatedAt)}</span>
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-2">
           Next check
           <Image
             src={Pie}
@@ -108,7 +109,7 @@ export default function TrainDetail() {
         </span>
       </div>
 
-      <h2 className="font-bold text-lg">Full route</h2>
+      <Timeline train={train} trainStatus={trainStatus} />
     </div>
   )
 }
