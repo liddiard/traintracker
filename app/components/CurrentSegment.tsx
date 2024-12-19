@@ -40,9 +40,9 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="font-bold text-lg">Current segment</h2>
+      <h2 className="font-bold text-lg">Current Segment</h2>
 
-      <div className="flex justify-between items-center gap-2 leading-snug">
+      <div className="flex justify-between items-center gap-2 leading-tight font-semibold">
         <span>{segmentStartStation?.name}</span>
         <span>→</span>
         <span className="text-right">{segmentEndStation?.name}</span>

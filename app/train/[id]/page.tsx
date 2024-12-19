@@ -12,6 +12,7 @@ import { useTrains } from '@/app/providers/train'
 import CurrentSegment from '@/app/components/CurrentSegment'
 import { TrainStatus } from '@/app/types'
 import Timeline from '@/app/components/Timeline'
+import Link from 'next/link'
 
 export default function TrainDetail() {
   const { id } = useParams()
@@ -54,15 +55,18 @@ export default function TrainDetail() {
       return (
         <>
           <span>{Math.round(velocity)} MPH</span>
-          <Image
-            src={Pointer}
-            alt={train.heading}
-            title={train.heading}
-            className="w-4"
-            style={{
-              transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
-            }}
-          />
+          <span className="flex gap-1 items-baseline">
+            <Image
+              src={Pointer}
+              alt={train.heading}
+              title={train.heading}
+              className="w-4 transition-all duration-1000"
+              style={{
+                transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
+              }}
+            />
+            <span>{train.heading}</span>
+          </span>
         </>
       )
     }
@@ -71,7 +75,13 @@ export default function TrainDetail() {
 
   const timezonesDiffer = train.originTZ !== train.destTZ
   return (
-    <div className="p-3 flex gap-6 flex-col mb-4">
+    <div className="p-3 flex gap-5 flex-col mb-4">
+      <Link
+        href="/"
+        className="text-amtrak-blue-600 font-semibold hover:text-amtrak-blue-500"
+      >
+        ← All Trains
+      </Link>
       <h1 className="text-2xl font-bold">
         {train.routeName} {train.trainNum}
       </h1>

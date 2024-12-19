@@ -59,7 +59,7 @@ const Timeline = ({
           />
         </div>
         <div>
-          <span className="font-bold block">{name}</span>
+          <span className="font-semibold block leading-snug">{name}</span>
           {platform && <span className="block">Platform {platform}</span>}
         </div>
       </Fragment>
@@ -68,7 +68,7 @@ const Timeline = ({
 
   return (
     <>
-      <h2 className="font-bold text-lg">Full route</h2>
+      <h2 className="font-bold text-lg">Full Route</h2>
       <div className="grid grid-cols-[max-content,min-content,1fr] gap-2">
         {train.stations.map(renderSegment)}
       </div>
