@@ -119,7 +119,7 @@ export default function TrainDetail() {
         </span>
       </div>
 
-      <Timeline train={train} trainStatus={trainStatus} />
+      <Timeline stations={train.stations} trainStatus={trainStatus} />
     </div>
   )
 }

@@ -6,7 +6,10 @@ import {
   TimeStatus,
   TrainStatus,
   Route,
+  StationTrain,
 } from './types'
+
+export const msToMins = (ms: number) => ms / 1000 / 60
 
 export const createRouteNumMap = (trains: Train[]) =>
   trains.reduce(
@@ -93,9 +96,7 @@ export const getTrainStatus = (train: Train) => {
   if (!station?.arr) {
     return status // unkonwn status code
   }
-  status.deviation = Math.round(
-    (station.arr.valueOf() - station.schArr.valueOf()) / 1000 / 60,
-  )
+  status.deviation = msToMins(station.arr.valueOf() - station.schArr.valueOf())
   status.code = status.deviation > 0 ? TimeStatus.DELAYED : TimeStatus.ON_TIME
   return status
 }
@@ -160,18 +161,29 @@ export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
 
   if (curStation && nextStation && departureTime) {
     // train is at a station
-    progress.minsToDeparture =
-      (departureTime - Date.now().valueOf()) / 1000 / 60
+    progress.minsToDeparture = msToMins(departureTime - Date.now().valueOf())
     progress.percent = 0 // no progress has been made on "current" (upcoming) segment
   } else if (departureTime && !curStation && nextStation) {
     // train is enroute between stations
     const arrivalTime =
       nextStation.arr?.valueOf() ?? nextStation.schArr.valueOf()
-    const minsToArrival = (arrivalTime - Date.now().valueOf()) / 1000 / 60
-    const minsBetweenStations = (arrivalTime - departureTime) / 1000 / 60
+    const minsToArrival = msToMins(arrivalTime - Date.now().valueOf())
+    const minsBetweenStations = msToMins(arrivalTime - departureTime)
     const minsElapsed = minsBetweenStations - minsToArrival
     progress.minsToArrival = minsToArrival
     progress.percent = minsElapsed / minsBetweenStations
   }
   return progress
 }
+
+export const getSegmentDurationStat = (
+  stations: StationTrain[],
+  compareFunc: (a: number, b: number) => number,
+  initialValue = 0,
+) =>
+  stations.reduce((acc, { schArr }, idx, stations) => {
+    const prevStationArr = stations[idx - 1]?.schArr
+    return prevStationArr && schArr
+      ? compareFunc(acc, msToMins(schArr.valueOf() - prevStationArr.valueOf()))
+      : acc
+  }, initialValue)
