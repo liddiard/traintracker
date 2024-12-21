@@ -9,11 +9,12 @@ import Stats from './components/Stats'
 export default function Home({}) {
   const { trains } = useTrains()
   const params = useSearchParams()
+  const trainParams = getTrainParams(params)
 
   return (
     <>
-      {trains && <Stats trains={trains} />}
-      {trains && <TrainList trains={trains} filters={getTrainParams(params)} />}
+      {trains && !Object.keys(trainParams).length && <Stats trains={trains} />}
+      {trains && <TrainList trains={trains} filters={trainParams} />}
     </>
   )
 }

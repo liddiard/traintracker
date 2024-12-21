@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { use, useMemo, useRef, useState } from 'react'
 import Select, {
   components,
   InputProps,
@@ -14,7 +14,7 @@ import MagnifyingGlass from '../img/magnifying-glass.svg'
 import CaretRight from '../img/caret-right-white.svg'
 import { createRouteNumMap, createStationList } from '../utils'
 import { useTrains } from '../providers/train'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 enum SearchType {
   Segment,
@@ -63,45 +63,67 @@ const NumberInput = (props: InputProps<Option>) => (
   />
 )
 
+const getOption = (options: Option[], value: string | null) =>
+  options.find((option) => option.value === value) || null
+
 function Search() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { trains } = useTrains()
-
-  const [searchType, setSearchType] = useState<SearchType>(SearchType.Segment)
-  const [from, setFrom] = useState<Option | null>(null)
-  const [to, setTo] = useState<Option | null>(null)
-  const [trainName, setTrainName] = useState<Option | null>(null)
-  const [trainNumber, setTrainNumber] = useState<Option | null>(null)
-
-  const toSegmentSelect = useRef<SelectInstance<Option> | null>(null)
-  const trainNumberSelect = useRef<SelectInstance<Option> | null>(null)
 
   const stations = useMemo(() => createStationList(trains), [trains])
   const routes = useMemo(() => createRouteNumMap(trains), [trains])
 
-  const getStationOptions = () =>
-    stations
-      .toSorted((a, b) => a.code.localeCompare(b.code))
-      .map((station) => ({
-        value: station.code,
-        label: station.name,
-      }))
+  const stationOptions = useMemo(
+    () =>
+      stations
+        .toSorted((a, b) => a.code.localeCompare(b.code))
+        .map((station) => ({
+          value: station.code,
+          label: station.name,
+        })),
+    [stations],
+  )
 
-  const getRouteOptions = () =>
-    Object.keys(routes)
-      .toSorted((a, b) => a.localeCompare(b))
-      .map((route) => ({
-        value: route,
-        label: route,
-      }))
+  const routeOptions = useMemo(
+    () =>
+      Object.keys(routes)
+        .toSorted((a, b) => a.localeCompare(b))
+        .map((route) => ({
+          value: route,
+          label: route,
+        })),
+    [routes],
+  )
 
-  const getLineNumberOptions = () =>
-    Array.from(routes[trainName?.value || ''] || new Set())
-      ?.toSorted((a, b) => Number(a) - Number(b))
-      ?.map((num) => ({
-        value: num,
-        label: num,
-      }))
+  const [trainName, setTrainName] = useState<Option | null>(
+    getOption(routeOptions, searchParams.get('trainName')),
+  )
+
+  const lineNumberOptions = useMemo(
+    () =>
+      Array.from(routes[trainName?.value || ''] || new Set())
+        ?.toSorted((a, b) => Number(a) - Number(b))
+        ?.map((num) => ({
+          value: num,
+          label: num,
+        })),
+    [routes, trainName],
+  )
+
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.Segment)
+  const [from, setFrom] = useState<Option | null>(
+    getOption(stationOptions, searchParams.get('from')),
+  )
+  const [to, setTo] = useState<Option | null>(
+    getOption(stationOptions, searchParams.get('to')),
+  )
+  const [trainNumber, setTrainNumber] = useState<Option | null>(
+    getOption(lineNumberOptions, searchParams.get('trainNumber')),
+  )
+
+  const toSegmentSelect = useRef<SelectInstance<Option> | null>(null)
+  const trainNumberSelect = useRef<SelectInstance<Option> | null>(null)
 
   const renderSearchOptions = () => {
     const labelClassNames =
@@ -158,7 +180,7 @@ function Search() {
       instanceId={isFrom ? 'from' : 'to'}
       ref={isFrom ? null : toSegmentSelect}
       name={isFrom ? 'from' : 'to'}
-      options={getStationOptions()}
+      options={stationOptions}
       value={isFrom ? from : to}
       placeholder={isFrom ? 'From' : 'To'}
       className="w-1/2 text-black"
@@ -196,7 +218,7 @@ function Search() {
       <Select
         instanceId="trainName"
         name="trainName"
-        options={getRouteOptions()}
+        options={routeOptions}
         value={trainName}
         className="flex-grow text-black"
         placeholder="Train name"
@@ -218,7 +240,7 @@ function Search() {
           instanceId="trainNumber"
           ref={trainNumberSelect}
           name="trainNumber"
-          options={getLineNumberOptions()}
+          options={lineNumberOptions}
           value={trainNumber}
           className="text-black grow-0 w-20"
           placeholder="#"
@@ -239,16 +261,14 @@ function Search() {
     </div>
   )
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const { from, to, trainName, trainNumber } = e.target
+  const handleSubmit = (formData: FormData) => {
     const url = new URL(window.location.origin)
     if (searchType === SearchType.Segment) {
-      url.searchParams.set('from', from?.value)
-      url.searchParams.set('to', to?.value)
+      url.searchParams.set('from', formData.get('from') as string)
+      url.searchParams.set('to', formData.get('to') as string)
     } else {
-      url.searchParams.set('trainName', trainName?.value)
-      url.searchParams.set('trainNumber', trainNumber?.value)
+      url.searchParams.set('trainName', formData.get('trainName') as string)
+      url.searchParams.set('trainNumber', formData.get('trainNumber') as string)
     }
     router.push(url.toString())
   }
@@ -257,7 +277,7 @@ function Search() {
     <form
       id="search"
       className="bg-amtrak-midnight-blue px-3 py-4 mb-2 text-white flex flex-col gap-3 shadow-md sticky top-0 z-20"
-      onSubmit={handleSubmit}
+      action={handleSubmit}
     >
       {renderSearchOptions()}
       <div className="flex gap-2">

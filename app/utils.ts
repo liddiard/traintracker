@@ -9,6 +9,7 @@ import {
   Route,
   StationTrain,
 } from './types'
+import { TRAIN_SEARCH_PARAMS } from './constants'
 
 export const msToMins = (ms: number) => ms / 1000 / 60
 
@@ -21,12 +22,12 @@ export const median = (numbers: number[]) => {
   return sorted[mid]
 }
 
-export const getTrainParams = (params: URLSearchParams) => {
-  const trainParams = ['from', 'to', 'trainName', 'trainNumber']
-  return Object.fromEntries(
-    params.entries().filter(([key, val]) => trainParams.includes(key) && val),
+export const getTrainParams = (params: URLSearchParams) =>
+  Object.fromEntries(
+    params
+      .entries()
+      .filter(([key, val]) => TRAIN_SEARCH_PARAMS.includes(key) && val),
   )
-}
 
 export const getDeparture = ({ dep, schDep }: StationTrain) => dep || schDep
 export const getArrival = ({ arr, schArr }: StationTrain) => arr || schArr

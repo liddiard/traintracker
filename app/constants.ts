@@ -58,3 +58,5 @@ export const headingToRotationMap: Record<string, number> = {
 
 // minimum completion of the progress bar to avoid display issues with border-radius
 export const MIN_PROGRESS_PX = 16
+
+export const TRAIN_SEARCH_PARAMS = ['from', 'to', 'trainName', 'trainNumber']
