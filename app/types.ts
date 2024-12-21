@@ -72,7 +72,6 @@ export type Route = Record<string, Set<string>>
 
 export enum TimeStatus {
   PREDEPARTURE,
-  AHEAD,
   ON_TIME,
   DELAYED,
   COMPLETE,
@@ -92,3 +91,6 @@ export interface Option {
   value: string
   label: string
 }
+
+type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'
+export type TrainSearchParams = Partial<Record<TrainSearchKeys, string>>

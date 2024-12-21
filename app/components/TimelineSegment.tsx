@@ -1,7 +1,14 @@
 import { Fragment } from 'react'
 import cn from 'classnames'
 import { StationTrain } from '../types'
-import { dayDiffers, formatDate, formatTime, getArrival } from '../utils'
+import {
+  dayDiffers,
+  formatDate,
+  formatTime,
+  getArrival,
+  getDelayColor,
+  msToMins,
+} from '../utils'
 
 const TimelineSegment = ({
   stations,
@@ -15,7 +22,7 @@ const TimelineSegment = ({
   const station = stations[index]
   const prevStation = stations[index - 1]
   const { code, arr, schArr, name, platform, tz } = station
-  const deviation = arr ? arr.valueOf() - schArr.valueOf() : 0
+  const deviation = arr ? msToMins(arr.valueOf() - schArr.valueOf()) : 0
   const arrivalTime = getArrival(station)
 
   const renderDayLine = () => {
@@ -54,10 +61,9 @@ const TimelineSegment = ({
           <span
             className={cn(
               'block',
-              deviation > 0
-                ? 'text-amtrak-yellow-700'
-                : 'text-amtrak-green-600',
+              deviation < 0 ? 'text-amtrak-green-600' : '',
             )}
+            style={{ color: deviation > 0 ? getDelayColor(deviation) : '' }}
           >
             {formatTime(arr!, tz)}
           </span>

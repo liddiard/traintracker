@@ -1,8 +1,13 @@
 'use client'
 
-import { formatTime, getOffset, getTrainStatus } from '@/app/utils'
+import {
+  formatTime,
+  getOffset,
+  getTrainParams,
+  getTrainStatus,
+} from '@/app/utils'
 import Image from 'next/image'
-import { notFound, useParams } from 'next/navigation'
+import { notFound, useParams, useSearchParams } from 'next/navigation'
 import StatusBadge from '@/app/components/StatusBadge'
 import CaretRight from '@/app/img/caret-right-gray.svg'
 import Pie from '@/app/img/pie.svg'
@@ -16,6 +21,8 @@ import Link from 'next/link'
 
 export default function TrainDetail() {
   const { id } = useParams()
+  const trainSearchParams = getTrainParams(useSearchParams())
+
   const { trains } = useTrains()
 
   const train = trains.find((t) => t.objectID === id)
@@ -74,16 +81,18 @@ export default function TrainDetail() {
   }
 
   const timezonesDiffer = train.originTZ !== train.destTZ
+  const hasTrainSearchParams = !!Object.entries(trainSearchParams).length
   return (
     <div className="p-3 flex gap-5 flex-col mb-4">
       <Link
-        href="/"
+        href={`/?${new URLSearchParams(trainSearchParams).toString()}`}
         className="text-amtrak-blue-600 font-semibold hover:text-amtrak-blue-500"
       >
-        ← All Trains
+        {hasTrainSearchParams ? '‹ Back to Search' : '‹ All Trains'}
       </Link>
       <h1 className="text-2xl font-bold">
-        {train.routeName} {train.trainNum}
+        {train.routeName}{' '}
+        <span className="text-amtrak-blue-600">{train.trainNum}</span>
       </h1>
       <div className="grid gap-2 text-center grid-cols-[1fr_max-content_1fr]">
         {renderRouteEndpoint({

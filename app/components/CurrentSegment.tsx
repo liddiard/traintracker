@@ -1,18 +1,11 @@
 import { TrainStatus } from '@/app/types'
 import cn from 'classnames'
-import { getCurrentSegmentProgress } from '../utils'
+import { formatDuration, getCurrentSegmentProgress } from '../utils'
 import Progress from './Progress'
 import { useEffect, useRef } from 'react'
 
 interface CurrentSegmentProps {
   trainStatus: TrainStatus
-}
-
-const formatMinutes = (minutes: number) => {
-  minutes = Math.round(minutes)
-  return minutes < 60
-    ? `${minutes} minutes`
-    : `${Math.floor(minutes / 60)} hr ${minutes % 60} min`
 }
 
 const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
@@ -39,12 +32,12 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
     // train is at a station waiting to depart
     segmentStartStation = curStation
     segmentEndStation = nextStation
-    label = `Departing in ${formatMinutes(minsToDeparture)}`
+    label = `Departing in ${formatDuration(minsToDeparture)}`
   } else if (minsToArrival) {
     // train is enroute between stations
     segmentStartStation = prevStation
     segmentEndStation = nextStation
-    label = minsToArrival ? `Arriving in ${formatMinutes(minsToArrival)}` : ''
+    label = minsToArrival ? `Arriving in ${formatDuration(minsToArrival)}` : ''
   } else {
     return null
   }

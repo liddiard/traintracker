@@ -3,22 +3,17 @@
 import { useSearchParams } from 'next/navigation'
 import TrainList from './components/TrainList'
 import { useTrains } from './providers/train'
+import { getTrainParams } from './utils'
+import Stats from './components/Stats'
 
 export default function Home({}) {
   const { trains } = useTrains()
   const params = useSearchParams()
 
   return (
-    trains && (
-      <TrainList
-        trains={trains}
-        filters={{
-          from: params.get('from'),
-          to: params.get('to'),
-          trainName: params.get('trainName'),
-          trainNumber: params.get('trainNumber'),
-        }}
-      />
-    )
+    <>
+      {trains && <Stats trains={trains} />}
+      {trains && <TrainList trains={trains} filters={getTrainParams(params)} />}
+    </>
   )
 }

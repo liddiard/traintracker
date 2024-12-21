@@ -9,8 +9,8 @@ import Progress from './Progress'
 import TimelineSegment from './TimelineSegment'
 import { MIN_PROGRESS_PX } from '../constants'
 
-const MIN_SEGMENT_HEIGHT = 50
-const MAX_SEGMENT_HEIGHT = 120
+const MIN_SEGMENT_HEIGHT = 60
+const MAX_SEGMENT_HEIGHT = 150
 
 const Timeline = ({
   stations,

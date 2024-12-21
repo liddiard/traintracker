@@ -1,3 +1,4 @@
+import interpolate from 'color-interpolate'
 import {
   Station,
   StationTrainRaw,
@@ -10,6 +11,22 @@ import {
 } from './types'
 
 export const msToMins = (ms: number) => ms / 1000 / 60
+
+export const median = (numbers: number[]) => {
+  const sorted = [...numbers].sort((a, b) => a - b)
+  const mid = Math.floor(sorted.length / 2)
+  if (sorted.length % 2 === 0) {
+    return (sorted[mid - 1] + sorted[mid]) / 2
+  }
+  return sorted[mid]
+}
+
+export const getTrainParams = (params: URLSearchParams) => {
+  const trainParams = ['from', 'to', 'trainName', 'trainNumber']
+  return Object.fromEntries(
+    params.entries().filter(([key, val]) => trainParams.includes(key) && val),
+  )
+}
 
 export const getDeparture = ({ dep, schDep }: StationTrain) => dep || schDep
 export const getArrival = ({ arr, schArr }: StationTrain) => arr || schArr
@@ -172,8 +189,31 @@ export const formatDate = (
   ).format(date)
 }
 
-export const dayDiffers = (a: Date, b: Date, tzA: string, tzB: string) =>
-  formatDate(a, tzA) !== formatDate(b, tzB)
+export const formatDuration = (
+  minutes: number,
+  options?: { shortenMins?: boolean },
+) => {
+  const { shortenMins = false } = options || {}
+  minutes = Math.round(minutes)
+  let minsString
+  if (shortenMins) {
+    minsString = 'min'
+  } else if (minutes === 1) {
+    minsString = 'minute'
+  } else {
+    minsString = 'minutes'
+  }
+  return minutes < 60
+    ? `${minutes} ${minsString}`
+    : `${Math.floor(minutes / 60)}h ${minutes % 60}m`
+}
+
+export const dayDiffers = (
+  a: Date,
+  b: Date = new Date(),
+  tzA: string,
+  tzB: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+) => formatDate(a, tzA) !== formatDate(b, tzB)
 
 export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
   const { prevStation, curStation, nextStation } = trainStatus
@@ -213,3 +253,11 @@ export const getSegmentDurationMinMax = (
       ? compareFunc(acc, msToMins(schArr.valueOf() - prevStationArr.valueOf()))
       : acc
   }, initialValue)
+
+export const getDelayColor = (delay: number) => {
+  const delayPalette = interpolate(['#ab7a00', '#ab4c00', '#ab1e00', '#ff4018'])
+  const maxDelay = 60 * 2 // minutes
+  return delay
+    ? delayPalette(Math.min(delay, maxDelay) / maxDelay)
+    : delayPalette(0)
+}

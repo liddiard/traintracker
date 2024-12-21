@@ -1,20 +1,13 @@
 import Image from 'next/image'
 
-import { Train } from '../types'
-import { findTrainsFromSegment, getTrainStatus } from '../utils'
+import { Train, TrainSearchParams } from '../types'
+import { findTrainsFromSegment, formatDate } from '../utils'
 import StatusBadge from './StatusBadge'
 import CaretRight from '../img/caret-right-gray.svg'
 import Spinner from '../img/spinner.svg'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-
-const formatDay = (date: Date, tz: string) =>
-  new Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, {
-    month: 'numeric',
-    day: 'numeric',
-    timeZone: tz,
-  }).format(date)
 
 const filterToDisplayName: Record<string, string> = {
   from: 'From',
@@ -28,12 +21,7 @@ function TrainList({
   filters,
 }: {
   trains: Train[]
-  filters: {
-    from: string | null
-    to: string | null
-    trainName: string | null
-    trainNumber: string | null
-  }
+  filters: TrainSearchParams
 }) {
   const router = useRouter()
 
@@ -62,7 +50,7 @@ function TrainList({
       setLoading(true)
       router.push(`/train/${filteredTrains[0].objectID}`)
     }
-  }, [filteredTrains])
+  }, [filteredTrains, router])
 
   const clearFilters = () => {
     const url = new URL(window.location.origin)
@@ -100,6 +88,7 @@ function TrainList({
         </div>
       )
     }
+    const queryString = new URLSearchParams(filters).toString()
     return (
       <ul className="flex flex-col my-2">
         {filteredTrains
@@ -107,7 +96,7 @@ function TrainList({
           .map((train) => (
             <Link
               key={train.objectID}
-              href={`/train/${train.objectID}`}
+              href={`/train/${train.objectID}?${queryString}`}
               className="p-3 hover:bg-amtrak-blue-500/25"
             >
               <li key={train.objectID} className="flex flex-col gap-2">
@@ -126,8 +115,8 @@ function TrainList({
                 </h2>
                 <div className="flex items-center justify-between gap-2">
                   <StatusBadge train={train} className="text-sm" />
-                  <span className="font-light">
-                    {formatDay(train.stations[0].schDep, train.stations[0].tz)}
+                  <span className="font-sm text-positron-gray-600">
+                    {formatDate(train.stations[0].schDep, train.stations[0].tz)}
                   </span>
                 </div>
               </li>

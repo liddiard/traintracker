@@ -17,7 +17,7 @@ const Progress = ({
   id?: string
   vertical?: boolean
   showEndpoints?: boolean
-  progressValueRef?: React.RefObject<HTMLDivElement>
+  progressValueRef?: React.RefObject<HTMLDivElement | null>
 }) => {
   const [isClient, setIsClient] = useState(false)
   const internalClassNames = {

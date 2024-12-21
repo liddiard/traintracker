@@ -2,7 +2,12 @@ import cn from 'classnames'
 import interpolate from 'color-interpolate'
 
 import { TimeStatus, Train } from '@/app/types'
-import { formatTime, getTrainStatus } from '@/app/utils'
+import {
+  formatDuration,
+  formatTime,
+  getDelayColor,
+  getTrainStatus,
+} from '@/app/utils'
 
 function StatusBadge({
   train,
@@ -11,15 +16,6 @@ function StatusBadge({
   train: Train
   className?: string
 }) {
-  const delayPalette = interpolate([
-    '#7d8d29',
-    '#ab7a00',
-    '#ab4c00',
-    '#ab1e00',
-    '#ff4018',
-  ])
-  const maxDeviation = 60 * 2 // minutes
-
   const { code, deviation, firstStation, lastStation } = getTrainStatus(train)
 
   let colorClass, colorValue, text
@@ -33,9 +29,7 @@ function StatusBadge({
       text = 'On Time'
       break
     case TimeStatus.DELAYED:
-      colorValue = deviation
-        ? delayPalette(Math.min(deviation, maxDeviation) / maxDeviation)
-        : delayPalette(0)
+      colorValue = getDelayColor(deviation ?? 0)
       text = 'Late'
       break
     case TimeStatus.COMPLETE:
@@ -64,7 +58,7 @@ function StatusBadge({
         <span>{formatTime(firstStation.dep, firstStation.tz)}</span>
       ) : null}
       {code === TimeStatus.DELAYED ? (
-        <span>{Math.round(deviation ?? 0)} min</span>
+        <span>{formatDuration(deviation ?? 0, { shortenMins: true })}</span>
       ) : null}
       {code === TimeStatus.COMPLETE && lastStation.arr ? (
         <span>{formatTime(lastStation.arr, lastStation.tz)}</span>
