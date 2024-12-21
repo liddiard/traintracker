@@ -72,7 +72,7 @@ export const getTrainStatus = (train: Train) => {
       arr instanceof Date && dep instanceof Date && arr < now && dep > now,
   )
   const nextStation = stations.find(
-    ({ arr }) => !(arr instanceof Date) || arr > now,
+    ({ arr }) => arr instanceof Date && arr > now,
   )
   const status: TrainStatus = {
     code: undefined,
