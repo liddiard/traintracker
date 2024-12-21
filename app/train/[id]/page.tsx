@@ -2,31 +2,34 @@
 
 import {
   formatDate,
+  formatDuration,
   formatTime,
   getOffset,
   getTrainParams,
   getTrainStatus,
+  msToMins,
 } from '@/app/utils'
 import Image from 'next/image'
+import cn from 'classnames'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
 import StatusBadge from '@/app/components/StatusBadge'
 import CaretRight from '@/app/img/caret-right-gray.svg'
 import Pie from '@/app/img/pie.svg'
+import Warning from '@/app/img/warning.svg'
 import Pointer from '@/app/img/pointer.svg'
 import { headingToRotationMap } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
 import CurrentSegment from '@/app/components/CurrentSegment'
-import { TrainStatus } from '@/app/types'
+import { TimeStatus, TrainStatus } from '@/app/types'
 import Timeline from '@/app/components/Timeline'
 import Link from 'next/link'
 
 export default function TrainDetail() {
   const { id } = useParams()
   const trainSearchParams = getTrainParams(useSearchParams())
-
   const { trains } = useTrains()
-
   const train = trains.find((t) => t.objectID === id)
+
   if (!train) return notFound()
 
   const trainStatus = getTrainStatus(train)
@@ -90,13 +93,19 @@ export default function TrainDetail() {
 
   const timezonesDiffer = train.originTZ !== train.destTZ
   const hasTrainSearchParams = !!Object.entries(trainSearchParams).length
+  // last update is more than 10 minutes old
+  const minsSinceLastUpdate = msToMins(Date.now() - train.updatedAt.valueOf())
+  const isStaleData =
+    ![TimeStatus.PREDEPARTURE, TimeStatus.COMPLETE].includes(
+      trainStatus.code!,
+    ) && minsSinceLastUpdate > 10
   return (
     <div className="p-3 flex gap-5 flex-col mb-4">
       <Link
         href={`/?${new URLSearchParams(trainSearchParams).toString()}`}
         className="text-amtrak-blue-600 font-semibold hover:text-amtrak-blue-500"
       >
-        {hasTrainSearchParams ? '‹ Back to Search' : '‹ All Trains'}
+        {hasTrainSearchParams ? '← Back to Search' : '← All Trains'}
       </Link>
       <h1 className="text-2xl font-bold">
         {train.routeName}{' '}
@@ -129,16 +138,36 @@ export default function TrainDetail() {
 
       <CurrentSegment trainStatus={trainStatus} />
 
-      <div className="flex justify-between text-positron-gray-600 text-sm">
-        <span>Last update {formatTime(train.updatedAt)}</span>
-        <span className="flex items-center gap-2">
-          Next check
-          <Image
-            src={Pie}
-            alt=""
-            className="rounded-full w-4 aspect-square border border-positron-gray-600 shrink-0"
-          />
-        </span>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between text-positron-gray-600 text-sm">
+          <span>
+            Last update{' '}
+            <span className={cn({ 'text-amtrak-yellow-700': isStaleData })}>
+              {formatTime(train.updatedAt)}
+            </span>
+            {isStaleData && (
+              <Image
+                src={Warning}
+                alt="warning"
+                className="inline w-4 mx-1 align-text-top"
+              />
+            )}
+          </span>
+          <span className="flex items-center gap-2">
+            Next check
+            <Image
+              src={Pie}
+              alt=""
+              className="rounded-full w-4 aspect-square border border-positron-gray-600 shrink-0"
+            />
+          </span>
+        </div>
+        {isStaleData && (
+          <span className="text-amtrak-yellow-700 text-sm leading-snug">
+            The info from this train is {formatDuration(minsSinceLastUpdate)}{' '}
+            old. Its current location is estimated and may not be accurate.
+          </span>
+        )}
       </div>
 
       <Timeline stations={train.stations} trainStatus={trainStatus} />

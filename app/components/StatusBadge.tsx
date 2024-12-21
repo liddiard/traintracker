@@ -1,5 +1,4 @@
 import cn from 'classnames'
-import interpolate from 'color-interpolate'
 
 import { TimeStatus, Train } from '@/app/types'
 import {

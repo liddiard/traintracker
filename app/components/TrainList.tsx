@@ -63,10 +63,8 @@ function TrainList({
         {Object.entries(filters)
           .filter(([_, value]) => value)
           .map(([key, value]) => (
-            <span key={key} className="flex flex-wrap gap-x-2 items-baseline">
-              <span className="uppercase text-sm">
-                {filterToDisplayName[key]}
-              </span>{' '}
+            <span key={key} className="flex flex-wrap gap-x-1 items-center">
+              <span className="text-sm">{filterToDisplayName[key]}:</span>
               <strong>{value}</strong>
             </span>
           ))}
