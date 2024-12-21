@@ -12,13 +12,13 @@ import { MIN_PROGRESS_PX } from '../constants'
 const MIN_SEGMENT_HEIGHT = 60
 const MAX_SEGMENT_HEIGHT = 150
 
-const Timeline = ({
+function Timeline({
   stations,
   trainStatus,
 }: {
   stations: StationTrain[]
   trainStatus: TrainStatus
-}) => {
+}) {
   const segmentDurations = useMemo(
     () => ({
       max: getSegmentDurationMinMax(stations, Math.max),

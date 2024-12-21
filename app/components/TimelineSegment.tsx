@@ -10,7 +10,7 @@ import {
   msToMins,
 } from '../utils'
 
-const TimelineSegment = ({
+function TimelineSegment({
   stations,
   index,
   height,
@@ -18,7 +18,7 @@ const TimelineSegment = ({
   stations: StationTrain[]
   index: number
   height: number
-}) => {
+}) {
   const station = stations[index]
   const prevStation = stations[index - 1]
   const { code, arr, schArr, name, platform, tz } = station

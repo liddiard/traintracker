@@ -2,7 +2,7 @@ import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { MIN_PROGRESS_PX } from '../constants'
 
-const Progress = ({
+function Progress({
   percent = 0,
   px,
   classNames = {},
@@ -18,7 +18,7 @@ const Progress = ({
   vertical?: boolean
   showEndpoints?: boolean
   progressValueRef?: React.RefObject<HTMLDivElement | null>
-}) => {
+}) {
   const [isClient, setIsClient] = useState(false)
   const internalClassNames = {
     horizontal: 'h-4 w-full before-after:top-0',

@@ -8,7 +8,7 @@ interface CurrentSegmentProps {
   trainStatus: TrainStatus
 }
 
-const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
+function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
   const progressValueRef = useRef<HTMLDivElement>(null)
 
   const { minsToDeparture, minsToArrival, percent } =
@@ -16,8 +16,8 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
   const { prevStation, curStation, nextStation } = trainStatus
   const isDeparting = !!minsToDeparture
 
-  // when the stations change, cancel the previous animation so it doesn't
-  // animate slowly back from 100% to 0%
+  // when the stations change, cancel the previous animation so the progress
+  // bar doesn't animate slowly back from 100% to 0%
   useEffect(() => {
     if (progressValueRef.current) {
       progressValueRef.current.getAnimations()[0].cancel()
@@ -27,7 +27,6 @@ const CurrentSegment = ({ trainStatus }: CurrentSegmentProps) => {
   let segmentStartStation
   let segmentEndStation
   let label
-
   if (minsToDeparture) {
     // train is at a station waiting to depart
     segmentStartStation = curStation

@@ -1,5 +1,5 @@
 function TrainDetail() {
-  return null;
+  return null
 }
 
-export default TrainDetail;
+export default TrainDetail
