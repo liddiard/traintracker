@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  formatDate,
   formatTime,
   getOffset,
   getTrainParams,
@@ -33,25 +34,32 @@ export default function TrainDetail() {
   const renderRouteEndpoint = ({
     stationName,
     stationCode,
+    date,
     tz,
     displayTz,
   }: {
     stationName: string
     stationCode: string
+    date: Date
     tz: string
     displayTz: boolean
   }) => (
-    <div className="flex flex-col gap-1">
+    <>
       <div className="text-3xl">{stationCode}</div>
       <div className="font-semibold text-positron-gray-600 leading-tight">
         {stationName}
       </div>
-      {displayTz && (
+      <div>
+        {formatDate(date, tz)}, {formatTime(date, tz)}
+      </div>
+      {displayTz ? (
         <div className="text-sm text-positron-gray-600">
           {'UTC' + getOffset(tz) / 60}
         </div>
+      ) : (
+        <div />
       )}
-    </div>
+    </>
   )
 
   const renderTrainVelocity = (velocity: number, trainStatus: TrainStatus) => {
@@ -94,17 +102,22 @@ export default function TrainDetail() {
         {train.routeName}{' '}
         <span className="text-amtrak-blue-600">{train.trainNum}</span>
       </h1>
-      <div className="grid gap-2 text-center grid-cols-[1fr_max-content_1fr]">
+      <div className="grid gap-1 text-center grid-rows-[repeat(4,auto)] grid-cols-[1fr,auto,1fr] grid-flow-col">
         {renderRouteEndpoint({
           stationName: train.origName,
           stationCode: train.origCode,
+          date: trainStatus.firstStation.schArr,
           tz: train.originTZ,
           displayTz: timezonesDiffer,
         })}
-        <Image src={CaretRight} alt="to" className="my-3 w-3" />
+        <Image src={CaretRight} alt="to" className="w-3 self-center" />
+        <span />
+        <span />
+        <span />
         {renderRouteEndpoint({
           stationName: train.destName,
           stationCode: train.destCode,
+          date: trainStatus.lastStation.schArr,
           tz: train.destTZ,
           displayTz: timezonesDiffer,
         })}

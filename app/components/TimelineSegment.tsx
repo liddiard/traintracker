@@ -71,7 +71,9 @@ const TimelineSegment = ({
       </div>
       <div className="z-10 bg-white w-3 aspect-square rounded-full my-1 mx-[2px]" />
       <div>
-        <span className="font-semibold block leading-snug">{name}</span>
+        <span className="font-semibold block leading-snug text-balance">
+          {name}
+        </span>
         {platform && <span className="block">Platform {platform}</span>}
       </div>
     </Fragment>
