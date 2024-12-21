@@ -49,7 +49,7 @@ export default function TrainDetail() {
   }) => (
     <>
       <div className="text-3xl">{stationCode}</div>
-      <div className="font-semibold text-positron-gray-600 leading-tight">
+      <div className="font-semibold text-positron-gray-600 mb-2 leading-snug">
         {stationName}
       </div>
       <div>
@@ -57,7 +57,7 @@ export default function TrainDetail() {
       </div>
       {displayTz ? (
         <div className="text-sm text-positron-gray-600">
-          {'UTC' + getOffset(tz) / 60}
+          UTC<span className="font-semibold">{getOffset(tz) / 60}</span>
         </div>
       ) : (
         <div />
@@ -111,7 +111,7 @@ export default function TrainDetail() {
         {train.routeName}{' '}
         <span className="text-amtrak-blue-600">{train.trainNum}</span>
       </h1>
-      <div className="grid gap-1 text-center grid-rows-[repeat(4,auto)] grid-cols-[1fr,auto,1fr] grid-flow-col">
+      <div className="grid leading-relaxed py-4 text-center grid-rows-[repeat(4,auto)] grid-cols-[1fr,auto,1fr] grid-flow-col border-y border-positron-gray-200">
         {renderRouteEndpoint({
           stationName: train.origName,
           stationCode: train.origCode,

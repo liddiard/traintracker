@@ -74,7 +74,9 @@ function Timeline({
 
   return (
     <>
-      <h2 className="font-bold text-lg">Full Route</h2>
+      <h2 className="font-bold text-lg border-t border-positron-gray-200 pt-4">
+        Full Route
+      </h2>
       <div className="relative grid grid-cols-[max-content,min-content,1fr] gap-x-2">
         <div
           className="absolute top-[2px] h-[calc(100%+1rem)] col-start-2 w-4"
