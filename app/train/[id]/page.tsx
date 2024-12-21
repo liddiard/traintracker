@@ -131,7 +131,7 @@ export default function TrainDetail() {
           displayTz: timezonesDiffer,
         })}
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-baseline gap-3">
         <StatusBadge train={train} />
         {renderTrainVelocity(train.velocity, trainStatus)}
       </div>
@@ -165,7 +165,7 @@ export default function TrainDetail() {
         {isStaleData && (
           <span className="text-amtrak-yellow-700 text-sm leading-snug">
             Info from this train is {formatDuration(minsSinceLastUpdate)} old.
-            Its current location is estimated and may not be accurate.
+            Its current location is estimated.
           </span>
         )}
       </div>

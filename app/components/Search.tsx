@@ -125,6 +125,14 @@ function Search() {
   const toSegmentSelect = useRef<SelectInstance<Option> | null>(null)
   const trainNumberSelect = useRef<SelectInstance<Option> | null>(null)
 
+  /**
+   * Returns a JSX element representing a search options component.
+   *
+   * This component lets the user choose between searching by route (segment)
+   * or searching by train number (line).
+   *
+   * @returns {JSX.Element} JSX element for the search options component.
+   */
   const renderSearchOptions = () => {
     const labelClassNames =
       'inline-block py-1 px-3 text-black cursor-pointer rounded-full'
@@ -175,6 +183,7 @@ function Search() {
     )
   }
 
+  // TODO: Refactor Select components to be more DRY
   const renderSegmentOption = (isFrom: boolean) => (
     <Select
       instanceId={isFrom ? 'from' : 'to'}

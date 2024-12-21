@@ -40,6 +40,18 @@ function StatusBadge({
       text = 'Unknown'
       break
   }
+
+  const getTimeInfo = () => {
+    if (code === TimeStatus.PREDEPARTURE && firstStation.dep) {
+      return formatTime(firstStation.dep, firstStation.tz)
+    } else if (code === TimeStatus.DELAYED) {
+      return formatDuration(deviation ?? 0, { shortenMins: true })
+    } else if (code === TimeStatus.COMPLETE && lastStation.arr) {
+      return formatTime(lastStation.arr, lastStation.tz)
+    }
+  }
+
+  const timeInfo = getTimeInfo()
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <span
@@ -53,15 +65,7 @@ function StatusBadge({
       >
         {text}
       </span>
-      {code === TimeStatus.PREDEPARTURE && firstStation.dep ? (
-        <span>{formatTime(firstStation.dep, firstStation.tz)}</span>
-      ) : null}
-      {code === TimeStatus.DELAYED ? (
-        <span>{formatDuration(deviation ?? 0, { shortenMins: true })}</span>
-      ) : null}
-      {code === TimeStatus.COMPLETE && lastStation.arr ? (
-        <span>{formatTime(lastStation.arr, lastStation.tz)}</span>
-      ) : null}
+      {timeInfo && <span>{timeInfo}</span>}
     </div>
   )
 }
