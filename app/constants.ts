@@ -55,3 +55,6 @@ export const headingToRotationMap: Record<string, number> = {
   W: 270,
   NW: 315,
 }
+
+// minimum completion of the progress bar to avoid display issues with border-radius
+export const MIN_PROGRESS_PX = 16

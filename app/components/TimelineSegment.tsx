@@ -1,78 +1,24 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 import cn from 'classnames'
-import { StationTrain, TrainStatus } from '../types'
-import {
-  getSegmentDurationStat,
-  msToMins,
-  getCurrentSegmentProgress,
-  formatTime,
-} from '../utils'
-import Progress from './Progress'
-
-const MIN_SEGMENT_HEIGHT = 40
-const MAX_SEGMENT_HEIGHT = 120
+import { StationTrain } from '../types'
+import { formatTime } from '../utils'
 
 const TimelineSegment = ({
   stations,
   index,
-  trainStatus,
+  height,
 }: {
   stations: StationTrain[]
   index: number
-  trainStatus: TrainStatus
+  height: number
 }) => {
-  const segmentDurations = useMemo(
-    () => ({
-      max: getSegmentDurationStat(stations, Math.max),
-      min: getSegmentDurationStat(stations, Math.min, Infinity),
-    }),
-    [stations],
-  )
-
-  const prevStationIndex = stations.findIndex(
-    ({ code }) => code === trainStatus.prevStation?.code,
-  )
-
-  const getSegmentHeight = (
-    station: StationTrain,
-    nextStation: StationTrain,
-  ) => {
-    const curStationArr = station.schArr
-    const nextStationArr = nextStation.schArr
-    const segmentDuration =
-      curStationArr && nextStationArr
-        ? msToMins(nextStationArr.valueOf() - curStationArr.valueOf())
-        : MIN_SEGMENT_HEIGHT + MAX_SEGMENT_HEIGHT / 2
-    const distanceFromMin = segmentDuration - segmentDurations.min
-    const totalDistance = segmentDurations.max - segmentDurations.min
-    const percentFromMin = distanceFromMin / totalDistance
-    return Math.round(
-      (MAX_SEGMENT_HEIGHT - MIN_SEGMENT_HEIGHT) * percentFromMin +
-        MIN_SEGMENT_HEIGHT,
-    )
-  }
-
   const station = stations[index]
   const { code, arr, schArr, name, platform, tz } = station
-  const nextStation = stations[index + 1]
-  // const nextStationArrival =
-  //   nextStation?.arr?.valueOf() ?? nextStation?.schArr.valueOf()
-  // const arrival = arr?.valueOf() ?? schArr.valueOf()
   const deviation = arr ? arr.valueOf() - schArr.valueOf() : 0
-  let segmentProgress
-  if (index < prevStationIndex) {
-    // segment is in the past
-    segmentProgress = 1
-  } else if (index > prevStationIndex) {
-    // segment is in the future
-    segmentProgress = 0
-  } else {
-    // segment is the current one
-    segmentProgress = getCurrentSegmentProgress(trainStatus).percent
-  }
+
   return (
     <Fragment key={code}>
-      <div>
+      <div style={{ height }}>
         <span
           className={cn('block', {
             'line-through': deviation,
@@ -94,24 +40,7 @@ const TimelineSegment = ({
           </span>
         ) : null}
       </div>
-      {nextStation ? (
-        <div
-          style={{
-            minHeight: `${getSegmentHeight(station, nextStation)}px`,
-          }}
-        >
-          <Progress
-            percent={segmentProgress}
-            vertical
-            classNames={{
-              outer: 'rounded-none h-[calc(100%+17px)]',
-              inner: 'rounded-none',
-            }}
-          />
-        </div>
-      ) : (
-        <span></span>
-      )}
+      <div className="z-10 bg-white w-3 aspect-square rounded-full my-1 mx-[2px]" />
       <div>
         <span className="font-semibold block leading-snug">{name}</span>
         {platform && <span className="block">Platform {platform}</span>}

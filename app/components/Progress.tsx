@@ -1,24 +1,31 @@
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
+import { MIN_PROGRESS_PX } from '../constants'
 
 const Progress = ({
   percent = 0,
+  px,
   classNames = {},
   id = '',
   vertical = false,
+  showEndpoints = true,
   progressValueRef,
 }: {
-  percent: number
+  percent?: number
+  px?: number
   classNames?: { outer?: string; inner?: string }
   id?: string
   vertical?: boolean
+  showEndpoints?: boolean
   progressValueRef?: React.RefObject<HTMLDivElement>
 }) => {
   const [isClient, setIsClient] = useState(false)
-  const horizontalClassNames =
-    'h-4 w-full before-after:top-0 before:left-1 after:right-1'
-  const verticalClassNames =
-    'w-4 h-full before-after:left-0 before:top-1 after:bottom-1 flex-col'
+  const internalClassNames = {
+    horizontal: 'h-4 w-full before-after:top-0',
+    vertical: 'w-4 h-full before-after:left-0 flex-col',
+    endpoints:
+      'before-after:content-[""] before-after:block before-after:z-10 before-after:bg-white before-after:w-3 before-after:aspect-square before-after:shrink-0 before-after:rounded-full',
+  }
 
   useEffect(() => {
     setIsClient(true)
@@ -33,18 +40,19 @@ const Progress = ({
   const progressPercent = Math.min(percent, 1) * 100
   const innerStyle = vertical
     ? {
-        height: `${progressPercent}%`,
+        height: px ?? `${progressPercent}%`,
       }
     : {
-        width: `${progressPercent}%`,
-        minWidth: '1.05rem',
+        width: px ?? `${progressPercent}%`,
+        minWidth: MIN_PROGRESS_PX,
       }
   return (
     <div
       id={id}
       className={cn(
-        'relative flex items-center justify-between p-[0.15rem] rounded-full appearance-none bg-positron-gray-200 before-after:content-[""] before-after:block before-after:z-10 before-after:bg-white before-after:w-3 before-after:aspect-square before-after:shrink-0 before-after:rounded-full',
-        vertical ? verticalClassNames : horizontalClassNames,
+        'relative flex items-center justify-between p-[2px] rounded-full appearance-none bg-positron-gray-200',
+        showEndpoints ? internalClassNames.endpoints : '',
+        vertical ? internalClassNames.vertical : internalClassNames.horizontal,
         classNames.outer,
       )}
     >

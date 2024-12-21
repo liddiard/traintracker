@@ -63,7 +63,9 @@ function StatusBadge({
       {code === TimeStatus.PREDEPARTURE && firstStation.dep ? (
         <span>{formatTime(firstStation.dep, firstStation.tz)}</span>
       ) : null}
-      {code === TimeStatus.DELAYED ? <span>{deviation} min</span> : null}
+      {code === TimeStatus.DELAYED ? (
+        <span>{Math.round(deviation ?? 0)} min</span>
+      ) : null}
       {code === TimeStatus.COMPLETE && lastStation.arr ? (
         <span>{formatTime(lastStation.arr, lastStation.tz)}</span>
       ) : null}
