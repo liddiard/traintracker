@@ -36,7 +36,7 @@ function Stats({ trains }: { trains: Train[] }) {
     },
   ]
   return (
-    <div className="flex gap-2 px-3 py-2 text-center w-full justify-between">
+    <div className="flex gap-2 p-3 text-center w-full justify-evenly bg-positron-gray-100">
       {stats.map(({ title, value, unit }) => (
         <div key={title} className="flex flex-col">
           <div>

@@ -148,7 +148,7 @@ export default function TrainDetail() {
             {isStaleData && (
               <Image
                 src={Warning}
-                alt="warning"
+                alt="caution"
                 className="inline w-4 mx-1 align-text-top"
               />
             )}
@@ -164,8 +164,8 @@ export default function TrainDetail() {
         </div>
         {isStaleData && (
           <span className="text-amtrak-yellow-700 text-sm leading-snug">
-            The info from this train is {formatDuration(minsSinceLastUpdate)}{' '}
-            old. Its current location is estimated and may not be accurate.
+            Info from this train is {formatDuration(minsSinceLastUpdate)} old.
+            Its current location is estimated and may not be accurate.
           </span>
         )}
       </div>
