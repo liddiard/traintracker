@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import cn from 'classnames'
 import { StationTrain } from '../types'
-import { formatTime } from '../utils'
+import { dayDiffers, formatDate, formatTime, getArrival } from '../utils'
 
 const TimelineSegment = ({
   stations,
@@ -13,11 +13,34 @@ const TimelineSegment = ({
   height: number
 }) => {
   const station = stations[index]
+  const prevStation = stations[index - 1]
   const { code, arr, schArr, name, platform, tz } = station
   const deviation = arr ? arr.valueOf() - schArr.valueOf() : 0
+  const arrivalTime = getArrival(station)
+
+  const renderDayLine = () => {
+    if (
+      !prevStation ||
+      !dayDiffers(arrivalTime, getArrival(prevStation), tz, prevStation.tz)
+    ) {
+      return null
+    }
+    return (
+      <div
+        className="absolute flex items-center w-full text-right -translate-y-[calc(100%+0.25rem)] -z-10"
+        style={{ gridRowStart: index + 1 }}
+      >
+        <span className="absolute right-0 bg-white pl-2 text-positron-gray-600 font-semibold">
+          {formatDate(arrivalTime, tz)}
+        </span>
+        <hr className="w-full border border-positron-gray-600" />
+      </div>
+    )
+  }
 
   return (
     <Fragment key={code}>
+      {renderDayLine()}
       <div style={{ height }}>
         <span
           className={cn('block', {

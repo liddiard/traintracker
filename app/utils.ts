@@ -11,6 +11,9 @@ import {
 
 export const msToMins = (ms: number) => ms / 1000 / 60
 
+export const getDeparture = ({ dep, schDep }: StationTrain) => dep || schDep
+export const getArrival = ({ arr, schArr }: StationTrain) => arr || schArr
+
 export const createRouteNumMap = (trains: Train[]) =>
   trains.reduce(
     (acc, { routeName, trainNum }) => ({
@@ -132,22 +135,45 @@ export const getOffset = (timeZone = 'UTC', date = new Date()) => {
 export const formatTime = (
   date: Date,
   tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+  // includeDayPeriod = true,
 ) => {
   const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric',
     minute: 'numeric',
     timeZone: tz,
   }
-  // include the date if it's not today
-  if (new Date().getDate() !== date.getDate()) {
-    options.month = 'short'
-    options.day = 'numeric'
+  const parts = Intl.DateTimeFormat(
+    Intl.DateTimeFormat().resolvedOptions().locale,
+    options,
+  ).formatToParts(date)
+
+  return parts
+    .reduce((acc, { type, value }) => {
+      if (type === 'dayPeriod') {
+        return acc + value.toLowerCase().slice(0, 1)
+      }
+      return acc + value
+    }, '')
+    .replace(/\s+/g, ' ')
+}
+
+export const formatDate = (
+  date: Date,
+  tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+) => {
+  const options: Intl.DateTimeFormatOptions = {
+    month: 'short',
+    day: 'numeric',
+    timeZone: tz,
   }
   return Intl.DateTimeFormat(
     Intl.DateTimeFormat().resolvedOptions().locale,
     options,
   ).format(date)
 }
+
+export const dayDiffers = (a: Date, b: Date, tzA: string, tzB: string) =>
+  formatDate(a, tzA) !== formatDate(b, tzB)
 
 export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
   const { prevStation, curStation, nextStation } = trainStatus
@@ -176,7 +202,7 @@ export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
   return progress
 }
 
-export const getSegmentDurationStat = (
+export const getSegmentDurationMinMax = (
   stations: StationTrain[],
   compareFunc: (a: number, b: number) => number,
   initialValue = 0,

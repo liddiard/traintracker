@@ -54,7 +54,7 @@ export default function TrainDetail() {
     if (velocity) {
       return (
         <>
-          <span>{Math.round(velocity)} MPH</span>
+          <span>{Math.round(velocity)} mph</span>
           <span className="flex gap-1 items-baseline">
             <Image
               src={Pointer}

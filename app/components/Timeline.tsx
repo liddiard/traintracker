@@ -2,7 +2,7 @@ import { Fragment, useCallback, useMemo } from 'react'
 import { StationTrain, TrainStatus } from '../types'
 import {
   getCurrentSegmentProgress,
-  getSegmentDurationStat,
+  getSegmentDurationMinMax,
   msToMins,
 } from '../utils'
 import Progress from './Progress'
@@ -21,8 +21,8 @@ const Timeline = ({
 }) => {
   const segmentDurations = useMemo(
     () => ({
-      max: getSegmentDurationStat(stations, Math.max),
-      min: getSegmentDurationStat(stations, Math.min, Infinity),
+      max: getSegmentDurationMinMax(stations, Math.max),
+      min: getSegmentDurationMinMax(stations, Math.min, Infinity),
     }),
     [stations],
   )
