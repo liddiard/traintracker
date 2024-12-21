@@ -34,7 +34,7 @@ const TimelineSegment = ({
     }
     return (
       <div
-        className="absolute flex items-center w-full text-right -translate-y-[calc(100%+0.25rem)] -z-10"
+        className="absolute flex items-center w-full text-right -translate-y-[calc(100%+0.5rem)] -z-10"
         style={{ gridRowStart: index + 1 }}
       >
         <span className="absolute right-0 bg-white pl-2 text-positron-gray-600 font-semibold">
