@@ -323,8 +323,6 @@ export const formatDuration = (
     minsString = 'min'
   } else if (minutes === 1) {
     minsString = 'minute'
-  } else if (minutes === 0) {
-    return 'now'
   } else {
     minsString = 'minutes'
   }
@@ -382,7 +380,9 @@ export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
 
   if (curStation && nextStation && departureTime) {
     // train is at a station
-    progress.minsToDeparture = msToMins(departureTime - Date.now())
+    progress.minsToDeparture = msToMins(
+      curStation.schDep.valueOf() - Date.now(),
+    )
     progress.percent = 0 // no progress has been made on "current" (upcoming) segment
   } else if (departureTime && !curStation && nextStation) {
     // train is enroute between stations
