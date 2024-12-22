@@ -1,67 +1,21 @@
 'use client'
 
-import { use, useMemo, useRef, useState } from 'react'
-import Select, {
-  components,
-  InputProps,
-  SelectInstance,
-  Theme,
-} from 'react-select'
+import { useMemo, useRef, useState } from 'react'
+import { SelectInstance } from 'react-select'
 import Image from 'next/image'
 import cn from 'classnames'
-import { Option } from '../types'
+import { InputType, Option } from '../types'
 import MagnifyingGlass from '../img/magnifying-glass.svg'
 import CaretRight from '../img/caret-right-white.svg'
 import { createRouteNumMap, createStationList } from '../utils'
 import { useTrains } from '../providers/train'
 import { useRouter, useSearchParams } from 'next/navigation'
+import SearchSelect from './SearchSelect'
 
 enum SearchType {
   Segment,
   Line,
 }
-
-const selectClassNames = {
-  // fix fields displaying too wide on Firefox when all filled with values
-  // https://github.com/JedWatson/react-select/issues/5170
-  container: () => 'grid grid-cols-[minmax(0,1fr)]',
-  indicatorsContainer: () => '!hidden',
-  menu: () => '!min-w-40',
-  control: () =>
-    '!bg-white !bg-opacity-10 !border !border-white !border-opacity-60',
-  singleValue: () => '!text-white',
-  input: () => '!text-white cursor-text',
-  placeholder: () => '!text-white !text-opacity-60',
-}
-
-const selectTheme = (theme: Theme) =>
-  ({
-    ...theme,
-    colors: {
-      ...theme.colors,
-      primary: 'rgba(22, 126, 166, 1)',
-      primary25: 'rgba(22, 126, 166, 0.25)',
-      primary50: 'rgba(22, 126, 166, 0.5)',
-      primary75: 'rgba(22, 126, 166, 0.75)',
-    },
-  }) as Theme
-
-const Input = (props: InputProps<Option>) => (
-  <components.Input
-    {...props}
-    // fix React hydration issue: https://github.com/JedWatson/react-select/issues/5459#issuecomment-1875022105
-    aria-activedescendant={undefined}
-  />
-)
-
-const NumberInput = (props: InputProps<Option>) => (
-  <components.Input
-    {...props}
-    inputMode="numeric"
-    pattern="[0-9]*"
-    aria-activedescendant={undefined}
-  />
-)
 
 const getOption = (options: Option[], value: string | null) =>
   options.find((option) => option.value === value) || null
@@ -183,9 +137,8 @@ function Search() {
     )
   }
 
-  // TODO: Refactor Select components to be more DRY
   const renderSegmentOption = (isFrom: boolean) => (
-    <Select
+    <SearchSelect
       instanceId={isFrom ? 'from' : 'to'}
       ref={isFrom ? null : toSegmentSelect}
       name={isFrom ? 'from' : 'to'}
@@ -200,17 +153,13 @@ function Search() {
           toSegmentSelect.current?.focus()
         }
       }}
-      classNames={selectClassNames}
-      theme={selectTheme}
       formatOptionLabel={(option: Option) => (
         <>
           <strong className="mr-2">{option.value}</strong>
           {option.label}
         </>
       )}
-      components={{ Input }}
       required={true}
-      isClearable={true}
     />
   )
 
@@ -224,15 +173,13 @@ function Search() {
 
   const renderLineSearch = () => (
     <div className="flex flex-grow gap-2">
-      <Select
+      <SearchSelect
         instanceId="trainName"
         name="trainName"
         options={routeOptions}
         value={trainName}
         className="flex-grow text-black"
         placeholder="Train name"
-        classNames={selectClassNames}
-        theme={selectTheme}
         onChange={(option) => {
           setTrainName(option as Option)
           setTrainNumber(null)
@@ -240,12 +187,10 @@ function Search() {
             trainNumberSelect.current?.focus()
           }
         }}
-        components={{ Input }}
         required={true}
-        isClearable={true}
       />
       {trainName && (
-        <Select
+        <SearchSelect
           instanceId="trainNumber"
           ref={trainNumberSelect}
           name="trainNumber"
@@ -254,17 +199,14 @@ function Search() {
           className="text-black grow-0 w-20"
           placeholder="#"
           classNames={{
-            ...selectClassNames,
             menu: () => '',
           }}
-          theme={selectTheme}
           autoFocus={true}
           onChange={(option) => {
             setTrainNumber(option as Option)
           }}
           onFocus={() => setTrainNumber(null)}
-          components={{ Input: NumberInput }}
-          isClearable={true}
+          inputType={InputType.NUMBER}
         />
       )}
     </div>

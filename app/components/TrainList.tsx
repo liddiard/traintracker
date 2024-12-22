@@ -64,7 +64,7 @@ function TrainList({
           .filter(([_, value]) => value)
           .map(([key, value]) => (
             <span key={key} className="flex flex-wrap gap-x-1 items-center">
-              <span className="text-sm">{filterToDisplayName[key]}:</span>
+              <span>{filterToDisplayName[key]}:</span>
               <strong>{value}</strong>
             </span>
           ))}

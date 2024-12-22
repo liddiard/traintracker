@@ -94,3 +94,8 @@ export interface Option {
 
 type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'
 export type TrainSearchParams = Partial<Record<TrainSearchKeys, string>>
+
+export enum InputType {
+  TEXT,
+  NUMBER,
+}
