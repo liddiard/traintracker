@@ -9,7 +9,7 @@ import Progress from './Progress'
 import TimelineSegment from './TimelineSegment'
 import { MIN_PROGRESS_PX } from '../constants'
 
-const MIN_SEGMENT_HEIGHT = 60
+const MIN_SEGMENT_HEIGHT = 50
 const MAX_SEGMENT_HEIGHT = 150
 
 function Timeline({
@@ -19,6 +19,8 @@ function Timeline({
   stations: StationTrain[]
   trainStatus: TrainStatus
 }) {
+  const { prevStation, curStation } = trainStatus
+
   const segmentDurations = useMemo(
     () => ({
       max: getSegmentDurationMinMax(stations, Math.max),
@@ -58,13 +60,11 @@ function Timeline({
   )
 
   const prevStationIndex = stations.findIndex(
-    ({ code }) => code === trainStatus.prevStation?.code,
+    ({ code }) => code === (curStation?.code || prevStation?.code),
   )
-
   const completedSegmentsHeight = segmentHeights
     .slice(0, prevStationIndex)
     .reduce((acc, cur) => cur + acc, 0)
-
   const totalHeight =
     prevStationIndex === -1 // train isn't underway yet
       ? 0

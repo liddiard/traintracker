@@ -48,7 +48,7 @@ function TimelineSegment({
   return (
     <Fragment key={code}>
       {renderDayLine()}
-      <div style={{ height }}>
+      <div className="leading-snug" style={{ height }}>
         <span
           className={cn('block', {
             'line-through': deviation,
@@ -70,10 +70,8 @@ function TimelineSegment({
         ) : null}
       </div>
       <div className="z-10 bg-white w-3 aspect-square rounded-full my-1 mx-[2px]" />
-      <div>
-        <span className="font-semibold block leading-snug text-balance">
-          {name}
-        </span>
+      <div className="leading-snug">
+        <span className="font-semibold block text-balance">{name}</span>
         {platform && <span className="block">Platform {platform}</span>}
       </div>
     </Fragment>

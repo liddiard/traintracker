@@ -64,13 +64,13 @@ function TrainList({
           .filter(([_, value]) => value)
           .map(([key, value]) => (
             <span key={key} className="flex flex-wrap gap-x-1 items-center">
-              <span>{filterToDisplayName[key]}:</span>
+              <span className="text-sm">{filterToDisplayName[key]}:</span>
               <strong>{value}</strong>
             </span>
           ))}
       </div>
       <button
-        className="text-amtrak-blue-500 font-semibold"
+        className="font-semibold text-amtrak-blue-500 hover:text-amtrak-blue-400"
         onClick={clearFilters}
       >
         Clear

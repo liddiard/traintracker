@@ -49,7 +49,7 @@ export default function TrainDetail() {
   }) => (
     <>
       <div className="text-3xl">{stationCode}</div>
-      <div className="font-semibold text-positron-gray-600 mb-2 leading-snug">
+      <div className="font-semibold text-positron-gray-600 mb-2 leading-tight">
         {stationName}
       </div>
       <div>
@@ -67,7 +67,7 @@ export default function TrainDetail() {
 
   const renderTrainVelocity = (velocity: number, trainStatus: TrainStatus) => {
     if (trainStatus.curStation) {
-      return <span className="text-positron-gray-600">At Station</span>
+      return <span>At Station</span>
     }
     if (velocity) {
       return (
@@ -78,7 +78,7 @@ export default function TrainDetail() {
               src={Pointer}
               alt={train.heading}
               title={train.heading}
-              className="w-4 transition-all duration-1000"
+              className="w-4 self-center transition-all duration-1000"
               style={{
                 transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
               }}
@@ -107,7 +107,7 @@ export default function TrainDetail() {
       >
         {hasTrainSearchParams ? '← Back to Search' : '← All Trains'}
       </Link>
-      <h1 className="text-2xl font-bold">
+      <h1 className="text-3xl font-bold">
         {train.routeName}{' '}
         <span className="text-amtrak-blue-600">{train.trainNum}</span>
       </h1>

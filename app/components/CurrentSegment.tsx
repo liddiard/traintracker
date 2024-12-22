@@ -14,7 +14,7 @@ function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
   const { minsToDeparture, minsToArrival, percent } =
     getCurrentSegmentProgress(trainStatus)
   const { prevStation, curStation, nextStation } = trainStatus
-  const isDeparting = !!minsToDeparture
+  const atStation = !!minsToDeparture
 
   // when the stations change, cancel the previous animation so the progress
   // bar doesn't animate slowly back from 100% to 0%
@@ -27,7 +27,7 @@ function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
   let segmentStartStation
   let segmentEndStation
   let label
-  if (minsToDeparture) {
+  if (atStation) {
     // train is at a station waiting to depart
     segmentStartStation = curStation
     segmentEndStation = nextStation
@@ -36,14 +36,19 @@ function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
     // train is enroute between stations
     segmentStartStation = prevStation
     segmentEndStation = nextStation
-    label = minsToArrival ? `Arriving in ${formatDuration(minsToArrival)}` : ''
+    label =
+      Math.floor(minsToArrival) > 0
+        ? `Arriving in ${formatDuration(minsToArrival)}`
+        : 'Arriving now'
   } else {
     return null
   }
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="font-bold text-lg">Current Segment</h2>
+      <h2 className="font-bold text-lg">
+        {atStation ? 'Next' : 'Current'} Segment
+      </h2>
 
       <div className="grid grid-cols-[1fr,auto,1fr] items-center gap-2 leading-tight font-semibold text-balance">
         <span>{segmentStartStation?.name}</span>
@@ -58,7 +63,7 @@ function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
       />
       <label
         htmlFor="segmentProgress"
-        className={cn('block', { 'text-right': !isDeparting })}
+        className={cn('block', { 'text-right': !atStation })}
       >
         {label}
       </label>
