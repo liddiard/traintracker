@@ -50,7 +50,7 @@ function Progress({
     <div
       id={id}
       className={cn(
-        'relative flex items-center justify-between p-[2px] rounded-full appearance-none bg-positron-gray-200',
+        'relative flex appearance-none items-center justify-between rounded-full bg-positron-gray-200 p-[2px]',
         showEndpoints ? internalClassNames.endpoints : '',
         vertical ? internalClassNames.vertical : internalClassNames.horizontal,
         classNames.outer,
@@ -59,7 +59,7 @@ function Progress({
       <div
         style={innerStyle}
         className={cn(
-          'absolute left-0 top-0 h-full w-full rounded-full transition-all duration-[15s] ease-linear bg-amtrak-blue-500',
+          'absolute left-0 top-0 h-full w-full rounded-full bg-amtrak-blue-500 transition-all duration-[15s] ease-linear',
           classNames.inner,
         )}
         ref={progressValueRef}

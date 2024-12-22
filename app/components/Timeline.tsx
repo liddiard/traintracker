@@ -74,12 +74,12 @@ function Timeline({
 
   return (
     <>
-      <h2 className="font-bold text-lg border-t border-positron-gray-200 pt-4">
+      <h2 className="border-t border-positron-gray-200 pt-4 text-lg font-bold">
         Full Route
       </h2>
       <div className="relative grid grid-cols-[max-content,min-content,1fr] gap-x-2">
         <div
-          className="absolute top-[2px] h-[calc(100%+1rem)] col-start-2 w-4"
+          className="absolute top-[2px] col-start-2 h-[calc(100%+1rem)] w-4"
           style={{
             gridRowEnd: stations.length,
           }}

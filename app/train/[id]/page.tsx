@@ -49,7 +49,7 @@ export default function TrainDetail() {
   }) => (
     <>
       <div className="text-3xl">{stationCode}</div>
-      <div className="font-semibold text-positron-gray-600 mb-2 leading-tight">
+      <div className="mb-2 font-semibold leading-tight text-positron-gray-600">
         {stationName}
       </div>
       <div>
@@ -73,7 +73,7 @@ export default function TrainDetail() {
       return (
         <>
           <span>{Math.round(velocity)} mph</span>
-          <span className="flex gap-1 items-baseline">
+          <span className="flex items-baseline gap-1">
             <Image
               src={Pointer}
               alt={train.heading}
@@ -100,10 +100,10 @@ export default function TrainDetail() {
       trainStatus.code!,
     ) && minsSinceLastUpdate > 10
   return (
-    <div className="p-3 flex gap-5 flex-col mb-4">
+    <div className="mb-4 flex flex-col gap-5 p-3">
       <Link
         href={`/?${new URLSearchParams(trainSearchParams).toString()}`}
-        className="text-amtrak-blue-600 font-semibold hover:text-amtrak-blue-500"
+        className="font-semibold text-amtrak-blue-600 hover:text-amtrak-blue-500"
       >
         {hasTrainSearchParams ? '← Back to Search' : '← All Trains'}
       </Link>
@@ -111,7 +111,7 @@ export default function TrainDetail() {
         {train.routeName}{' '}
         <span className="text-amtrak-blue-600">{train.trainNum}</span>
       </h1>
-      <div className="grid leading-relaxed py-4 text-center grid-rows-[repeat(4,auto)] grid-cols-[1fr,auto,1fr] grid-flow-col border-y border-positron-gray-200">
+      <div className="grid grid-flow-col grid-cols-[1fr,auto,1fr] grid-rows-[repeat(4,auto)] border-y border-positron-gray-200 py-4 text-center leading-relaxed">
         {renderRouteEndpoint({
           stationName: train.origName,
           stationCode: train.origCode,
@@ -139,7 +139,7 @@ export default function TrainDetail() {
       <CurrentSegment trainStatus={trainStatus} />
 
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between text-positron-gray-600 text-sm">
+        <div className="flex justify-between text-sm text-positron-gray-600">
           <span>
             Last update{' '}
             <span className={cn({ 'text-amtrak-yellow-700': isStaleData })}>
@@ -149,7 +149,7 @@ export default function TrainDetail() {
               <Image
                 src={Warning}
                 alt="caution"
-                className="inline w-4 mx-1 align-text-top"
+                className="mx-1 inline w-4 align-text-top"
               />
             )}
           </span>
@@ -158,12 +158,12 @@ export default function TrainDetail() {
             <Image
               src={Pie}
               alt=""
-              className="rounded-full w-4 aspect-square border border-positron-gray-600 shrink-0"
+              className="aspect-square w-4 shrink-0 rounded-full border border-positron-gray-600"
             />
           </span>
         </div>
         {isStaleData && (
-          <span className="text-amtrak-yellow-700 text-sm leading-snug">
+          <span className="text-sm leading-snug text-amtrak-yellow-700">
             Info from this train is {formatDuration(minsSinceLastUpdate)} old.
             Its current location is estimated.
           </span>

@@ -1,5 +1,5 @@
 function MapLegend() {
-  return null;
+  return null
 }
 
-export default MapLegend;
+export default MapLegend

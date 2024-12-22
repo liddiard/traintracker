@@ -34,10 +34,10 @@ function TimelineSegment({
     }
     return (
       <div
-        className="absolute flex items-center w-full text-right -translate-y-[calc(100%+0.5rem)] -z-10"
+        className="absolute -z-10 flex w-full -translate-y-[calc(100%+0.5rem)] items-center text-right"
         style={{ gridRowStart: index + 1 }}
       >
-        <span className="absolute right-0 bg-white pl-2 text-positron-gray-600 font-semibold">
+        <span className="absolute right-0 bg-white pl-2 font-semibold text-positron-gray-600">
           {formatDate(arrivalTime, tz)}
         </span>
         <hr className="w-full border border-positron-gray-600" />
@@ -69,9 +69,9 @@ function TimelineSegment({
           </span>
         ) : null}
       </div>
-      <div className="z-10 bg-white w-3 aspect-square rounded-full my-1 mx-[2px]" />
+      <div className="z-10 mx-[2px] my-1 aspect-square w-3 rounded-full bg-white" />
       <div className="leading-snug">
-        <span className="font-semibold block text-balance">{name}</span>
+        <span className="block text-balance font-semibold">{name}</span>
         {platform && <span className="block">Platform {platform}</span>}
       </div>
     </Fragment>

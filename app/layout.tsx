@@ -43,12 +43,12 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TrainProvider initialTrains={trains}>
-          <div className="h-screen flex flex-wrap md:flex-nowrap">
-            <div className="h-full w-full md:w-1/4 relative overflow-y-auto shadow-lg z-10 md:min-w-[300px]">
+          <div className="flex h-screen flex-wrap md:flex-nowrap">
+            <div className="relative z-10 h-full w-full overflow-y-auto shadow-lg md:w-1/4 md:min-w-[300px]">
               <Search />
               {children}
             </div>
-            <div className="h-full w-full md:w-3/4 relative">
+            <div className="relative h-full w-full md:w-3/4">
               <Map />
             </div>
           </div>

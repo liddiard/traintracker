@@ -36,16 +36,16 @@ function Stats({ trains }: { trains: Train[] }) {
     },
   ]
   return (
-    <div className="flex gap-2 py-3 mx-3 text-center justify-evenly border-b border-positron-gray-200">
+    <div className="mx-3 flex justify-evenly gap-2 border-b border-positron-gray-200 py-3 text-center">
       {stats.map(({ title, value, unit }) => (
         <div key={title} className="flex flex-col">
           <div>
             <span className="text-3xl">{value}</span>
             {unit && (
-              <span className="text-positron-gray-600 text-lg">{unit}</span>
+              <span className="text-lg text-positron-gray-600">{unit}</span>
             )}
           </div>
-          <div className="font-semibold text-positron-gray-600 text-sm">
+          <div className="text-sm font-semibold text-positron-gray-600">
             {title}
           </div>
         </div>

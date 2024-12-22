@@ -95,7 +95,7 @@ function Search() {
     return (
       <div className="flex items-center gap-2">
         Find a train by
-        <div className="bg-positron-gray-200 rounded-full">
+        <div className="rounded-full bg-positron-gray-200">
           <input
             type="radio"
             name="type"
@@ -196,7 +196,7 @@ function Search() {
           name="trainNumber"
           options={lineNumberOptions}
           value={trainNumber}
-          className="text-black grow-0 w-20"
+          className="w-20 grow-0 text-black"
           placeholder="#"
           classNames={{
             menu: () => '',
@@ -227,7 +227,7 @@ function Search() {
   return (
     <form
       id="search"
-      className="bg-amtrak-midnight-blue px-3 py-4 text-white flex flex-col gap-3 shadow-md sticky top-0 z-20"
+      className="sticky top-0 z-20 flex flex-col gap-3 bg-amtrak-midnight-blue px-3 py-4 text-white shadow-md"
       action={handleSubmit}
     >
       {renderSearchOptions()}
@@ -237,13 +237,13 @@ function Search() {
           : renderLineSearch()}
         <button
           aria-label="Search"
-          className="bg-amtrak-blue-500 px-2 rounded hover:bg-amtrak-blue-600 active:bg-amtrak-blue-700 shrink-0"
+          className="shrink-0 rounded bg-amtrak-blue-500 px-2 hover:bg-amtrak-blue-600 active:bg-amtrak-blue-700"
         >
           <Image
             src={MagnifyingGlass}
             alt="Search"
             title="Search"
-            className="invert w-6"
+            className="w-6 invert"
           />
         </button>
       </div>

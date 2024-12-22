@@ -56,7 +56,7 @@ function StatusBadge({
     <div className={cn('flex items-center gap-2', className)}>
       <span
         className={cn(
-          'px-3 py-1 rounded-full text-white font-semibold cursor-default',
+          'cursor-default rounded-full px-3 py-1 font-semibold text-white',
           colorClass,
         )}
         style={{

@@ -1,5 +1,5 @@
 function NotificationDialog() {
-  return null;
+  return null
 }
 
-export default NotificationDialog;
+export default NotificationDialog

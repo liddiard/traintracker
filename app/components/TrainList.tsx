@@ -58,12 +58,12 @@ function TrainList({
   }
 
   const renderFilters = () => (
-    <div className="bg-yellow-100 text-yellow-900 m-3 p-3 rounded-lg flex gap-2 justify-between">
+    <div className="m-3 flex justify-between gap-2 rounded-lg bg-yellow-100 p-3 text-yellow-900">
       <div className="flex gap-2 leading-snug">
         {Object.entries(filters)
           .filter(([_, value]) => value)
           .map(([key, value]) => (
-            <span key={key} className="flex flex-wrap gap-x-1 items-center">
+            <span key={key} className="flex flex-wrap items-center gap-x-1">
               <span className="text-sm">{filterToDisplayName[key]}:</span>
               <strong>{value}</strong>
             </span>
@@ -81,14 +81,14 @@ function TrainList({
   const renderList = () => {
     if (filteredTrains.length === 0) {
       return (
-        <div className="my-5 mx-auto text-lg text-center text-positron-gray-600">
+        <div className="mx-auto my-5 text-center text-lg text-positron-gray-600">
           No trains found
         </div>
       )
     }
     const queryString = new URLSearchParams(filters).toString()
     return (
-      <ul className="flex flex-col my-2">
+      <ul className="my-2 flex flex-col">
         {filteredTrains
           .toSorted((a, b) => a.updatedAt.valueOf() - b.updatedAt.valueOf())
           .map((train) => (
@@ -98,14 +98,14 @@ function TrainList({
               className="p-3 hover:bg-amtrak-blue-500/25"
             >
               <li key={train.objectID} className="flex flex-col gap-2">
-                <h2 className="font-bold flex items-start gap-2 leading-tight justify-between">
+                <h2 className="flex items-start justify-between gap-2 font-bold leading-tight">
                   <span className="mr-2">
                     {train.routeName}{' '}
                     <span className="text-amtrak-blue-600">
                       {train.trainNum}
                     </span>
                   </span>
-                  <span className="text-nowrap text-positron-gray-600 flex gap-1 items-center font-semibold">
+                  <span className="flex items-center gap-1 text-nowrap font-semibold text-positron-gray-600">
                     {train.origCode}
                     <Image src={CaretRight} alt="to" className="inline" />
                     {train.destCode}
@@ -125,7 +125,7 @@ function TrainList({
   }
 
   if (loading) {
-    return <Image src={Spinner} alt="Loading" className="my-5 mx-auto w-10" />
+    return <Image src={Spinner} alt="Loading" className="mx-auto my-5 w-10" />
   }
 
   return (
