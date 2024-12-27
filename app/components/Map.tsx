@@ -19,17 +19,17 @@ function Map() {
   const [mapLoaded, setMapLoaded] = useState(false)
   const map = useRef<MapType | null>(null)
   const router = useRouter()
-  const params = useSearchParams()
+  const query = useSearchParams()
 
   // default to geographic center of the US
-  const lng = Number(params.get('lng')) || -98.5795
-  const lat = Number(params.get('lat')) || 39.8283
+  const lng = Number(query.get('lng')) || -98.5795
+  const lat = Number(query.get('lat')) || 39.8283
 
   useEffect(() => {
     map.current = new maplibregl.Map({
       style: 'https://tiles.openfreemap.org/styles/positron',
       center: [lng, lat],
-      zoom: Number(params.get('z')) || 3,
+      zoom: Number(query.get('z')) || 3,
       container: 'map',
     }).on('load', () => {
       setMapLoaded(true)

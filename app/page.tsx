@@ -8,8 +8,8 @@ import Stats from './components/Stats'
 
 export default function Home({}) {
   const { trains } = useTrains()
-  const params = useSearchParams()
-  const trainParams = getTrainParams(params)
+  const query = useSearchParams()
+  const trainParams = getTrainParams(query)
 
   return (
     <>

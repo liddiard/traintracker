@@ -22,7 +22,7 @@ const getOption = (options: Option[], value: string | null) =>
 
 function Search() {
   const router = useRouter()
-  const searchParams = useSearchParams()
+  const query = useSearchParams()
   const { trains } = useTrains()
 
   const stations = useMemo(() => createStationList(trains), [trains])
@@ -51,7 +51,7 @@ function Search() {
   )
 
   const [trainName, setTrainName] = useState<Option | null>(
-    getOption(routeOptions, searchParams.get('trainName')),
+    getOption(routeOptions, query.get('trainName')),
   )
 
   const lineNumberOptions = useMemo(
@@ -67,13 +67,13 @@ function Search() {
 
   const [searchType, setSearchType] = useState<SearchType>(SearchType.Segment)
   const [from, setFrom] = useState<Option | null>(
-    getOption(stationOptions, searchParams.get('from')),
+    getOption(stationOptions, query.get('from')),
   )
   const [to, setTo] = useState<Option | null>(
-    getOption(stationOptions, searchParams.get('to')),
+    getOption(stationOptions, query.get('to')),
   )
   const [trainNumber, setTrainNumber] = useState<Option | null>(
-    getOption(lineNumberOptions, searchParams.get('trainNumber')),
+    getOption(lineNumberOptions, query.get('trainNumber')),
   )
 
   const toSegmentSelect = useRef<SelectInstance<Option> | null>(null)
@@ -215,11 +215,11 @@ function Search() {
   const handleSubmit = (formData: FormData) => {
     const url = new URL(window.location.href)
     if (searchType === SearchType.Segment) {
-      url.searchParams.set('from', formData.get('from') as string)
-      url.searchParams.set('to', formData.get('to') as string)
+      url.query.set('from', formData.get('from') as string)
+      url.query.set('to', formData.get('to') as string)
     } else {
-      url.searchParams.set('trainName', formData.get('trainName') as string)
-      url.searchParams.set('trainNumber', formData.get('trainNumber') as string)
+      url.query.set('trainName', formData.get('trainName') as string)
+      url.query.set('trainNumber', formData.get('trainNumber') as string)
     }
     router.push(url.toString())
   }
