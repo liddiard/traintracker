@@ -3,6 +3,7 @@ import { Train } from '../types'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 import { routeToCodeMap } from '../constants'
+import { getTrainColor, getTrainStatus } from '../utils'
 
 const {
   theme: { colors },
@@ -84,7 +85,7 @@ export const renderTrains = (map: Map) => {
     type: 'circle',
     source: 'train-locations',
     paint: {
-      'circle-color': colors['amtrak-red-500'],
+      'circle-color': ['get', 'color'],
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 2, 12, 6],
       'circle-stroke-color': 'white',
       'circle-stroke-width': 1,
@@ -95,7 +96,6 @@ export const renderTrains = (map: Map) => {
     type: 'symbol',
     source: 'train-locations',
     layout: {
-      // https://maplibre.org/maplibre-gl-js/docs/examples/display-and-style-rich-text-labels/
       'text-field': [
         'format',
         ['get', 'routeCode'],
@@ -124,17 +124,23 @@ export const updateTrains = (map: Map, trains: Train[]) => {
   }
   trainSource.setData({
     type: 'FeatureCollection',
-    features: trains?.map(({ lon, lat, objectID, routeName, trainNum }) => ({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [lon, lat],
-      },
-      properties: {
-        objectID,
-        trainNum,
-        routeCode: routeToCodeMap[routeName],
-      },
-    })),
+    features: trains?.map((train) => {
+      const { lon, lat, objectID, trainNum, routeName } = train
+      const trainStatus = getTrainStatus(train)
+      const color = getTrainColor(trainStatus)
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [lon, lat],
+        },
+        properties: {
+          objectID,
+          trainNum,
+          color,
+          routeCode: routeToCodeMap[routeName],
+        },
+      }
+    }),
   })
 }

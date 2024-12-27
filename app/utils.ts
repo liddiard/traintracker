@@ -448,3 +448,22 @@ export const getDelayColor = (delay: number) => {
     ? delayPalette(Math.min(delay, maxDelay) / maxDelay)
     : delayPalette(0)
 }
+
+/**
+ * Given a train status, returns a color representing it.
+ *
+ * @param trainStatus - The status of the train
+ * @returns A color string representing the train's status
+ */
+export const getTrainColor = (trainStatus: TrainStatus) => {
+  const { code, deviation } = trainStatus
+  if (code === undefined) {
+    return colors['positron-gray-600']
+  }
+  return {
+    [TimeStatus.PREDEPARTURE]: colors['amtrak-blue-600'],
+    [TimeStatus.ON_TIME]: colors['amtrak-green-600'],
+    [TimeStatus.DELAYED]: getDelayColor(deviation ?? 0),
+    [TimeStatus.COMPLETE]: colors['amtrak-deep-blue'],
+  }[code]
+}

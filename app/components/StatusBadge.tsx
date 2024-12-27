@@ -4,7 +4,7 @@ import { TimeStatus, Train } from '@/app/types'
 import {
   formatDuration,
   formatTime,
-  getDelayColor,
+  getTrainColor,
   getTrainStatus,
 } from '@/app/utils'
 
@@ -15,28 +15,25 @@ function StatusBadge({
   train: Train
   className?: string
 }) {
-  const { code, deviation, firstStation, lastStation } = getTrainStatus(train)
+  const trainStatus = getTrainStatus(train)
+  const backgroundColor = getTrainColor(trainStatus)
+  const { code, deviation, firstStation, lastStation } = trainStatus
 
-  let colorClass, colorValue, text
+  let text
   switch (code) {
     case TimeStatus.PREDEPARTURE:
-      colorClass = 'bg-amtrak-blue-600'
       text = 'Scheduled'
       break
     case TimeStatus.ON_TIME:
-      colorClass = 'bg-amtrak-green-600'
       text = 'On Time'
       break
     case TimeStatus.DELAYED:
-      colorValue = getDelayColor(deviation ?? 0)
       text = 'Late'
       break
     case TimeStatus.COMPLETE:
-      colorClass = 'bg-amtrak-deep-blue'
       text = 'Arrived'
       break
     default:
-      colorClass = 'bg-positron-gray-600'
       text = 'Unknown'
       break
   }
@@ -55,12 +52,9 @@ function StatusBadge({
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <span
-        className={cn(
-          'cursor-default rounded-full px-3 py-1 font-semibold text-white',
-          colorClass,
-        )}
+        className="cursor-default rounded-full px-3 py-1 font-semibold text-white"
         style={{
-          backgroundColor: colorValue,
+          backgroundColor,
         }}
       >
         {text}
