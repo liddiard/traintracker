@@ -10,6 +10,12 @@ import {
   StationTrain,
 } from './types'
 import { TRAIN_SEARCH_PARAMS } from './constants'
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '@/tailwind.config'
+
+const {
+  theme: { colors },
+} = resolveConfig(tailwindConfig)
 
 // convert a whole number of milliseconds to seconds
 export const msToMins = (ms: number) => ms / 1000 / 60
@@ -431,7 +437,12 @@ export const getSegmentDurationMinMax = (
  * @returns A color string representing the delay
  */
 export const getDelayColor = (delay: number) => {
-  const delayPalette = interpolate(['#ab7a00', '#ab4c00', '#ab1e00', '#ff4018'])
+  const delayPalette = interpolate([
+    colors['amtrak-yellow-700'],
+    '#ab4c00',
+    colors['amtrak-red-700'],
+    colors['amtrak-red-500'],
+  ])
   const maxDelay = 60 * 2 // minutes
   return delay
     ? delayPalette(Math.min(delay, maxDelay) / maxDelay)

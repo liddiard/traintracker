@@ -213,7 +213,7 @@ function Search() {
   )
 
   const handleSubmit = (formData: FormData) => {
-    const url = new URL(window.location.origin)
+    const url = new URL(window.location.href)
     if (searchType === SearchType.Segment) {
       url.searchParams.set('from', formData.get('from') as string)
       url.searchParams.set('to', formData.get('to') as string)
