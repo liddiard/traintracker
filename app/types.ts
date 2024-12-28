@@ -78,6 +78,7 @@ export enum TimeStatus {
 }
 
 export interface TrainStatus {
+  objectID: string
   code?: number
   prevStation?: StationTrain
   curStation?: StationTrain

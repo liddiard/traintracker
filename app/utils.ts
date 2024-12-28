@@ -167,7 +167,7 @@ const formatStationResponse = (station: StationTrainRaw) => ({
  */
 export const getTrainStatus = (train: Train) => {
   const now = new Date()
-  const { stations } = train
+  const { stations, objectID } = train
   const prevStation = stations.findLast(
     ({ dep }) => dep instanceof Date && dep < now,
   )
@@ -179,6 +179,7 @@ export const getTrainStatus = (train: Train) => {
     ({ arr }) => arr instanceof Date && arr > now,
   )
   const status: TrainStatus = {
+    objectID,
     code: undefined,
     prevStation,
     curStation,

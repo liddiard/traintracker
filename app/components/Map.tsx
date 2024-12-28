@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import maplibregl, { MapLayerEventType, Map as MapType } from 'maplibre-gl'
+import maplibregl, { Map as MapType } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import './MapLegend'
