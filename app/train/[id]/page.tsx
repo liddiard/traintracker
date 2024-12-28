@@ -119,6 +119,7 @@ export default function TrainDetail() {
           tz: train.originTZ,
           displayTz: timezonesDiffer,
         })}
+        {/* <CaretRight alt="to" className="w-3 self-center" /> */}
         <Image src={CaretRight} alt="to" className="w-3 self-center" />
         <span />
         <span />

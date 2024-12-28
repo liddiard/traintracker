@@ -215,11 +215,11 @@ function Search() {
   const handleSubmit = (formData: FormData) => {
     const url = new URL(window.location.href)
     if (searchType === SearchType.Segment) {
-      url.query.set('from', formData.get('from') as string)
-      url.query.set('to', formData.get('to') as string)
+      url.searchParams.set('from', formData.get('from') as string)
+      url.searchParams.set('to', formData.get('to') as string)
     } else {
-      url.query.set('trainName', formData.get('trainName') as string)
-      url.query.set('trainNumber', formData.get('trainNumber') as string)
+      url.searchParams.set('trainName', formData.get('trainName') as string)
+      url.searchParams.set('trainNumber', formData.get('trainNumber') as string)
     }
     router.push(url.toString())
   }

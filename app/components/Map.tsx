@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import maplibregl, { Map as MapType } from 'maplibre-gl'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import maplibregl, { MapLayerEventType, Map as MapType } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import './MapLegend'
@@ -19,7 +19,13 @@ function Map() {
   const [mapLoaded, setMapLoaded] = useState(false)
   const map = useRef<MapType | null>(null)
   const router = useRouter()
+  const trainID = useParams().id
   const query = useSearchParams()
+
+  const currentTrain = useMemo(
+    () => trains.find((t) => t.objectID === trainID),
+    [trains, trainID],
+  )
 
   // default to geographic center of the US
   const lng = Number(query.get('lng')) || -98.5795
@@ -38,6 +44,22 @@ function Map() {
       renderTrains(map.current!)
     })
 
+    const navigateToTrain = (
+      e: maplibregl.MapMouseEvent & {
+        features?: maplibregl.MapGeoJSONFeature[]
+      },
+    ) => {
+      const trainID = e.features?.[0].properties.objectID
+      if (trainID) {
+        router.push(`/train/${trainID}`)
+      }
+    }
+
+    const cursorPointer = () =>
+      (map.current!.getCanvas().style.cursor = 'pointer')
+
+    const cursorDefault = () => (map.current!.getCanvas().style.cursor = '')
+
     map.current!.on('moveend', (e) => {
       const url = new URL(window.location.href)
       const map = e.target
@@ -47,6 +69,18 @@ function Map() {
       url.searchParams.set('z', map.getZoom().toFixed(1))
       router.replace(url.toString())
     })
+
+    // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+    map.current!.on('click', 'train-locations', navigateToTrain)
+    map.current!.on('click', 'train-labels', navigateToTrain)
+
+    // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+    map.current!.on('mouseenter', 'train-locations', cursorPointer)
+    map.current!.on('mouseenter', 'train-labels', cursorPointer)
+
+    // Change it back to a pointer when it leaves.
+    map.current!.on('mouseleave', 'train-locations', cursorDefault)
+    map.current!.on('mouseleave', 'train-labels', cursorDefault)
   }, [])
 
   useEffect(() => {
@@ -55,6 +89,16 @@ function Map() {
     }
     updateTrains(map.current!, trains)
   }, [trains, mapLoaded])
+
+  useEffect(() => {
+    if (!currentTrain) {
+      return
+    }
+    const { lat, lon } = currentTrain
+    map.current!.flyTo({
+      center: [lon, lat],
+    })
+  }, [currentTrain])
 
   return (
     <>
