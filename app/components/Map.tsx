@@ -95,8 +95,11 @@ function Map() {
       return
     }
     const { lat, lon } = currentTrain
+    const zoom = map.current!.getZoom()
+    const minFlyZoom = 8
     map.current!.flyTo({
       center: [lon, lat],
+      zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
     })
   }, [currentTrain])
 
