@@ -12,7 +12,7 @@ const {
 export const renderTracks = (map: Map) => {
   map.addSource('amtrak-track', {
     type: 'geojson',
-    data: '/amtrak-track.geojson',
+    data: '/amtrak-geojson/amtrak-track.geojson',
   })
   map.addLayer({
     id: 'amtrak-track',
@@ -32,7 +32,7 @@ export const renderTracks = (map: Map) => {
 export const renderStations = (map: Map) => {
   map.addSource('amtrak-stations', {
     type: 'geojson',
-    data: '/amtrak-stations.geojson',
+    data: '/amtrak-geojson/amtrak-stations.geojson',
   })
   map.addLayer({
     id: 'amtrak-stations',

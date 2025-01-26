@@ -1,0 +1,3 @@
+[submodule "public/amtrak-geojson"]
+	path = public/amtrak-geojson
+	url = https://github.com/liddiard/amtrak-geojson

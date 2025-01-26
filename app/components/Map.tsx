@@ -101,7 +101,7 @@ function Map() {
       center: [lon, lat],
       zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
     })
-  }, [currentTrain])
+  }, [currentTrain?.objectID])
 
   return (
     <>
