@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+// import data from './example-response.json'
 
 // setInterval(() => {
 //   console.log(new Date())
@@ -10,13 +10,6 @@ export async function GET() {
       next: { revalidate: 60 },
     })
     const data = await res.json()
-
-    // const file = await fs.readFile(
-    //   process.cwd() + '/app/api/trains/example-response.json',
-    //   'utf8',
-    // )
-    // const data = JSON.parse(file)
-
     return Response.json(data)
   } catch (error) {
     console.log(error)

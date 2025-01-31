@@ -1,8 +1,8 @@
-import { TrainStatus } from '@/app/types'
+import { useEffect, useRef } from 'react'
 import cn from 'classnames'
+import { TrainStatus } from '@/app/types'
 import { formatDuration, getCurrentSegmentProgress } from '../utils'
 import Progress from './Progress'
-import { useEffect, useRef } from 'react'
 
 interface CurrentSegmentProps {
   trainStatus: TrainStatus

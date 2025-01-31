@@ -1,23 +1,36 @@
-import maplibregl, { GeoJSONSource, Map } from 'maplibre-gl'
-import { Train } from '../types'
+import { GeoJSONSource, Map } from 'maplibre-gl'
+import {
+  point,
+  nearestPointOnLine,
+  nearestPoint,
+  bearing,
+  distance,
+} from '@turf/turf'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 import { routeToCodeMap } from '../constants'
 import { getTrainColor, getTrainStatus } from '../utils'
+import { Train, StationTrain } from '../types'
 
 const {
   theme: { colors },
 } = resolveConfig(tailwindConfig)
 
+const sourceId = {
+  amtrakTrack: 'amtrak-track',
+  amtrakStations: 'amtrak-stations',
+  trainLocations: 'train-locations',
+}
+
 export const renderTracks = (map: Map) => {
-  map.addSource('amtrak-track', {
+  map.addSource(sourceId.amtrakTrack, {
     type: 'geojson',
     data: '/amtrak-geojson/amtrak-track.geojson',
   })
   map.addLayer({
-    id: 'amtrak-track',
+    id: sourceId.amtrakTrack,
     type: 'line',
-    source: 'amtrak-track',
+    source: sourceId.amtrakTrack,
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
@@ -30,14 +43,14 @@ export const renderTracks = (map: Map) => {
 }
 
 export const renderStations = (map: Map) => {
-  map.addSource('amtrak-stations', {
+  map.addSource(sourceId.amtrakStations, {
     type: 'geojson',
     data: '/amtrak-geojson/amtrak-stations.geojson',
   })
   map.addLayer({
-    id: 'amtrak-stations',
+    id: sourceId.amtrakStations,
     type: 'circle',
-    source: 'amtrak-stations',
+    source: sourceId.amtrakStations,
     paint: {
       'circle-color': 'white',
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 4],
@@ -48,7 +61,7 @@ export const renderStations = (map: Map) => {
   map.addLayer({
     id: 'station-labels',
     type: 'symbol',
-    source: 'amtrak-stations',
+    source: sourceId.amtrakStations,
     layout: {
       'text-field': [
         'step',
@@ -73,7 +86,7 @@ export const renderStations = (map: Map) => {
 }
 
 export const renderTrains = (map: Map) => {
-  map.addSource('train-locations', {
+  map.addSource(sourceId.trainLocations, {
     type: 'geojson',
     data: {
       type: 'FeatureCollection',
@@ -81,9 +94,9 @@ export const renderTrains = (map: Map) => {
     },
   })
   map.addLayer({
-    id: 'train-locations',
+    id: sourceId.trainLocations,
     type: 'circle',
-    source: 'train-locations',
+    source: sourceId.trainLocations,
     paint: {
       'circle-color': ['get', 'color'],
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 2, 12, 6],
@@ -94,7 +107,7 @@ export const renderTrains = (map: Map) => {
   map.addLayer({
     id: 'train-labels',
     type: 'symbol',
-    source: 'train-locations',
+    source: sourceId.trainLocations,
     layout: {
       'text-field': [
         'format',
@@ -118,7 +131,7 @@ export const renderTrains = (map: Map) => {
 }
 
 export const updateTrains = (map: Map, trains: Train[]) => {
-  const trainSource = map.getSource('train-locations') as GeoJSONSource
+  const trainSource = map.getSource(sourceId.trainLocations) as GeoJSONSource
   if (!trainSource) {
     return
   }
@@ -143,4 +156,50 @@ export const updateTrains = (map: Map, trains: Train[]) => {
       }
     }),
   })
+}
+
+const isPointBehindTrain = (
+  map: Map,
+  point: Point,
+  trainPosition,
+  nextStation,
+) => {
+  const stations = map.getSource(sourceId.amtrakStations)?.serialize()
+  const stationCoords = stations.features.find(
+    (f) => f.properties.STNCODE === nextStation.code,
+  ).geometry.coordinates
+  const stationPoint = point(stationCoords)
+  const distanceBetweenTrainAndStation = distance(trainPosition, stationPoint)
+  const distanceBetweenPointAndStation = distance(point, stationPoint)
+  return distanceBetweenPointAndStation > distanceBetweenTrainAndStation
+}
+
+export const snapTrainToRail = (
+  map: Map,
+  train: Train,
+  nextStation: StationTrain,
+) => {
+  const tracks = map.getSource(sourceId.amtrakTrack)?.serialize()
+  const { lon, lat } = train
+  const trainPosition = point([lon, lat])
+  // find the lat/lon that's on a track nearest the train GPS coordinates
+  const nearestCoordOnTrack = nearestPointOnLine(tracks, trainPosition)
+  // find the nearest "vertex" (point) on the track from previous coord
+  // note: this point could be ahead of or behind the train's direction of
+  // travel
+  const nearestPointOnTrack = nearestPoint(nearestCoordOnTrack, tracks)
+  const nearestPointIsBehindTrain = isPointBehindTrain(
+    map,
+    nearestPointOnTrack,
+    trainPosition,
+    nextStation,
+  )
+  const multiplier = nearestPointIsBehindTrain ? -1 : 1
+  // find the bearing between the two
+  const trainBearing =
+    bearing(nearestCoordOnTrack, nearestPointOnTrack) * multiplier
+  return {
+    position: trainPosition,
+    bearing: trainBearing,
+  }
 }
