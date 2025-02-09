@@ -1,3 +1,4 @@
+// map from 2-letter code to Amtraker API route name
 export const codeToRouteMap: Record<string, string> = {
   AC: 'Acela',
   AD: 'Adirondack',
@@ -30,6 +31,7 @@ export const codeToRouteMap: Record<string, string> = {
   MS: 'Michigan Services',
   MR: 'Missouri River Runner',
   NE: 'Northeast Regional',
+  PM: 'Palmetto',
   PS: 'Pacific Surfliner',
   PA: 'Pennsylvanian',
   PD: 'Piedmont',

@@ -2,15 +2,32 @@ import { GeoJSONSource, Map } from 'maplibre-gl'
 import {
   point,
   nearestPointOnLine,
-  nearestPoint,
+  bboxClip,
   bearing,
+  explode,
+  nearestPoint,
   distance,
+  combine,
 } from '@turf/turf'
+import {
+  FeatureCollection,
+  Feature,
+  MultiLineString,
+  Point,
+  LineString,
+} from 'geojson'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 import { routeToCodeMap } from '../constants'
 import { getTrainColor, getTrainStatus } from '../utils'
 import { Train, StationTrain } from '../types'
+import _amtrakStations from '../../public/map_data/amtrak-stations.geojson'
+import _amtrakTrack from '../../public/map_data/amtrak-track.geojson'
+
+const amtrakStations = _amtrakStations as FeatureCollection<Point>
+const amtrakTrack = _amtrakTrack as FeatureCollection<
+  LineString | MultiLineString
+>
 
 const {
   theme: { colors },
@@ -25,7 +42,7 @@ const sourceId = {
 export const renderTracks = (map: Map) => {
   map.addSource(sourceId.amtrakTrack, {
     type: 'geojson',
-    data: '/amtrak-geojson/amtrak-track.geojson',
+    data: amtrakTrack,
   })
   map.addLayer({
     id: sourceId.amtrakTrack,
@@ -45,7 +62,7 @@ export const renderTracks = (map: Map) => {
 export const renderStations = (map: Map) => {
   map.addSource(sourceId.amtrakStations, {
     type: 'geojson',
-    data: '/amtrak-geojson/amtrak-stations.geojson',
+    data: amtrakStations,
   })
   map.addLayer({
     id: sourceId.amtrakStations,
@@ -68,9 +85,9 @@ export const renderStations = (map: Map) => {
         ['zoom'],
         '',
         5,
-        ['get', 'STNCODE'],
+        ['get', 'Code'],
         9,
-        ['get', 'STNNAME'],
+        ['get', 'Name'],
       ],
       'text-font': ['Noto Sans Regular'],
       'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 16],
@@ -138,14 +155,16 @@ export const updateTrains = (map: Map, trains: Train[]) => {
   trainSource.setData({
     type: 'FeatureCollection',
     features: trains?.map((train) => {
-      const { lon, lat, objectID, trainNum, routeName } = train
+      const { objectID, trainNum, routeName } = train
       const trainStatus = getTrainStatus(train)
       const color = getTrainColor(trainStatus)
+      const { coordinates } = snapTrainToTrack(train, trainStatus.nextStation)
+        .point.geometry
       return {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [lon, lat],
+          coordinates,
         },
         properties: {
           objectID,
@@ -158,48 +177,143 @@ export const updateTrains = (map: Map, trains: Train[]) => {
   })
 }
 
+/**
+ * Determines if a given point is behind a train relative to the next station.
+ *
+ * @param pt - The point to check, represented as a GeoJSON Feature of type Point.
+ * @param trainPosition - The current position of the train, represented as a GeoJSON Feature of type Point.
+ * @param nextStation - The next station the train will arrive at, containing station information.
+ * @returns A boolean indicating whether the point is behind the train relative to the next station, or undefined if unknown.
+ */
 const isPointBehindTrain = (
-  map: Map,
-  point: Point,
-  trainPosition,
-  nextStation,
+  pt: Feature<Point>,
+  trainPosition: Feature<Point>,
+  nextStation: StationTrain,
 ) => {
-  const stations = map.getSource(sourceId.amtrakStations)?.serialize()
-  const stationCoords = stations.features.find(
-    (f) => f.properties.STNCODE === nextStation.code,
-  ).geometry.coordinates
-  const stationPoint = point(stationCoords)
+  const station = amtrakStations.features.find(
+    (f: Feature) => f.properties?.Code === nextStation?.code,
+  )
+  if (!station) {
+    console.warn(`Station not found: ${nextStation?.code}`)
+    return
+  }
+  const stationPoint = point(station.geometry.coordinates)
   const distanceBetweenTrainAndStation = distance(trainPosition, stationPoint)
-  const distanceBetweenPointAndStation = distance(point, stationPoint)
+  const distanceBetweenPointAndStation = distance(pt, stationPoint)
   return distanceBetweenPointAndStation > distanceBetweenTrainAndStation
 }
 
-export const snapTrainToRail = (
+/**
+ * Calculates the bearing of a train relative to its nearest point on the track.
+ * For bearing to be accurate, this function should only be used with
+ * `trainPoints` that have been snapped to the track – i.e. precisely overlay
+ * with a track LineString.
+ *
+ * @param trainPoint - The current position of the train as a GeoJSON Feature<Point>.
+ * @param clippedTrack - The track geometry as a GeoJSON MultiLineString.
+ * @param nextStation - The next station the train is heading towards (optional).
+ * @returns The bearing in degrees, or undefined if the next station is not provided or if the nearest point is behind the train and cannot be determined.
+ */
+export const getBearing = (
+  trainPoint: Feature<Point>,
+  clippedTrack: MultiLineString,
+  nextStation?: StationTrain,
+) => {
+  // if no next station, we can't make the calculation
+  if (!nextStation) {
+    return
+  }
+  // find the nearest track vertex to the train
+  const nearestPointOnTrack = nearestPoint(trainPoint, explode(clippedTrack))
+  // check if the nearest track vertex is ahead of or behind the train
+  const nearestPointIsBehindTrain = isPointBehindTrain(
+    nearestPointOnTrack,
+    trainPoint,
+    nextStation,
+  )
+  // return if we're unsure if the nearest point is behind the train (e.g. if
+  // the station) code isn't found in the station data
+  if (nearestPointIsBehindTrain === undefined) {
+    return
+  }
+  // find the bearing between where the train is and its nearest point on its
+  // track, flipping the bearing 180 degrees if the nearest track point is
+  // behind the train
+  return (
+    bearing(trainPoint, nearestPointOnTrack) *
+    (nearestPointIsBehindTrain ? -1 : 1)
+  )
+}
+
+/**
+ * Snaps a train's GPS-reported coordinates to the nearest point on a track,
+ * along with bearing. If no track is near the train's coordinates, returns
+ * the original coordinates without bearing.
+ *
+ * @param train - The train object containing GPS-reported coordinates.
+ * @param nextStation - (Optional) The next station the train is heading to, used to calculate bearing.
+ * @returns An object containing the snapped GeoJSON point and bearing.
+ *
+ * @example
+ * const train = { lon: -122.4194, lat: 37.7749 };
+ * const nextStation = { code: 'NYP' };
+ * const result = snapTrainToRail(train, nextStation);
+ * console.log(result.point); // Snapped point on the track
+ * console.log(result.bearing); // Bearing to the next station
+ */
+export const snapTrainToTrack = (train: Train, nextStation?: StationTrain) => {
+  // find the Point on a track nearest the train's GPS-reported coordinates
+  const { lon, lat } = train
+  const trainPoint = point([lon, lat])
+
+  // for performance, and to avoid snapping a train to track far away from its
+  // actual coordinates, only consider track within a small bounding box
+  // around the train's coordinates
+
+  // corresponds to degress of lat/lon in each direction from the train's coordinates
+  // 0.01 degrees is about 1 km: https://stackoverflow.com/a/16743805
+  const bboxSize = 0.01
+
+  const clippedTrack = combine({
+    type: 'FeatureCollection',
+    features: amtrakTrack.features
+      .map((f) =>
+        bboxClip(f, [
+          lon - bboxSize,
+          lat - bboxSize,
+          lon + bboxSize,
+          lat + bboxSize,
+        ]),
+      )
+      // filter out track geometries that are empty after clipping (which will
+      // be most of them for any given train)
+      .filter((f) => f.geometry.coordinates.length),
+  }).features[0]?.geometry as MultiLineString | undefined
+
+  if (clippedTrack) {
+    const snappedTrainPoint = nearestPointOnLine(clippedTrack, trainPoint)
+    return {
+      point: snappedTrainPoint,
+      bearing: getBearing(snappedTrainPoint, clippedTrack, nextStation),
+    }
+  } else {
+    // if no track is near the train's GPS-reported position, we can't snap it
+    // or calculate bearing, so just return the GPS-reported position
+    return {
+      point: trainPoint,
+      bearing: undefined,
+    }
+  }
+}
+
+const getExtrapolatedTrainPoint = (
   map: Map,
   train: Train,
   nextStation: StationTrain,
 ) => {
-  const tracks = map.getSource(sourceId.amtrakTrack)?.serialize()
-  const { lon, lat } = train
-  const trainPosition = point([lon, lat])
-  // find the lat/lon that's on a track nearest the train GPS coordinates
-  const nearestCoordOnTrack = nearestPointOnLine(tracks, trainPosition)
-  // find the nearest "vertex" (point) on the track from previous coord
-  // note: this point could be ahead of or behind the train's direction of
-  // travel
-  const nearestPointOnTrack = nearestPoint(nearestCoordOnTrack, tracks)
-  const nearestPointIsBehindTrain = isPointBehindTrain(
-    map,
-    nearestPointOnTrack,
-    trainPosition,
-    nextStation,
-  )
-  const multiplier = nearestPointIsBehindTrain ? -1 : 1
-  // find the bearing between the two
-  const trainBearing =
-    bearing(nearestCoordOnTrack, nearestPointOnTrack) * multiplier
-  return {
-    position: trainPosition,
-    bearing: trainBearing,
-  }
+  // lineSlice + along
+}
+
+const getTrainTrail = (map: Map, train: Train) => {
+  // lineSliceAlong
 }
