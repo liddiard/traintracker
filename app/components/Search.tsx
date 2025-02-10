@@ -2,11 +2,10 @@
 
 import { useMemo, useRef, useState } from 'react'
 import { SelectInstance } from 'react-select'
-import Image from 'next/image'
 import cn from 'classnames'
 import { InputType, Option } from '../types'
 import MagnifyingGlass from '../img/magnifying-glass.svg'
-import CaretRight from '../img/caret-right-white.svg'
+import CaretRight from '../img/caret-right.svg'
 import { createRouteNumMap, createStationList } from '../utils'
 import { useTrains } from '../providers/train'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -166,7 +165,7 @@ function Search() {
   const renderSegmentSearch = () => (
     <div className="flex flex-grow items-center gap-2">
       {renderSegmentOption(true)}
-      <Image src={CaretRight} alt="" />
+      <CaretRight alt="" className="w-2 fill-white" />
       {renderSegmentOption(false)}
     </div>
   )
@@ -239,11 +238,10 @@ function Search() {
           aria-label="Search"
           className="shrink-0 rounded bg-amtrak-blue-500 px-2 hover:bg-amtrak-blue-600 active:bg-amtrak-blue-700"
         >
-          <Image
-            src={MagnifyingGlass}
+          <MagnifyingGlass
             alt="Search"
             title="Search"
-            className="w-6 invert"
+            className="w-6 fill-white"
           />
         </button>
       </div>

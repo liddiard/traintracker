@@ -9,11 +9,10 @@ import {
   getTrainStatus,
   msToMins,
 } from '@/app/utils'
-import Image from 'next/image'
 import cn from 'classnames'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
 import StatusBadge from '@/app/components/StatusBadge'
-import CaretRight from '@/app/img/caret-right-gray.svg'
+import CaretRight from '@/app/img/caret-right.svg'
 import Pie from '@/app/img/pie.svg'
 import Warning from '@/app/img/warning.svg'
 import Pointer from '@/app/img/pointer.svg'
@@ -74,8 +73,7 @@ export default function TrainDetail() {
         <>
           <span>{Math.round(velocity)} mph</span>
           <span className="flex items-baseline gap-1">
-            <Image
-              src={Pointer}
+            <Pointer
               alt={train.heading}
               title={train.heading}
               className="w-4 self-center transition-all duration-1000"
@@ -119,8 +117,10 @@ export default function TrainDetail() {
           tz: train.originTZ,
           displayTz: timezonesDiffer,
         })}
-        {/* <CaretRight alt="to" className="w-3 self-center" /> */}
-        <Image src={CaretRight} alt="to" className="w-3 self-center" />
+        <CaretRight
+          alt="to"
+          className="w-3 self-center fill-positron-gray-600"
+        />
         <span />
         <span />
         <span />
@@ -147,19 +147,17 @@ export default function TrainDetail() {
               {formatTime(train.updatedAt)}
             </span>
             {isStaleData && (
-              <Image
-                src={Warning}
+              <Warning
                 alt="caution"
-                className="mx-1 inline w-4 align-text-top"
+                className="mx-1 inline w-4 fill-amtrak-yellow-700 align-text-top"
               />
             )}
           </span>
           <span className="flex items-center gap-2">
             Next check
-            <Image
-              src={Pie}
-              alt=""
-              className="aspect-square w-4 shrink-0 rounded-full border border-positron-gray-600"
+            <Pie
+              alt="every 15 seconds"
+              className="h-4 w-4 shrink-0 rounded-full border border-positron-gray-600"
             />
           </span>
         </div>

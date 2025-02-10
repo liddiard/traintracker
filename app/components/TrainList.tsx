@@ -1,9 +1,7 @@
-import Image from 'next/image'
-
 import { Train, TrainSearchParams } from '../types'
 import { findTrainsFromSegment, formatDate } from '../utils'
 import StatusBadge from './StatusBadge'
-import CaretRight from '../img/caret-right-gray.svg'
+import CaretRight from '../img/caret-right.svg'
 import Spinner from '../img/spinner.svg'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -107,7 +105,10 @@ function TrainList({
                   </span>
                   <span className="flex items-center gap-1 text-nowrap font-semibold text-positron-gray-600">
                     {train.origCode}
-                    <Image src={CaretRight} alt="to" className="inline" />
+                    <CaretRight
+                      alt="to"
+                      className="inline fill-positron-gray-600"
+                    />
                     {train.destCode}
                   </span>
                 </h2>
@@ -125,7 +126,7 @@ function TrainList({
   }
 
   if (loading) {
-    return <Image src={Spinner} alt="Loading" className="mx-auto my-5 w-10" />
+    return <Spinner alt="Loading" className="mx-auto my-5 w-10" />
   }
 
   return (
