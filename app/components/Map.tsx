@@ -37,7 +37,9 @@ function Map() {
       center: [lng, lat],
       zoom: Number(query.get('z')) || 3,
       container: 'map',
-    }).on('load', () => {
+    }) as MapType
+
+    map.current.on('load', () => {
       setMapLoaded(true)
       renderTracks(map.current!)
       renderStations(map.current!)

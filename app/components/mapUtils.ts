@@ -194,7 +194,7 @@ const isPointBehindTrain = (
     (f: Feature) => f.properties?.Code === nextStation?.code,
   )
   if (!station) {
-    console.warn(`Station not found: ${nextStation?.code}`)
+    // console.warn(`Station not found: ${nextStation?.code}`)
     return
   }
   const stationPoint = point(station.geometry.coordinates)
