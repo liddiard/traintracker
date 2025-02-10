@@ -5,12 +5,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <g
-     id="layer1"
-     transform="translate(-74.083328)">
+     transform="translate(-75)">
     <path
-       style="fill:#000000;fill-opacity:1;stroke-width:0.264583"
-       d="M 113.77083,0 74.083333,79.375 113.77083,52.916667 Z m 0,0 39.6875,79.375 -39.6875,-26.458333 z"
-       id="path289"
-       class="UnoptimicedTransforms" />
+       d="M 113.77083,0 74.083333,79.375 113.77083,52.916667 Z m 0,0 39.6875,79.375 -39.6875,-26.458333 z" />
   </g>
 </svg>

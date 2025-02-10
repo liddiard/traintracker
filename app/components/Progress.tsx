@@ -10,6 +10,7 @@ function Progress({
   vertical = false,
   showEndpoints = true,
   progressValueRef,
+  ...props
 }: {
   percent?: number
   px?: number
@@ -55,6 +56,7 @@ function Progress({
         vertical ? internalClassNames.vertical : internalClassNames.horizontal,
         classNames.outer,
       )}
+      {...props}
     >
       <div
         style={innerStyle}

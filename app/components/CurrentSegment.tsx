@@ -58,15 +58,15 @@ function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
 
       <Progress
         percent={percent}
-        id="segmentProgress"
+        aria-labelledby="segmentProgress"
         progressValueRef={progressValueRef}
       />
-      <label
-        htmlFor="segmentProgress"
+      <span
+        id="segmentProgress"
         className={cn('block', { 'text-right': !atStation })}
       >
         {label}
-      </label>
+      </span>
     </section>
   )
 }
