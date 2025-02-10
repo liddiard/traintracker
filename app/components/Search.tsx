@@ -6,7 +6,7 @@ import cn from 'classnames'
 import { InputType, Option } from '../types'
 import MagnifyingGlass from '../img/magnifying-glass.svg'
 import CaretRight from '../img/caret-right.svg'
-import { createRouteNumMap, createStationList } from '../utils'
+import { createRouteNumMap } from '../utils'
 import { useTrains } from '../providers/train'
 import { useRouter, useSearchParams } from 'next/navigation'
 import SearchSelect from './SearchSelect'
@@ -22,9 +22,8 @@ const getOption = (options: Option[], value: string | null) =>
 function Search() {
   const router = useRouter()
   const query = useSearchParams()
-  const { trains } = useTrains()
+  const { trains, stations } = useTrains()
 
-  const stations = useMemo(() => createStationList(trains), [trains])
   const routes = useMemo(() => createRouteNumMap(trains), [trains])
 
   const stationOptions = useMemo(

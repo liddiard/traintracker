@@ -22,6 +22,7 @@ export const codeToRouteMap: Record<string, string> = {
   FL: 'Floridian',
   HF: 'Heartland Flyer',
   HW: 'Hiawatha',
+  IL: 'Illini',
   IZ: 'Illinois Zephyr',
   KS: 'Keystone',
   LS: 'Lake Shore Limited',

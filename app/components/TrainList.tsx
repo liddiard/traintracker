@@ -107,7 +107,7 @@ function TrainList({
                     {train.origCode}
                     <CaretRight
                       alt="to"
-                      className="inline fill-positron-gray-600"
+                      className="inline w-2 fill-positron-gray-600"
                     />
                     {train.destCode}
                   </span>

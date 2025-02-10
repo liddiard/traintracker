@@ -15,7 +15,7 @@ import {
 } from './mapUtils'
 
 function Map() {
-  const { trains } = useTrains()
+  const { trains, stations } = useTrains()
   const [mapLoaded, setMapLoaded] = useState(false)
   const map = useRef<MapType | null>(null)
   const router = useRouter()
@@ -42,7 +42,7 @@ function Map() {
     map.current.on('load', () => {
       setMapLoaded(true)
       renderTracks(map.current!)
-      renderStations(map.current!)
+      renderStations(map.current!, stations)
       renderTrains(map.current!)
     })
 

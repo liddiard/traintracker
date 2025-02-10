@@ -7,15 +7,17 @@ import React, {
   createContext,
   useContext,
 } from 'react'
-import { Train } from '../types'
+import { Station, Train } from '../types'
 import { formatTrainResponse } from '../utils'
 
 const TrainContext = createContext<{
   trains: Train[]
+  stations: Station[]
   isLoading: boolean
   error: Error | null
 }>({
   trains: [],
+  stations: [],
   isLoading: false,
   error: null,
 })
@@ -23,7 +25,8 @@ const TrainContext = createContext<{
 export const TrainProvider: React.FC<{
   children: ReactNode
   initialTrains: Train[]
-}> = ({ children, initialTrains }) => {
+  stations: Station[]
+}> = ({ children, initialTrains, stations }) => {
   const [trains, setTrains] = useState<Train[]>(initialTrains)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
@@ -56,7 +59,7 @@ export const TrainProvider: React.FC<{
   }, [])
 
   return (
-    <TrainContext.Provider value={{ trains, isLoading, error }}>
+    <TrainContext.Provider value={{ trains, stations, isLoading, error }}>
       {children}
     </TrainContext.Provider>
   )

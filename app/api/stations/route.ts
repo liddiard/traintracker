@@ -1,13 +1,7 @@
-// import data from './example-response.json'
-
-// setInterval(() => {
-//   console.log(new Date())
-// }, 60*1000)
-
 export async function GET() {
   try {
-    const res = await fetch('https://api-v3.amtraker.com/v3/trains', {
-      next: { revalidate: 60 }, // cache for 1 minute
+    const res = await fetch('https://api-v3.amtraker.com/v3/stations', {
+      next: { revalidate: 60 * 60 }, // cache for 1 hour
     })
     const data = await res.json()
     return Response.json(data)

@@ -46,6 +46,15 @@ export interface Station {
   name: string
   code: string
   tz: string
+  lat: number
+  lon: number
+  hasAddress: boolean
+  address1: string
+  address2: string
+  city: string
+  state: string
+  zip: string
+  trains: string[]
 }
 
 export interface StationTrainRaw extends Station {

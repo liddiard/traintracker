@@ -8,6 +8,7 @@ import {
   nearestPoint,
   distance,
   combine,
+  lineSlice,
 } from '@turf/turf'
 import {
   FeatureCollection,
@@ -20,11 +21,9 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 import { routeToCodeMap } from '../constants'
 import { getTrainColor, getTrainStatus } from '../utils'
-import { Train, StationTrain } from '../types'
-import _amtrakStations from '../../public/map_data/amtrak-stations.geojson'
+import { Train, StationTrain, TrainStatus, Station } from '../types'
 import _amtrakTrack from '../../public/map_data/amtrak-track.geojson'
 
-const amtrakStations = _amtrakStations as FeatureCollection<Point>
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
 >
@@ -59,10 +58,24 @@ export const renderTracks = (map: Map) => {
   })
 }
 
-export const renderStations = (map: Map) => {
+const stationsToGeoJson = (stations: Station[]): FeatureCollection<Point> => ({
+  type: 'FeatureCollection',
+  features: stations.map((station) => ({
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [station.lon, station.lat],
+    },
+    properties: {
+      ...station,
+    },
+  })),
+})
+
+export const renderStations = (map: Map, stations: Station[]) => {
   map.addSource(sourceId.amtrakStations, {
     type: 'geojson',
-    data: amtrakStations,
+    data: stationsToGeoJson(stations),
   })
   map.addLayer({
     id: sourceId.amtrakStations,
@@ -85,9 +98,9 @@ export const renderStations = (map: Map) => {
         ['zoom'],
         '',
         5,
-        ['get', 'Code'],
-        9,
-        ['get', 'Name'],
+        ['get', 'code'],
+        10,
+        ['get', 'name'],
       ],
       'text-font': ['Noto Sans Regular'],
       'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 16],
@@ -147,33 +160,35 @@ export const renderTrains = (map: Map) => {
   })
 }
 
-export const updateTrains = (map: Map, trains: Train[]) => {
+export const updateTrains = (map: Map, trains: Train[] = []) => {
   const trainSource = map.getSource(sourceId.trainLocations) as GeoJSONSource
   if (!trainSource) {
     return
   }
   trainSource.setData({
     type: 'FeatureCollection',
-    features: trains?.map((train) => {
-      const { objectID, trainNum, routeName } = train
-      const trainStatus = getTrainStatus(train)
-      const color = getTrainColor(trainStatus)
-      const { coordinates } = snapTrainToTrack(train, trainStatus.nextStation)
-        .point.geometry
-      return {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates,
-        },
-        properties: {
-          objectID,
-          trainNum,
-          color,
-          routeCode: routeToCodeMap[routeName],
-        },
-      }
-    }),
+    features: trains
+      .filter(({ lon, lat }) => map.getBounds().contains([lon, lat]))
+      .map((train) => {
+        const { objectID, trainNum, routeName } = train
+        const trainStatus = getTrainStatus(train)
+        const color = getTrainColor(trainStatus)
+        const { coordinates } = snapTrainToTrack(train, trainStatus.nextStation)
+          .point.geometry
+        return {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates,
+          },
+          properties: {
+            objectID,
+            trainNum,
+            color,
+            routeCode: routeToCodeMap[routeName],
+          },
+        }
+      }),
   })
 }
 
@@ -309,11 +324,13 @@ export const snapTrainToTrack = (train: Train, nextStation?: StationTrain) => {
 const getExtrapolatedTrainPoint = (
   map: Map,
   train: Train,
-  nextStation: StationTrain,
+  trainStatus: TrainStatus,
 ) => {
+  const { firstStation, lastStation, nextStation } = trainStatus
+  const route = lineSlice(firstStation, lastStation, amtrakTrack)
   // lineSlice + along
 }
 
 const getTrainTrail = (map: Map, train: Train) => {
-  // lineSliceAlong
+  // lineSlice + along
 }

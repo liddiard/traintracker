@@ -81,35 +81,6 @@ export const createRouteNumMap = (trains: Train[]) =>
   )
 
 /**
- * Creates an array of station objects from an array of trains.
- *
- * Given an array of trains, returns an array with all involved stations.
- * Each station object has the following properties:
- * - `code`: The station code (e.g. 'BOS')
- * - `name`: The station name (e.g. 'Boston South Station')
- * - `tz`: The timezone of the station (e.g. 'America/New_York')
- *
- * @param trains - The array of trains to create the station list from
- * @returns An array of unique station objects
- */
-export const createStationList = (trains: Train[]): Station[] =>
-  Object.values(
-    trains
-      .flatMap((t) => t.stations)
-      .reduce(
-        (acc, { code, name, tz }) => ({
-          ...acc,
-          [code]: {
-            code,
-            name,
-            tz,
-          },
-        }),
-        {},
-      ),
-  )
-
-/**
  * Formats the raw train API response by converting date strings to Date
  * objects and normalizes IDs to ensure that each train has a string
  * `objectID`.

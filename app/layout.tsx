@@ -6,6 +6,7 @@ import Map from './components/Map'
 import Search from './components/Search'
 import { formatTrainResponse } from './utils'
 import { TrainProvider } from './providers/train'
+import { Station } from './types'
 
 export const metadata: Metadata = {
   title: 'TrainTracker',
@@ -16,11 +17,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 async function getTrains() {
   try {
-    const response = await fetch('http://localhost:3000/api/trains', {
-      // cache: 'no-store', // Ensure fresh data on each server render
-      // next: { revalidate: 0 } // Disable caching
-    })
-
+    const response = await fetch('http://localhost:3000/api/trains')
     if (!response.ok) {
       throw new Error('Failed to fetch trains')
     }
@@ -32,17 +29,31 @@ async function getTrains() {
   }
 }
 
+async function getStations() {
+  try {
+    const response = await fetch('http://localhost:3000/api/stations')
+    if (!response.ok) {
+      throw new Error('Failed to fetch stations')
+    }
+    return Object.values(await response.json()) as Station[]
+  } catch (error) {
+    console.error('Server-side station data fetch failed:', error)
+    return []
+  }
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   const trains = await getTrains()
+  const stations = await getStations()
 
   return (
     <html lang="en">
       <body className={inter.className}>
-        <TrainProvider initialTrains={trains}>
+        <TrainProvider initialTrains={trains} stations={stations}>
           <div className="flex h-screen flex-wrap md:flex-nowrap">
             <div className="relative z-10 h-full w-full overflow-y-auto shadow-lg md:w-1/4 md:min-w-[300px]">
               <Search />
