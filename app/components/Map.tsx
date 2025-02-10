@@ -89,8 +89,8 @@ function Map() {
     if (!trains || !mapLoaded) {
       return
     }
-    updateTrains(map.current!, trains)
-  }, [trains, mapLoaded])
+    updateTrains(map.current!, trains, stations)
+  }, [trains, mapLoaded, stations])
 
   useEffect(() => {
     if (!currentTrain) {

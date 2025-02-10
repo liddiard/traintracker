@@ -160,7 +160,11 @@ export const renderTrains = (map: Map) => {
   })
 }
 
-export const updateTrains = (map: Map, trains: Train[] = []) => {
+export const updateTrains = (
+  map: Map,
+  trains: Train[] = [],
+  stations: Station[] = [],
+) => {
   const trainSource = map.getSource(sourceId.trainLocations) as GeoJSONSource
   if (!trainSource) {
     return
@@ -173,8 +177,11 @@ export const updateTrains = (map: Map, trains: Train[] = []) => {
         const { objectID, trainNum, routeName } = train
         const trainStatus = getTrainStatus(train)
         const color = getTrainColor(trainStatus)
-        const { coordinates } = snapTrainToTrack(train, trainStatus.nextStation)
-          .point.geometry
+        const { coordinates } = snapTrainToTrack(
+          train,
+          stations,
+          trainStatus.nextStation,
+        ).point.geometry
         return {
           type: 'Feature',
           geometry: {
@@ -203,16 +210,15 @@ export const updateTrains = (map: Map, trains: Train[] = []) => {
 const isPointBehindTrain = (
   pt: Feature<Point>,
   trainPosition: Feature<Point>,
-  nextStation: StationTrain,
+  stations: Station[],
+  nextStation?: StationTrain,
 ) => {
-  const station = amtrakStations.features.find(
-    (f: Feature) => f.properties?.Code === nextStation?.code,
-  )
+  const station = stations.find((s) => s.code === nextStation?.code)
   if (!station) {
     // console.warn(`Station not found: ${nextStation?.code}`)
     return
   }
-  const stationPoint = point(station.geometry.coordinates)
+  const stationPoint = point([station.lon, station.lat])
   const distanceBetweenTrainAndStation = distance(trainPosition, stationPoint)
   const distanceBetweenPointAndStation = distance(pt, stationPoint)
   return distanceBetweenPointAndStation > distanceBetweenTrainAndStation
@@ -232,6 +238,7 @@ const isPointBehindTrain = (
 export const getBearing = (
   trainPoint: Feature<Point>,
   clippedTrack: MultiLineString,
+  stations: Station[],
   nextStation?: StationTrain,
 ) => {
   // if no next station, we can't make the calculation
@@ -244,6 +251,7 @@ export const getBearing = (
   const nearestPointIsBehindTrain = isPointBehindTrain(
     nearestPointOnTrack,
     trainPoint,
+    stations,
     nextStation,
   )
   // return if we're unsure if the nearest point is behind the train (e.g. if
@@ -276,7 +284,11 @@ export const getBearing = (
  * console.log(result.point); // Snapped point on the track
  * console.log(result.bearing); // Bearing to the next station
  */
-export const snapTrainToTrack = (train: Train, nextStation?: StationTrain) => {
+export const snapTrainToTrack = (
+  train: Train,
+  stations: Station[],
+  nextStation?: StationTrain,
+) => {
   // find the Point on a track nearest the train's GPS-reported coordinates
   const { lon, lat } = train
   const trainPoint = point([lon, lat])
@@ -309,7 +321,12 @@ export const snapTrainToTrack = (train: Train, nextStation?: StationTrain) => {
     const snappedTrainPoint = nearestPointOnLine(clippedTrack, trainPoint)
     return {
       point: snappedTrainPoint,
-      bearing: getBearing(snappedTrainPoint, clippedTrack, nextStation),
+      bearing: getBearing(
+        snappedTrainPoint,
+        clippedTrack,
+        stations,
+        nextStation,
+      ),
     }
   } else {
     // if no track is near the train's GPS-reported position, we can't snap it
