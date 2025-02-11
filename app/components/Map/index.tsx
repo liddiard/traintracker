@@ -5,14 +5,13 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import maplibregl, { Map as MapType } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
-import './MapLegend'
-import { useTrains } from '../providers/train'
+import { useTrains } from '../../providers/train'
 import {
   renderStations,
   renderTracks,
   renderTrains,
   updateTrains,
-} from './mapUtils'
+} from './display'
 
 function Map() {
   const { trains, stations } = useTrains()
@@ -108,7 +107,6 @@ function Map() {
   return (
     <>
       <div id="map" className="h-full" />
-      {/* <MapLegend /> */}
     </>
   )
 }
