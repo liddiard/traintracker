@@ -36,6 +36,7 @@ export const codeToRouteMap: Record<string, string> = {
   PS: 'Pacific Surfliner',
   PA: 'Pennsylvanian',
   PD: 'Piedmont',
+  SB: 'Carl Sandburg',
   SJ: 'San Joaquins',
   SM: 'Silver Meteor',
   SC: 'Southwest Chief',

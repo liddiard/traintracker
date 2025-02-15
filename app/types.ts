@@ -1,3 +1,5 @@
+import { Point, Feature } from 'geojson'
+
 export interface TrainResponse {
   [key: string]: TrainRaw[]
 }
@@ -100,6 +102,14 @@ export interface TrainStatus {
 export interface Option {
   value: string
   label: string
+}
+
+export interface TrainFeatureProperties {
+  objectID: string
+  trainNum: string
+  color?: string
+  routeCode: string
+  bearing?: number
 }
 
 type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'
