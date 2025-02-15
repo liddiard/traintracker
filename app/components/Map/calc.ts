@@ -85,11 +85,11 @@ export const getBearing = (
     return
   }
   // find the bearing between where the train is and its nearest point on its
-  // track, flipping the bearing 180 degrees if the nearest track point is
-  // behind the train
+  // track, flipping it 180 degrees if the nearest track point is behind the
+  // train
   return (
-    bearing(trainPoint, nearestPointOnTrack) *
-    (nearestPointIsBehindTrain ? -1 : 1)
+    bearing(trainPoint, nearestPointOnTrack) +
+    (nearestPointIsBehindTrain ? 180 : 0)
   )
 }
 
