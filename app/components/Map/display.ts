@@ -118,7 +118,7 @@ export const trainLabelLayer: SymbolLayerSpecification = {
   },
   paint: {
     'text-halo-color': 'white',
-    'text-halo-width': 4,
+    'text-halo-width': 10,
   },
 }
 
@@ -145,10 +145,11 @@ export const stationsToGeoJson = (
 })
 
 const createTrainFeature = (
+  map: MapRef,
   train: Train,
   stations: Station[],
 ): Feature<Point, TrainFeatureProperties> => {
-  const { objectID, trainNum, routeName } = train
+  const { objectID, trainNum, routeName, lon, lat } = train
   const trainStatus = getTrainStatus(train)
   const color = getTrainColor(trainStatus)
   let trainPosition
@@ -157,7 +158,7 @@ const createTrainFeature = (
     trainSnapMap[objectID].meta.updatedAt >= train.updatedAt
   ) {
     trainPosition = trainSnapMap[objectID].position
-  } else {
+  } else if (map.getZoom() > 6 && map.getBounds().contains([lon, lat])) {
     console.log('Calculating new position for:', objectID)
     trainPosition = snapTrainToTrack(train, stations, trainStatus.nextStation)
     trainSnapMap[objectID] = {
@@ -166,6 +167,8 @@ const createTrainFeature = (
         updatedAt: train.updatedAt,
       },
     }
+  } else {
+    trainPosition = { coordinates: [lon, lat], bearing: undefined }
   }
   const { coordinates, bearing } = trainPosition
   return {
@@ -190,7 +193,5 @@ export const trainsToGeoJson = (
   stations: Station[] = [],
 ): FeatureCollection<Point, TrainFeatureProperties> => ({
   type: 'FeatureCollection',
-  features: trains
-    .filter(({ lon, lat }) => map.getBounds().contains([lon, lat]))
-    .map((train) => createTrainFeature(train, stations)),
+  features: trains.map((train) => createTrainFeature(map, train, stations)),
 })

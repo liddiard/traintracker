@@ -106,9 +106,9 @@ export interface Option {
 
 export interface TrainFeatureProperties {
   objectID: string
+  routeCode: string
   trainNum: string
   color?: string
-  routeCode: string
   bearing?: number
 }
 

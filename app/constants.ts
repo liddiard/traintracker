@@ -44,6 +44,7 @@ export const codeToRouteMap: Record<string, string> = {
   TE: 'Texas Eagle',
   VF: 'Valley Flyer',
   VT: 'Vermonter',
+  WP: 'Winter Park Express',
   WL: 'Wolverine',
 }
 
