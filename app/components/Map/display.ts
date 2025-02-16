@@ -7,20 +7,14 @@ import type {
 } from 'react-map-gl/maplibre'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
-import { routeToCodeMap } from '../../constants'
 import { getTrainColor, getTrainStatus } from '../../utils'
 import { Train, Station, TrainFeatureProperties } from '../../types'
 import { snapTrainToTrack } from './calc'
+import { sourceId, routeToCodeMap } from './constants'
 
 const {
   theme: { colors },
 } = resolveConfig(tailwindConfig)
-
-const sourceId = {
-  amtrakTrack: 'amtrak-track',
-  amtrakStations: 'amtrak-stations',
-  trainLocations: 'trains',
-}
 
 type TrainPosition = {
   position: {
@@ -73,6 +67,7 @@ export const stationLabelLayer: SymbolLayerSpecification = {
       10,
       ['get', 'name'],
     ],
+    // font names from https://github.com/openmaptiles/fonts/
     'text-font': ['Noto Sans Regular'],
     'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 16],
     'text-anchor': 'top',
@@ -85,30 +80,25 @@ export const stationLabelLayer: SymbolLayerSpecification = {
   },
 }
 
-export const trainLayer: CircleLayerSpecification = {
-  id: sourceId.trainLocations,
-  type: 'circle',
-  source: sourceId.trainLocations,
-  paint: {
-    'circle-color': ['get', 'color'],
-    'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 2, 12, 6],
-    'circle-stroke-color': 'white',
-    'circle-stroke-width': 1,
-  },
-}
-
 export const trainLabelLayer: SymbolLayerSpecification = {
   id: 'train-labels',
   type: 'symbol',
-  source: sourceId.trainLocations,
+  source: sourceId.trains,
   layout: {
     'text-field': [
       'format',
       ['get', 'routeCode'],
-      { 'text-color': 'black' },
+      { 'text-color': ['case', ['get', 'isSelected'], 'white', 'black'] },
       ' ',
       ['get', 'trainNum'],
-      { 'text-color': colors['amtrak-blue-600'] },
+      {
+        'text-color': [
+          'case',
+          ['get', 'isSelected'],
+          'white',
+          colors['amtrak-blue-500'],
+        ],
+      },
     ],
     'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 20],
     'text-anchor': 'top',
@@ -117,7 +107,12 @@ export const trainLabelLayer: SymbolLayerSpecification = {
     'text-font': ['Noto Sans Bold'],
   },
   paint: {
-    'text-halo-color': 'white',
+    'text-halo-color': [
+      'case',
+      ['get', 'isSelected'],
+      colors['amtrak-red-600'],
+      'white',
+    ],
     'text-halo-width': 10,
   },
 }
@@ -148,6 +143,7 @@ const createTrainFeature = (
   map: MapRef,
   train: Train,
   stations: Station[],
+  isSelected: boolean = false,
 ): Feature<Point, TrainFeatureProperties> => {
   const { objectID, trainNum, routeName, lon, lat } = train
   const trainStatus = getTrainStatus(train)
@@ -183,6 +179,7 @@ const createTrainFeature = (
       color,
       routeCode: routeToCodeMap[routeName],
       bearing,
+      isSelected,
     },
   }
 }
@@ -191,7 +188,15 @@ export const trainsToGeoJson = (
   map: MapRef,
   trains: Train[] = [],
   stations: Station[] = [],
+  selectedTrain?: Train,
 ): FeatureCollection<Point, TrainFeatureProperties> => ({
   type: 'FeatureCollection',
-  features: trains.map((train) => createTrainFeature(map, train, stations)),
+  features: trains.map((train) =>
+    createTrainFeature(
+      map,
+      train,
+      stations,
+      train.objectID === selectedTrain?.objectID,
+    ),
+  ),
 })

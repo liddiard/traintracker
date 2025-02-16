@@ -110,6 +110,7 @@ export interface TrainFeatureProperties {
   trainNum: string
   color?: string
   bearing?: number
+  isSelected: boolean
 }
 
 type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'

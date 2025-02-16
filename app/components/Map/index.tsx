@@ -31,6 +31,7 @@ import {
 import _amtrakTrack from '@/public/map_data/amtrak-track.geojson'
 import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
+import { sourceId } from './constants'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
@@ -54,23 +55,23 @@ function Map() {
 
   const mapRef = useRef<MapRef>(null)
 
-  const currentTrain = useMemo(
+  const selectedTrain = useMemo(
     () => trains.find((t) => t.objectID === trainID),
     [trains, trainID],
   )
 
   useEffect(() => {
-    if (!currentTrain || !mapRef.current) {
+    if (!selectedTrain || !mapRef.current) {
       return
     }
-    const { lat, lon } = currentTrain
+    const { lat, lon } = selectedTrain
     const zoom = mapRef.current.getZoom()
     const minFlyZoom = 8
     mapRef.current.flyTo({
       center: [lon, lat],
       zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
     })
-  }, [currentTrain?.objectID])
+  }, [selectedTrain?.objectID])
 
   const cursorPointer = (ev: MapLayerMouseEvent) =>
     (ev.target.getCanvas().style.cursor = 'pointer')
@@ -109,7 +110,7 @@ function Map() {
   )
 
   const trainsGeoJson = mapRef.current
-    ? trainsToGeoJson(mapRef.current, trains, stations)
+    ? trainsToGeoJson(mapRef.current, trains, stations, selectedTrain)
     : ({
         type: 'FeatureCollection',
         features: [],
@@ -129,11 +130,11 @@ function Map() {
         interactiveLayerIds={['trains', 'train-labels']}
       >
         {renderControls()}
-        <Source id="amtrak-track" type="geojson" data={amtrakTrack}>
+        <Source id={sourceId.amtrakTrack} type="geojson" data={amtrakTrack}>
           <Layer {...trackLayer} />
         </Source>
         <Source
-          id="amtrak-stations"
+          id={sourceId.amtrakStations}
           type="geojson"
           data={stationsToGeoJson(stations)}
         >
@@ -149,7 +150,7 @@ function Map() {
           />
         ))}
         {loaded && mapRef.current ? (
-          <Source id="trains" type="geojson" data={trainsGeoJson}>
+          <Source id={sourceId.trains} type="geojson" data={trainsGeoJson}>
             <Layer {...trainLabelLayer} />
           </Source>
         ) : null}
