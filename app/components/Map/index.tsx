@@ -99,6 +99,15 @@ function Map() {
     router.replace(url.toString(), { scroll: false })
   }
 
+  const renderControls = () => (
+    <>
+      <FullscreenControl position="bottom-right" />
+      <NavigationControl position="bottom-right" showCompass={false} />
+      <GeolocateControl position="bottom-right" />
+      <ScaleControl />
+    </>
+  )
+
   const trainsGeoJson = mapRef.current
     ? trainsToGeoJson(mapRef.current, trains, stations)
     : ({
@@ -119,10 +128,7 @@ function Map() {
         onClick={navigateToTrain}
         interactiveLayerIds={['trains', 'train-labels']}
       >
-        <FullscreenControl position="bottom-right" />
-        <NavigationControl position="bottom-right" showCompass={false} />
-        <GeolocateControl position="bottom-right" />
-        <ScaleControl />
+        {renderControls()}
         <Source id="amtrak-track" type="geojson" data={amtrakTrack}>
           <Layer {...trackLayer} />
         </Source>

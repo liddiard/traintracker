@@ -1,4 +1,5 @@
 import { Marker } from 'react-map-gl/maplibre'
+import cn from 'classnames'
 import Pointer from '@/app/img/pointer.svg'
 import Circle from '@/app/img/train-circle.svg'
 import { useRouter } from 'next/navigation'
@@ -22,15 +23,15 @@ function TrainMarker({
 
   const renderMarker = () => {
     const sharedStyles = {
-      scale: 0.5 + zoom * 0.075,
+      scale: `clamp(0.5, ${0.5 + zoom * 0.1}, 1.75)`,
       fill: color,
-      cursor: 'pointer',
     }
-    if (bearing === undefined || zoom < 6) {
-      return <Circle className="w-2" style={sharedStyles} />
-    } else {
-      return <Pointer className="w-4" style={sharedStyles} />
-    }
+    const sharedClassNames = 'hover:scale-125 transition-transform'
+    return bearing === undefined || zoom < 6 ? (
+      <Circle className={cn('w-2', sharedClassNames)} style={sharedStyles} />
+    ) : (
+      <Pointer className={cn('w-4', sharedClassNames)} style={sharedStyles} />
+    )
   }
 
   return (
@@ -39,6 +40,7 @@ function TrainMarker({
       latitude={lat}
       rotation={bearing}
       onClick={() => router.push(`/train/${objectID}`)}
+      className="cursor-pointer p-2"
     >
       {renderMarker()}
     </Marker>
