@@ -16,7 +16,6 @@ function TrainMarker({
   color,
   coordinates,
   bearing,
-  isSelected,
   zoom,
 }: TrainMarkerProps) {
   const router = useRouter()
@@ -42,6 +41,8 @@ function TrainMarker({
       longitude={lon}
       latitude={lat}
       rotation={bearing}
+      rotationAlignment="map"
+      pitchAlignment="map"
       onClick={() => router.push(`/train/${objectID}`)}
       className="cursor-pointer p-2"
     >

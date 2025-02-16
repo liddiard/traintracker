@@ -48,6 +48,7 @@ function Map() {
     longitude: Number(query.get('lng')) || -98.5795,
     latitude: Number(query.get('lat')) || 39.8283,
     zoom: Number(query.get('z')) || 3,
+    bearing: 0,
   }
 
   const [loaded, setLoaded] = useState(false)
@@ -103,7 +104,7 @@ function Map() {
   const renderControls = () => (
     <>
       <FullscreenControl position="bottom-right" />
-      <NavigationControl position="bottom-right" showCompass={false} />
+      <NavigationControl position="bottom-right" />
       <GeolocateControl position="bottom-right" />
       <ScaleControl />
     </>

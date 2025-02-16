@@ -65,18 +65,20 @@ export const stationLabelLayer: SymbolLayerSpecification = {
       5,
       ['get', 'code'],
       10,
-      ['get', 'name'],
+      ['concat', ['get', 'name'], ' (', ['get', 'code'], ')'],
     ],
     // font names from https://github.com/openmaptiles/fonts/
     'text-font': ['Noto Sans Regular'],
     'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 16],
-    'text-anchor': 'top',
-    'text-offset': [0, 0.5],
+    'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+    'text-radial-offset': 0.5,
+    'text-justify': 'auto',
   },
   paint: {
     'text-color': colors['amtrak-blue-600'],
     'text-halo-color': 'white',
     'text-halo-width': 1,
+    'text-halo-blur': 1,
   },
 }
 
@@ -101,8 +103,9 @@ export const trainLabelLayer: SymbolLayerSpecification = {
       },
     ],
     'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 20],
-    'text-anchor': 'top',
-    'text-offset': [0, 0.5],
+    'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+    'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 3, 0.5, 12, 1],
+    'text-justify': 'auto',
     // font names from https://github.com/openmaptiles/fonts/
     'text-font': ['Noto Sans Bold'],
   },
