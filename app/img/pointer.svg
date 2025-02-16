@@ -5,7 +5,5 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <path
-     stroke="white"
-     stroke-width="5"
      d="M 39.6875,0 0,79.375 39.6875,52.916016 79.375,79.375 Z" />
 </svg>

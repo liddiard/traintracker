@@ -16,6 +16,7 @@ function TrainMarker({
   color,
   coordinates,
   bearing,
+  isSelected,
   zoom,
 }: TrainMarkerProps) {
   const router = useRouter()
@@ -25,6 +26,8 @@ function TrainMarker({
     const sharedStyles = {
       scale: `clamp(0.5, ${0.5 + zoom * 0.1}, 1.75)`,
       fill: color,
+      stroke: 'white',
+      strokeWidth: 5,
     }
     const sharedClassNames = 'hover:scale-125 transition-transform'
     return bearing === undefined || zoom < 6 ? (
