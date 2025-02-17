@@ -2,111 +2,160 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import maplibregl, { Map as MapType } from 'maplibre-gl'
+import MapGL, {
+  Source,
+  Layer,
+  GeolocateControl,
+  FullscreenControl,
+  NavigationControl,
+  ScaleControl,
+} from 'react-map-gl/maplibre'
+import type {
+  MapGeoJSONFeature,
+  MapLayerMouseEvent,
+  MapRef,
+  ViewStateChangeEvent,
+} from 'react-map-gl/maplibre'
+import { FeatureCollection, MultiLineString, Point, LineString } from 'geojson'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { useTrains } from '../../providers/train'
 import {
-  renderStations,
-  renderTracks,
-  renderTrains,
-  updateTrains,
+  trainsToGeoJson,
+  stationLabelLayer,
+  stationLayer,
+  stationsToGeoJson,
+  trackLayer,
+  trainLabelLayer,
 } from './display'
+import _amtrakTrack from '@/public/map_data/amtrak-track.geojson'
+import TrainMarker from './TrainMarker'
+import { TrainFeatureProperties } from '@/app/types'
+import { sourceId } from './constants'
+
+const amtrakTrack = _amtrakTrack as FeatureCollection<
+  LineString | MultiLineString
+>
 
 function Map() {
   const { trains, stations } = useTrains()
-  const [mapLoaded, setMapLoaded] = useState(false)
-  const map = useRef<MapType | null>(null)
   const router = useRouter()
   const trainID = useParams().id
   const query = useSearchParams()
 
-  const currentTrain = useMemo(
+  const initialViewState = {
+    // default to geographic center of the US
+    longitude: Number(query.get('lng')) || -98.5795,
+    latitude: Number(query.get('lat')) || 39.8283,
+    zoom: Number(query.get('z')) || 3,
+    bearing: 0,
+  }
+
+  const [loaded, setLoaded] = useState(false)
+  const [viewState, setViewState] = useState(initialViewState)
+
+  const mapRef = useRef<MapRef>(null)
+
+  const selectedTrain = useMemo(
     () => trains.find((t) => t.objectID === trainID),
     [trains, trainID],
   )
 
-  // default to geographic center of the US
-  const lng = Number(query.get('lng')) || -98.5795
-  const lat = Number(query.get('lat')) || 39.8283
-
   useEffect(() => {
-    map.current = new maplibregl.Map({
-      style: 'https://tiles.openfreemap.org/styles/positron',
-      center: [lng, lat],
-      zoom: Number(query.get('z')) || 3,
-      container: 'map',
-    }) as MapType
-
-    map.current.on('load', () => {
-      setMapLoaded(true)
-      renderTracks(map.current!)
-      renderStations(map.current!, stations)
-      renderTrains(map.current!)
-    })
-
-    const navigateToTrain = (
-      e: maplibregl.MapMouseEvent & {
-        features?: maplibregl.MapGeoJSONFeature[]
-      },
-    ) => {
-      const trainID = e.features?.[0].properties.objectID
-      if (trainID) {
-        router.push(`/train/${trainID}`)
-      }
-    }
-
-    const cursorPointer = () =>
-      (map.current!.getCanvas().style.cursor = 'pointer')
-
-    const cursorDefault = () => (map.current!.getCanvas().style.cursor = '')
-
-    map.current!.on('moveend', (e) => {
-      const url = new URL(window.location.href)
-      const map = e.target
-      const { lat, lng } = map.getCenter()
-      url.searchParams.set('lat', lat.toFixed(5))
-      url.searchParams.set('lng', lng.toFixed(5))
-      url.searchParams.set('z', map.getZoom().toFixed(1))
-      router.replace(url.toString())
-    })
-
-    // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
-    map.current!.on('click', 'train-locations', navigateToTrain)
-    map.current!.on('click', 'train-labels', navigateToTrain)
-
-    // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
-    map.current!.on('mouseenter', 'train-locations', cursorPointer)
-    map.current!.on('mouseenter', 'train-labels', cursorPointer)
-
-    // Change it back to a pointer when it leaves.
-    map.current!.on('mouseleave', 'train-locations', cursorDefault)
-    map.current!.on('mouseleave', 'train-labels', cursorDefault)
-  }, [])
-
-  useEffect(() => {
-    if (!trains || !mapLoaded) {
+    if (!selectedTrain || !mapRef.current) {
       return
     }
-    updateTrains(map.current!, trains, stations)
-  }, [trains, mapLoaded, stations])
-
-  useEffect(() => {
-    if (!currentTrain) {
-      return
-    }
-    const { lat, lon } = currentTrain
-    const zoom = map.current!.getZoom()
+    const { lat, lon } = selectedTrain
+    const zoom = mapRef.current.getZoom()
     const minFlyZoom = 8
-    map.current!.flyTo({
+    mapRef.current.flyTo({
       center: [lon, lat],
       zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
     })
-  }, [currentTrain?.objectID])
+  }, [selectedTrain?.objectID])
+
+  const cursorPointer = (ev: MapLayerMouseEvent) =>
+    (ev.target.getCanvas().style.cursor = 'pointer')
+
+  const cursorDefault = (ev: MapLayerMouseEvent) =>
+    (ev.target.getCanvas().style.cursor = '')
+
+  const navigateToTrain = (
+    ev: MapLayerMouseEvent & {
+      features?: MapGeoJSONFeature[]
+    },
+  ) => {
+    const trainID = ev.features?.[0]?.properties.objectID
+    if (trainID) {
+      router.push(`/train/${trainID}`)
+    }
+  }
+
+  const handleMoveEnd = (ev: ViewStateChangeEvent) => {
+    const { latitude, longitude, zoom } = ev.viewState
+    setViewState(ev.viewState)
+    const url = new URL(window.location.href)
+    url.searchParams.set('lat', latitude.toFixed(5))
+    url.searchParams.set('lng', longitude.toFixed(5))
+    url.searchParams.set('z', zoom.toFixed(1))
+    router.replace(url.toString(), { scroll: false })
+  }
+
+  const renderControls = () => (
+    <>
+      <FullscreenControl position="bottom-right" />
+      <NavigationControl position="bottom-right" showCompass={false} />
+      <GeolocateControl position="bottom-right" />
+      <ScaleControl />
+    </>
+  )
+
+  const trainsGeoJson = mapRef.current
+    ? trainsToGeoJson(mapRef.current, trains, stations, selectedTrain)
+    : ({
+        type: 'FeatureCollection',
+        features: [],
+      } as FeatureCollection<Point, TrainFeatureProperties>)
 
   return (
     <>
-      <div id="map" className="h-full" />
+      <MapGL
+        ref={mapRef}
+        initialViewState={initialViewState}
+        mapStyle="https://tiles.openfreemap.org/styles/positron"
+        onLoad={() => setLoaded(true)}
+        onMoveEnd={handleMoveEnd}
+        onMouseEnter={cursorPointer}
+        onMouseLeave={cursorDefault}
+        onClick={navigateToTrain}
+        interactiveLayerIds={['trains', 'train-labels']}
+      >
+        {renderControls()}
+        <Source id={sourceId.amtrakTrack} type="geojson" data={amtrakTrack}>
+          <Layer {...trackLayer} />
+        </Source>
+        <Source
+          id={sourceId.amtrakStations}
+          type="geojson"
+          data={stationsToGeoJson(stations)}
+        >
+          <Layer {...stationLayer} />
+          <Layer {...stationLabelLayer} />
+        </Source>
+        {trainsGeoJson.features.map((f) => (
+          <TrainMarker
+            key={f.properties.objectID}
+            coordinates={f.geometry.coordinates}
+            zoom={viewState.zoom}
+            {...f.properties}
+          />
+        ))}
+        {loaded && mapRef.current ? (
+          <Source id={sourceId.trains} type="geojson" data={trainsGeoJson}>
+            <Layer {...trainLabelLayer} />
+          </Source>
+        ) : null}
+      </MapGL>
     </>
   )
 }

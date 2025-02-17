@@ -138,7 +138,7 @@ const formatStationResponse = (station: StationTrainRaw) => ({
  */
 export const getTrainStatus = (train: Train) => {
   const now = new Date()
-  const { stations, objectID } = train
+  const { stations, objectID, updatedAt } = train
   const prevStation = stations.findLast(
     ({ dep }) => dep instanceof Date && dep < now,
   )
@@ -158,6 +158,7 @@ export const getTrainStatus = (train: Train) => {
     deviation: undefined,
     firstStation: stations[0],
     lastStation: stations[stations.length - 1],
+    updatedAt,
   }
   if (!nextStation) {
     status.code = TimeStatus.COMPLETE

@@ -1,3 +1,5 @@
+import { Point, Feature } from 'geojson'
+
 export interface TrainResponse {
   [key: string]: TrainRaw[]
 }
@@ -95,6 +97,7 @@ export interface TrainStatus {
   deviation?: number
   firstStation: StationTrain
   lastStation: StationTrain
+  updatedAt: Date
 }
 
 export interface Option {
@@ -102,8 +105,28 @@ export interface Option {
   label: string
 }
 
+export interface TrackFeatureProperties {
+  OBJECTID: number
+  name: string
+  shape_leng: number
+}
+
+export interface TrainFeatureProperties {
+  objectID: string
+  routeCode: string
+  trainNum: string
+  color?: string
+  bearing?: number
+  isSelected: boolean
+}
+
 type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'
 export type TrainSearchParams = Partial<Record<TrainSearchKeys, string>>
+
+export interface TrackId {
+  id: number
+  index?: number
+}
 
 export enum InputType {
   TEXT,
