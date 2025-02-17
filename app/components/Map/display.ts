@@ -8,9 +8,10 @@ import type {
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 import { getTrainColor, getTrainStatus } from '../../utils'
-import { Train, Station, TrainFeatureProperties } from '../../types'
-import { snapTrainToTrack } from './calc'
+import { Train, Station, TrainFeatureProperties, TrackId } from '../../types'
+import { getExtrapolatedTrainPoint, snapTrainToTrack } from './calc'
 import { sourceId, routeToCodeMap } from './constants'
+import { point } from '@turf/turf'
 
 const {
   theme: { colors },
@@ -18,8 +19,9 @@ const {
 
 type TrainPosition = {
   position: {
-    coordinates: Position
+    point: Feature<Point>
     bearing?: number
+    track?: TrackId
   }
   meta: {
     updatedAt: Date
@@ -104,7 +106,7 @@ export const trainLabelLayer: SymbolLayerSpecification = {
     ],
     'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 20],
     'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
-    'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 3, 0.5, 12, 1],
+    'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 3, 0.5, 10, 1],
     'text-justify': 'auto',
     // font names from https://github.com/openmaptiles/fonts/
     'text-font': ['Noto Sans Bold'],
@@ -151,25 +153,47 @@ const createTrainFeature = (
   const { objectID, trainNum, routeName, lon, lat } = train
   const trainStatus = getTrainStatus(train)
   const color = getTrainColor(trainStatus)
-  let trainPosition
+  let lastTrainPosition
   if (
     trainSnapMap.hasOwnProperty(objectID) &&
     trainSnapMap[objectID].meta.updatedAt >= train.updatedAt
   ) {
-    trainPosition = trainSnapMap[objectID].position
+    lastTrainPosition = trainSnapMap[objectID].position
   } else if (map.getZoom() > 6 && map.getBounds().contains([lon, lat])) {
     console.log('Calculating new position for:', objectID)
-    trainPosition = snapTrainToTrack(train, stations, trainStatus.nextStation)
+    lastTrainPosition = snapTrainToTrack(
+      train,
+      stations,
+      trainStatus.nextStation,
+    )
     trainSnapMap[objectID] = {
-      position: trainPosition,
+      position: lastTrainPosition,
       meta: {
         updatedAt: train.updatedAt,
       },
     }
   } else {
-    trainPosition = { coordinates: [lon, lat], bearing: undefined }
+    lastTrainPosition = {
+      point: point([lon, lat]),
+      bearing: undefined,
+      track: undefined,
+    }
   }
-  const { coordinates, bearing } = trainPosition
+  const {
+    point: {
+      geometry: { coordinates },
+    },
+    bearing,
+    track,
+  } = lastTrainPosition
+  if (track) {
+    const extrapolatedTrainPosition = getExtrapolatedTrainPoint(
+      lastTrainPosition.point,
+      track,
+      trainStatus,
+      stations,
+    )
+  }
   return {
     type: 'Feature',
     geometry: {

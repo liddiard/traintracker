@@ -97,11 +97,18 @@ export interface TrainStatus {
   deviation?: number
   firstStation: StationTrain
   lastStation: StationTrain
+  updatedAt: Date
 }
 
 export interface Option {
   value: string
   label: string
+}
+
+export interface TrackFeatureProperties {
+  OBJECTID: number
+  name: string
+  shape_leng: number
 }
 
 export interface TrainFeatureProperties {
@@ -115,6 +122,11 @@ export interface TrainFeatureProperties {
 
 type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'
 export type TrainSearchParams = Partial<Record<TrainSearchKeys, string>>
+
+export interface TrackId {
+  id: number
+  index?: number
+}
 
 export enum InputType {
   TEXT,

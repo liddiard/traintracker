@@ -104,7 +104,7 @@ function Map() {
   const renderControls = () => (
     <>
       <FullscreenControl position="bottom-right" />
-      <NavigationControl position="bottom-right" />
+      <NavigationControl position="bottom-right" showCompass={false} />
       <GeolocateControl position="bottom-right" />
       <ScaleControl />
     </>
