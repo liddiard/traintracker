@@ -153,13 +153,23 @@ const createTrainFeature = (
   const { objectID, trainNum, routeName, lon, lat } = train
   const trainStatus = getTrainStatus(train)
   const color = getTrainColor(trainStatus)
+
+  // TODO: move below logic to its own function
+
+  // calculating the train's last position snapped to the nearest track with the correct bearing
+  // is computationally expensive, so we only want to do it when needed
   let lastTrainPosition
+  // if the position is cached and the cache is still warm, use it
   if (
     trainSnapMap.hasOwnProperty(objectID) &&
     trainSnapMap[objectID].meta.updatedAt >= train.updatedAt
   ) {
     lastTrainPosition = trainSnapMap[objectID].position
-  } else if (map.getZoom() > 6 && map.getBounds().contains([lon, lat])) {
+  }
+  // if the map is zoomed in enough that we care about showing the train
+  // exactly on the track with bearing, and the train is in the current map
+  // viewport, calculate its snapped position
+  else if (map.getZoom() > 6 && map.getBounds().contains([lon, lat])) {
     console.log('Calculating new position for:', objectID)
     lastTrainPosition = snapTrainToTrack(
       train,
@@ -172,13 +182,17 @@ const createTrainFeature = (
         updatedAt: train.updatedAt,
       },
     }
-  } else {
+  }
+  // train is outside the map viewport or we're zoomed far out; just return
+  // its raw GPS position
+  else {
     lastTrainPosition = {
       point: point([lon, lat]),
       bearing: undefined,
       track: undefined,
     }
   }
+  // end TODO
   const {
     point: {
       geometry: { coordinates },
@@ -211,6 +225,18 @@ const createTrainFeature = (
   }
 }
 
+/**
+ * Converts an array of trains into a GeoJSON FeatureCollection.
+ *
+ * @param map - A reference to the MapGL instance, used for calculating the
+ *              bearing of the train.
+ * @param trains - An array of train objects.
+ * @param stations - An array of station objects, used to find the coordinates
+ *                   of stations.
+ * @param selectedTrain - The train that is currently selected, used to
+ *                        highlight it on the map.
+ * @returns A GeoJSON FeatureCollection representing the trains.
+ */
 export const trainsToGeoJson = (
   map: MapRef,
   trains: Train[] = [],

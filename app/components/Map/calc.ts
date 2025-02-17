@@ -319,7 +319,8 @@ export const snapTrainToTrack = (
 }
 
 /**
- * Extrapolates a train's position based on its last-reported position and speed.
+ * Extrapolates a train's position based on its last-reported position and
+ * estimated speed.
  *
  * @param trainPoint - The last-reported position of the train as a GeoJSON Feature of type Point.
  * @param track - The track on which the train is traveling, represented as a TrackId.
