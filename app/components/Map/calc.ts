@@ -142,7 +142,7 @@ const getTrackIdFromPoint = (
       continue
     }
     const id = track.properties.OBJECTID
-    // if the feature is a LineString (an array of coordinates), loop through
+    // if the feature is a `LineString` (an array of coordinates), loop through
     // it to look for the point
     if (track.geometry.type === 'LineString') {
       if (track.geometry.coordinates.some(hasPoint)) {
@@ -152,11 +152,10 @@ const getTrackIdFromPoint = (
         }
       }
     }
-    // if the feature is a MultiLineString (an array of arrays of coordinates),
+    // if the feature is a `MultiLineString` (an array of arrays of coordinates),
     // loop through the nested geometry while tracking and returning the index
-    // of the appropriate LineString
+    // of the appropriate `LineString`
     else {
-      // track type is 'MultiLineString'
       for (let i = 0; i < track.geometry.coordinates.length; i++) {
         if (track.geometry.coordinates[i].some(hasPoint)) {
           return {
@@ -352,6 +351,32 @@ export const snapTrainToTrack = (
  *   stations,
  * );
  * console.log(result); // Extrapolated position of the train
+ *
+ * @description
+ * We're going to create a line segment between the train's last reported
+ * position and its next station:
+ *
+ * |---------------X-------------------------------------------------|
+ * ↑                                                                 ↑
+ * train position + timestamp              next station + est. arrival
+ *
+ * We know the train should be somewhere between its last known position and
+ * the next station.¹ That extrapolated position is represented by "X" above
+ * and is what this function solves for.
+ *
+ * Relevant to consider are:
+ * - time elapsed since last update
+ * - train's assumed speed, based on:
+ *   - distance to cover
+ *   - time between expected arrival and last update
+ *
+ * Calculations:
+ * Speed [km/ms]          = distance / (estArrival - lastUpdate)
+ * TimeElapsed [ms]       = now - lastUpdate
+ * EstimatedDistance [km] = Speed * TimeElapsed
+ *
+ * 1: Assuming we haven't passed the next station's arrival time, but by the
+ * way "next station" is determined, it's guaranteed to be in the future.
  */
 export const getExtrapolatedTrainPoint = (
   trainPoint: Feature<Point>,
