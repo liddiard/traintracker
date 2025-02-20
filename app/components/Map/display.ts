@@ -8,7 +8,13 @@ import type {
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 import { getTrainColor, getTrainStatus } from '../../utils'
-import { Train, Station, TrainFeatureProperties, TrackId } from '../../types'
+import {
+  Train,
+  Station,
+  TrainFeatureProperties,
+  TrackId,
+  TrainStatus,
+} from '../../types'
 import { getExtrapolatedTrainPoint, snapTrainToTrack } from './calc'
 import { sourceId, routeToCodeMap } from './constants'
 import { point } from '@turf/turf'
@@ -144,34 +150,42 @@ export const stationsToGeoJson = (
   })),
 })
 
-const createTrainFeature = (
+/**
+ * Gets the last known position of a train, snapped to the nearest track with bearing.
+ *
+ * If the train is in the current map viewport and the map is sufficently zoomed in, this
+ * function calculates the train's position snapped to the nearest track with the
+ * correct bearing. Otherwise, it returns the train's raw GPS position.
+ *
+ * The result is cached until next train update to prevent unnecessary, computationally
+ * expensive calculations.
+ *
+ * @param {MapRef} map - The map object.
+ * @param {Train} train - The train object.
+ * @param {TrainStatus} trainStatus - The status of the train, containing information about its next station and estimated arrival time.
+ * @param {Station[]} stations - An array of station objects, used to find the coordinates of the next station.
+ * @returns {TrainPosition} The last known position of the train, snapped to the nearest track with bearing.
+ */
+const getLastTrainPosition = (
   map: MapRef,
   train: Train,
+  trainStatus: TrainStatus,
   stations: Station[],
-  isSelected: boolean = false,
-): Feature<Point, TrainFeatureProperties> => {
-  const { objectID, trainNum, routeName, lon, lat } = train
-  const trainStatus = getTrainStatus(train)
-  const color = getTrainColor(trainStatus)
-
-  // TODO: move below logic to its own function
-
-  // calculating the train's last position snapped to the nearest track with the correct bearing
-  // is computationally expensive, so we only want to do it when needed
-  let lastTrainPosition
+) => {
+  const { objectID, lon, lat } = train
   // if the position is cached and the cache is still warm, use it
   if (
     trainSnapMap.hasOwnProperty(objectID) &&
     trainSnapMap[objectID].meta.updatedAt >= train.updatedAt
   ) {
-    lastTrainPosition = trainSnapMap[objectID].position
+    return trainSnapMap[objectID].position
   }
   // if the map is zoomed in enough that we care about showing the train
   // exactly on the track with bearing, and the train is in the current map
   // viewport, calculate its snapped position
   else if (map.getZoom() > 6 && map.getBounds().contains([lon, lat])) {
     console.log('Calculating new position for:', objectID)
-    lastTrainPosition = snapTrainToTrack(
+    const lastTrainPosition = snapTrainToTrack(
       train,
       stations,
       trainStatus.nextStation,
@@ -182,37 +196,48 @@ const createTrainFeature = (
         updatedAt: train.updatedAt,
       },
     }
+    return lastTrainPosition
   }
   // train is outside the map viewport or we're zoomed far out; just return
   // its raw GPS position
   else {
-    lastTrainPosition = {
+    return {
       point: point([lon, lat]),
       bearing: undefined,
       track: undefined,
     }
   }
-  // end TODO
+}
+
+const createTrainFeature = (
+  map: MapRef,
+  train: Train,
+  stations: Station[],
+  isSelected: boolean = false,
+): Feature<Point, TrainFeatureProperties> => {
+  const { objectID, trainNum, routeName, lon, lat } = train
+  const trainStatus = getTrainStatus(train)
+  const color = getTrainColor(trainStatus)
+
+  // get the last received (snapped) GPS position of the train + bearing
+  const lastPosition = getLastTrainPosition(map, train, trainStatus, stations)
   const {
     point: {
       geometry: { coordinates },
     },
     bearing,
     track,
-  } = lastTrainPosition
-  if (track) {
-    const extrapolatedTrainPosition = getExtrapolatedTrainPoint(
-      lastTrainPosition.point,
-      track,
-      trainStatus,
-      stations,
-    )
-  }
+  } = lastPosition
+  // if we've identified a track for this train, extrapolate its current
+  // position along it based on last update and next station ETA
+  const extrapolatedPosition =
+    track &&
+    getExtrapolatedTrainPoint(lastPosition.point, track, trainStatus, stations)
   return {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates,
+      coordinates: extrapolatedPosition?.geometry.coordinates ?? coordinates,
     },
     properties: {
       objectID,

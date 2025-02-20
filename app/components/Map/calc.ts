@@ -70,22 +70,23 @@ const isPointBehindTrain = (
  * with a track LineString.
  *
  * @param trainPoint - The current position of the train as a GeoJSON Feature<Point>.
- * @param clippedTrack - The track geometry as a GeoJSON MultiLineString.
+ * @param track - The track geometry as a GeoJSON MultiLineString.
  * @param nextStation - The next station the train is heading towards (optional).
  * @returns The bearing in degrees, or undefined if the next station is not provided or if the nearest point is behind the train and cannot be determined.
  */
 export const getBearing = (
   trainPoint: Feature<Point>,
-  clippedTrack: MultiLineString,
+  track: MultiLineString | LineString,
   stations: Station[],
   nextStation?: StationTrain,
 ) => {
+  console.time('getBearing')
   // if no next station, we can't make the calculation
   if (!nextStation) {
     return {}
   }
   // find the nearest track vertex to the train
-  const nearestTrackPoint = nearestPoint(trainPoint, explode(clippedTrack))
+  const nearestTrackPoint = nearestPoint(trainPoint, explode(track))
   // check if the nearest track vertex is ahead of or behind the train
   const nearestPointIsBehindTrain = isPointBehindTrain(
     nearestTrackPoint,
@@ -101,6 +102,7 @@ export const getBearing = (
   // find the bearing between where the train is and its nearest point on its
   // track, flipping it 180 degrees if the nearest track vertex is behind the
   // train
+  console.timeEnd('getBearing')
   return {
     bearing:
       bearing(trainPoint, nearestTrackPoint) +
@@ -124,6 +126,7 @@ const getTrackIdFromPoint = (
     TrackFeatureProperties
   >[],
 ): TrackId | undefined => {
+  console.time('getTrackIdFromPoint')
   const [lon, lat] = point.geometry.coordinates
   // check if the exact lon/lat is found in the provided coordinate array
   const hasPoint = (coord: Position) => coord[0] === lon && coord[1] === lat
@@ -146,6 +149,7 @@ const getTrackIdFromPoint = (
     // it to look for the point
     if (track.geometry.type === 'LineString') {
       if (track.geometry.coordinates.some(hasPoint)) {
+        console.timeEnd('getTrackIdFromPoint')
         return {
           id,
           index: undefined,
@@ -158,6 +162,7 @@ const getTrackIdFromPoint = (
     else {
       for (let i = 0; i < track.geometry.coordinates.length; i++) {
         if (track.geometry.coordinates[i].some(hasPoint)) {
+          console.timeEnd('getTrackIdFromPoint')
           return {
             id,
             index: i,
@@ -187,6 +192,7 @@ const getTrackFromId = (
     TrackFeatureProperties
   >,
 ) => {
+  console.time('getTrackFromId')
   const trackFeature = tracks.features.find(
     (f) => f.properties.OBJECTID === track.id,
   )
@@ -200,6 +206,7 @@ const getTrackFromId = (
     track.index !== undefined
       ? (trackFeature.geometry.coordinates[track.index] as Position[])
       : (trackFeature.geometry.coordinates as Position[])
+  console.timeEnd('getTrackFromId')
   return lineString(coordArr)
 }
 
@@ -217,6 +224,7 @@ const getNearbyTrack = (
     TrackFeatureProperties
   >,
 ) => {
+  console.time('getNearbyTrack')
   const [lon, lat] = point.geometry.coordinates
   // corresponds to degrees of lat/lon in each cardinal direction from the
   // train's coordinates
@@ -246,10 +254,15 @@ const getNearbyTrack = (
   const nearbyTrack = combine(featureCollection(nearbyFeatures)).features[0]
     ?.geometry as MultiLineString | undefined
 
+  console.timeEnd('getNearbyTrack')
   return {
     nearbyFeatures,
     nearbyTrack,
   }
+}
+
+const memoizedLineSlice = () => {
+  const cache: { [key: string]: LineString } = {}
 }
 
 /**
@@ -268,11 +281,14 @@ const getNearbyTrack = (
  * console.log(result.point); // Snapped point on the track
  * console.log(result.bearing); // Bearing to the next station
  */
+
+// TODO: this function shouldn't return bearing. let `getExtrapolatedTrainPoint` handle it
 export const snapTrainToTrack = (
   train: Train,
   stations: Station[],
   nextStation?: StationTrain,
 ) => {
+  console.time('snapTrainToTrack')
   // find the Point on a track nearest the train's GPS-reported coordinates
   const { lon, lat } = train
   const trainPoint = point([lon, lat])
@@ -301,6 +317,7 @@ export const snapTrainToTrack = (
     if (nearestTrackPoint) {
       track = getTrackIdFromPoint(nearestTrackPoint, nearbyFeatures)
     }
+    console.timeEnd('snapTrainToTrack')
     return {
       point: snappedTrainPoint,
       bearing,
@@ -385,7 +402,8 @@ export const getExtrapolatedTrainPoint = (
   trainStatus: TrainStatus,
   stations: Station[],
 ) => {
-  const { nextStation } = trainStatus
+  console.time('getExtrapolatedTrainPoint')
+  const { objectID, nextStation } = trainStatus
   const station = stations.find((s) => s.code === nextStation?.code)
   const trackLine = getTrackFromId(track, amtrakTrack)
   if (!station || !trackLine) {
@@ -393,11 +411,18 @@ export const getExtrapolatedTrainPoint = (
   }
   // find the track segment between the train's last-reported position and the
   // next station
+  console.time('lineSlice')
+  // TODO: cache this result because it's very slow (~80ms)
+  const lineSliceMemo = () => {
+    const cache = {}
+    return (start: number[], end: number[], line: LineString) => {}
+  }
   const trackSegment = lineSlice(
     trainPoint.geometry.coordinates,
     [station.lon, station.lat],
     trackLine,
   )
+  console.timeEnd('lineSlice')
 
   // remaining distance to cover from the last reported position
   const distanceRemaining = length(trackSegment)
@@ -408,11 +433,24 @@ export const getExtrapolatedTrainPoint = (
 
   // how fast the train must be going to arrive at the next station at the
   // estimated time
+
+  // TODO: figure out why the train is moving way too fast
+  // looks like it doesn't know what "backwards" or "forwards" is on the line segment
   const assumedSpeed =
     distanceRemaining / (arrivalTime.getTime() - lastUpdate.getTime())
   const timeSinceLastUpdate = currentTime.getTime() - lastUpdate.getTime()
   // estimated distance covered, based on assumed speed and time since last update
   const distanceCovered = assumedSpeed * timeSinceLastUpdate
+
+  // console.log('getExtrapolatedTrainPoint', {
+  //   assumedSpeed,
+  //   timeSinceLastUpdate,
+  //   distanceCovered,
+  // })
+
+  console.timeEnd('getExtrapolatedTrainPoint')
+
+  // TODO: also calculate and return updated bearing (`getBearing`)
   return along(trackSegment, distanceCovered)
 }
 
