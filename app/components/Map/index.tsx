@@ -104,7 +104,14 @@ function Map() {
   const renderControls = () => (
     <>
       <FullscreenControl position="bottom-right" />
-      <NavigationControl position="bottom-right" showCompass={false} />
+      <NavigationControl
+        position="bottom-right"
+        showCompass={!!viewState.bearing}
+        // `showCompass` only takes effect on component mount, so change the
+        // key to force a remount
+        // https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/navigation-control#other-properties
+        key={viewState.bearing ? 'nav-control-compass' : 'nav-control'}
+      />
       <GeolocateControl position="bottom-right" />
       <ScaleControl />
     </>
