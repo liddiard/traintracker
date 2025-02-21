@@ -140,7 +140,8 @@ const getTrackIdFromPoint = (
     )
     if (!track) {
       console.warn(
-        `Unable to find full track from clipped track: ${clippedTrack}`,
+        'Unable to find full track from clipped track:',
+        clippedTrack,
       )
       continue
     }
@@ -171,7 +172,7 @@ const getTrackIdFromPoint = (
       }
     }
   }
-  console.warn(`Unable to find track for point: ${point}`)
+  console.warn('Unable to find track for point:', point)
   return undefined
 }
 

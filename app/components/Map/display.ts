@@ -24,14 +24,10 @@ const {
 } = resolveConfig(tailwindConfig)
 
 type TrainPosition = {
-  position: {
-    point: Feature<Point>
-    bearing?: number
-    track?: TrackId
-  }
-  meta: {
-    updatedAt: Date
-  }
+  point: Feature<Point>
+  bearing?: number
+  track?: TrackId
+  updatedAt: Date
 }
 const trainSnapMap: Record<string, TrainPosition> = {}
 
@@ -176,9 +172,9 @@ const getLastTrainPosition = (
   // if the position is cached and the cache is still warm, use it
   if (
     trainSnapMap.hasOwnProperty(objectID) &&
-    trainSnapMap[objectID].meta.updatedAt >= train.updatedAt
+    trainSnapMap[objectID].updatedAt >= train.updatedAt
   ) {
-    return trainSnapMap[objectID].position
+    return trainSnapMap[objectID]
   }
   // if the map is zoomed in enough that we care about showing the train
   // exactly on the track with bearing, and the train is in the current map
@@ -191,10 +187,8 @@ const getLastTrainPosition = (
       trainStatus.nextStation,
     )
     trainSnapMap[objectID] = {
-      position: lastTrainPosition,
-      meta: {
-        updatedAt: train.updatedAt,
-      },
+      ...lastTrainPosition,
+      updatedAt: train.updatedAt,
     }
     return lastTrainPosition
   }
