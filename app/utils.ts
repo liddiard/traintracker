@@ -20,6 +20,10 @@ const {
 // convert a whole number of milliseconds to seconds
 export const msToMins = (ms: number) => ms / 1000 / 60
 
+// sleep for given `ms`, suitable for use in async functions
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms))
+
 /**
  * Finds the median of an array of numbers.
  *
@@ -36,6 +40,34 @@ export const median = (numbers: number[]) => {
     return (sorted[mid - 1] + sorted[mid]) / 2
   }
   return sorted[mid]
+}
+
+/**
+ * Creates a cached version of a function where cache validity is determined by a custom condition.
+ *
+ * @param fn - The original function to cache
+ * @param getKey - Function that generates a cache key from the arguments
+ * @param isValidCache - Function that determines if a cached value is still valid
+ * @returns A wrapped function that uses caching
+ */
+export const createCachedFunction = <Args extends unknown[], Result>(
+  fn: (...args: Args) => Result,
+  getKey: (...args: Args) => string,
+  isValidCache: (cachedValue: Result, ...args: Args) => boolean,
+): ((...args: Args) => Result) => {
+  const cache: Record<string, Result> = {}
+  return (...args: Args): Result => {
+    const key = getKey(...args)
+    const cachedValue = cache[key]
+
+    if (cache.hasOwnProperty(key) && isValidCache(cachedValue, ...args)) {
+      return cachedValue
+    }
+
+    const result = fn(...args)
+    cache[key] = result
+    return result
+  }
 }
 
 /**
