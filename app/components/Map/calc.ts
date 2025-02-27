@@ -270,7 +270,7 @@ const getNearbyTrack = (
  */
 export const snapTrainToTrack = (train: Train) => {
   // find the Point on a track nearest the train's GPS-reported coordinates
-  const { lon, lat } = train
+  const { lon, lat, updatedAt } = train
   const trainPoint = point([lon, lat])
   // for performance, and to avoid snapping a train to track far away from its
   // actual coordinates, only consider track within a small bounding box
@@ -295,6 +295,7 @@ export const snapTrainToTrack = (train: Train) => {
     return {
       point: snappedTrainPoint,
       track,
+      updatedAt,
     }
   } else {
     // there is no track is near the train's GPS-reported position, so we
@@ -303,6 +304,7 @@ export const snapTrainToTrack = (train: Train) => {
     return {
       point: trainPoint,
       track: undefined,
+      updatedAt,
     }
   }
 }
@@ -346,9 +348,9 @@ const getTrackSegment = (
 
 const getTrackSegmentCached = createCachedFunction(
   getTrackSegment,
-  (...args) => args[0],
-  (cachedValue: TrackSegment, ...args) => {
-    const trainPoint = args[1] as Feature<Point>
+  (objectID) => objectID, // cache key
+  // cache validity condition
+  (cachedValue: TrackSegment, objectID, trainPoint: Feature<Point>) => {
     const cachedCoords = cachedValue?.train.geometry.coordinates
     const { coordinates } = trainPoint.geometry
     return Boolean(
@@ -427,6 +429,7 @@ export const getExtrapolatedTrainPoint = (
   trainStatus: TrainStatus,
   stations: Station[],
 ) => {
+  console.time('getExtrapolatedTrainPoint')
   const { objectID, nextStation } = trainStatus
   const station = stations.find((s) => s.code === nextStation?.code)
   const trackLine = getTrackFromId(track, amtrakTrack)
@@ -466,7 +469,7 @@ export const getExtrapolatedTrainPoint = (
     stations,
     station,
   )
-
+  console.timeEnd('getExtrapolatedTrainPoint')
   return {
     point: extrapolatedPoint,
     bearing,
