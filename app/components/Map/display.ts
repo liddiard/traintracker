@@ -1,5 +1,5 @@
 import type { LngLatLike, MapRef } from 'react-map-gl/maplibre'
-import { FeatureCollection, Point, Feature, Position } from 'geojson'
+import { FeatureCollection, Point, Feature } from 'geojson'
 import type {
   CircleLayerSpecification,
   LineLayerSpecification,
@@ -12,26 +12,13 @@ import {
   getTrainColor,
   getTrainStatus,
 } from '../../utils'
-import {
-  Train,
-  Station,
-  TrainFeatureProperties,
-  TrackId,
-  TrainStatus,
-} from '../../types'
+import { Train, Station, TrainFeatureProperties } from '../../types'
 import { getExtrapolatedTrainPoint, snapTrainToTrack } from './calc'
 import { sourceId, routeToCodeMap } from './constants'
-import { point } from '@turf/turf'
 
 const {
   theme: { colors },
 } = resolveConfig(tailwindConfig)
-
-type TrainPosition = {
-  point: Feature<Point>
-  track?: TrackId
-  updatedAt: Date
-}
 
 export const trackLayer: LineLayerSpecification = {
   id: sourceId.amtrakTrack,
