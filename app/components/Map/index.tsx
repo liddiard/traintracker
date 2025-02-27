@@ -11,6 +11,7 @@ import MapGL, {
   ScaleControl,
 } from 'react-map-gl/maplibre'
 import type {
+  LngLatLike,
   MapGeoJSONFeature,
   MapLayerMouseEvent,
   MapRef,
@@ -70,11 +71,18 @@ function Map() {
     if (!selectedTrain || !mapRef.current) {
       return
     }
-    const { lat, lon } = selectedTrain
+    const trainCoords = trainData.features.find(
+      (f) => f.properties.objectID === selectedTrain.objectID,
+    )?.geometry.coordinates
+
+    if (!trainCoords) {
+      return
+    }
+
     const zoom = mapRef.current.getZoom()
     const minFlyZoom = 8
     mapRef.current.flyTo({
-      center: [lon, lat],
+      center: trainCoords as LngLatLike,
       zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
     })
   }, [selectedTrain?.objectID])
@@ -83,13 +91,19 @@ function Map() {
     if (!mapRef.current) {
       return
     }
-    const intervalId = window.setInterval(() => {
+    ;(async () => {
+      await sleep(1000)
       setTrainData(
-        trainsToGeoJson(mapRef.current!, trains, stations, selectedTrain),
+        trainsToGeoJson(
+          trainData,
+          mapRef.current!,
+          trains,
+          stations,
+          selectedTrain,
+        ),
       )
-    }, 1000)
-    return () => window.clearInterval(intervalId)
-  }, [selectedTrain, stations, trains])
+    })()
+  }, [selectedTrain, stations, trains, loaded, trainData])
 
   console.log('render', new Date())
 

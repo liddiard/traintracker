@@ -1,4 +1,4 @@
-import type { MapRef } from 'react-map-gl/maplibre'
+import type { LngLatLike, MapRef } from 'react-map-gl/maplibre'
 import { FeatureCollection, Point, Feature, Position } from 'geojson'
 import type {
   CircleLayerSpecification,
@@ -7,7 +7,11 @@ import type {
 } from 'react-map-gl/maplibre'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
-import { getTrainColor, getTrainStatus } from '../../utils'
+import {
+  createCachedFunction,
+  getTrainColor,
+  getTrainStatus,
+} from '../../utils'
 import {
   Train,
   Station,
@@ -28,7 +32,6 @@ type TrainPosition = {
   track?: TrackId
   updatedAt: Date
 }
-const trainSnapCache: Record<string, TrainPosition> = {}
 
 export const trackLayer: LineLayerSpecification = {
   id: sourceId.amtrakTrack,
@@ -145,51 +148,32 @@ export const stationsToGeoJson = (
   })),
 })
 
-/**
- * Gets the last known position of a train, snapped to the nearest track.
- *
- * If the train is in the current map viewport and the map is sufficently zoomed in, this
- * function calculates the train's position snapped to the nearest track Otherwise, it
- * returns the train's raw GPS position.
- *
- * The result is cached until next train update to prevent unnecessary, computationally
- * expensive calculations.
- *
- * @param {MapRef} map - The map object.
- * @param {Train} train - The train object.
- */
-const getLastTrainPosition = (map: MapRef, train: Train) => {
-  const { objectID, lon, lat } = train
-  // if the position is cached and the cache is still warm, use it
-  if (
-    trainSnapCache.hasOwnProperty(objectID) &&
-    trainSnapCache[objectID].updatedAt >= train.updatedAt
-  ) {
-    return trainSnapCache[objectID]
-  }
-  // if the map is zoomed in enough that we care about showing the train
-  // exactly on the track with bearing, and the train is in the current map
-  // viewport, calculate its snapped position
-  else if (map.getZoom() > 6 && map.getBounds().contains([lon, lat])) {
-    console.log('Calculating new position for:', objectID)
-    const lastTrainPosition = snapTrainToTrack(train)
-    trainSnapCache[objectID] = {
-      ...lastTrainPosition,
-      updatedAt: train.updatedAt,
-    }
-    return lastTrainPosition
-  }
-  // train is outside the map viewport or we're zoomed far out; just return
-  // its raw GPS position
-  else {
-    return {
-      point: point([lon, lat]),
-      track: undefined,
-    }
-  }
-}
+const snapTrainToTrackCached = createCachedFunction(
+  snapTrainToTrack,
+  (train) => train.objectID, // cache key
+  // cache validity condition
+  ({ updatedAt }, train) => !!updatedAt && updatedAt === train.updatedAt,
+)
 
+/**
+ * Creates a GeoJSON Feature representing a train on the map.
+ *
+ * @param {Feature<Point, TrainFeatureProperties> | undefined} prevTrain - The existing feature for this train, if any
+ * @param {MapRef} map - Reference to the map instance
+ * @param {Train} train - The train data to display
+ * @param {Station[]} stations - Array of station data for calculating extrapolated train position
+ * @param {boolean} [isSelected=false] - Whether this train is currently selected by the user
+ * @returns {Feature<Point, TrainFeatureProperties>} A GeoJSON Feature representing the train
+ *
+ * @description
+ * This function creates a GeoJSON Feature for rendering a train on the map.
+ * When zoomed in (zoom > 6) and the train is in view, it snaps the train to the nearest track
+ * and extrapolates the position based on its status and schedule. Otherwise, it uses
+ * the raw GPS coordinates. The function also determines the train's color based on its status
+ * and includes properties needed for rendering.
+ */
 const createTrainFeature = (
+  prevTrain: Feature<Point, TrainFeatureProperties> | undefined,
   map: MapRef,
   train: Train,
   stations: Station[],
@@ -198,32 +182,51 @@ const createTrainFeature = (
   const { objectID, trainNum, routeName, lon, lat } = train
   const trainStatus = getTrainStatus(train)
   const color = getTrainColor(trainStatus)
+  // existing coordinates for this train (which may have previously been
+  // snapped/extrapolated by this function), otherwise use raw GPS coordinates
+  const prevCoords = prevTrain?.geometry.coordinates ?? [lon, lat]
 
-  // get the last received (snapped) GPS position of the train + bearing
-  const lastPosition = getLastTrainPosition(map, train)
-  const {
-    point: {
-      geometry: { coordinates },
-    },
-    track,
-  } = lastPosition
-  // if we've identified a track for this train, extrapolate its current
-  // position along it based on last update and next station ETA
-  const extrapolated =
-    track &&
-    getExtrapolatedTrainPoint(lastPosition.point, track, trainStatus, stations)
+  let coordinates, bearing
+  // if the map is zoomed in enough that we care about showing the train
+  // exactly on the track with bearing, and the train is in the current map
+  // viewport, calculate its snapped position
+  if (map.getZoom() > 6 && map.getBounds().contains(prevCoords as LngLatLike)) {
+    // get the last received (snapped) GPS position of the train + bearing
+    const lastPosition = snapTrainToTrackCached(train)
+    const { track } = lastPosition
+    // if we've identified a track for this train, extrapolate its current
+    // position along it based on last update and next station ETA
+    const extrapolated =
+      track &&
+      getExtrapolatedTrainPoint(
+        lastPosition.point,
+        track,
+        trainStatus,
+        stations,
+      )
+    coordinates =
+      extrapolated?.point.geometry.coordinates ??
+      lastPosition.point.geometry.coordinates
+    bearing = extrapolated?.bearing
+  }
+  // train is outside the map viewport or we're zoomed far out; just return
+  // its raw GPS position
+  else {
+    coordinates = prevCoords
+  }
+
   return {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: extrapolated?.point.geometry.coordinates ?? coordinates,
+      coordinates,
     },
     properties: {
       objectID,
       trainNum,
       color,
       routeCode: routeToCodeMap[routeName],
-      bearing: extrapolated?.bearing,
+      bearing,
       isSelected,
     },
   }
@@ -232,6 +235,7 @@ const createTrainFeature = (
 /**
  * Converts an array of trains into a GeoJSON FeatureCollection.
  *
+ * @param prevTrains -
  * @param map - A reference to the MapGL instance, used for calculating the
  *              bearing of the train.
  * @param trains - An array of train objects.
@@ -242,6 +246,7 @@ const createTrainFeature = (
  * @returns A GeoJSON FeatureCollection representing the trains.
  */
 export const trainsToGeoJson = (
+  prevTrains: FeatureCollection<Point, TrainFeatureProperties>,
   map: MapRef,
   trains: Train[] = [],
   stations: Station[] = [],
@@ -250,6 +255,7 @@ export const trainsToGeoJson = (
   type: 'FeatureCollection',
   features: trains.map((train) =>
     createTrainFeature(
+      prevTrains.features.find((f) => f.properties.objectID === train.objectID),
       map,
       train,
       stations,
