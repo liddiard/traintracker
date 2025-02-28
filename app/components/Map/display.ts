@@ -184,13 +184,7 @@ const createTrainFeature = (
     // if we've identified a track for this train, extrapolate its current
     // position along it based on last update and next station ETA
     const extrapolated =
-      track &&
-      getExtrapolatedTrainPoint(
-        lastPosition.point,
-        track,
-        trainStatus,
-        stations,
-      )
+      track && getExtrapolatedTrainPoint(track, trainStatus, stations)
     coordinates =
       extrapolated?.point.geometry.coordinates ??
       lastPosition.point.geometry.coordinates

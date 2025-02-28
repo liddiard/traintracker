@@ -53,8 +53,7 @@ export const TrainProvider: React.FC<{
   }
 
   useEffect(() => {
-    // fetchTrains()
-    const interval = setInterval(fetchTrains, 60 * 1000) // 60 seconds
+    const interval = setInterval(fetchTrains, 15 * 1000) // 15 seconds
     return () => clearInterval(interval)
   }, [])
 

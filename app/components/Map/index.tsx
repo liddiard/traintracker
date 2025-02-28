@@ -68,31 +68,10 @@ function Map() {
   )
 
   useEffect(() => {
-    if (!selectedTrain || !mapRef.current) {
-      return
-    }
-    const trainCoords = trainData.features.find(
-      (f) => f.properties.objectID === selectedTrain.objectID,
-    )?.geometry.coordinates
-
-    if (!trainCoords) {
-      return
-    }
-
-    const zoom = mapRef.current.getZoom()
-    const minFlyZoom = 8
-    mapRef.current.flyTo({
-      center: trainCoords as LngLatLike,
-      zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
-    })
-  }, [selectedTrain?.objectID])
-
-  useEffect(() => {
     if (!mapRef.current) {
       return
     }
-    ;(async () => {
-      await sleep(1000)
+    const intervalId = setTimeout(() => {
       setTrainData(
         trainsToGeoJson(
           trainData,
@@ -102,7 +81,8 @@ function Map() {
           selectedTrain,
         ),
       )
-    })()
+    }, 1000)
+    return () => clearTimeout(intervalId)
   }, [selectedTrain, stations, trains, loaded, trainData])
 
   console.log('render', new Date())
@@ -113,14 +93,34 @@ function Map() {
   const cursorDefault = (ev: MapLayerMouseEvent) =>
     (ev.target.getCanvas().style.cursor = '')
 
-  const navigateToTrain = (
+  const navigateToTrain = async (
     ev: MapLayerMouseEvent & {
       features?: MapGeoJSONFeature[]
     },
   ) => {
     const trainID = ev.features?.[0]?.properties.objectID
     if (trainID) {
-      router.push(`/train/${trainID}`)
+      await router.push(`/train/${trainID}`)
+    }
+    if (mapRef.current) {
+      setTrainData(
+        trainsToGeoJson(
+          trainData,
+          mapRef.current!,
+          trains,
+          stations,
+          trains.find((t) => t.objectID === trainID),
+        ),
+      )
+      const zoom = mapRef.current.getZoom()
+      const trainPosition = trainData.features.find(
+        (f) => f.properties.objectID === trainID,
+      )?.geometry.coordinates
+      const minFlyZoom = 8
+      mapRef.current.flyTo({
+        center: trainPosition as LngLatLike,
+        zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
+      })
     }
   }
 

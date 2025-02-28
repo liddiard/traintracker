@@ -1,7 +1,8 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // https://stackoverflow.com/a/72186766
+  reactStrictMode: false,
   logging: {
     fetches: {
       fullUrl: true,
