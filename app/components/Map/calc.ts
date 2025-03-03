@@ -433,7 +433,6 @@ export const getExtrapolatedTrainPoint = (
 ) => {
   console.time('getExtrapolatedTrainPoint')
   const { objectID } = trainStatus
-  debugger
   const progressPct = getCurrentSegmentProgress(trainStatus).percent
   const prevStation = stations.find(
     (s) =>

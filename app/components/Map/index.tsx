@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import MapGL, {
   Source,
@@ -34,6 +34,7 @@ import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
 import { sleep } from '@/app/utils'
 import { sourceId } from './constants'
+import TrainGPS from './TrainGPS'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
@@ -71,19 +72,21 @@ function Map() {
     if (!mapRef.current) {
       return
     }
-    const intervalId = setTimeout(() => {
-      setTrainData(
-        trainsToGeoJson(
-          trainData,
-          mapRef.current!,
-          trains,
-          stations,
-          selectedTrain,
+    const intervalId = setTimeout(
+      () =>
+        setTrainData(
+          trainsToGeoJson(
+            trainData,
+            mapRef.current!,
+            trains,
+            stations,
+            selectedTrain,
+          ),
         ),
-      )
-    }, 1000)
+      1000,
+    )
     return () => clearTimeout(intervalId)
-  }, [selectedTrain, stations, trains, loaded, trainData])
+  }, [trains, stations, selectedTrain, trainData, loaded])
 
   console.log('render', new Date())
 
@@ -93,35 +96,30 @@ function Map() {
   const cursorDefault = (ev: MapLayerMouseEvent) =>
     (ev.target.getCanvas().style.cursor = '')
 
-  const navigateToTrain = async (
-    ev: MapLayerMouseEvent & {
-      features?: MapGeoJSONFeature[]
-    },
-  ) => {
-    const trainID = ev.features?.[0]?.properties.objectID
-    if (trainID) {
-      await router.push(`/train/${trainID}`)
+  const navigateToTrain = (trainID: string) => {
+    router.push(`/train/${trainID}`)
+    if (!mapRef.current) {
+      return
     }
-    if (mapRef.current) {
-      setTrainData(
-        trainsToGeoJson(
-          trainData,
-          mapRef.current!,
-          trains,
-          stations,
-          trains.find((t) => t.objectID === trainID),
-        ),
-      )
-      const zoom = mapRef.current.getZoom()
-      const trainPosition = trainData.features.find(
-        (f) => f.properties.objectID === trainID,
-      )?.geometry.coordinates
-      const minFlyZoom = 8
-      mapRef.current.flyTo({
-        center: trainPosition as LngLatLike,
-        zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
-      })
-    }
+    // update current (selected) train
+    setTrainData(
+      trainsToGeoJson(
+        trainData,
+        mapRef.current!,
+        trains,
+        stations,
+        trains.find((t) => t.objectID === trainID),
+      ),
+    )
+    const zoom = mapRef.current.getZoom()
+    const trainPosition = trainData.features.find(
+      (f) => f.properties.objectID === trainID,
+    )?.geometry.coordinates
+    const minFlyZoom = 8
+    mapRef.current.flyTo({
+      center: trainPosition as LngLatLike,
+      zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
+    })
   }
 
   const handleMoveEnd = (ev: ViewStateChangeEvent) => {
@@ -160,7 +158,14 @@ function Map() {
         onMoveEnd={handleMoveEnd}
         onMouseEnter={cursorPointer}
         onMouseLeave={cursorDefault}
-        onClick={navigateToTrain}
+        onClick={(
+          ev: MapLayerMouseEvent & {
+            features?: MapGeoJSONFeature[]
+          },
+        ) => {
+          const trainID = ev.features?.[0]?.properties.objectID
+          if (trainID) navigateToTrain(trainID)
+        }}
         interactiveLayerIds={['trains', 'train-labels']}
       >
         {renderControls()}
@@ -175,19 +180,26 @@ function Map() {
           <Layer {...stationLayer} />
           <Layer {...stationLabelLayer} />
         </Source>
-        {trainData.features.map((f) => (
-          <TrainMarker
-            key={f.properties.objectID}
-            coordinates={f.geometry.coordinates}
-            zoom={viewState.zoom}
-            {...f.properties}
-          />
-        ))}
         {loaded && mapRef.current ? (
           <Source id={sourceId.trains} type="geojson" data={trainData}>
             <Layer {...trainLabelLayer} />
           </Source>
         ) : null}
+        {selectedTrain && (
+          <TrainGPS
+            coordinates={[selectedTrain.lon, selectedTrain.lat]}
+            updatedAt={selectedTrain.updatedAt}
+          />
+        )}
+        {trainData.features.map((f) => (
+          <TrainMarker
+            key={f.properties.objectID}
+            coordinates={f.geometry.coordinates}
+            zoom={viewState.zoom}
+            navigateToTrain={navigateToTrain}
+            {...f.properties}
+          />
+        ))}
       </MapGL>
     </>
   )

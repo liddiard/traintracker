@@ -2,13 +2,13 @@ import { Marker } from 'react-map-gl/maplibre'
 import cn from 'classnames'
 import Pointer from '@/app/img/pointer.svg'
 import Circle from '@/app/img/train-circle.svg'
-import { useRouter } from 'next/navigation'
 import { TrainFeatureProperties } from '@/app/types'
 
 interface TrainMarkerProps extends TrainFeatureProperties {
   coordinates: number[]
   bearing?: number
   zoom: number
+  navigateToTrain: (trainID: string) => void
 }
 
 function TrainMarker({
@@ -17,8 +17,8 @@ function TrainMarker({
   coordinates,
   bearing,
   zoom,
+  navigateToTrain,
 }: TrainMarkerProps) {
-  const router = useRouter()
   const [lon, lat] = coordinates
 
   const renderMarker = () => {
@@ -43,7 +43,7 @@ function TrainMarker({
       rotation={bearing}
       rotationAlignment="map"
       pitchAlignment="map"
-      onClick={() => router.push(`/train/${objectID}`)}
+      onClick={() => navigateToTrain(objectID)}
       className="cursor-pointer p-2"
     >
       {renderMarker()}
