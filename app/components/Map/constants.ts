@@ -2,6 +2,7 @@ export const sourceId = {
   amtrakTrack: 'amtrak-track',
   amtrakStations: 'amtrak-stations',
   trains: 'trains',
+  trainGPS: 'train-gps',
 }
 
 // map from 2-letter code (arbitrarily chosen by me) to Amtraker API route name

@@ -1,14 +1,13 @@
 import { useState } from 'react'
 import { Marker, Popup } from 'react-map-gl/maplibre'
 import Crosshair from '@/app/img/crosshair.svg'
-import { formatTime } from '@/app/utils'
 
 interface TrainGPSProps {
   coordinates: number[]
-  updatedAt: Date
+  zoom: number
 }
 
-function TrainGPS({ coordinates, updatedAt }: TrainGPSProps) {
+function TrainGPS({ coordinates, zoom }: TrainGPSProps) {
   const [lon, lat] = coordinates
   const [showPopup, setShowPopup] = useState(false)
 
@@ -23,10 +22,12 @@ function TrainGPS({ coordinates, updatedAt }: TrainGPSProps) {
         anchor="center"
         className="cursor-default mix-blend-hard-light"
       >
-        <Crosshair className="h-6 w-6 animate-spin fill-amtrak-indigo-600 [animation-duration:20s]" />
-        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-sm font-semibold text-amtrak-indigo-600">
-          {formatTime(updatedAt)}
-        </div>
+        <Crosshair
+          className="h-6 w-6 animate-spin fill-amtrak-blue-700 [animation-duration:20s]"
+          style={{
+            scale: `clamp(0.5, ${zoom * 0.1}, 1)`,
+          }}
+        />
       </Marker>
       {showPopup && (
         <Popup

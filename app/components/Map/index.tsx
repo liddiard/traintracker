@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import MapGL, {
   Source,
@@ -28,6 +28,8 @@ import {
   stationsToGeoJson,
   trackLayer,
   trainLabelLayer,
+  trainToGeoJSON,
+  trainGPSLabelLayer,
 } from './display'
 import _amtrakTrack from '@/public/map_data/amtrak-track.geojson'
 import TrainMarker from './TrainMarker'
@@ -96,8 +98,8 @@ function Map() {
   const cursorDefault = (ev: MapLayerMouseEvent) =>
     (ev.target.getCanvas().style.cursor = '')
 
-  const navigateToTrain = (trainID: string) => {
-    router.push(`/train/${trainID}`)
+  const navigateToTrain = async (trainID: string) => {
+    await router.push(`/train/${trainID}`)
     if (!mapRef.current) {
       return
     }
@@ -122,14 +124,18 @@ function Map() {
     })
   }
 
-  const handleMoveEnd = (ev: ViewStateChangeEvent) => {
+  const handleMoveEnd = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
     setViewState(ev.viewState)
+    // arbitrary sleep to prevent race condition between updating the URL here
+    // and `navigateToTrain`, which also updates the URL and causes the map to
+    // move
+    await sleep(500)
     const url = new URL(window.location.href)
     url.searchParams.set('lat', latitude.toFixed(5))
     url.searchParams.set('lng', longitude.toFixed(5))
     url.searchParams.set('z', zoom.toFixed(1))
-    router.replace(url.toString(), { scroll: false })
+    await router.replace(url.toString(), { scroll: false })
   }
 
   const renderControls = () => (
@@ -186,9 +192,18 @@ function Map() {
           </Source>
         ) : null}
         {selectedTrain && (
+          <Source
+            id={sourceId.trainGPS}
+            type="geojson"
+            data={trainToGeoJSON(selectedTrain)}
+          >
+            <Layer {...trainGPSLabelLayer} />
+          </Source>
+        )}
+        {selectedTrain && viewState.zoom > 6 && (
           <TrainGPS
             coordinates={[selectedTrain.lon, selectedTrain.lat]}
-            updatedAt={selectedTrain.updatedAt}
+            zoom={viewState.zoom}
           />
         )}
         {trainData.features.map((f) => (

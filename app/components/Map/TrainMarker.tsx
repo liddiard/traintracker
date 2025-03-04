@@ -1,5 +1,4 @@
 import { Marker } from 'react-map-gl/maplibre'
-import cn from 'classnames'
 import Pointer from '@/app/img/pointer.svg'
 import Circle from '@/app/img/train-circle.svg'
 import { TrainFeatureProperties } from '@/app/types'
@@ -28,11 +27,10 @@ function TrainMarker({
       stroke: 'white',
       strokeWidth: 5,
     }
-    const sharedClassNames = 'hover:scale-125 transition-transform'
     return bearing === undefined || zoom < 6 ? (
-      <Circle className={cn('w-2', sharedClassNames)} style={sharedStyles} />
+      <Circle className="w-2" style={sharedStyles} />
     ) : (
-      <Pointer className={cn('w-4', sharedClassNames)} style={sharedStyles} />
+      <Pointer className="w-4" style={sharedStyles} />
     )
   }
 

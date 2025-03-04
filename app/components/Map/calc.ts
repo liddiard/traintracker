@@ -472,6 +472,6 @@ export const getExtrapolatedTrainPoint = (
   }
 }
 
-const getTrainTrail = (map: MapRef, train: Train) => {
+const getRouteTrack = (map: MapRef, train: Train) => {
   // lineSlice + along
 }

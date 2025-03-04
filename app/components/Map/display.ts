@@ -9,6 +9,7 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 import {
   createCachedFunction,
+  formatDuration,
   getTrainColor,
   getTrainStatus,
 } from '../../utils'
@@ -113,6 +114,27 @@ export const trainLabelLayer: SymbolLayerSpecification = {
   },
 }
 
+export const trainGPSLabelLayer: SymbolLayerSpecification = {
+  id: sourceId.trainGPS,
+  type: 'symbol',
+  source: sourceId.trainGPS,
+  layout: {
+    'text-field': ['step', ['zoom'], '', 6, ['get', 'lastUpdatedStr']],
+    'text-size': ['interpolate', ['linear'], ['zoom'], 3, 8, 10, 14],
+    'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+    'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 5, 0.75, 10, 1],
+    'text-justify': 'auto',
+    // font names from https://github.com/openmaptiles/fonts/
+    'text-font': ['Noto Sans Regular'],
+  },
+  paint: {
+    'text-color': colors['amtrak-blue-500'],
+    'text-halo-color': 'white',
+    'text-halo-width': 1,
+    'text-halo-blur': 1,
+  },
+}
+
 /**
  * Converts an array of stations into a GeoJSON FeatureCollection.
  *
@@ -133,6 +155,31 @@ export const stationsToGeoJson = (
       ...station,
     },
   })),
+})
+
+/**
+ * Converts a Train object into a GeoJSON Point feature
+ * @param train The train object to convert
+ * @returns A GeoJSON Point feature representing the train's location
+ */
+export const trainToGeoJSON = ({
+  lon,
+  lat,
+  updatedAt,
+}: Train): Feature<Point> => ({
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [lon, lat],
+  },
+  properties: {
+    lastUpdatedStr: formatDuration(
+      (updatedAt.getTime() - new Date().getTime()) / 60000,
+      {
+        shortenMins: true,
+      },
+    ),
+  },
 })
 
 const snapTrainToTrackCached = createCachedFunction(

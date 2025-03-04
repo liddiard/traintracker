@@ -328,6 +328,11 @@ export const formatDuration = (
 ) => {
   const { shortenMins = false } = options || {}
   minutes = Math.round(minutes)
+  let pastString = ''
+  if (minutes < 0) {
+    pastString = ' ago'
+  }
+  minutes = Math.abs(minutes)
   let minsString
   if (shortenMins) {
     minsString = 'min'
@@ -337,8 +342,8 @@ export const formatDuration = (
     minsString = 'minutes'
   }
   return minutes < 60
-    ? `${minutes} ${minsString}`
-    : `${Math.floor(minutes / 60)}h ${minutes % 60}m`
+    ? `${minutes} ${minsString}${pastString}`
+    : `${Math.floor(minutes / 60)}h ${minutes % 60}m${pastString}`
 }
 
 /**
