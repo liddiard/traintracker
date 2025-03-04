@@ -11,6 +11,7 @@ import {
 import { TRAIN_SEARCH_PARAMS } from './constants'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
+import { routeToCodeMap } from './components/Map/constants'
 
 const {
   theme: { colors },
@@ -476,3 +477,20 @@ export const getTrainColor = (trainStatus: TrainStatus) => {
     [TimeStatus.COMPLETE]: colors['amtrak-deep-blue'],
   }[code]
 }
+
+/**
+ * Generates a short code identifier for a train by combining the route code and train number.
+ *
+ * @param {Train} train - The train object containing route name and train number
+ * @returns {string} A formatted shortcode combining the route code and train number (e.g. "NE 123")
+ *
+ * @example
+ * // Returns "NE 123"
+ * getTrainShortcode({ routeName: "Northeast Regional", trainNum: "123" })
+ *
+ * @example
+ * // Returns "456" (if no mapping exists for "Unknown route")
+ * getTrainShortcode({ routeName: "Unknown route", trainNum: "456" })
+ */
+export const getTrainShortcode = ({ routeName, trainNum }: Train) =>
+  [routeToCodeMap[routeName], trainNum].filter(Boolean).join(' ')

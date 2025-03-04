@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 
 import './globals.css'
 import Map from './components/Map'
@@ -7,13 +6,12 @@ import Search from './components/Search'
 import { formatTrainResponse } from './utils'
 import { TrainProvider } from './providers/train'
 import { Station } from './types'
+import { inter } from './constants'
 
 export const metadata: Metadata = {
   title: 'TrainTracker',
   description: 'Track your US Amtrak train with a live map and notifications',
 }
-
-const inter = Inter({ subsets: ['latin'] })
 
 async function getTrains() {
   try {

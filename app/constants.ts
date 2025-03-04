@@ -1,3 +1,5 @@
+import { Inter } from 'next/font/google'
+
 export const headingToRotationMap: Record<string, number> = {
   N: 0,
   NE: 45,
@@ -13,3 +15,5 @@ export const headingToRotationMap: Record<string, number> = {
 export const MIN_PROGRESS_PX = 16
 
 export const TRAIN_SEARCH_PARAMS = ['from', 'to', 'trainName', 'trainNumber']
+
+export const inter = Inter({ subsets: ['latin'] })

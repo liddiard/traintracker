@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { Marker, Popup } from 'react-map-gl/maplibre'
+import cn from 'classnames'
 import Crosshair from '@/app/img/crosshair.svg'
+import { inter } from '@/app/constants'
 
 interface TrainGPSProps {
   coordinates: number[]
   zoom: number
+  shortcode: string
 }
 
-function TrainGPS({ coordinates, zoom }: TrainGPSProps) {
+function TrainGPS({ coordinates, zoom, shortcode }: TrainGPSProps) {
   const [lon, lat] = coordinates
-  const [showPopup, setShowPopup] = useState(false)
+  const [showPopup, setShowPopup] = useState(true)
 
   return (
     <div
@@ -37,9 +40,9 @@ function TrainGPS({ coordinates, zoom }: TrainGPSProps) {
           offset={[0, -10]}
           closeButton={false}
           closeOnClick={false}
-          className="text-sm"
+          className={cn(inter.className, 'text-sm')}
         >
-          Last reported location
+          {shortcode}’s last reported location
         </Popup>
       )}
     </div>

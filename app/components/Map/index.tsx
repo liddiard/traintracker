@@ -34,7 +34,7 @@ import {
 import _amtrakTrack from '@/public/map_data/amtrak-track.geojson'
 import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
-import { sleep } from '@/app/utils'
+import { getTrainShortcode, sleep } from '@/app/utils'
 import { sourceId } from './constants'
 import TrainGPS from './TrainGPS'
 
@@ -204,6 +204,7 @@ function Map() {
           <TrainGPS
             coordinates={[selectedTrain.lon, selectedTrain.lat]}
             zoom={viewState.zoom}
+            shortcode={getTrainShortcode(selectedTrain)}
           />
         )}
         {trainData.features.map((f) => (
