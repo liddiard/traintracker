@@ -93,8 +93,19 @@ export const getBearing = (
   if (!nextStation) {
     return
   }
+  const trainPointJSON = JSON.stringify(trainPoint.geometry.coordinates)
+  // get all track points except the one the train is on
+  const trackPointsExcludingTrainPoint = explode(track).features.filter(
+    (pt) => JSON.stringify(pt.geometry.coordinates) !== trainPointJSON,
+  )
+  if (!trackPointsExcludingTrainPoint.length) {
+    return
+  }
   // find the nearest track vertex to the train
-  const nearestTrackPoint = nearestPoint(trainPoint, explode(track))
+  const nearestTrackPoint = nearestPoint(
+    trainPoint,
+    featureCollection(trackPointsExcludingTrainPoint),
+  )
   // check if the nearest track vertex is ahead of or behind the train
   const nearestPointIsBehindTrain = isPointBehindTrain(
     nearestTrackPoint,
@@ -313,6 +324,13 @@ export const snapTrainToTrack = (train: Train) => {
     }
   }
 }
+
+export const snapTrainToTrackCached = createCachedFunction(
+  snapTrainToTrack,
+  (train) => train.objectID, // cache key
+  // cache validity condition
+  ({ updatedAt }, train) => !!updatedAt && updatedAt === train.updatedAt,
+)
 
 /**
  * Gets the track segment between a train's position and the next station.

@@ -12,7 +12,7 @@ interface TrainGPSProps {
 
 function TrainGPS({ coordinates, zoom, shortcode }: TrainGPSProps) {
   const [lon, lat] = coordinates
-  const [showPopup, setShowPopup] = useState(true)
+  const [showPopup, setShowPopup] = useState(false)
 
   return (
     <div

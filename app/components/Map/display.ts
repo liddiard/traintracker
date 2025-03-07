@@ -7,14 +7,9 @@ import type {
 } from 'react-map-gl/maplibre'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
-import {
-  createCachedFunction,
-  formatDuration,
-  getTrainColor,
-  getTrainStatus,
-} from '../../utils'
+import { formatDuration, getTrainColor, getTrainStatus } from '../../utils'
 import { Train, Station, TrainFeatureProperties } from '../../types'
-import { getExtrapolatedTrainPoint, snapTrainToTrack } from './calc'
+import { getExtrapolatedTrainPoint, snapTrainToTrackCached } from './calc'
 import { sourceId, routeToCodeMap } from './constants'
 
 const {
@@ -181,13 +176,6 @@ export const trainToGeoJSON = ({
     ),
   },
 })
-
-const snapTrainToTrackCached = createCachedFunction(
-  snapTrainToTrack,
-  (train) => train.objectID, // cache key
-  // cache validity condition
-  ({ updatedAt }, train) => !!updatedAt && updatedAt === train.updatedAt,
-)
 
 /**
  * Creates a GeoJSON Feature representing a train on the map.

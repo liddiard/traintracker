@@ -91,8 +91,8 @@ export default function TrainDetail() {
 
   const timezonesDiffer = train.originTZ !== train.destTZ
   const hasTrainSearchParams = !!Object.entries(trainSearchParams).length
-  // last update is more than 10 minutes old
   const minsSinceLastUpdate = msToMins(Date.now() - train.updatedAt.valueOf())
+  // last update is more than 10 minutes old
   const isStaleData =
     ![TimeStatus.PREDEPARTURE, TimeStatus.COMPLETE].includes(
       trainStatus.code!,
