@@ -42,7 +42,7 @@ function TrainGPS({ coordinates, zoom, shortcode }: TrainGPSProps) {
           closeOnClick={false}
           className={cn(inter.className, 'text-sm')}
         >
-          {shortcode}’s last reported location
+          {shortcode}’s last-reported location
         </Popup>
       )}
     </div>
