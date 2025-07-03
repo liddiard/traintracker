@@ -52,7 +52,7 @@ function TimelineSegment({
         <span
           className={cn('block', {
             'line-through': deviation,
-            'text-positron-gray-600': deviation,
+            'text-positron-gray-600 dark:text-positron-gray-300': deviation,
           })}
         >
           {formatTime(schArr, tz)}
@@ -60,7 +60,7 @@ function TimelineSegment({
         {deviation !== 0 ? (
           <span
             className={cn(
-              'block',
+              'block dark:brightness-150',
               deviation < 0 ? 'text-amtrak-green-600' : '',
             )}
             style={{ color: deviation > 0 ? getDelayColor(deviation) : '' }}

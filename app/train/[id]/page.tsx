@@ -48,14 +48,14 @@ export default function TrainDetail() {
   }) => (
     <>
       <div className="text-3xl">{stationCode}</div>
-      <div className="mb-2 font-semibold leading-tight text-positron-gray-600">
+      <div className="mb-2 font-semibold leading-tight text-positron-gray-600 dark:text-positron-gray-300">
         {stationName}
       </div>
       <div>
         {formatDate(date, tz)}, {formatTime(date, tz)}
       </div>
       {displayTz ? (
-        <div className="text-sm text-positron-gray-600">
+        <div className="text-sm text-positron-gray-600 dark:text-positron-gray-300">
           UTC<span className="font-semibold">{getOffset(tz) / 60}</span>
         </div>
       ) : (
@@ -76,7 +76,7 @@ export default function TrainDetail() {
             <Pointer
               alt={train.heading}
               title={train.heading}
-              className="w-4 self-center transition-all duration-1000"
+              className="w-4 self-center transition-all duration-1000 dark:fill-white"
               style={{
                 transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
               }}
@@ -98,18 +98,20 @@ export default function TrainDetail() {
       trainStatus.code!,
     ) && minsSinceLastUpdate > 10
   return (
-    <div className="mb-4 flex flex-col gap-5 p-3">
+    <div className="flex flex-col gap-5 p-3 pb-4">
       <Link
         href={`/?${new URLSearchParams(trainSearchParams).toString()}`}
-        className="font-semibold text-amtrak-blue-600 hover:text-amtrak-blue-500"
+        className="font-semibold text-amtrak-blue-600 hover:text-amtrak-blue-500 dark:text-amtrak-blue-300"
       >
         {hasTrainSearchParams ? '← Back to Search' : '← All Trains'}
       </Link>
       <h1 className="text-3xl font-bold">
         {train.routeName}{' '}
-        <span className="text-amtrak-blue-600">{train.trainNum}</span>
+        <span className="text-amtrak-blue-600 dark:text-amtrak-blue-300">
+          {train.trainNum}
+        </span>
       </h1>
-      <div className="grid grid-flow-col grid-cols-[1fr,auto,1fr] grid-rows-[repeat(4,auto)] border-y border-positron-gray-200 py-4 text-center leading-relaxed">
+      <div className="grid grid-flow-col grid-cols-[1fr,auto,1fr] grid-rows-[repeat(4,auto)] border-y border-positron-gray-200 py-4 text-center leading-relaxed dark:border-positron-gray-700">
         {renderRouteEndpoint({
           stationName: train.origName,
           stationCode: train.origCode,
@@ -119,7 +121,7 @@ export default function TrainDetail() {
         })}
         <CaretRight
           alt="to"
-          className="w-3 self-center fill-positron-gray-600"
+          className="w-3 self-center fill-positron-gray-600 dark:fill-positron-gray-300"
         />
         <span />
         <span />
@@ -140,16 +142,21 @@ export default function TrainDetail() {
       <CurrentSegment trainStatus={trainStatus} />
 
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between text-sm text-positron-gray-600">
+        <div className="flex justify-between text-sm text-positron-gray-600 dark:text-positron-gray-300">
           <span>
             Last update{' '}
-            <span className={cn({ 'text-amtrak-yellow-700': isStaleData })}>
+            <span
+              className={cn({
+                'text-amtrak-yellow-700 dark:text-amtrak-yellow-400':
+                  isStaleData,
+              })}
+            >
               {formatTime(train.updatedAt)}
             </span>
             {isStaleData && (
               <Warning
                 alt="caution"
-                className="mx-1 inline w-4 fill-amtrak-yellow-700 align-text-top"
+                className="mx-1 inline w-4 fill-amtrak-yellow-700 align-text-top dark:fill-amtrak-yellow-400"
               />
             )}
           </span>
@@ -157,12 +164,12 @@ export default function TrainDetail() {
             Next check
             <Pie
               alt="every 15 seconds"
-              className="h-4 w-4 shrink-0 rounded-full border border-positron-gray-600"
+              className="h-4 w-4 shrink-0 rounded-full border border-positron-gray-600 dark:border-positron-gray-200"
             />
           </span>
         </div>
         {isStaleData && (
-          <span className="text-sm leading-snug text-amtrak-yellow-700">
+          <span className="text-sm leading-snug text-amtrak-yellow-700 dark:text-amtrak-yellow-400">
             Info from this train is {formatDuration(minsSinceLastUpdate)} old.
             Its current location is estimated.
           </span>

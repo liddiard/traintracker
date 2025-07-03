@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import './globals.css'
+import './app.css'
 import Map from './components/Map'
 import Search from './components/Search'
 import { formatTrainResponse } from './utils'
