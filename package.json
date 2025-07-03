@@ -10,6 +10,10 @@
     "lint": "next lint",
     "prepare": "husky"
   },
+  "engines": {
+    "node": "22",
+    "npm": "11"
+  },
   "dependencies": {
     "@turf/turf": "^7.2.0",
     "classnames": "^2.5.1",
