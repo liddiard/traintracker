@@ -7,6 +7,8 @@ interface TrainMarkerProps extends TrainFeatureProperties {
   coordinates: number[]
   bearing?: number
   zoom: number
+  moving: boolean
+  isSelected: boolean
   navigateToTrain: (trainID: string) => void
 }
 
@@ -16,22 +18,17 @@ function TrainMarker({
   coordinates,
   bearing,
   zoom,
+  moving,
+  isSelected,
   navigateToTrain,
 }: TrainMarkerProps) {
   const [lon, lat] = coordinates
 
-  const renderMarker = () => {
-    const sharedStyles = {
-      scale: `clamp(0.5, ${0.5 + zoom * 0.1}, 1.75)`,
-      fill: color,
-      stroke: 'white',
-      strokeWidth: 5,
-    }
-    return bearing === undefined || zoom < 6 ? (
-      <Circle className="w-2" style={sharedStyles} />
-    ) : (
-      <Pointer className="w-4" style={sharedStyles} />
-    )
+  const sharedStyles = {
+    scale: `clamp(0.5, ${0.5 + zoom * 0.1}, 1.75)`,
+    fill: color,
+    stroke: 'white',
+    strokeWidth: 5,
   }
 
   return (
@@ -42,9 +39,18 @@ function TrainMarker({
       rotationAlignment="map"
       pitchAlignment="map"
       onClick={() => navigateToTrain(objectID)}
-      className="cursor-pointer p-2"
+      className="cursor-pointer p-2 transition-all ease-linear"
+      style={{
+        // reposition markers immediately while map is moving
+        transitionDuration: moving ? '0s' : '5s',
+        zIndex: isSelected ? 1 : 'unset',
+      }}
     >
-      {renderMarker()}
+      {bearing === undefined || zoom < 6 ? (
+        <Circle className="w-2" style={sharedStyles} />
+      ) : (
+        <Pointer className="w-4" style={sharedStyles} />
+      )}
     </Marker>
   )
 }

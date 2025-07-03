@@ -7,7 +7,7 @@ import fetchAmtrak from './amtrak'
 
 export async function GET() {
   const data = await fetchAmtrak()
-  console.log(JSON.stringify(data, null, 2))
+  console.log(JSON.stringify(data.features, null, 2))
   try {
     const res = await fetch('https://api-v3.amtraker.com/v3/trains', {
       next: { revalidate: 60 }, // cache for 1 minute

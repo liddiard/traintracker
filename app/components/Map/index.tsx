@@ -57,6 +57,7 @@ function Map() {
   }
 
   const [loaded, setLoaded] = useState(false)
+  const [moving, setMoving] = useState(false)
   const [viewState, setViewState] = useState(initialViewState)
   const [trainData, setTrainData] = useState({
     type: 'FeatureCollection',
@@ -70,33 +71,20 @@ function Map() {
     [trains, trainID],
   )
 
+  const updateTrains = useCallback(() => {
+    console.log('updateTrains', new Date())
+    setTrainData(trainsToGeoJson(trainData, mapRef.current!, trains, stations))
+  }, [trainData, trains, stations])
+
   useEffect(() => {
-    if (!mapRef.current) {
+    if (!loaded) {
       return
     }
-    const intervalId = setTimeout(
-      () =>
-        setTrainData(
-          trainsToGeoJson(
-            trainData,
-            mapRef.current!,
-            trains,
-            stations,
-            selectedTrain,
-          ),
-        ),
-      1000,
-    )
-    return () => clearTimeout(intervalId)
-  }, [trains, stations, selectedTrain, trainData, loaded])
+    const intervalId = setInterval(updateTrains, 5000)
+    return () => clearInterval(intervalId)
+  }, [updateTrains, loaded])
 
   console.log('render', new Date())
-
-  const cursorPointer = (ev: MapLayerMouseEvent) =>
-    (ev.target.getCanvas().style.cursor = 'pointer')
-
-  const cursorDefault = (ev: MapLayerMouseEvent) =>
-    (ev.target.getCanvas().style.cursor = '')
 
   const navigateToTrain = async (trainID: string) => {
     await router.push(`/train/${trainID}`)
@@ -104,15 +92,7 @@ function Map() {
       return
     }
     // update current (selected) train
-    setTrainData(
-      trainsToGeoJson(
-        trainData,
-        mapRef.current!,
-        trains,
-        stations,
-        trains.find((t) => t.objectID === trainID),
-      ),
-    )
+    setTrainData(trainsToGeoJson(trainData, mapRef.current!, trains, stations))
     const zoom = mapRef.current.getZoom()
     const trainPosition = trainData.features.find(
       (f) => f.properties.objectID === trainID,
@@ -126,7 +106,8 @@ function Map() {
 
   const handleMoveEnd = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
-    setViewState(ev.viewState)
+    setMoving(false)
+    setViewState({ ...viewState, ...ev.viewState })
     // arbitrary sleep to prevent race condition between updating the URL here
     // and `navigateToTrain`, which also updates the URL and causes the map to
     // move
@@ -162,8 +143,6 @@ function Map() {
         mapStyle="https://tiles.openfreemap.org/styles/positron"
         onLoad={() => setLoaded(true)}
         onMoveEnd={handleMoveEnd}
-        onMouseEnter={cursorPointer}
-        onMouseLeave={cursorDefault}
         onClick={(
           ev: MapLayerMouseEvent & {
             features?: MapGeoJSONFeature[]
@@ -172,12 +151,13 @@ function Map() {
           const trainID = ev.features?.[0]?.properties.objectID
           if (trainID) navigateToTrain(trainID)
         }}
-        interactiveLayerIds={['trains', 'train-labels']}
       >
         {renderControls()}
+
         <Source id={sourceId.amtrakTrack} type="geojson" data={amtrakTrack}>
           <Layer {...trackLayer} />
         </Source>
+
         <Source
           id={sourceId.amtrakStations}
           type="geojson"
@@ -186,11 +166,7 @@ function Map() {
           <Layer {...stationLayer} />
           <Layer {...stationLabelLayer} />
         </Source>
-        {loaded && mapRef.current ? (
-          <Source id={sourceId.trains} type="geojson" data={trainData}>
-            <Layer {...trainLabelLayer} />
-          </Source>
-        ) : null}
+
         {selectedTrain && (
           <Source
             id={sourceId.trainGPS}
@@ -200,6 +176,28 @@ function Map() {
             <Layer {...trainGPSLabelLayer} />
           </Source>
         )}
+
+        {trainData.features.map((f) => (
+          <Fragment key={f.properties.objectID}>
+            <TrainMarker
+              coordinates={f.geometry.coordinates}
+              zoom={viewState.zoom}
+              moving={moving}
+              navigateToTrain={navigateToTrain}
+              isSelected={selectedTrain?.objectID === f.properties.objectID}
+              {...f.properties}
+            />
+            <TrainLabel
+              coordinates={f.geometry.coordinates}
+              zoom={viewState.zoom}
+              moving={moving}
+              navigateToTrain={navigateToTrain}
+              isSelected={selectedTrain?.objectID === f.properties.objectID}
+              {...f.properties}
+            />
+          </Fragment>
+        ))}
+
         {selectedTrain && viewState.zoom > 6 && (
           <TrainGPS
             coordinates={[selectedTrain.lon, selectedTrain.lat]}
@@ -207,15 +205,6 @@ function Map() {
             shortcode={getTrainShortcode(selectedTrain)}
           />
         )}
-        {trainData.features.map((f) => (
-          <TrainMarker
-            key={f.properties.objectID}
-            coordinates={f.geometry.coordinates}
-            zoom={viewState.zoom}
-            navigateToTrain={navigateToTrain}
-            {...f.properties}
-          />
-        ))}
       </MapGL>
     </>
   )

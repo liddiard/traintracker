@@ -71,44 +71,6 @@ export const stationLabelLayer: SymbolLayerSpecification = {
   },
 }
 
-export const trainLabelLayer: SymbolLayerSpecification = {
-  id: 'train-labels',
-  type: 'symbol',
-  source: sourceId.trains,
-  layout: {
-    'text-field': [
-      'format',
-      ['get', 'routeCode'],
-      { 'text-color': ['case', ['get', 'isSelected'], 'white', 'black'] },
-      ' ',
-      ['get', 'trainNum'],
-      {
-        'text-color': [
-          'case',
-          ['get', 'isSelected'],
-          'white',
-          colors['amtrak-blue-500'],
-        ],
-      },
-    ],
-    'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 20],
-    'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
-    'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 3, 0.5, 10, 1],
-    'text-justify': 'auto',
-    // font names from https://github.com/openmaptiles/fonts/
-    'text-font': ['Noto Sans Bold'],
-  },
-  paint: {
-    'text-halo-color': [
-      'case',
-      ['get', 'isSelected'],
-      colors['amtrak-red-600'],
-      'white',
-    ],
-    'text-halo-width': 10,
-  },
-}
-
 export const trainGPSLabelLayer: SymbolLayerSpecification = {
   id: sourceId.trainGPS,
   type: 'symbol',
@@ -184,7 +146,6 @@ export const trainToGeoJSON = ({
  * @param {MapRef} map - Reference to the map instance
  * @param {Train} train - The train data to display
  * @param {Station[]} stations - Array of station data for calculating extrapolated train position
- * @param {boolean} [isSelected=false] - Whether this train is currently selected by the user
  * @returns {Feature<Point, TrainFeatureProperties>} A GeoJSON Feature representing the train
  *
  * @description
@@ -199,14 +160,14 @@ const createTrainFeature = (
   map: MapRef,
   train: Train,
   stations: Station[],
-  isSelected: boolean = false,
 ): Feature<Point, TrainFeatureProperties> => {
   const { objectID, trainNum, routeName, lon, lat } = train
+  const trainCoords = [lon, lat]
   const trainStatus = getTrainStatus(train)
   const color = getTrainColor(trainStatus)
   // existing coordinates for this train (which may have previously been
   // snapped/extrapolated by this function), otherwise use raw GPS coordinates
-  const prevCoords = prevTrain?.geometry.coordinates ?? [lon, lat]
+  const prevCoords = prevTrain?.geometry.coordinates ?? trainCoords
 
   let coordinates, bearing
   // if the map is zoomed in enough that we care about showing the train
@@ -219,7 +180,8 @@ const createTrainFeature = (
     // if we've identified a track for this train, extrapolate its current
     // position along it based on last update and next station ETA
     const extrapolated =
-      track && getExtrapolatedTrainPoint(track, trainStatus, stations)
+      track &&
+      getExtrapolatedTrainPoint(trainCoords, track, trainStatus, stations)
     coordinates =
       extrapolated?.point.geometry.coordinates ??
       lastPosition.point.geometry.coordinates
@@ -243,7 +205,6 @@ const createTrainFeature = (
       color,
       routeCode: routeToCodeMap[routeName],
       bearing,
-      isSelected,
     },
   }
 }
@@ -266,7 +227,6 @@ export const trainsToGeoJson = (
   map: MapRef,
   trains: Train[] = [],
   stations: Station[] = [],
-  selectedTrain?: Train,
 ): FeatureCollection<Point, TrainFeatureProperties> => ({
   type: 'FeatureCollection',
   features: trains.map((train) =>
@@ -275,7 +235,6 @@ export const trainsToGeoJson = (
       map,
       train,
       stations,
-      train.objectID === selectedTrain?.objectID,
     ),
   ),
 })
