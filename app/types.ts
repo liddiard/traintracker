@@ -117,7 +117,6 @@ export interface TrainFeatureProperties {
   trainNum: string
   color?: string
   bearing?: number
-  isSelected: boolean
 }
 
 type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'
@@ -131,4 +130,18 @@ export interface TrackId {
 export enum InputType {
   TEXT,
   NUMBER,
+}
+
+export type MapStyle = 'gray' | 'simple' | 'detailed'
+export type ColorMode = 'auto' | 'light' | 'dark'
+export type Units = 'miles' | 'kilometers'
+export type TimeFormat = '12hr' | '24hr'
+export type TimeZone = 'local' | 'device'
+
+export interface Settings {
+  mapStyle: MapStyle
+  colorMode: ColorMode
+  units: Units
+  timeFormat: TimeFormat
+  timeZone: TimeZone
 }

@@ -5,6 +5,7 @@ import Map from './components/Map'
 import Search from './components/Search'
 import { formatTrainResponse } from './utils'
 import { TrainProvider } from './providers/train'
+import { SettingsProvider } from './providers/settings'
 import { Station } from './types'
 import { inter } from './constants'
 
@@ -51,17 +52,19 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <TrainProvider initialTrains={trains} stations={stations}>
-          <div className="flex h-screen flex-wrap md:flex-nowrap">
-            <div className="relative z-10 h-full w-full overflow-y-auto shadow-lg md:w-1/4 md:min-w-[300px]">
-              <Search />
-              {children}
+        <SettingsProvider>
+          <TrainProvider initialTrains={trains} stations={stations}>
+            <div className="flex h-screen flex-wrap md:flex-nowrap">
+              <div className="relative z-10 h-full w-full overflow-y-auto shadow-lg md:w-1/4 md:min-w-[300px] dark:bg-positron-gray-900 dark:text-white">
+                <Search />
+                {children}
+              </div>
+              <div className="relative h-full w-full md:w-3/4">
+                <Map />
+              </div>
             </div>
-            <div className="relative h-full w-full md:w-3/4">
-              <Map />
-            </div>
-          </div>
-        </TrainProvider>
+          </TrainProvider>
+        </SettingsProvider>
       </body>
     </html>
   )

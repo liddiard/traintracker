@@ -1,6 +1,13 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import MapGL, {
   Source,
@@ -21,6 +28,8 @@ import { FeatureCollection, MultiLineString, Point, LineString } from 'geojson'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { useTrains } from '../../providers/train'
+import { useSettings } from '../../providers/settings'
+import { MapStyle } from '@/app/types'
 import {
   trainsToGeoJson,
   stationLabelLayer,
@@ -37,13 +46,22 @@ import { TrainFeatureProperties } from '@/app/types'
 import { getTrainShortcode, sleep } from '@/app/utils'
 import { sourceId } from './constants'
 import TrainGPS from './TrainGPS'
+import TrainLabel from './TrainLabel'
+import MapSettings from './Settings'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
 >
 
+const mapStyleUrls: Record<MapStyle, string> = {
+  gray: 'https://tiles.openfreemap.org/styles/positron',
+  simple: 'https://tiles.openfreemap.org/styles/bright',
+  detailed: 'https://tiles.openfreemap.org/styles/liberty',
+}
+
 function Map() {
   const { trains, stations } = useTrains()
+  const { settings } = useSettings()
   const router = useRouter()
   const trainID = useParams().id
   const query = useSearchParams()
@@ -131,7 +149,6 @@ function Map() {
         key={viewState.bearing ? 'nav-control-compass' : 'nav-control'}
       />
       <GeolocateControl position="bottom-right" />
-      <ScaleControl />
     </>
   )
 
@@ -140,8 +157,12 @@ function Map() {
       <MapGL
         ref={mapRef}
         initialViewState={initialViewState}
-        mapStyle="https://tiles.openfreemap.org/styles/positron"
-        onLoad={() => setLoaded(true)}
+        mapStyle={mapStyleUrls[settings.mapStyle]}
+        onLoad={() => {
+          updateTrains()
+          setLoaded(true)
+        }}
+        onMoveStart={() => setMoving(true)}
         onMoveEnd={handleMoveEnd}
         onClick={(
           ev: MapLayerMouseEvent & {
@@ -206,6 +227,7 @@ function Map() {
           />
         )}
       </MapGL>
+      <MapSettings />
     </>
   )
 }
