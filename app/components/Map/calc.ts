@@ -73,6 +73,29 @@ const isPointBehindTrain = (
 }
 
 /**
+ * Normalizes an angle in degrees to be within the range [0, 360).
+ *
+ * @param degree - The input angle in degrees, which can be any number (positive or negative).
+ * @returns The normalized angle within the range of 0 (inclusive) to 360 (exclusive).
+ *
+ * @example
+ * normalizeBearing(370);   // Returns 10
+ * normalizeBearing(-10);   // Returns 350
+ * normalizeBearing(180);   // Returns 180 (already normalized)
+ */
+const normalizeBearing = (degree: number) => {
+  // Normalize the degree to be within 0 and 360
+  let normalizedDegree = degree % 360
+
+  // If the result is negative, convert it to its positive equivalent
+  if (normalizedDegree < 0) {
+    normalizedDegree += 360
+  }
+
+  return normalizedDegree
+}
+
+/**
  * Calculates the bearing of a train relative to its nearest point on the track.
  * For bearing to be accurate, this function should only be used with
  * `trainPoints` that have been snapped to the track – i.e. precisely overlay
@@ -121,10 +144,12 @@ export const getBearing = (
   // find the bearing between where the train is and its nearest point on its
   // track, flipping it 180 degrees if the nearest track vertex is behind the
   // train
-  return (
+  const rawBearing =
     bearing(trainPoint, nearestTrackPoint) +
     (nearestPointIsBehindTrain ? 180 : 0)
-  )
+  // normalize the bearing to be within 0 and 360
+  const normalizedBearing = normalizeBearing(rawBearing)
+  return normalizedBearing
 }
 
 /**
