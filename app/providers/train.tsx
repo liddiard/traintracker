@@ -66,10 +66,8 @@ export const TrainProvider: React.FC<{
 
 export const useTrains = () => {
   const context = useContext(TrainContext)
-
   if (context === undefined) {
     throw new Error('useTrains must be used within a TrainProvider')
   }
-
   return context
 }
