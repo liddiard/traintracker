@@ -15,7 +15,6 @@ import MapGL, {
   GeolocateControl,
   FullscreenControl,
   NavigationControl,
-  ScaleControl,
 } from 'react-map-gl/maplibre'
 import type {
   LngLatLike,
@@ -36,7 +35,6 @@ import {
   stationLayer,
   stationsToGeoJson,
   trackLayer,
-  trainLabelLayer,
   trainToGeoJSON,
   trainGPSLabelLayer,
 } from './display'
@@ -101,8 +99,6 @@ function Map() {
     const intervalId = setInterval(updateTrains, 5000)
     return () => clearInterval(intervalId)
   }, [updateTrains, loaded])
-
-  console.log('render', new Date())
 
   const navigateToTrain = async (trainID: string) => {
     await router.push(`/train/${trainID}`)

@@ -28,24 +28,19 @@ import {
   Station,
   TrackId,
   TrackFeatureProperties,
+  TimeStatus,
 } from '../../types'
 import _amtrakTrack from '@/public/map_data/amtrak-track.geojson'
 import {
   createCachedFunction,
   getArrival,
-  getCurrentSegmentProgress,
+  getStationCoordinates,
 } from '@/app/utils'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString,
   TrackFeatureProperties
 >
-
-type TrackSegment = {
-  track: Feature<LineString>
-  start: Feature<Point>
-  end: Feature<Point>
-}
 
 /**
  * Determines if a given point is behind a train relative to the next station.
@@ -350,6 +345,9 @@ export const snapTrainToTrack = (train: Train) => {
   }
 }
 
+/**
+ * Cached version of snapTrainToTrack.
+ */
 export const snapTrainToTrackCached = createCachedFunction(
   snapTrainToTrack,
   (train) => train.objectID, // cache key
@@ -360,13 +358,14 @@ export const snapTrainToTrackCached = createCachedFunction(
 /**
  * Gets the track segment between a train's position and the next station.
  *
+ * @param stationCode - Station identifier to be used as a cache key
  * @param trainPoint - The last-reported position of the train
  * @param trackLine - The GeoJSON track line
  * @param stationCoords - The coordinates of the next station
  * @returns The track segment as a GeoJSON Feature of type LineString
  */
 const getTrackSegment = (
-  objectID: string,
+  stationCode: string,
   start: Position,
   end: Position,
   trackLine: Feature<LineString>,
@@ -396,7 +395,7 @@ const getTrackSegment = (
  */
 const getTrackSegmentCached = createCachedFunction(
   getTrackSegment,
-  (objectID) => objectID, // cache key
+  (stationCode) => stationCode, // cache key
   // cache validity condition
   (cachedValue, objectID, start, end) => {
     const cachedStart = JSON.stringify(cachedValue?.start)
@@ -408,24 +407,44 @@ const getTrackSegmentCached = createCachedFunction(
 )
 
 /**
- * Extrapolates a train's position based on its last-reported position and
- * estimated speed.
+ * Calculates the terminus point of a train on its track using its last station.
+ * Used to position markers for trains that have completed their full route.
  *
- * @param trainPoint - The last-reported position of the train as a GeoJSON Feature of type Point.
- * @param track - The track on which the train is traveling, represented as a TrackId.
- * @param trainStatus - The status of the train, containing information about its next station and estimated arrival time.
- * @param stations - An array of station objects, used to find the coordinates of the next station.
- * @returns An object containing the extrapolated position of the train as a GeoJSON Feature of type Point, and the bearing
- * along the track as a number of degrees, or undefined if unable to calculate.
+ * @param trackLine - The GeoJSON LineString feature representing the track.
+ * @param lastStation - The final station object of the train's route.
+ * @param stations - An array of all station objects, used to look up coordinates.
+ * @returns An object with the snapped `point` on the track and an `undefined` bearing,
+ * or `undefined` if the last station's coordinates cannot be found.
+ */
+const getTrackTerminus = (
+  trackLine: Feature<LineString>,
+  lastStation: Station,
+  stations: Station[],
+) => {
+  const stationCoords = getStationCoordinates(lastStation.code, stations)
+  if (!stationCoords) {
+    return
+  }
+  return {
+    point: nearestPointOnLine(trackLine, point(stationCoords)),
+    bearing: undefined,
+  }
+}
+
+/**
+ * Extrapolates a train's position on a track based on its last-reported GPS position and
+ * timetable.
+ *
+ * @param trainPosition - The last-reported GPS coordinates of the train as [lon, lat].
+ * @param trackId - The track on which the train is traveling, represented as an ID.
+ * @param trainStatus - The status of the train, containing information about its timetable.
+ * @param stations - An array of station objects containing station codes and coordinates.
+ * @returns An object containing the extrapolated position of the train as a Feature<Point>,
+ * and the bearing along the track as a number of degrees, if able to calculate.
  *
  * @example
- * const train = {
- *   type: 'Feature',
- *   geometry: {
- *     type: 'Point',
- *     coordinates: [-122.4194, 37.7749],
- *   }
- * }
+ * const trainPosition = [-122.4194, 37.7749] // coordinates
+ * const trackId = '4332'
  * const trainStatus = {
  *   nextStation: 'NYP',
  *   updatedAt: new Date(),
@@ -441,74 +460,96 @@ const getTrackSegmentCached = createCachedFunction(
  *   trainStatus,
  *   stations,
  * );
- * console.log(result); // Extrapolated position of the train
+ * console.log(result); // Extrapolated position + bearing of the train
  *
  * @description
- * We're going to create a line segment between the train's last reported
- * position and its next station:
+ * This function gets the track segment between the train's last passed station and
+ * its next scheduled station. If the train's last-reported GPS position is between
+ * the previous and next-scheduled stations, the track segment is refined to start
+ * from that last known point.
  *
- * |---------------X-------------------------------------------------|
- * ↑                                                                 ↑
- * train position + timestamp              next station + est. arrival
- *
- * We know the train should be somewhere between its last known position and
- * the next station.¹ That extrapolated position is represented by "X" above
- * and is what this function solves for.
- *
- * Relevant to consider are:
- * - time elapsed since last update
- * - train's assumed speed, based on:
- *   - distance to cover
- *   - time between expected arrival and last update
- *
- * Calculations:
- * Speed [km/ms]          = distance / (estArrival - lastUpdate)
- * TimeElapsed [ms]       = now - lastUpdate
- * EstimatedDistance [km] = Speed * TimeElapsed
- *
- * 1: Assuming we haven't passed the next station's arrival time, but by the
- * way "next station" is determined, it's guaranteed to be in the future.
+ * It then calculates the time elapsed on this segment relative to the total planned
+ * travel time. This progress percentage is applied to the segment's total distance
+ * to estimate how far along the track the train should be, returning the extrapolated
+ * point and its corresponding bearing on the track.
  */
 export const getExtrapolatedTrainPoint = (
-  track: TrackId,
+  trainPosition: Position,
+  trackId: TrackId,
   trainStatus: TrainStatus,
   stations: Station[],
 ) => {
-  console.time('getExtrapolatedTrainPoint')
-  const { objectID } = trainStatus
-  const progressPct = getCurrentSegmentProgress(trainStatus).percent
-  const prevStation = stations.find(
-    (s) =>
-      s.code ===
-      (trainStatus.curStation?.code ?? trainStatus.prevStation?.code),
-  )
-  const nextStation = stations.find(
-    (s) => s.code === trainStatus.nextStation?.code,
-  )
-  const trackLine = getTrackFromId(track, amtrakTrack)
-  if (!prevStation || !nextStation || !trackLine) {
+  console.time(`getExtrapolatedTrainPoint ${trainStatus.objectID}`)
+  const trackLine = getTrackFromId(trackId, amtrakTrack)
+  if (!trackLine) {
     return
   }
 
-  // find the track segment between the train's last-reported position and the
-  // next station
-  const trackSegment = getTrackSegmentCached(
-    objectID,
-    [prevStation.lon, prevStation.lat],
-    [nextStation.lon, nextStation.lat],
+  // If train has arrived, snap it to the track nearest the last station's
+  // coordinates
+  if (trainStatus.code === TimeStatus.COMPLETE) {
+    return getTrackTerminus(trackLine, trainStatus.lastStation, stations)
+  }
+
+  const prevStation = trainStatus.curStation ?? trainStatus.prevStation
+  const { nextStation } = trainStatus
+  if (!prevStation || !nextStation) {
+    return
+  }
+
+  const prevStationCoords = getStationCoordinates(prevStation.code, stations)
+  const nextStationCoords = getStationCoordinates(nextStation.code, stations)
+  if (!prevStationCoords || !nextStationCoords) {
+    return
+  }
+
+  // get the track segment between the train's previous/current and next
+  // station
+  let trackSegment = getTrackSegmentCached(
+    `${prevStation.code}-${nextStation.code}`,
+    prevStationCoords,
+    nextStationCoords,
     trackLine,
-  )
-  const extrapolatedPoint = along(
-    trackSegment.track,
-    trackSegment.length * progressPct,
-  )
+  ).track
+  let startTime = getArrival(prevStation)
+
+  if (!trackSegment?.geometry?.coordinates?.length) {
+    return
+  }
+
+  // check if train's GPS coordinate is on the current track segment (according
+  // to the timetable)
+  if (
+    isPointBehindTrain(
+      point(prevStationCoords),
+      point(trainPosition),
+      stations,
+      nextStation,
+    )
+  ) {
+    console.log('trainPosition:', trainPosition)
+    console.log('nextStationCoords:', nextStationCoords)
+    console.log('trackSegment:', trackSegment)
+    // narrow the track segment from to only consider the portion between the
+    // train GPS position and next station
+    trackSegment = lineSlice(trainPosition, nextStationCoords, trackSegment)
+    startTime = trainStatus.updatedAt
+  }
+
+  const totalTime = getArrival(nextStation).getTime() - startTime.getTime()
+  const totalDistance = length(trackSegment)
+  const timeElapsed = new Date().getTime() - startTime.getTime()
+  const progress = timeElapsed / totalTime
+  const distanceCovered = totalDistance * progress
+
+  const extrapolatedPoint = along(trackSegment, distanceCovered)
   const bearing = getBearing(
     extrapolatedPoint,
-    trackSegment.track.geometry,
+    trackSegment.geometry,
     stations,
     nextStation,
   )
-  console.timeEnd('getExtrapolatedTrainPoint')
+  console.timeEnd(`getExtrapolatedTrainPoint ${trainStatus.objectID}`)
   return {
     point: extrapolatedPoint,
     bearing,

@@ -7,6 +7,7 @@ import {
   TrainStatus,
   Route,
   StationTrain,
+  Station,
 } from './types'
 import { TRAIN_SEARCH_PARAMS } from './constants'
 import resolveConfig from 'tailwindcss/resolveConfig'
@@ -494,3 +495,14 @@ export const getTrainColor = (trainStatus: TrainStatus) => {
  */
 export const getTrainShortcode = ({ routeName, trainNum }: Train) =>
   [routeToCodeMap[routeName], trainNum].filter(Boolean).join(' ')
+
+/**
+ * Gets the coordinates for a station by its code.
+ * @param {string} code The station code.
+ * @param {Station[]} stations The list of stations to search.
+ * @returns {[number, number] | undefined} The station's [lat, lon] coordinates, or undefined if not found.
+ */
+export const getStationCoordinates = (code: string, stations: Station[]) => {
+  const station = stations.find((s) => s.code === code)
+  return station && [station.lon, station.lat]
+}
