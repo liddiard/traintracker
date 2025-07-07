@@ -26,7 +26,7 @@ function TrainGPS({ coordinates, zoom, shortcode }: TrainGPSProps) {
         className="cursor-default mix-blend-hard-light"
       >
         <Crosshair
-          className="h-6 w-6 animate-spin fill-amtrak-blue-700 [animation-duration:20s]"
+          className="fill-amtrak-blue-600 h-6 w-6 animate-spin [animation-duration:20s]"
           style={{
             scale: `clamp(0.5, ${zoom * 0.1}, 1)`,
           }}

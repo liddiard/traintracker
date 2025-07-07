@@ -13,13 +13,12 @@ const selectClassNames = {
   // fix fields displaying too wide on Firefox when all filled with values
   // https://github.com/JedWatson/react-select/issues/5170
   container: () => 'grid grid-cols-[minmax(0,1fr)]',
-  indicatorsContainer: () => '!hidden',
-  menu: () => '!min-w-40',
-  control: () =>
-    '!bg-white !bg-opacity-10 !border !border-white !border-opacity-60',
-  singleValue: () => '!text-white',
-  input: () => '!text-white cursor-text',
-  placeholder: () => '!text-white !text-opacity-60',
+  indicatorsContainer: () => 'hidden!',
+  menu: () => 'min-w-40!',
+  control: () => 'bg-white/10! border! border-white/60!',
+  singleValue: () => 'text-white!',
+  input: () => 'text-white! cursor-text',
+  placeholder: () => 'text-white/60!',
 }
 
 const selectTheme = (theme: Theme) =>

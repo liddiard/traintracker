@@ -56,7 +56,7 @@ export default async function RootLayout({
         <SettingsProvider>
           <TrainProvider initialTrains={trains} stations={stations}>
             <div className="flex h-screen flex-wrap md:flex-nowrap">
-              <div className="relative z-10 h-full w-full overflow-y-auto shadow-lg md:w-1/4 md:min-w-[300px] dark:bg-positron-gray-900 dark:text-white">
+              <div className="dark:bg-positron-gray-800 relative z-10 h-full w-full overflow-y-auto shadow-lg md:w-1/4 md:min-w-[300px] dark:text-white">
                 <Search />
                 {children}
               </div>

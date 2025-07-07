@@ -93,7 +93,7 @@ function Search() {
     return (
       <div className="flex items-center gap-2">
         Find a train by
-        <div className="rounded-full bg-positron-gray-200">
+        <div className="bg-positron-gray-200 rounded-full">
           <input
             type="radio"
             name="type"
@@ -162,7 +162,7 @@ function Search() {
   )
 
   const renderSegmentSearch = () => (
-    <div className="flex flex-grow items-center gap-2">
+    <div className="flex grow items-center gap-2">
       {renderSegmentOption(true)}
       <CaretRight alt="" className="w-2 fill-white" />
       {renderSegmentOption(false)}
@@ -170,13 +170,13 @@ function Search() {
   )
 
   const renderLineSearch = () => (
-    <div className="flex flex-grow gap-2">
+    <div className="flex grow gap-2">
       <SearchSelect
         instanceId="trainName"
         name="trainName"
         options={routeOptions}
         value={trainName}
-        className="flex-grow text-black"
+        className="grow text-black"
         placeholder="Train name"
         onChange={(option) => {
           setTrainName(option as Option)
@@ -225,7 +225,7 @@ function Search() {
   return (
     <form
       id="search"
-      className="sticky top-0 z-20 flex flex-col gap-3 bg-amtrak-midnight-blue px-3 py-4 text-white shadow-md"
+      className="bg-amtrak-midnight-blue sticky top-0 z-20 flex flex-col gap-3 px-3 py-4 text-white shadow-md"
       action={handleSubmit}
     >
       {renderSearchOptions()}
@@ -235,7 +235,7 @@ function Search() {
           : renderLineSearch()}
         <button
           aria-label="Search"
-          className="shrink-0 rounded bg-amtrak-blue-500 px-2 hover:bg-amtrak-blue-600 active:bg-amtrak-blue-700"
+          className="bg-amtrak-blue-500 active:bg-amtrak-blue-600 shrink-0 rounded px-2 hover:cursor-pointer"
         >
           <MagnifyingGlass
             alt="Search"

@@ -68,7 +68,7 @@ function TrainList({
           ))}
       </div>
       <button
-        className="font-semibold text-amtrak-blue-500 hover:text-amtrak-blue-400"
+        className="text-amtrak-blue-500 hover:text-amtrak-blue-400 font-semibold"
         onClick={clearFilters}
       >
         Clear
@@ -79,7 +79,7 @@ function TrainList({
   const renderList = () => {
     if (filteredTrains.length === 0) {
       return (
-        <div className="mx-auto my-5 text-center text-lg text-positron-gray-600">
+        <div className="text-positron-gray-600 mx-auto my-5 text-center text-lg">
           No trains found
         </div>
       )
@@ -93,21 +93,21 @@ function TrainList({
             <Link
               key={train.objectID}
               href={`/train/${train.objectID}?${queryString}`}
-              className="p-3 hover:bg-amtrak-blue-500/25"
+              className="hover:bg-amtrak-blue-200/25 p-3"
             >
               <li key={train.objectID} className="flex flex-col gap-2">
-                <h2 className="flex items-start justify-between gap-2 font-bold leading-tight">
+                <h2 className="flex items-start justify-between gap-2 leading-tight font-bold">
                   <span className="mr-2">
                     {train.routeName}{' '}
                     <span className="text-amtrak-blue-600">
                       {train.trainNum}
                     </span>
                   </span>
-                  <span className="flex items-center gap-1 text-nowrap font-semibold text-positron-gray-600">
+                  <span className="text-positron-gray-600 flex items-center gap-1 font-semibold text-nowrap">
                     {train.origCode}
                     <CaretRight
                       alt="to"
-                      className="inline w-2 fill-positron-gray-600"
+                      className="fill-positron-gray-600 inline w-2"
                     />
                     {train.destCode}
                   </span>

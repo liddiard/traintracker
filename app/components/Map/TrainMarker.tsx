@@ -39,10 +39,10 @@ function TrainMarker({
       rotationAlignment="map"
       pitchAlignment="map"
       onClick={() => navigateToTrain(objectID)}
-      className="cursor-pointer p-2 transition-all ease-linear"
+      className="cursor-pointer p-2"
       style={{
         // reposition markers immediately while map is moving
-        transitionDuration: moving ? '0s' : '5s',
+        transition: `transform ${moving ? '0s' : '5s'} linear`,
         zIndex: isSelected ? 1 : 'unset',
       }}
     >

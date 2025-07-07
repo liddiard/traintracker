@@ -1,3 +1,65 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@variant progress-unfilled (&::-webkit-progress-bar, &);
+@variant progress-filled (&::-webkit-progress-value, &::-moz-progress-bar);
+@variant before-after (&::before, &::after);
+
+@theme {
+  --color-amtrak-blue-200: oklch(0.8 0.1056 229.84);
+  --color-amtrak-blue-300: oklch(0.7 0.1056 229.84);
+  --color-amtrak-blue-400: oklch(0.6 0.1056 229.84);
+  --color-amtrak-blue-500: oklch(0.5 0.1056 229.84);
+  --color-amtrak-blue-600: oklch(0.4 0.1056 229.84);
+  --color-amtrak-blue-700: oklch(0.3 0.1056 229.84);
+  --color-amtrak-blue-800: oklch(0.2 0.1056 229.84);
+
+  --color-amtrak-bright-blue-400: oklch(0.6 0.1305 229.84);
+
+  --color-amtrak-red-200: oklch(0.8 0.2313 32.91);
+  --color-amtrak-red-300: oklch(0.7 0.2313 32.91);
+  --color-amtrak-red-400: oklch(0.6 0.2313 32.91);
+  --color-amtrak-red-500: oklch(0.5 0.2313 32.91);
+  --color-amtrak-red-600: oklch(0.4 0.2313 32.91);
+  --color-amtrak-red-700: oklch(0.3 0.2313 32.91);
+  --color-amtrak-red-800: oklch(0.2 0.2313 32.91);
+
+  --color-amtrak-yellow-200: oklch(0.8 0.1683 81.89);
+  --color-amtrak-yellow-300: oklch(0.7 0.1683 81.89);
+  --color-amtrak-yellow-400: oklch(0.6 0.1683 81.89);
+  --color-amtrak-yellow-500: oklch(0.5 0.1683 81.89);
+  --color-amtrak-yellow-600: oklch(0.4 0.1683 81.89);
+  --color-amtrak-yellow-700: oklch(0.3 0.1683 81.89);
+  --color-amtrak-yellow-800: oklch(0.2 0.1683 81.89);
+
+  --color-amtrak-green-200: oklch(0.8 0.195 148.63);
+  --color-amtrak-green-300: oklch(0.7 0.195 148.63);
+  --color-amtrak-green-400: oklch(0.6 0.195 148.63);
+  --color-amtrak-green-500: oklch(0.5 0.195 148.63);
+  --color-amtrak-green-600: oklch(0.4 0.195 148.63);
+  --color-amtrak-green-700: oklch(0.3 0.195 148.63);
+  --color-amtrak-green-800: oklch(0.2 0.195 148.63);
+
+  --color-amtrak-indigo-200: oklch(0.8 0.1901 268.38);
+  --color-amtrak-indigo-200: oklch(0.7 0.1901 268.38);
+  --color-amtrak-indigo-200: oklch(0.6 0.1901 268.38);
+  --color-amtrak-indigo-200: oklch(0.5 0.1901 268.38);
+  --color-amtrak-indigo-200: oklch(0.4 0.1901 268.38);
+  --color-amtrak-indigo-200: oklch(0.3 0.1901 268.38);
+  --color-amtrak-indigo-200: oklch(0.2 0.1901 268.38);
+
+  --color-amtrak-deep-blue: oklch(0.3419 0.0885 246.29);
+  --color-amtrak-midnight-blue: oklch(0.2503 0.0541 236.36);
+
+  --color-positron-gray-100: oklch(0.9 0.0079 219.62);
+  --color-positron-gray-200: oklch(0.8 0.0079 219.62);
+  --color-positron-gray-300: oklch(0.7 0.0079 219.62);
+  --color-positron-gray-400: oklch(0.6 0.0079 219.62);
+  --color-positron-gray-500: oklch(0.5 0.0079 219.62);
+  --color-positron-gray-600: oklch(0.4 0.0079 219.62);
+  --color-positron-gray-700: oklch(0.3 0.0079 219.62);
+  --color-positron-gray-800: oklch(0.2 0.0079 219.62);
+  --color-positron-gray-900: oklch(0.1 0.0079 219.62);
+}

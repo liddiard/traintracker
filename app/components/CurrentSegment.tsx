@@ -50,7 +50,7 @@ function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
         {atStation ? 'Next' : 'Current'} Segment
       </h2>
 
-      <div className="grid grid-cols-[1fr,auto,1fr] items-center gap-2 text-balance font-semibold leading-tight">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 leading-tight font-semibold text-balance">
         <span>{segmentStartStation?.name}</span>
         <span>→</span>
         <span className="text-right">{segmentEndStation?.name}</span>
