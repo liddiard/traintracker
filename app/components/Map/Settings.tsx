@@ -105,7 +105,7 @@ function MapSettings() {
   )
 
   const renderSettings = () => (
-    <div className="mb-1 grid gap-2 rounded-md bg-white p-4 shadow-md dark:bg-positron-gray-800 dark:text-white">
+    <div className="dark:bg-positron-gray-700 mb-1 grid gap-2 rounded-md bg-white p-4 shadow-md dark:text-white">
       {settingsConfig.map((config) => (
         <div key={config.key}>{renderRadioGroup(config)}</div>
       ))}
@@ -113,15 +113,15 @@ function MapSettings() {
   )
 
   return (
-    <div className="absolute bottom-0 left-0 m-2">
+    <div className="absolute bottom-0 left-0 z-10 m-2">
       {open && renderSettings()}
       <button
         onClick={() => setOpen(!open)}
         className={cn(
           'flex cursor-pointer items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold shadow-md',
           open
-            ? 'bg-amtrak-red-600 text-white'
-            : 'bg-white dark:bg-positron-gray-800 dark:text-white',
+            ? 'bg-amtrak-red-500 text-white'
+            : 'dark:bg-positron-gray-700 bg-white dark:text-white',
         )}
       >
         {open ? (

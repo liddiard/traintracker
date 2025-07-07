@@ -1,4 +1,4 @@
-import interpolate from 'color-interpolate'
+import { interpolate, formatRgb, average } from 'culori'
 import {
   StationTrainRaw,
   TrainResponse,
@@ -9,14 +9,8 @@ import {
   StationTrain,
   Station,
 } from './types'
-import { TRAIN_SEARCH_PARAMS } from './constants'
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from '@/tailwind.config'
+import { colors, TRAIN_SEARCH_PARAMS } from './constants'
 import { routeToCodeMap } from './components/Map/constants'
-
-const {
-  theme: { colors },
-} = resolveConfig(tailwindConfig)
 
 // convert a whole number of milliseconds to seconds
 export const msToMins = (ms: number) => ms / 1000 / 60
@@ -449,15 +443,16 @@ export const getSegmentDurationMinMax = (
  */
 export const getDelayColor = (delay: number) => {
   const delayPalette = interpolate([
-    colors['amtrak-yellow-700'],
-    '#ab4c00',
-    colors['amtrak-red-700'],
-    colors['amtrak-red-500'],
+    colors['amtrak-yellow-400'],
+    average([colors['amtrak-yellow-400'], colors['amtrak-red-600']]),
+    colors['amtrak-red-600'],
+    colors['amtrak-red-400'],
   ])
   const maxDelay = 60 * 2 // minutes
-  return delay
+  const color = delay
     ? delayPalette(Math.min(delay, maxDelay) / maxDelay)
     : delayPalette(0)
+  return formatRgb(color)
 }
 
 /**
@@ -472,10 +467,10 @@ export const getTrainColor = (trainStatus: TrainStatus) => {
     return colors['positron-gray-600']
   }
   return {
-    [TimeStatus.PREDEPARTURE]: colors['amtrak-blue-600'],
-    [TimeStatus.ON_TIME]: colors['amtrak-green-600'],
+    [TimeStatus.PREDEPARTURE]: formatRgb(colors['amtrak-blue-500']),
+    [TimeStatus.ON_TIME]: formatRgb(colors['amtrak-green-400']),
     [TimeStatus.DELAYED]: getDelayColor(deviation ?? 0),
-    [TimeStatus.COMPLETE]: colors['amtrak-deep-blue'],
+    [TimeStatus.COMPLETE]: formatRgb(colors['amtrak-deep-blue']),
   }[code]
 }
 

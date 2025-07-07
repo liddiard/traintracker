@@ -37,10 +37,10 @@ function TimelineSegment({
         className="absolute -z-10 flex w-full -translate-y-[calc(100%+0.5rem)] items-center text-right"
         style={{ gridRowStart: index + 1 }}
       >
-        <span className="absolute right-0 bg-white pl-2 font-semibold text-positron-gray-600">
+        <span className="text-positron-gray-600 absolute right-0 bg-white pl-2 font-semibold">
           {formatDate(arrivalTime, tz)}
         </span>
-        <hr className="w-full border border-positron-gray-600" />
+        <hr className="border-positron-gray-600 w-full border" />
       </div>
     )
   }
@@ -61,7 +61,7 @@ function TimelineSegment({
           <span
             className={cn(
               'block dark:brightness-150',
-              deviation < 0 ? 'text-amtrak-green-600' : '',
+              deviation < 0 ? 'text-amtrak-green-500' : '',
             )}
             style={{ color: deviation > 0 ? getDelayColor(deviation) : '' }}
           >
@@ -71,7 +71,7 @@ function TimelineSegment({
       </div>
       <div className="z-10 mx-[2px] my-1 aspect-square w-3 rounded-full bg-white" />
       <div className="leading-snug">
-        <span className="block text-balance font-semibold">{name}</span>
+        <span className="block font-semibold text-balance">{name}</span>
         {platform && <span className="block">Platform {platform}</span>}
       </div>
     </Fragment>

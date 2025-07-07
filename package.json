@@ -15,9 +15,10 @@
     "npm": "11"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
     "@turf/turf": "^7.2.0",
     "classnames": "^2.5.1",
-    "color-interpolate": "^1.0.5",
+    "culori": "^4.0.2",
     "maplibre-gl": "^5.1.0",
     "next": "^15.1.7",
     "react": "^19.0.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@types/culori": "^4.0.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -36,10 +38,10 @@
     "eslint-config-prettier": "^10.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
-    "postcss": "^8",
+    "postcss": "^8.5.6",
     "prettier": "^3.5.1",
-    "prettier-plugin-tailwindcss": "^0.6.11",
-    "tailwindcss": "^3.4.17",
+    "prettier-plugin-tailwindcss": "^0.6.13",
+    "tailwindcss": "^4.1.11",
     "typescript": "^5"
   },
   "lint-staged": {

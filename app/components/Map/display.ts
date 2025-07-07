@@ -5,16 +5,12 @@ import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from '@/tailwind.config'
+import { formatRgb } from 'culori'
 import { formatDuration, getTrainColor, getTrainStatus } from '../../utils'
 import { Train, Station, TrainFeatureProperties } from '../../types'
 import { getExtrapolatedTrainPoint, snapTrainToTrackCached } from './calc'
 import { sourceId, routeToCodeMap } from './constants'
-
-const {
-  theme: { colors },
-} = resolveConfig(tailwindConfig)
+import { colors } from '@/app/constants'
 
 export const trackLayer: LineLayerSpecification = {
   id: sourceId.amtrakTrack,
@@ -25,7 +21,7 @@ export const trackLayer: LineLayerSpecification = {
     'line-cap': 'round',
   },
   paint: {
-    'line-color': colors['amtrak-blue-500'],
+    'line-color': formatRgb(colors['amtrak-blue-400']),
     'line-width': 2,
   },
 }
@@ -37,7 +33,7 @@ export const stationLayer: CircleLayerSpecification = {
   paint: {
     'circle-color': 'white',
     'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 4],
-    'circle-stroke-color': colors['amtrak-blue-500'],
+    'circle-stroke-color': formatRgb(colors['amtrak-blue-400']),
     'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 2],
   },
 }
@@ -64,7 +60,7 @@ export const stationLabelLayer: SymbolLayerSpecification = {
     'text-justify': 'auto',
   },
   paint: {
-    'text-color': colors['amtrak-blue-600'],
+    'text-color': formatRgb(colors['amtrak-blue-500']),
     'text-halo-color': 'white',
     'text-halo-width': 1,
     'text-halo-blur': 1,
@@ -85,7 +81,7 @@ export const trainGPSLabelLayer: SymbolLayerSpecification = {
     'text-font': ['Noto Sans Regular'],
   },
   paint: {
-    'text-color': colors['amtrak-blue-500'],
+    'text-color': formatRgb(colors['amtrak-blue-500']),
     'text-halo-color': 'white',
     'text-halo-width': 1,
     'text-halo-blur': 1,
