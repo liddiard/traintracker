@@ -129,13 +129,14 @@ function Map() {
   }
 
   const handleMoveEnd = async (ev: ViewStateChangeEvent) => {
+    console.log('handleMoveEnd', new Date())
     const { latitude, longitude, zoom } = ev.viewState
-    setMoving(false)
     setViewState({ ...viewState, ...ev.viewState })
     // arbitrary sleep to prevent race condition between updating the URL here
     // and `navigateToTrain`, which also updates the URL and causes the map to
     // move
-    await sleep(500)
+    await sleep(100)
+    setMoving(false)
     const url = new URL(window.location.href)
     url.searchParams.set('lat', latitude.toFixed(5))
     url.searchParams.set('lng', longitude.toFixed(5))
@@ -170,6 +171,7 @@ function Map() {
         }}
         onMoveStart={() => setMoving(true)}
         onMoveEnd={handleMoveEnd}
+        onResize={() => setMoving(true)}
         onClick={(
           ev: MapLayerMouseEvent & {
             features?: MapGeoJSONFeature[]
