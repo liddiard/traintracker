@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useMemo } from 'react'
+import cn from 'classnames'
 import { StationTrain, TrainStatus } from '../types'
 import {
   getCurrentSegmentProgress,
@@ -7,7 +8,7 @@ import {
 } from '../utils'
 import Progress from './Progress'
 import TimelineSegment from './TimelineSegment'
-import { MIN_PROGRESS_PX } from '../constants'
+import { classNames, MIN_PROGRESS_PX } from '../constants'
 
 const MIN_SEGMENT_HEIGHT = 50
 const MAX_SEGMENT_HEIGHT = 150
@@ -74,7 +75,12 @@ function Timeline({
 
   return (
     <>
-      <h2 className="border-positron-gray-200 dark:border-positron-gray-700 border-t pt-4 text-lg font-bold">
+      <h2
+        className={cn(
+          'border-t pt-4 text-lg font-bold',
+          classNames.sectionSeparator,
+        )}
+      >
         Full Route
       </h2>
       <div className="relative grid grid-cols-[max-content_min-content_1fr] gap-x-2">

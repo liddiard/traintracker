@@ -33,3 +33,9 @@ export const colors: Record<string, string> = {
   'amtrak-deep-blue': 'oklch(0.3419 0.0885 246.29)',
   'positron-gray-600': 'oklch(0.4 0.0079 219.62)',
 }
+
+export const classNames: Record<string, string> = {
+  textDeemphasized: 'text-positron-gray-600 dark:text-positron-gray-300',
+  textAccent: 'text-amtrak-blue-500 dark:text-amtrak-blue-300',
+  sectionSeparator: 'border-positron-gray-200 dark:border-positron-gray-700',
+}

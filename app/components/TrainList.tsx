@@ -1,11 +1,13 @@
+import { useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import cn from 'classnames'
+import { classNames } from '../constants'
 import { Train, TrainSearchParams } from '../types'
 import { findTrainsFromSegment, formatDate } from '../utils'
 import StatusBadge from './StatusBadge'
 import CaretRight from '../img/caret-right.svg'
 import Spinner from '../img/spinner.svg'
-import { useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 
 const filterToDisplayName: Record<string, string> = {
   from: 'From',
@@ -79,7 +81,12 @@ function TrainList({
   const renderList = () => {
     if (filteredTrains.length === 0) {
       return (
-        <div className="text-positron-gray-600 mx-auto my-5 text-center text-lg">
+        <div
+          className={cn(
+            'mx-auto my-5 text-center text-lg',
+            classNames.textDeemphasized,
+          )}
+        >
           No trains found
         </div>
       )
@@ -99,22 +106,27 @@ function TrainList({
                 <h2 className="flex items-start justify-between gap-2 leading-tight font-bold">
                   <span className="mr-2">
                     {train.routeName}{' '}
-                    <span className="text-amtrak-blue-600">
+                    <span className={classNames.textAccent}>
                       {train.trainNum}
                     </span>
                   </span>
-                  <span className="text-positron-gray-600 flex items-center gap-1 font-semibold text-nowrap">
+                  <span
+                    className={cn(
+                      'flex items-center gap-1 font-semibold text-nowrap',
+                      classNames.textDeemphasized,
+                    )}
+                  >
                     {train.origCode}
                     <CaretRight
                       alt="to"
-                      className="fill-positron-gray-600 inline w-2"
+                      className="fill-positron-gray-600 dark:fill-positron-gray-300 inline w-2"
                     />
                     {train.destCode}
                   </span>
                 </h2>
                 <div className="flex items-center justify-between gap-2">
                   <StatusBadge train={train} className="text-sm" />
-                  <span className="font-sm text-positron-gray-600">
+                  <span className={cn('font-sm', classNames.textDeemphasized)}>
                     {formatDate(train.stations[0].schDep, train.stations[0].tz)}
                   </span>
                 </div>

@@ -1,5 +1,7 @@
+import cn from 'classnames'
 import { TimeStatus, Train } from '../types'
 import { getTrainColor, getTrainStatus, median } from '../utils'
+import { classNames } from '../constants'
 
 function Stats({ trains }: { trains: Train[] }) {
   const trainStatuses = trains.map((t) => getTrainStatus(t))
@@ -65,16 +67,28 @@ function Stats({ trains }: { trains: Train[] }) {
       <div className="mt-4 flex h-4 w-full overflow-hidden px-3">
         {renderGraph()}
       </div>
-      <div className="mx-3 flex justify-evenly gap-2 border-b border-positron-gray-200 py-3 text-center">
+      <div
+        className={cn(
+          'mx-3 flex justify-evenly gap-2 border-b py-3 text-center',
+          classNames.sectionSeparator,
+        )}
+      >
         {stats.map(({ title, value, unit }) => (
           <div key={title} className="flex flex-col">
             <div>
               <span className="text-3xl">{value}</span>
               {unit && (
-                <span className="text-lg text-positron-gray-600">{unit}</span>
+                <span className={cn('text-lg', classNames.textDeemphasized)}>
+                  {unit}
+                </span>
               )}
             </div>
-            <div className="text-sm font-semibold text-positron-gray-600">
+            <div
+              className={cn(
+                'text-sm font-semibold',
+                classNames.textDeemphasized,
+              )}
+            >
               {title}
             </div>
           </div>

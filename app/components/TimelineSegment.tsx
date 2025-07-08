@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import cn from 'classnames'
 import { StationTrain } from '../types'
+import { classNames } from '../constants'
 import {
   dayDiffers,
   formatDate,
@@ -37,10 +38,15 @@ function TimelineSegment({
         className="absolute -z-10 flex w-full -translate-y-[calc(100%+0.5rem)] items-center text-right"
         style={{ gridRowStart: index + 1 }}
       >
-        <span className="text-positron-gray-600 absolute right-0 bg-white pl-2 font-semibold">
+        <span
+          className={cn(
+            'absolute right-0 bg-white pl-2 font-semibold',
+            classNames.textDeemphasized,
+          )}
+        >
           {formatDate(arrivalTime, tz)}
         </span>
-        <hr className="border-positron-gray-600 w-full border" />
+        <hr className={cn('w-full border', classNames.sectionSeparator)} />
       </div>
     )
   }
@@ -52,7 +58,7 @@ function TimelineSegment({
         <span
           className={cn('block', {
             'line-through': deviation,
-            'text-positron-gray-600 dark:text-positron-gray-300': deviation,
+            [classNames.textDeemphasized]: deviation,
           })}
         >
           {formatTime(schArr, tz)}
