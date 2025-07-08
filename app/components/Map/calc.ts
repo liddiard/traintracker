@@ -13,6 +13,7 @@ import {
   featureCollection,
   length,
   along,
+  cleanCoords,
 } from '@turf/turf'
 import {
   Feature,
@@ -532,7 +533,12 @@ export const getExtrapolatedTrainPoint = (
     console.log('trackSegment:', trackSegment)
     // narrow the track segment from to only consider the portion between the
     // train GPS position and next station
-    trackSegment = lineSlice(trainPosition, nextStationCoords, trackSegment)
+    trackSegment = lineSlice(
+      trainPosition,
+      nextStationCoords,
+      // https://github.com/Turfjs/turf/issues/2808#issuecomment-2586619743
+      cleanCoords(trackSegment),
+    )
     startTime = trainStatus.updatedAt
   }
 
