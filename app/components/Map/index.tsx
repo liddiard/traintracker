@@ -57,6 +57,11 @@ const mapStyleUrls: Record<MapStyle, string> = {
   detailed: 'https://tiles.openfreemap.org/styles/liberty',
 }
 
+const emptyTrainData: FeatureCollection<Point, TrainFeatureProperties> = {
+  type: 'FeatureCollection',
+  features: [],
+}
+
 function Map() {
   const { trains, stations } = useTrains()
   const { settings } = useSettings()
@@ -75,10 +80,7 @@ function Map() {
   const [loaded, setLoaded] = useState(false)
   const [moving, setMoving] = useState(false)
   const [viewState, setViewState] = useState(initialViewState)
-  const [trainData, setTrainData] = useState({
-    type: 'FeatureCollection',
-    features: [],
-  } as FeatureCollection<Point, TrainFeatureProperties>)
+  const [trainData, setTrainData] = useState(emptyTrainData)
 
   const mapRef = useRef<MapRef>(null)
 
@@ -96,9 +98,17 @@ function Map() {
     if (!loaded) {
       return
     }
-    const intervalId = setInterval(updateTrains, 5000)
-    return () => clearInterval(intervalId)
-  }, [updateTrains, loaded])
+    setTrainData(
+      trainsToGeoJson(emptyTrainData, mapRef.current!, trains, stations),
+    )
+  }, [loaded, trains, stations])
+
+  useEffect(() => {
+    ;(async () => {
+      await sleep(5000)
+      updateTrains()
+    })()
+  }, [updateTrains])
 
   const navigateToTrain = async (trainID: string) => {
     await router.push(`/train/${trainID}`)
