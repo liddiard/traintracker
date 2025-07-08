@@ -38,13 +38,13 @@ function TrainMarker({
       rotation={bearing}
       rotationAlignment="map"
       pitchAlignment="map"
-      onClick={() => navigateToTrain(objectID)}
       className="cursor-pointer p-2"
       style={{
         // reposition markers immediately while map is moving
-        transition: `transform ${moving ? '0s' : '5s'} linear`,
+        transition: moving ? 'none' : 'transform 5s linear',
         zIndex: isSelected ? 1 : 'unset',
       }}
+      onClick={() => navigateToTrain(objectID)}
     >
       {bearing === undefined || zoom < 6 ? (
         <Circle className="w-2" style={sharedStyles} />

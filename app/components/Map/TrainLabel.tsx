@@ -37,7 +37,7 @@ function TrainLabel({
       offset={[6, 0]}
       style={{
         // reposition markers immediately while map is moving
-        transition: `transform ${moving ? '0s' : '5s'} linear`,
+        transition: moving ? 'none' : 'transform 5s linear',
         // 1 layer above the TrainMarker
         zIndex: isSelected ? 2 : 'unset',
       }}
