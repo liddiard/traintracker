@@ -14,6 +14,7 @@ import {
   length,
   along,
   cleanCoords,
+  pointToLineDistance,
 } from '@turf/turf'
 import {
   Feature,
@@ -31,7 +32,7 @@ import {
   TrackFeatureProperties,
   TimeStatus,
 } from '../../types'
-import _amtrakTrack from '@/public/map_data/amtrak-track.geojson'
+import _amtrakTrack from '@/public/map_data/amtrak-track.json'
 import {
   createCachedFunction,
   getArrival,
@@ -520,17 +521,30 @@ export const getExtrapolatedTrainPoint = (
 
   // check if train's GPS coordinate is on the current track segment (according
   // to the timetable)
+  // if the previous station (per timetable) is behind the train GPS position
+  console.log('trainPosition:', trainPosition)
+  console.log('trackSegment:', cleanCoords(trackSegment))
+  let trainGPSOnTrackSegment
+  try {
+    trainGPSOnTrackSegment =
+      pointToLineDistance(point(trainPosition), cleanCoords(trackSegment)) < 0.1
+  } catch (e) {
+    console.error(e)
+    return
+  }
   if (
-    isPointBehindTrain(
-      point(prevStationCoords),
-      point(trainPosition),
-      stations,
-      nextStation,
-    )
+    !trainGPSOnTrackSegment
+    // isPointBehindTrain(
+    //   point(prevStationCoords),
+    //   point(trainPosition),
+    //   stations,
+    //   nextStation,
+    // )
   ) {
+    console.log('train ID:', trainStatus.objectID)
     console.log('trainPosition:', trainPosition)
     console.log('nextStationCoords:', nextStationCoords)
-    console.log('trackSegment:', trackSegment)
+    console.log('trackSegment:', cleanCoords(trackSegment))
     // narrow the track segment from to only consider the portion between the
     // train GPS position and next station
     trackSegment = lineSlice(

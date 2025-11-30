@@ -38,7 +38,7 @@ import {
   trainToGeoJSON,
   trainGPSLabelLayer,
 } from './display'
-import _amtrakTrack from '@/public/map_data/amtrak-track.geojson'
+import _amtrakTrack from '@/public/map_data/amtrak-track.json'
 import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
 import { getTrainShortcode, sleep } from '@/app/utils'
