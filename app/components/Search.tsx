@@ -29,6 +29,7 @@ function Search() {
   const stationOptions = useMemo(
     () =>
       stations
+        .filter((s) => typeof s.code === 'string')
         .toSorted((a, b) => a.code.localeCompare(b.code))
         .map((station) => ({
           value: station.code,
