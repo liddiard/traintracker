@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import cn from 'classnames'
 import GearIcon from '@/app/img/gear.svg'
 import XIcon from '@/app/img/x.svg'
@@ -10,7 +10,10 @@ import {
   Units,
   TimeFormat,
   TimeZone,
+  SettingConfig,
 } from '@/app/types'
+import Image from 'next/image'
+import { classNames } from '@/app/constants'
 
 function MapSettings() {
   const [open, setOpen] = useState(false)
@@ -21,6 +24,12 @@ function MapSettings() {
     { value: 'simple', label: 'Simple' },
     { value: 'detailed', label: 'Detailed' },
   ]
+
+  const mapStyleImages: Record<MapStyle, string> = {
+    gray: 'positron',
+    simple: 'bright',
+    detailed: 'liberty',
+  }
 
   const colorModeOptions: { value: ColorMode; label: string }[] = [
     { value: 'auto', label: 'Auto' },
@@ -39,16 +48,53 @@ function MapSettings() {
   ]
 
   const timeZoneOptions: { value: TimeZone; label: string }[] = [
-    { value: 'local', label: 'Stations’ local time zones' },
+    { value: 'local', label: 'Stations’ local time' },
     { value: 'device', label: 'Your device’s time zone' },
   ]
 
-  const settingsConfig = [
+  const settingsConfig: SettingConfig[] = [
     {
       label: 'Map style',
       key: 'mapStyle' as const,
       options: mapStyleOptions,
       value: settings.mapStyle,
+      customUI: (option, isSelected, onChange) => (
+        <div>
+          <label
+            className={cn(
+              'block cursor-pointer rounded-lg border-2 shadow-md',
+              isSelected
+                ? 'border-amtrak-blue-400 ring-amtrak-blue-400 ring'
+                : 'border-white dark:border-black',
+            )}
+          >
+            <input
+              type="radio"
+              name="mapStyle"
+              value={option.value}
+              checked={isSelected}
+              onChange={() => onChange(option.value)}
+              className="sr-only"
+            />
+            <Image
+              src={`/img/map_style/${mapStyleImages[option.value as MapStyle]}.png`}
+              alt={option.label}
+              width={64}
+              height={64}
+              quality={100}
+              className="rounded-md dark:hue-rotate-180 dark:invert"
+            />
+          </label>
+          <div
+            className={cn(
+              'my-1 text-center text-sm',
+              classNames.textDeemphasized,
+            )}
+          >
+            {option.label}
+          </div>
+        </div>
+      ),
     },
     {
       label: 'Color mode',
@@ -81,34 +127,51 @@ function MapSettings() {
     key: T
     options: { value: Settings[T]; label: string }[]
     value: Settings[T]
+    customUI?: (
+      option: { value: Settings[T]; label: string },
+      isSelected: boolean,
+      onChange: (value: Settings[T]) => void,
+    ) => React.ReactNode
   }) => (
-    <div className="flex items-center gap-4">
-      <span className="min-w-[120px] font-bold">{config.label}</span>
+    <Fragment key={config.key}>
+      <span className="font-semibold">{config.label}</span>
       <div className="flex gap-3">
-        {config.options.map((option) => (
-          <label key={String(option.value)} className="flex items-center">
-            <input
-              type="radio"
-              name={config.key}
-              value={String(option.value)}
-              checked={config.value === option.value}
-              onChange={(e) =>
-                updateSetting(config.key, e.target.value as Settings[T])
-              }
-              className="mr-1"
-            />
-            <span>{option.label}</span>
-          </label>
-        ))}
+        {config.options.map((option) => {
+          const isSelected = config.value === option.value
+          const handleChange = (value: Settings[T]) =>
+            updateSetting(config.key, value)
+
+          if (config.customUI) {
+            return (
+              <div key={String(option.value)}>
+                {config.customUI(option, isSelected, handleChange)}
+              </div>
+            )
+          }
+
+          return (
+            <label key={String(option.value)} className="flex items-center">
+              <input
+                type="radio"
+                name={config.key}
+                value={String(option.value)}
+                checked={isSelected}
+                onChange={(e) =>
+                  updateSetting(config.key, e.target.value as Settings[T])
+                }
+                className="mr-1"
+              />
+              <span>{option.label}</span>
+            </label>
+          )
+        })}
       </div>
-    </div>
+    </Fragment>
   )
 
   const renderSettings = () => (
-    <div className="dark:bg-positron-gray-700 mb-1 grid gap-2 rounded-md bg-white p-4 shadow-md dark:text-white">
-      {settingsConfig.map((config) => (
-        <div key={config.key}>{renderRadioGroup(config)}</div>
-      ))}
+    <div className="dark:bg-positron-gray-700 mb-1 grid grid-cols-[max-content_max-content] gap-2 rounded-md bg-white p-4 shadow-md dark:text-white">
+      {settingsConfig.map((config) => renderRadioGroup(config))}
     </div>
   )
 

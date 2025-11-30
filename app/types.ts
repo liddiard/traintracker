@@ -1,4 +1,4 @@
-import { Point, Feature } from 'geojson'
+import { ReactNode } from 'react'
 
 export interface TrainResponse {
   [key: string]: TrainRaw[]
@@ -32,11 +32,10 @@ interface TrainRaw {
   provider: string
 }
 
-export interface Train
-  extends Omit<
-    TrainRaw,
-    'objectID' | 'createdAt' | 'updatedAt' | 'lastValTS' | 'stations'
-  > {
+export interface Train extends Omit<
+  TrainRaw,
+  'objectID' | 'createdAt' | 'updatedAt' | 'lastValTS' | 'stations'
+> {
   objectID: string
   createdAt: Date
   updatedAt: Date
@@ -71,8 +70,10 @@ export interface StationTrainRaw extends Station {
   platform: string
 }
 
-export interface StationTrain
-  extends Omit<StationTrainRaw, 'schArr' | 'schDep' | 'arr' | 'dep'> {
+export interface StationTrain extends Omit<
+  StationTrainRaw,
+  'schArr' | 'schDep' | 'arr' | 'dep'
+> {
   schArr: Date
   schDep: Date
   arr: Date | null
@@ -144,4 +145,23 @@ export interface Settings {
   units: Units
   timeFormat: TimeFormat
   timeZone: TimeZone
+}
+
+export type SettingValue = MapStyle | ColorMode | Units | TimeFormat | TimeZone
+
+export interface SettingOption {
+  label: string
+  value: SettingValue
+}
+
+export interface SettingConfig {
+  label: string
+  key: keyof Settings
+  options: SettingOption[]
+  value: SettingValue
+  customUI?: (
+    option: SettingOption,
+    isSelected: boolean,
+    onChange: (value: SettingValue) => void,
+  ) => ReactNode
 }
