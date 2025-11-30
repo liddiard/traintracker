@@ -15,6 +15,9 @@ import { routeToCodeMap } from './components/Map/constants'
 // convert a whole number of milliseconds to seconds
 export const msToMins = (ms: number) => ms / 1000 / 60
 
+// convert miles per hour to kilometers per hour
+export const mphToKmh = (mph: number) => mph * 1.609344
+
 // sleep for given `ms`, suitable for use in async functions
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms))

@@ -8,6 +8,7 @@ import {
   getTrainParams,
   getTrainStatus,
   msToMins,
+  mphToKmh,
 } from '@/app/utils'
 import cn from 'classnames'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
@@ -18,6 +19,7 @@ import Warning from '@/app/img/warning.svg'
 import Pointer from '@/app/img/pointer.svg'
 import { headingToRotationMap, classNames } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
+import { useSettings } from '@/app/providers/settings'
 import CurrentSegment from '@/app/components/CurrentSegment'
 import { TimeStatus, TrainStatus } from '@/app/types'
 import Timeline from '@/app/components/Timeline'
@@ -27,6 +29,7 @@ export default function TrainDetail() {
   const { id } = useParams()
   const trainSearchParams = getTrainParams(useSearchParams())
   const { trains } = useTrains()
+  const { settings } = useSettings()
   const train = trains.find((t) => t.objectID === id)
 
   if (!train) return notFound()
@@ -74,9 +77,16 @@ export default function TrainDetail() {
       return <span>At Station</span>
     }
     if (velocity) {
+      const isKilometers = settings.units === 'kilometers'
+      // speed is returned in mph by default
+      const displaySpeed = isKilometers ? mphToKmh(velocity) : velocity
+      const unit = isKilometers ? 'km/h' : 'mph'
+
       return (
         <>
-          <span>{Math.round(velocity)} mph</span>
+          <span>
+            {Math.round(displaySpeed)} {unit}
+          </span>
           <span className="flex items-baseline gap-1">
             <Pointer
               alt={train.heading}
