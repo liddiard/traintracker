@@ -97,7 +97,7 @@ function MapSettings() {
       ),
     },
     {
-      label: 'Color mode',
+      label: 'Color theme',
       key: 'colorMode' as const,
       options: colorModeOptions,
       value: settings.colorMode,

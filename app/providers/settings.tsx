@@ -96,7 +96,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   // preference (if "auto")
   useEffect(() => {
     const { classList } = document.documentElement
-    // clear existing color mode class names
+    // clear existing color theme class names
     settingOptions.colorMode.forEach((c) => classList.remove(c))
     if (
       colorMode === 'dark' ||

@@ -46,7 +46,7 @@ npm run lint
 1. **API Layer** (`app/api/trains/route.ts`): Fetches train data from Amtraker API with 1-minute cache
 2. **Data Transformation** (`app/utils.ts`): `formatTrainResponse` converts raw API data to typed Train objects with Date objects
 3. **Train Context Provider** (`app/providers/train.tsx`): Polls train data every 15 seconds and provides it to the app
-4. **Settings Context Provider** (`app/providers/settings.tsx`): Manages user settings (map style, color mode, units, time format, timezone) with localStorage persistence
+4. **Settings Context Provider** (`app/providers/settings.tsx`): Manages user settings (map style, color theme, units, time format, timezone) with localStorage persistence
 
 ### Map System (`app/components/Map/`)
 
