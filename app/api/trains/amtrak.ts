@@ -1,52 +1,105 @@
-import crypto from 'crypto'
+import { Feature, Point } from 'geojson'
+import { amtrakStationCodeToName, amtrakTZCodeToTZDB } from '../data'
+import { amtrakDecryptResponse, amtrakParseDate } from '../utils'
 
-const sValue = '9a3686ac'
-const iValue = 'c6eb2f7f5c4740c1a2f708fefd947d39'
-const publicKey = '69af143c-e8cf-47f8-bf09-fc1f61e5cc33'
-const masterSegment = 88
-const dataUrl =
+// heading name to degree mapping
+const headingToDegrees: Record<Heading, number> = {
+  N: 0,
+  NE: 45,
+  E: 90,
+  SE: 135,
+  S: 180,
+  SW: 225,
+  W: 270,
+  NW: 315,
+}
+
+const API_ENDPOINT =
   'https://maps.amtrak.com/services/MapDataService/trains/getTrainsData'
 
-const decrypt = (content: string, key: string) => {
-  // First, we need to convert the base64 content to a buffer
-  const ciphertext = Buffer.from(content, 'base64')
+// Amtrak API properties available on train feature properties' "Station\d+" keys
+interface StationInfoProperties {
+  code: string
+  tz: AmtrakTZCode
+  scharr: string
+  schdep: string
+  estarr?: string
+  estdep?: string
+  postarr?: string
+  postdep?: string
+}
 
-  // Derive the key using PBKDF2
-  // Note: crypto-js keySize of 4 means 4 words (4 * 4 bytes = 16 bytes)
-  const derivedKey = crypto.pbkdf2Sync(
-    key,
-    Buffer.from(sValue, 'hex'),
-    1000, // iterations
-    16, // key length in bytes (4 * 4)
-    'sha1', // hash algorithm
-  )
+const processStations = (
+  properties: AmtrakTrainInfoProperties,
+): StationResponse[] =>
+  Object.entries(properties)
+    // Get only Station keys that have values
+    .filter(([key, val]) => /^Station\d+$/.test(key) && val)
+    // Station keys are numbered in route order, so sort them numerically
+    .toSorted(([aKey], [bKey]) => {
+      const aNum = parseInt(aKey.replace('Station', ''))
+      const bNum = parseInt(bKey.replace('Station', ''))
+      return aNum - bNum
+    })
+    // Parse the JSON-serialized station info
+    .map(([_, val]) => JSON.parse(val) as StationInfoProperties)
+    // Map to desired response format
+    .map(({ code, tz, schdep, estdep, postdep, scharr, estarr, postarr }) => ({
+      code,
+      name: amtrakStationCodeToName[code] || code,
+      timezone: amtrakTZCodeToTZDB[tz],
+      arrival: {
+        scheduled: scharr
+          ? amtrakParseDate(scharr, {
+              tzCode: tz,
+            })
+          : // Amtrak often omits scheduled arrival when it is the same as scheduled
+            // departure (i.e. no station dwell time is accounted for). In this case,
+            // use scheduled departure time as scheduled arrival time.
+            amtrakParseDate(schdep, {
+              tzCode: tz,
+            }),
+        estimated: estarr ? amtrakParseDate(estarr, { tzCode: tz }) : null,
+        actual: postarr ? amtrakParseDate(postarr, { tzCode: tz }) : null,
+      },
+      departure: {
+        scheduled: schdep
+          ? amtrakParseDate(schdep, {
+              tzCode: tz,
+            })
+          : null,
+        estimated: estdep ? amtrakParseDate(estdep, { tzCode: tz }) : null,
+        actual: postdep ? amtrakParseDate(postdep, { tzCode: tz }) : null,
+      },
+    }))
 
-  // Parse the initialization vector
-  const iv = Buffer.from(iValue, 'hex')
-
-  // Create the decipher (assuming AES-128-CBC based on IV usage)
-  const decipher = crypto.createDecipheriv('aes-128-cbc', derivedKey, iv)
-
-  // Decrypt the content
-  let decrypted = decipher.update(ciphertext)
-  decrypted = Buffer.concat([decrypted, decipher.final()])
-
-  // Return as UTF-8 string
-  return decrypted.toString('utf8')
+const processTrain = (
+  train: Feature<Point, AmtrakTrainInfoProperties>,
+): TrainResponse => {
+  const { properties } = train
+  const statusMessage = properties.StatusMsg.trim()
+  return {
+    updated: amtrakParseDate(properties.updated_at, {
+      tzCode: properties.OriginTZ,
+      _24hr: false,
+    }),
+    id: properties.OBJECTID.toString(),
+    name: properties.RouteName,
+    number: properties.TrainNum,
+    status: properties.TrainState,
+    alerts: statusMessage ? [statusMessage] : [],
+    coordinates: [train.geometry.coordinates[0], train.geometry.coordinates[1]],
+    speed: Math.round(parseFloat(properties.Velocity)),
+    heading: headingToDegrees[properties.Heading],
+    stations: processStations(properties),
+  }
 }
 
 const get = async () => {
-  const response = await fetch(dataUrl + `?${Date.now()}=true`)
+  const response = await fetch(API_ENDPOINT + `?${Date.now()}=true`)
   const data = await response.text()
-
-  const mainContent = data.substring(0, data.length - masterSegment)
-  const encryptedPrivateKey = data.substr(
-    data.length - masterSegment,
-    data.length,
-  )
-  const privateKey = decrypt(encryptedPrivateKey, publicKey).split('|')[0]
-  const decryptedData = decrypt(mainContent, privateKey)
-  return JSON.parse(decryptedData)
+  const trains = amtrakDecryptResponse(data)
+  return trains.features.map(processTrain)
 }
 
 export default get
