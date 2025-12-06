@@ -1,7 +1,6 @@
 import crypto from 'crypto'
 import { DateTime } from 'luxon'
 import { FeatureCollection, Point } from 'geojson'
-import { amtrakTZCodeToTZDB } from './data'
 
 // Amtrak API decryption constants as reverse engineered in:
 // https://github.com/eiiot/amtraker-v3/blob/main/index.ts
@@ -52,6 +51,14 @@ export const amtrakDecryptResponse = (
   ).split('|')[0]
   const decryptedData = amtrakDecryptSegment(mainContent, privateKey)
   return JSON.parse(decryptedData)
+}
+
+// Amtrak API timezone code to IANA timezone database name map
+const amtrakTZCodeToTZDB: Record<AmtrakTZCode, string> = {
+  P: 'America/Los_Angeles',
+  M: 'America/Denver',
+  C: 'America/Chicago',
+  E: 'America/New_York',
 }
 
 export const amtrakParseDate = (

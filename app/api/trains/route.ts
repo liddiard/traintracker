@@ -7,7 +7,7 @@ import fetchBrightline from './brightline'
 // Caching
 const cacheDurationMs = 60 * 1000 // 1 minute
 let lastChecked: Date | null = null
-let cached: TrainResponse[] = []
+let cache: TrainResponse[] = []
 
 export async function GET() {
   if (lastChecked && Date.now() - lastChecked.getTime() <= cacheDurationMs) {
@@ -19,10 +19,10 @@ export async function GET() {
     fetchVia(),
     fetchBrightline(),
   ])
-  cached = [...amtrak, ...via, ...brightline]
+  cache = [...amtrak, ...via, ...brightline]
   lastChecked = new Date()
 
-  await fs.writeFile('parsed.json', JSON.stringify(cached, null, 2), 'utf8')
+  await fs.writeFile('trains.json', JSON.stringify(cache, null, 2), 'utf8')
 
   try {
     const res = await fetch('https://api-v3.amtraker.com/v3/trains', {

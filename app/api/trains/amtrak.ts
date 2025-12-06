@@ -1,6 +1,7 @@
+import fs from 'fs/promises'
 import { Feature, Point } from 'geojson'
-import { amtrakStationCodeToName, amtrakTZCodeToTZDB } from '../data'
 import { amtrakDecryptResponse, amtrakParseDate } from '../utils'
+import { stations } from '../stations/route'
 
 // heading name to degree mapping
 const headingToDegrees: Record<Heading, number> = {
@@ -31,7 +32,8 @@ interface StationInfoProperties {
 
 const processStations = (
   properties: AmtrakTrainInfoProperties,
-): StationResponse[] =>
+  stations: Record<string, StationResponse>,
+): StopResponse[] =>
   Object.entries(properties)
     // Get only Station keys that have values
     .filter(([key, val]) => /^Station\d+$/.test(key) && val)
@@ -44,37 +46,42 @@ const processStations = (
     // Parse the JSON-serialized station info
     .map(([_, val]) => JSON.parse(val) as StationInfoProperties)
     // Map to desired response format
-    .map(({ code, tz, schdep, estdep, postdep, scharr, estarr, postarr }) => ({
-      code,
-      name: amtrakStationCodeToName[code] || code,
-      timezone: amtrakTZCodeToTZDB[tz],
-      arrival: {
-        scheduled: scharr
-          ? amtrakParseDate(scharr, {
-              tzCode: tz,
-            })
-          : // Amtrak often omits scheduled arrival when it is the same as scheduled
-            // departure (i.e. no station dwell time is accounted for). In this case,
-            // use scheduled departure time as scheduled arrival time.
-            amtrakParseDate(schdep, {
-              tzCode: tz,
-            }),
-        estimated: estarr ? amtrakParseDate(estarr, { tzCode: tz }) : null,
-        actual: postarr ? amtrakParseDate(postarr, { tzCode: tz }) : null,
-      },
-      departure: {
-        scheduled: schdep
-          ? amtrakParseDate(schdep, {
-              tzCode: tz,
-            })
-          : null,
-        estimated: estdep ? amtrakParseDate(estdep, { tzCode: tz }) : null,
-        actual: postdep ? amtrakParseDate(postdep, { tzCode: tz }) : null,
-      },
-    }))
+    .map(({ code, tz, schdep, estdep, postdep, scharr, estarr, postarr }) => {
+      // Amtrak often omits scheduled arrival when it is the same as scheduled
+      // departure (i.e. no station dwell time is accounted for). In this case,
+      // use scheduled departure time as scheduled arrival time.
+      const station = stations[`amtrak/${code}`]
+      const arrivalTime = amtrakParseDate(
+        postarr || estarr || scharr || schdep,
+        { tzCode: tz },
+      )
+      const departureTime = amtrakParseDate(postdep || estdep || schdep, {
+        tzCode: tz,
+      })
+      return {
+        code,
+        name: station?.name || code,
+        timezone: station?.timezone,
+        arrival: {
+          time: arrivalTime,
+          delay:
+            (arrivalTime.getTime() -
+              amtrakParseDate(scharr, { tzCode: tz }).getTime()) /
+            (60 * 1000),
+        },
+        departure: {
+          time: departureTime,
+          delay:
+            (departureTime.getTime() -
+              amtrakParseDate(schdep, { tzCode: tz }).getTime()) /
+            (60 * 1000),
+        },
+      }
+    })
 
 const processTrain = (
   train: Feature<Point, AmtrakTrainInfoProperties>,
+  stations: Record<string, StationResponse>,
 ): TrainResponse => {
   const { properties } = train
   const statusMessage = properties.StatusMsg.trim()
@@ -91,7 +98,7 @@ const processTrain = (
     coordinates: [train.geometry.coordinates[0], train.geometry.coordinates[1]],
     speed: Math.round(parseFloat(properties.Velocity)),
     heading: headingToDegrees[properties.Heading],
-    stations: processStations(properties),
+    stations: processStations(properties, stations),
   }
 }
 
@@ -99,7 +106,9 @@ const get = async () => {
   const response = await fetch(API_ENDPOINT + `?${Date.now()}=true`)
   const data = await response.text()
   const trains = amtrakDecryptResponse(data)
-  return trains.features.map(processTrain)
+
+  await fs.writeFile('original.json', JSON.stringify(trains, null, 2), 'utf8')
+  return trains.features.map((train) => processTrain(train, stations))
 }
 
 export default get

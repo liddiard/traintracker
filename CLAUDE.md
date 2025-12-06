@@ -98,6 +98,7 @@ The Amtrak data endpoint is encrypted. The `decrypt` function:
 - Uses `@/` path alias for project root
 - Target: ES2017
 - Strict mode enabled
+- Prefer functional programming style (array `.map`, `.reduce`, etc.)
 
 ### Next.js Config
 

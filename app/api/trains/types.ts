@@ -65,6 +65,56 @@ interface ViaStationInfo {
   }
 }
 
+interface BrightlineTrainInfo {
+  id: string
+  vehicle: {
+    trip: {
+      tripId: string
+      startTime: string
+      startDate: string
+      routeId: string
+    }
+    position: {
+      latitude: number
+      longitude: number
+      bearing: number
+    }
+    timestamp: string
+    vehicle: {
+      id: string
+    }
+  }
+}
+
+interface BrightlineTripInfo {
+  id: string
+  tripUpdate: {
+    trip: {
+      tripId: string
+      startTime: string
+      startDate: string
+      routeId: string
+    }
+    stopTimeUpdate: BrightlineStationInfo[]
+    vehicle: {
+      id: string
+    }
+    timestamp: string
+  }
+}
+
+interface BrightlineStationInfo {
+  stopId: string
+  arrival: {
+    delay: number
+    time: string
+  }
+  departure: {
+    delay: number
+    time: string
+  }
+}
+
 // Station data from Amtraker API (https://api-v3.amtraker.com/v3/stations)
 // Used to get Via station timezones
 interface AmatrakerStationInfo {
@@ -83,25 +133,35 @@ interface TrainResponse {
   number: string
   status: TrainStatus
   alerts: string[]
-  coordinates: [number, number] | null
-  speed: number
-  heading: number
-  stations: StationResponse[]
+  coordinates: [number, number] | null // [lon, lat] per GeoJSON spec
+  speed: number | null
+  heading: number | null
+  stations: StopResponse[]
+}
+
+// Our returned processed train stops
+interface StopResponse {
+  code: string
+  name: string
+  timezone: string | null
+  departure: {
+    // estimated or actual departure time
+    time: Date | null
+    // deviation from scheduled time in minutes
+    delay: number | null
+  }
+  arrival: {
+    // estimated or actual arrival time
+    time: Date | null
+    // deviation from scheduled time in minutes
+    delay: number | null
+  }
 }
 
 // Our returned processed train stations
 interface StationResponse {
   code: string
-  name: string
-  timezone: string
-  departure: {
-    scheduled: Date | null
-    estimated: Date | null
-    actual: Date | null
-  }
-  arrival: {
-    scheduled: Date | null
-    estimated: Date | null
-    actual: Date | null
-  }
+  name: string | null
+  timezone: string | null
+  coordinates: [number, number] | null // [lon, lat] per GeoJSON spec
 }

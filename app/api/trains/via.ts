@@ -1,4 +1,4 @@
-import { viaStationToTZDB } from '../data'
+import { stations } from '../stations/route'
 
 const API_ENDPOINT = 'https://tsimobile.viarail.ca/data/allData.json'
 
@@ -33,49 +33,45 @@ const getTrainName = (id: string) => {
   }
 }
 
-const processStation = ({
-  code,
-  station,
-  eta,
-  arrival,
-  departure,
-}: ViaStationInfo): StationResponse => {
-  // indicates the train already arrived at this station, and the estimated
-  // arrival time becomes the actual arrival time
-  const arrived = eta === 'ARR'
-  // if the estimated departure time is in the past, the train has departed
-  // and the estimated departure time becomes the actual departure time
-  const departed =
-    departure?.estimated && new Date(departure.estimated) <= new Date()
-
+const processStation = (
+  { code, station, arrival, departure }: ViaStationInfo,
+  stations: Record<string, StationResponse>,
+): StopResponse => {
+  const arrivalTime = arrival
+    ? new Date(arrival.estimated || arrival.scheduled)
+    : null
+  const departureTime = departure
+    ? new Date(departure.estimated || departure.scheduled)
+    : null
+  const stationMeta = stations[`via/${code}`]
   return {
     code,
     name: station,
-    timezone: viaStationToTZDB[code],
+    timezone: stationMeta?.timezone,
     arrival: {
-      scheduled:
-        arrived || !arrival?.scheduled ? null : new Date(arrival.scheduled),
-      estimated:
-        arrived || !arrival?.estimated ? null : new Date(arrival.estimated),
-      actual:
-        arrived && arrival?.estimated ? new Date(arrival.estimated) : null,
+      time: arrivalTime,
+      delay:
+        arrival?.scheduled && arrivalTime
+          ? (arrivalTime.getTime() - new Date(arrival.scheduled).getTime()) /
+            (60 * 1000)
+          : null,
     },
     departure: {
-      scheduled:
-        departed || !departure?.scheduled
-          ? null
-          : new Date(departure.scheduled),
-      estimated:
-        departed || !departure?.estimated
-          ? null
-          : new Date(departure.estimated),
-      actual:
-        departed && departure?.estimated ? new Date(departure.estimated) : null,
+      time: departureTime,
+      delay:
+        departure?.scheduled && departureTime
+          ? (departureTime.getTime() -
+              new Date(departure.scheduled).getTime()) /
+            (60 * 1000)
+          : null,
     },
   }
 }
 
-const processTrain = ([id, data]: [string, ViaTrainInfo]): TrainResponse => ({
+const processTrain = (
+  [id, data]: [string, ViaTrainInfo],
+  stations: Record<string, StationResponse>,
+): TrainResponse => ({
   id,
   coordinates: data.lng ? [data.lng, data.lat] : null,
   speed: data.speed,
@@ -92,14 +88,16 @@ const processTrain = ([id, data]: [string, ViaTrainInfo]): TrainResponse => ({
     data.alerts?.map((alert) =>
       [alert.header.en, alert.description.en, alert.url.en].join('\n\n'),
     ) || [],
-  stations: data.times.map(processStation),
+  stations: data.times.map((station) => processStation(station, stations)),
 })
 
 const get = async () => {
   try {
     const response = await fetch(API_ENDPOINT)
     const data = (await response.json()) as Record<number, ViaTrainInfo>
-    const trains = Object.entries(data).map(processTrain)
+    const trains = Object.entries(data).map((train) =>
+      processTrain(train, stations),
+    )
     return trains
   } catch (error) {
     console.error('Error fetching Via Rail data:', error)
