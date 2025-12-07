@@ -7,13 +7,13 @@ type TrainStatus = 'Predeparture' | 'Active' | 'Completed'
 type AmtrakTZCode = 'P' | 'M' | 'C' | 'E'
 
 // Amtrak API enums
-type Heading = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW'
+type AmtrakHeading = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW'
 
 // Amtrak API GeoJSON properties available on train features
 interface AmtrakTrainInfoProperties {
   OBJECTID: number
   StatusMsg: string
-  Heading: Heading
+  Heading: AmtrakHeading
   RouteName: string
   TrainState: TrainStatus
   OriginTZ: AmtrakTZCode

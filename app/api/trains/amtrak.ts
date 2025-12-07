@@ -2,9 +2,10 @@ import fs from 'fs/promises'
 import { Feature, Point } from 'geojson'
 import { amtrakDecryptResponse, amtrakParseDate } from '../utils'
 import { stations } from '../stations/route'
+import { mphToKmh } from '@/app/utils'
 
 // heading name to degree mapping
-const headingToDegrees: Record<Heading, number> = {
+const headingToDegrees: Record<AmtrakHeading, number> = {
   N: 0,
   NE: 45,
   E: 90,
@@ -96,7 +97,7 @@ const processTrain = (
     status: properties.TrainState,
     alerts: statusMessage ? [statusMessage] : [],
     coordinates: [train.geometry.coordinates[0], train.geometry.coordinates[1]],
-    speed: Math.round(parseFloat(properties.Velocity)),
+    speed: Math.round(mphToKmh(parseFloat(properties.Velocity))),
     heading: headingToDegrees[properties.Heading],
     stations: processStations(properties, stations),
   }
