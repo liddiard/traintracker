@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Next.js application that tracks and visualizes real-time Amtrak, Via Rail, and Brightline train positions and schedules on an interactive map. The app fetches train data from the Amtraker API, snaps train positions to track geometries using Turf.js, and displays them on a MapLibre map with route-specific styling.
 
+## General instructions
+
+Always use context7 when I need code generation, setup or configuration steps, or library/API documentation related to the following packages: Turf.js, TailwindCSS, Maplibre GL JS, React Map GL, and Next.js. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
+
 ## Development Commands
 
 ### Running the Development Server
