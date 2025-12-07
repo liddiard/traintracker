@@ -72,12 +72,12 @@ const processTrain = (
   [id, data]: [string, ViaTrainInfo],
   stations: Record<string, StationResponse>,
 ): TrainResponse => ({
-  id,
+  id: `via/${id}`,
+  name: getTrainName(id) || `VIA Rail ${id}`,
+  number: id,
   coordinates: data.lng ? [data.lng, data.lat] : null,
   speed: data.speed,
   heading: data.direction,
-  name: getTrainName(id) || `VIA Rail ${id}`,
-  number: id,
   updated: new Date(data.poll),
   status: data.departed
     ? data.arrived

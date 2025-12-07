@@ -91,7 +91,7 @@ const processTrain = (
       tzCode: properties.OriginTZ,
       _24hr: false,
     }),
-    id: properties.OBJECTID.toString(),
+    id: `amtrak/${properties.OBJECTID.toString()}`,
     name: properties.RouteName,
     number: properties.TrainNum,
     status: properties.TrainState,

@@ -161,7 +161,7 @@ const processTrain = (
   const speed = calculateSpeed(coordinates, stops)
 
   return {
-    id: train.id,
+    id: `brightline/${train.id}`,
     name: `Brightline ${trainNumber}`,
     number: trainNumber,
     updated: timestamp ? new Date((timestamp as number) * 1000) : null,

@@ -1,5 +1,5 @@
 // NOTE: Interface definitions in this file are not exhaustive. We only define the
-// parts we use in some way in the returned API response.
+// parts we use in some way in the upstream API responses.
 
 type TrainStatus = 'Predeparture' | 'Active' | 'Completed'
 
