@@ -1,4 +1,7 @@
+import { StationResponse, Stop, Train } from '@/app/types'
 import { stations } from '../stations/route'
+import { ViaStationInfo, ViaTrainInfo } from './types'
+import { msToMins } from '@/app/utils'
 
 const API_ENDPOINT = 'https://tsimobile.viarail.ca/data/allData.json'
 
@@ -33,10 +36,10 @@ const getTrainName = (id: string) => {
   }
 }
 
-const processStation = (
+const processStop = (
   { code, station, arrival, departure }: ViaStationInfo,
-  stations: Record<string, StationResponse>,
-): StopResponse => {
+  stations: StationResponse,
+): Stop => {
   const arrivalTime = arrival
     ? new Date(arrival.estimated || arrival.scheduled)
     : null
@@ -49,35 +52,37 @@ const processStation = (
     name: station,
     timezone: stationMeta?.timezone,
     arrival: {
-      time: arrivalTime,
+      // either arrival time or departure time should exist on every object
+      time: arrivalTime || departureTime!,
       delay:
         arrival?.scheduled && arrivalTime
-          ? (arrivalTime.getTime() - new Date(arrival.scheduled).getTime()) /
-            (60 * 1000)
-          : null,
+          ? msToMins(
+              arrivalTime.getTime() - new Date(arrival.scheduled).getTime(),
+            )
+          : 0,
     },
     departure: {
-      time: departureTime,
+      time: departureTime || arrivalTime!,
       delay:
         departure?.scheduled && departureTime
-          ? (departureTime.getTime() -
-              new Date(departure.scheduled).getTime()) /
-            (60 * 1000)
-          : null,
+          ? msToMins(
+              departureTime.getTime() - new Date(departure.scheduled).getTime(),
+            )
+          : 0,
     },
   }
 }
 
 const processTrain = (
   [id, data]: [string, ViaTrainInfo],
-  stations: Record<string, StationResponse>,
-): TrainResponse => ({
+  stations: StationResponse,
+): Train => ({
   id: `via/${id}`,
   name: getTrainName(id) || `VIA Rail ${id}`,
   number: id,
   coordinates: data.lng ? [data.lng, data.lat] : null,
-  speed: data.speed,
-  heading: data.direction,
+  speed: data.speed ?? null,
+  heading: data.direction ?? null,
   updated: new Date(data.poll),
   status: data.departed
     ? data.arrived
@@ -88,7 +93,7 @@ const processTrain = (
     data.alerts?.map((alert) =>
       [alert.header.en, alert.description.en, alert.url.en].join('\n\n'),
     ) || [],
-  stations: data.times.map((station) => processStation(station, stations)),
+  stops: data.times.map((station) => processStop(station, stations)),
 })
 
 const get = async () => {

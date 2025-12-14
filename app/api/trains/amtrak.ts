@@ -2,7 +2,13 @@ import fs from 'fs/promises'
 import { Feature, Point } from 'geojson'
 import { amtrakDecryptResponse, amtrakParseDate } from '../utils'
 import { stations } from '../stations/route'
-import { mphToKmh } from '@/app/utils'
+import { mphToKmh, msToMins } from '@/app/utils'
+import { Train, Stop, StationResponse } from '@/app/types'
+import {
+  AmtrakHeading,
+  AmtrakStationInfoProperties,
+  AmtrakTrainInfoProperties,
+} from './types'
 
 // heading name to degree mapping
 const headingToDegrees: Record<AmtrakHeading, number> = {
@@ -19,22 +25,10 @@ const headingToDegrees: Record<AmtrakHeading, number> = {
 const API_ENDPOINT =
   'https://maps.amtrak.com/services/MapDataService/trains/getTrainsData'
 
-// Amtrak API properties available on train feature properties' "Station\d+" keys
-interface StationInfoProperties {
-  code: string
-  tz: AmtrakTZCode
-  scharr: string
-  schdep: string
-  estarr?: string
-  estdep?: string
-  postarr?: string
-  postdep?: string
-}
-
-const processStations = (
+const processStops = (
   properties: AmtrakTrainInfoProperties,
-  stations: Record<string, StationResponse>,
-): StopResponse[] =>
+  stations: StationResponse,
+): Stop[] =>
   Object.entries(properties)
     // Get only Station keys that have values
     .filter(([key, val]) => /^Station\d+$/.test(key) && val)
@@ -45,7 +39,19 @@ const processStations = (
       return aNum - bNum
     })
     // Parse the JSON-serialized station info
-    .map(([_, val]) => JSON.parse(val) as StationInfoProperties)
+    .map(([_, val]) => JSON.parse(val) as AmtrakStationInfoProperties)
+    // Filter out stops with no arrival and departure info
+    .filter(
+      // arrival keys
+      (stop) =>
+        ['postarr', 'estarr', 'scharr', 'schdep'].find(
+          (key) => stop[key as keyof AmtrakStationInfoProperties],
+        ) &&
+        // departure keys
+        ['postdep', 'estdep', 'schdep'].find(
+          (key) => stop[key as keyof AmtrakStationInfoProperties],
+        ),
+    )
     // Map to desired response format
     .map(({ code, tz, schdep, estdep, postdep, scharr, estarr, postarr }) => {
       // Amtrak often omits scheduled arrival when it is the same as scheduled
@@ -53,10 +59,10 @@ const processStations = (
       // use scheduled departure time as scheduled arrival time.
       const station = stations[`amtrak/${code}`]
       const arrivalTime = amtrakParseDate(
-        postarr || estarr || scharr || schdep,
+        postarr || estarr || scharr || schdep!,
         { tzCode: tz },
       )
-      const departureTime = amtrakParseDate(postdep || estdep || schdep, {
+      const departureTime = amtrakParseDate(postdep || estdep || schdep!, {
         tzCode: tz,
       })
       return {
@@ -66,24 +72,30 @@ const processStations = (
         arrival: {
           time: arrivalTime,
           delay:
-            (arrivalTime.getTime() -
-              amtrakParseDate(scharr, { tzCode: tz }).getTime()) /
-            (60 * 1000),
+            arrivalTime && scharr
+              ? msToMins(
+                  arrivalTime.getTime() -
+                    amtrakParseDate(scharr, { tzCode: tz }).getTime(),
+                )
+              : 0,
         },
         departure: {
           time: departureTime,
           delay:
-            (departureTime.getTime() -
-              amtrakParseDate(schdep, { tzCode: tz }).getTime()) /
-            (60 * 1000),
+            departureTime && schdep
+              ? msToMins(
+                  departureTime.getTime() -
+                    amtrakParseDate(schdep, { tzCode: tz }).getTime(),
+                )
+              : 0,
         },
       }
     })
 
 const processTrain = (
   train: Feature<Point, AmtrakTrainInfoProperties>,
-  stations: Record<string, StationResponse>,
-): TrainResponse => {
+  stations: StationResponse,
+): Train => {
   const { properties } = train
   const statusMessage = properties.StatusMsg.trim()
   return {
@@ -98,8 +110,8 @@ const processTrain = (
     alerts: statusMessage ? [statusMessage] : [],
     coordinates: [train.geometry.coordinates[0], train.geometry.coordinates[1]],
     speed: Math.round(mphToKmh(parseFloat(properties.Velocity))),
-    heading: headingToDegrees[properties.Heading],
-    stations: processStations(properties, stations),
+    heading: headingToDegrees[properties.Heading] ?? null,
+    stops: processStops(properties, stations),
   }
 }
 

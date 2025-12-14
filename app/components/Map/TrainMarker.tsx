@@ -4,7 +4,7 @@ import Circle from '@/app/img/train-circle.svg'
 import { TrainFeatureProperties } from '@/app/types'
 
 interface TrainMarkerProps extends TrainFeatureProperties {
-  coordinates: number[]
+  coordinates: number[] | null
   bearing?: number
   zoom: number
   moving: boolean
@@ -13,7 +13,7 @@ interface TrainMarkerProps extends TrainFeatureProperties {
 }
 
 function TrainMarker({
-  objectID,
+  id,
   color,
   coordinates,
   bearing,
@@ -22,8 +22,6 @@ function TrainMarker({
   isSelected,
   navigateToTrain,
 }: TrainMarkerProps) {
-  const [lon, lat] = coordinates
-
   const sharedStyles = {
     scale: `clamp(0.5, ${0.5 + zoom * 0.1}, 1.75)`,
     fill: color,
@@ -31,10 +29,14 @@ function TrainMarker({
     strokeWidth: 5,
   }
 
+  if (!coordinates) {
+    return
+  }
+
   return (
     <Marker
-      longitude={lon}
-      latitude={lat}
+      longitude={coordinates[0]}
+      latitude={coordinates[1]}
       rotation={bearing}
       rotationAlignment="map"
       pitchAlignment="map"
@@ -44,7 +46,7 @@ function TrainMarker({
         transition: moving ? 'none' : 'transform 5s linear',
         zIndex: isSelected ? 1 : 'unset',
       }}
-      onClick={() => navigateToTrain(objectID)}
+      onClick={() => navigateToTrain(id)}
     >
       {bearing === undefined || zoom < 6 ? (
         <Circle className="w-2" style={sharedStyles} />

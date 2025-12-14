@@ -4,7 +4,7 @@ import Link from 'next/link'
 import cn from 'classnames'
 import { classNames } from '../constants'
 import { Train, TrainSearchParams } from '../types'
-import { findTrainsFromSegment, formatDate } from '../utils'
+import { findTrainsFromSegment, formatDate, getScheduledTime } from '../utils'
 import StatusBadge from './StatusBadge'
 import CaretRight from '../img/caret-right.svg'
 import Spinner from '../img/spinner.svg'
@@ -34,12 +34,12 @@ function TrainList({
     }
     if (filters.trainName) {
       filteredTrains = filteredTrains.filter(
-        (t) => t.routeName === filters.trainName,
+        (t) => t.name === filters.trainName,
       )
     }
     if (filters.trainNumber) {
       filteredTrains = filteredTrains.filter(
-        (t) => t.trainNum === filters.trainNumber,
+        (t) => t.name === filters.trainNumber,
       )
     }
     return filteredTrains
@@ -48,7 +48,7 @@ function TrainList({
   useEffect(() => {
     if (filteredTrains.length === 1) {
       setLoading(true)
-      router.push(`/train/${filteredTrains[0].objectID}`)
+      router.push(`/train/${filteredTrains[0].id}`)
     }
   }, [filteredTrains, router])
 
@@ -95,19 +95,20 @@ function TrainList({
     return (
       <ul className="my-2 flex flex-col">
         {filteredTrains
-          .toSorted((a, b) => a.updatedAt.valueOf() - b.updatedAt.valueOf())
+          .filter((t) => t.updated)
+          .toSorted((a, b) => a.updated!.valueOf() - b.updated!.valueOf())
           .map((train) => (
             <Link
-              key={train.objectID}
-              href={`/train/${train.objectID}?${queryString}`}
+              key={train.id}
+              href={`/train/${train.id}?${queryString}`}
               className="hover:bg-amtrak-blue-200/25 p-3"
             >
-              <li key={train.objectID} className="flex flex-col gap-2">
+              <li key={train.id} className="flex flex-col gap-2">
                 <h2 className="flex items-start justify-between gap-2 leading-tight font-bold">
                   <span className="mr-2">
-                    {train.routeName}{' '}
+                    {train.name}{' '}
                     <span className={classNames.textAccent}>
-                      {train.trainNum}
+                      {train.number}
                     </span>
                   </span>
                   <span
@@ -116,18 +117,23 @@ function TrainList({
                       classNames.textDeemphasized,
                     )}
                   >
-                    {train.origCode}
+                    {train.stops[0].code}
                     <CaretRight
                       alt="to"
                       className="fill-positron-gray-600 dark:fill-positron-gray-300 inline w-2"
                     />
-                    {train.destCode}
+                    {train.stops[train.stops.length - 1].code}
                   </span>
                 </h2>
                 <div className="flex items-center justify-between gap-2">
                   <StatusBadge train={train} className="text-sm" />
                   <span className={cn('font-sm', classNames.textDeemphasized)}>
-                    {formatDate(train.stations[0].schDep, train.stations[0].tz)}
+                    {train.stops[0].departure.time &&
+                      train.stops[0].timezone &&
+                      formatDate(
+                        getScheduledTime(train.stops[0].departure)!,
+                        train.stops[0].timezone,
+                      )}
                   </span>
                 </div>
               </li>

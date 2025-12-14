@@ -1,13 +1,13 @@
 import { interpolate, formatRgb, average } from 'culori'
 import {
-  StationTrainRaw,
   TrainResponse,
   Train,
   TimeStatus,
-  TrainStatus,
   Route,
-  StationTrain,
+  Stop,
   Station,
+  StopResponseItem,
+  TrainMeta,
 } from './types'
 import { colors, TRAIN_SEARCH_PARAMS } from './constants'
 import { routeToCodeMap } from './components/Map/constants'
@@ -88,11 +88,6 @@ export const getTrainParams = (params: URLSearchParams) =>
       .filter(([key, val]) => TRAIN_SEARCH_PARAMS.includes(key) && val),
   )
 
-// return departure and arrival time of a train using actual departure/arrival
-// if available, else scheduled arrival/departure
-export const getDeparture = ({ dep, schDep }: StationTrain) => dep || schDep
-export const getArrival = ({ arr, schArr }: StationTrain) => arr || schArr
-
 /**
  * Creates a map of route names (e.g. "Acela", "Empire Builder") to sets of
  * train numbers, given an array of trains.
@@ -104,43 +99,39 @@ export const getArrival = ({ arr, schArr }: StationTrain) => arr || schArr
  */
 export const createRouteNumMap = (trains: Train[]) =>
   trains.reduce(
-    (acc, { routeName, trainNum }) => ({
+    (acc, { name, number }) => ({
       ...acc,
-      [routeName]: acc.hasOwnProperty(routeName)
-        ? acc[routeName].add(trainNum)
-        : (acc[routeName] = new Set([trainNum])),
+      [name]: acc.hasOwnProperty(name)
+        ? acc[name].add(number)
+        : (acc[name] = new Set([number])),
     }),
     {} as Route,
   )
 
 /**
  * Formats the raw train API response by converting date strings to Date
- * objects and normalizes IDs to ensure that each train has a string
- * `objectID`.
+ * objects.
  *
  * @param res - The raw train response data to format.
- * @returns An array of formatted train data with Date objects and proper objectID.
+ * @returns An array of formatted train data with Date objects.
  */
-export const formatTrainResponse = (res: TrainResponse) => {
-  const trains = Object.values(res).flat()
-  return Object.values(trains).map((route) => ({
-    ...route,
-    createdAt: new Date(route.createdAt),
-    updatedAt: new Date(route.updatedAt),
-    lastValTS: new Date(route.lastValTS),
-    stations: route.stations.map(formatStationResponse),
-    // Amtrak trains have object IDs; VIA Rail doesn't
-    // VIA Rail has unique train IDs; Amtrak doesn't
-    objectID: (route.objectID || route.trainID).toString(),
+export const formatTrainResponse = (res: TrainResponse): Train[] =>
+  res.map((train) => ({
+    ...train,
+    updated: new Date(train.updated),
+    stops: train.stops.map(formatStopResponse),
   }))
-}
 
-const formatStationResponse = (station: StationTrainRaw) => ({
-  ...station,
-  schArr: new Date(station.schArr),
-  schDep: new Date(station.schDep),
-  arr: station.arr ? new Date(station.arr) : null,
-  dep: station.dep ? new Date(station.dep) : null,
+const formatStopResponse = (stop: StopResponseItem): Stop => ({
+  ...stop,
+  arrival: {
+    ...stop.arrival,
+    time: new Date(stop.arrival.time),
+  },
+  departure: {
+    ...stop.departure,
+    time: new Date(stop.departure.time),
+  },
 })
 
 /**
@@ -148,12 +139,12 @@ const formatStationResponse = (station: StationTrainRaw) => ({
  *
  * Returned object has the following properties:
  * - `code`: The status code of the train (TimeStatus enum)
- * - `prevStation`: The previous station of the train (StationTrain)
- * - `curStation`: The current station of the train (StationTrain)
- * - `nextStation`: The next station of the train (StationTrain)
+ * - `prevStop`: The previous station of the train (StationTrain)
+ * - `curStop`: The current station of the train (StationTrain)
+ * - `nextStop`: The next station of the train (StationTrain)
  * - `deviation`: The number of minutes the train is currently delayed
- * - `firstStation`: The first station of the train (StationTrain)
- * - `lastStation`: The last station of the train (StationTrain)
+ * - `firstStop`: The first station of the train (StationTrain)
+ * - `lastStop`: The last station of the train (StationTrain)
  *
  * Logic for determining the status code:
  * - If there is no next station, the status code is TimeStatus.COMPLETE
@@ -169,46 +160,49 @@ const formatStationResponse = (station: StationTrainRaw) => ({
  * @param train - The train to determine the status of
  * @returns The status of the train
  */
-export const getTrainStatus = (train: Train) => {
+export const getTrainMeta = (train: Train): TrainMeta => {
   const now = new Date()
-  const { stations, objectID, updatedAt } = train
-  const prevStation = stations.findLast(
-    ({ dep }) => dep instanceof Date && dep < now,
+  const { stops, id, updated } = train
+  const prevStop = stops.findLast(
+    ({ departure: { time } }) => time instanceof Date && time < now,
   )
-  const curStation = stations.find(
-    ({ arr, dep }) =>
-      arr instanceof Date && dep instanceof Date && arr < now && dep > now,
+  const curStop = stops.find(
+    ({ arrival, departure }) =>
+      arrival.time instanceof Date &&
+      departure.time instanceof Date &&
+      arrival.time < now &&
+      departure.time > now,
   )
-  const nextStation = stations.find(
-    ({ arr }) => arr instanceof Date && arr > now,
+  const nextStop = stops.find(
+    ({ arrival: { time } }) => time instanceof Date && time > now,
   )
-  const status: TrainStatus = {
-    objectID,
+  const meta: TrainMeta = {
+    id,
     code: undefined,
-    prevStation,
-    curStation,
-    nextStation,
-    deviation: undefined,
-    firstStation: stations[0],
-    lastStation: stations[stations.length - 1],
-    updatedAt,
+    updated,
+    delay: 0,
+    prevStop,
+    curStop,
+    nextStop,
+    firstStop: stops[0],
+    lastStop: stops[stops.length - 1],
   }
-  if (!nextStation) {
-    status.code = TimeStatus.COMPLETE
-    return status
+  if (!nextStop) {
+    meta.code = TimeStatus.COMPLETE
+    return meta
   }
-  if (!prevStation && nextStation.code === stations[0].code) {
-    status.code = TimeStatus.PREDEPARTURE
-    return status
+  if (!prevStop && nextStop.code === stops[0].code) {
+    meta.code = TimeStatus.PREDEPARTURE
+    return meta
   }
   // else train is underway
-  const station = curStation ?? prevStation
-  if (!station?.arr) {
-    return status // unkonwn status code
+  const stop = curStop ?? prevStop
+  if (!stop?.arrival.time) {
+    return meta // unknown status code
   }
-  status.deviation = msToMins(station.arr.valueOf() - station.schArr.valueOf())
-  status.code = status.deviation > 0 ? TimeStatus.DELAYED : TimeStatus.ON_TIME
-  return status
+  meta.delay = stop.arrival.delay
+  meta.code = meta.delay > 0 ? TimeStatus.DELAYED : TimeStatus.ON_TIME
+  return meta
 }
 
 /**
@@ -225,9 +219,9 @@ export const findTrainsFromSegment = (
   origCode: string,
   destCode: string,
 ) =>
-  trains.filter(({ stations }) => {
-    const origStationIndex = stations.findIndex((s) => s.code === origCode)
-    const destCodeIndex = stations.findIndex((s) => s.code === destCode)
+  trains.filter(({ stops }) => {
+    const origStationIndex = stops.findIndex((s) => s.code === origCode)
+    const destCodeIndex = stops.findIndex((s) => s.code === destCode)
     return (
       origStationIndex > -1 &&
       destCodeIndex > -1 &&
@@ -368,6 +362,22 @@ export const dayDiffers = (
 ) => formatDate(a, tzA) !== formatDate(b, tzB)
 
 /**
+ * Calculates the scheduled time of a train stop by subtracting the delay from
+ * the estimated/actual time.
+ *
+ * @param time - The estimated or actual time of the train stop
+ * @param delay - The delay in minutes
+ * @returns
+ */
+export const getScheduledTime = ({
+  time,
+  delay,
+}: {
+  time: Date | null
+  delay: number
+}) => time && new Date(time.getTime() - delay * 60 * 1000)
+
+/**
  * Calculates the progress of a train's current segment.
  *
  * The progress is an object with the following properties:
@@ -382,29 +392,27 @@ export const dayDiffers = (
  * 0. If the train is enroute between stations, `minsToArrival` is non-zero and
  * `percent` is a value between 0 and 1.
  *
- * @param trainStatus - The status of the train
+ * @param trainMeta - The status of the train
  * @returns The progress of the train's current segment
  */
-export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
-  const { prevStation, curStation, nextStation } = trainStatus
+export const getCurrentSegmentProgress = (trainMeta: TrainMeta) => {
+  const { prevStop, curStop, nextStop } = trainMeta
   const progress = {
     minsToDeparture: 0,
     minsToArrival: 0,
     percent: 0,
   }
-  const departureTime =
-    prevStation?.dep?.valueOf() ?? prevStation?.schDep.valueOf()
+  const departureTime = prevStop?.arrival.time.valueOf()
+  const arrivalTime = nextStop?.arrival.time.valueOf()
 
-  if (curStation && nextStation && departureTime) {
+  if (curStop?.departure.time && nextStop && departureTime) {
     // train is at a station
     progress.minsToDeparture = msToMins(
-      curStation.schDep.valueOf() - Date.now(),
+      curStop.departure.time.valueOf() - Date.now(),
     )
     progress.percent = 0 // no progress has been made on "current" (upcoming) segment
-  } else if (departureTime && !curStation && nextStation) {
+  } else if (!curStop && arrivalTime && departureTime) {
     // train is enroute between stations
-    const arrivalTime =
-      nextStation.arr?.valueOf() ?? nextStation.schArr.valueOf()
     const minsToArrival = msToMins(arrivalTime - Date.now())
     const minsBetweenStations = msToMins(arrivalTime - departureTime)
     const minsElapsed = minsBetweenStations - minsToArrival
@@ -415,11 +423,11 @@ export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
 }
 
 /**
- * Given an array of stations, a comparison function, and an initial value,
+ * Given an array of stops, a comparison function, and an initial value,
  * returns the minimum or maximum segment duration (in minutes) between the
- * scheduled arrival times of consecutive stations.
+ * scheduled arrival times of consecutive stops.
  *
- * @param stations - An array of stations
+ * @param stops - An array of stops
  * @param compareFunc - A function that compares two numbers and returns a new
  *   value. This function should behave like `Math.max` or `Math.min`.
  * @param initialValue - The initial value to pass to the comparison function
@@ -427,14 +435,21 @@ export const getCurrentSegmentProgress = (trainStatus: TrainStatus) => {
  * @returns The minimum or maximum segment duration in minutes
  */
 export const getSegmentDurationMinMax = (
-  stations: StationTrain[],
+  stops: Stop[],
   compareFunc: (a: number, b: number) => number,
   initialValue = 0,
 ) =>
-  stations.reduce((acc, { schArr }, idx, stations) => {
-    const prevStationArr = stations[idx - 1]?.schArr
-    return prevStationArr && schArr
-      ? compareFunc(acc, msToMins(schArr.valueOf() - prevStationArr.valueOf()))
+  stops.reduce((acc, { arrival }, idx, stations) => {
+    const prevStopArr = stations[idx - 1]?.arrival
+    const prevStopArrScheduled = prevStopArr && getScheduledTime(prevStopArr)
+    const nextStopArrScheduled = getScheduledTime(arrival)
+    return prevStopArrScheduled && nextStopArrScheduled
+      ? compareFunc(
+          acc,
+          msToMins(
+            nextStopArrScheduled.valueOf() - prevStopArrScheduled.valueOf(),
+          ),
+        )
       : acc
   }, initialValue)
 
@@ -464,18 +479,18 @@ export const getDelayColor = (delay: number) => {
 /**
  * Given a train status, returns a color representing it.
  *
- * @param trainStatus - The status of the train
+ * @param trainMeta - The status of the train
  * @returns A color string representing the train's status
  */
-export const getTrainColor = (trainStatus: TrainStatus) => {
-  const { code, deviation } = trainStatus
+export const getTrainColor = (trainMeta: TrainMeta) => {
+  const { code, delay } = trainMeta
   if (code === undefined) {
     return colors['positron-gray-600']
   }
   return {
     [TimeStatus.PREDEPARTURE]: formatRgb(colors['amtrak-blue-500']),
     [TimeStatus.ON_TIME]: formatRgb(colors['amtrak-green-400']),
-    [TimeStatus.DELAYED]: getDelayColor(deviation ?? 0),
+    [TimeStatus.DELAYED]: getDelayColor(delay),
     [TimeStatus.COMPLETE]: formatRgb(colors['amtrak-deep-blue']),
   }[code]
 }
@@ -494,8 +509,8 @@ export const getTrainColor = (trainStatus: TrainStatus) => {
  * // Returns "456" (if no mapping exists for "Unknown route")
  * getTrainShortcode({ routeName: "Unknown route", trainNum: "456" })
  */
-export const getTrainShortcode = ({ routeName, trainNum }: Train) =>
-  [routeToCodeMap[routeName], trainNum].filter(Boolean).join(' ')
+export const getTrainShortcode = ({ name, number }: Train) =>
+  [routeToCodeMap[name], number].filter(Boolean).join(' ')
 
 /**
  * Gets the coordinates for a station by its code.
@@ -503,7 +518,22 @@ export const getTrainShortcode = ({ routeName, trainNum }: Train) =>
  * @param {Station[]} stations The list of stations to search.
  * @returns {[number, number] | undefined} The station's [lat, lon] coordinates, or undefined if not found.
  */
-export const getStationCoordinates = (code: string, stations: Station[]) => {
-  const station = stations.find((s) => s.code === code)
-  return station && [station.lon, station.lat]
+export const getStationCoordinates = (code: string, stations: Station[]) =>
+  stations.find((s) => s.code === code)?.coordinates ?? null
+
+/**
+ * Converts a numeric heading in degrees into a compass direction, on an 8-point
+ * compass rose.
+ *
+ * @param {number} degrees - Heading in degrees, where 0 (or 360) is North.
+ *   Values outside the 0–360 range are normalized.
+ * @returns {string} The corresponding compass direction.
+ */
+export const headingToDirection = (heading: number) => {
+  // Normalize to 0–360
+  const normalized = ((heading % 360) + 360) % 360
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+  // Each direction covers 45°, offset by half a segment (22.5°)
+  const index = Math.floor((normalized + 22.5) / 45) % 8
+  return directions[index]
 }

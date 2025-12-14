@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import { DateTime } from 'luxon'
 import { FeatureCollection, Point } from 'geojson'
+import { AmtrakTrainInfoProperties, AmtrakTZCode } from './trains/types'
 
 // Amtrak API decryption constants as reverse engineered in:
 // https://github.com/eiiot/amtraker-v3/blob/main/index.ts

@@ -1,35 +1,38 @@
 import { Fragment } from 'react'
 import cn from 'classnames'
-import { StationTrain } from '../types'
+import { Stop } from '../types'
 import { classNames } from '../constants'
 import {
   dayDiffers,
   formatDate,
   formatTime,
-  getArrival,
   getDelayColor,
-  msToMins,
+  getScheduledTime,
 } from '../utils'
 
 function TimelineSegment({
-  stations,
+  stops,
   index,
   height,
 }: {
-  stations: StationTrain[]
+  stops: Stop[]
   index: number
   height: number
 }) {
-  const station = stations[index]
-  const prevStation = stations[index - 1]
-  const { code, arr, schArr, name, platform, tz } = station
-  const deviation = arr ? msToMins(arr.valueOf() - schArr.valueOf()) : 0
-  const arrivalTime = getArrival(station)
+  const stop = stops[index]
+  const prevStop = stops[index - 1]
+  const { code, name, arrival } = stop
+  const { delay } = arrival
 
   const renderDayLine = () => {
     if (
-      !prevStation ||
-      !dayDiffers(arrivalTime, getArrival(prevStation), tz, prevStation.tz)
+      !prevStop ||
+      !dayDiffers(
+        arrival.time,
+        prevStop.arrival.time,
+        stop.timezone,
+        prevStop.timezone,
+      )
     ) {
       return null
     }
@@ -44,7 +47,7 @@ function TimelineSegment({
             classNames.textDeemphasized,
           )}
         >
-          {formatDate(arrivalTime, tz)}
+          {formatDate(arrival.time, stop.timezone)}
         </span>
         <hr className={cn('w-full border', classNames.sectionSeparator)} />
       </div>
@@ -57,28 +60,28 @@ function TimelineSegment({
       <div className="leading-snug" style={{ height }}>
         <span
           className={cn('block', {
-            'line-through': deviation,
-            [classNames.textDeemphasized]: deviation,
+            'line-through': delay,
+            [classNames.textDeemphasized]: delay,
           })}
         >
-          {formatTime(schArr, tz)}
+          {formatTime(getScheduledTime(arrival)!, stop.timezone)}
         </span>
-        {deviation !== 0 ? (
+        {delay !== 0 ? (
           <span
             className={cn(
               'block dark:brightness-150',
-              deviation < 0 ? 'text-amtrak-green-500' : '',
+              delay < 0 ? 'text-amtrak-green-500' : '',
             )}
-            style={{ color: deviation > 0 ? getDelayColor(deviation) : '' }}
+            style={{ color: delay > 0 ? getDelayColor(delay) : '' }}
           >
-            {formatTime(arr!, tz)}
+            {formatTime(arrival.time, stop.timezone)}
           </span>
         ) : null}
       </div>
       <div className="z-10 mx-[2px] my-1 aspect-square w-3 rounded-full bg-white" />
       <div className="leading-snug">
         <span className="block font-semibold text-balance">{name}</span>
-        {platform && <span className="block">Platform {platform}</span>}
+        {/* {platform && <span className="block">Platform {platform}</span>} */}
       </div>
     </Fragment>
   )

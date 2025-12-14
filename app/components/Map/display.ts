@@ -6,7 +6,7 @@ import type {
   SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
 import { formatRgb } from 'culori'
-import { formatDuration, getTrainColor, getTrainStatus } from '../../utils'
+import { formatDuration, getTrainColor, getTrainMeta } from '../../utils'
 import { Train, Station, TrainFeatureProperties } from '../../types'
 import { getExtrapolatedTrainPoint, snapTrainToTrackCached } from './calc'
 import { sourceId, routeToCodeMap } from './constants'
@@ -102,7 +102,7 @@ export const stationsToGeoJson = (
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [station.lon, station.lat],
+      coordinates: station.coordinates!,
     },
     properties: {
       ...station,
@@ -116,18 +116,17 @@ export const stationsToGeoJson = (
  * @returns A GeoJSON Point feature representing the train's location
  */
 export const trainToGeoJSON = ({
-  lon,
-  lat,
-  updatedAt,
+  coordinates,
+  updated,
 }: Train): Feature<Point> => ({
   type: 'Feature',
   geometry: {
     type: 'Point',
-    coordinates: [lon, lat],
+    coordinates: coordinates!,
   },
   properties: {
     lastUpdatedStr: formatDuration(
-      (updatedAt.getTime() - new Date().getTime()) / 60000,
+      (updated!.getTime() - new Date().getTime()) / 60000,
       {
         shortenMins: true,
       },
@@ -157,13 +156,12 @@ const createTrainFeature = (
   train: Train,
   stations: Station[],
 ): Feature<Point, TrainFeatureProperties> => {
-  const { objectID, trainNum, routeName, lon, lat } = train
-  const trainCoords = [lon, lat]
-  const trainStatus = getTrainStatus(train)
-  const color = getTrainColor(trainStatus)
+  const { id, number, name } = train
+  const trainMeta = getTrainMeta(train)
+  const color = getTrainColor(trainMeta)
   // existing coordinates for this train (which may have previously been
   // snapped/extrapolated by this function), otherwise use raw GPS coordinates
-  const prevCoords = prevTrain?.geometry.coordinates ?? trainCoords
+  const prevCoords = prevTrain?.geometry.coordinates ?? train.coordinates
 
   let coordinates, bearing
   // if the map is zoomed in enough that we care about showing the train
@@ -177,7 +175,7 @@ const createTrainFeature = (
     // position along it based on last update and next station ETA
     const extrapolated =
       track &&
-      getExtrapolatedTrainPoint(trainCoords, track, trainStatus, stations)
+      getExtrapolatedTrainPoint(train.coordinates!, track, trainMeta, stations)
     coordinates =
       extrapolated?.point.geometry.coordinates ??
       lastPosition.point.geometry.coordinates
@@ -196,10 +194,10 @@ const createTrainFeature = (
       coordinates,
     },
     properties: {
-      objectID,
-      trainNum,
+      id,
+      number,
       color,
-      routeCode: routeToCodeMap[routeName],
+      routeCode: routeToCodeMap[name],
       bearing,
     },
   }
@@ -225,12 +223,15 @@ export const trainsToGeoJson = (
   stations: Station[] = [],
 ): FeatureCollection<Point, TrainFeatureProperties> => ({
   type: 'FeatureCollection',
-  features: trains.map((train) =>
-    createTrainFeature(
-      prevTrains.features.find((f) => f.properties.objectID === train.objectID),
-      map,
-      train,
-      stations,
+  features: trains
+    // exclude trains without GPS coordinates
+    .filter((train) => train.coordinates)
+    .map((train) =>
+      createTrainFeature(
+        prevTrains.features.find((f) => f.properties.id === train.id),
+        map,
+        train,
+        stations,
+      ),
     ),
-  ),
 })

@@ -66,7 +66,7 @@ function Map() {
   const { trains, stations } = useTrains()
   const { settings } = useSettings()
   const router = useRouter()
-  const trainID = useParams().id
+  const { operator, id } = useParams()
   const query = useSearchParams()
 
   const initialViewState = {
@@ -85,8 +85,8 @@ function Map() {
   const mapRef = useRef<MapRef>(null)
 
   const selectedTrain = useMemo(
-    () => trains.find((t) => t.objectID === trainID),
-    [trains, trainID],
+    () => trains.find((t) => t.id === `${operator}/${id}`),
+    [trains, operator, id],
   )
 
   const updateTrains = useCallback(() => {
@@ -119,7 +119,7 @@ function Map() {
     setTrainData(trainsToGeoJson(trainData, mapRef.current!, trains, stations))
     const zoom = mapRef.current.getZoom()
     const trainPosition = trainData.features.find(
-      (f) => f.properties.objectID === trainID,
+      (f) => f.properties.id === trainID,
     )?.geometry.coordinates
     const minFlyZoom = 8
     mapRef.current.flyTo({
@@ -177,7 +177,7 @@ function Map() {
             features?: MapGeoJSONFeature[]
           },
         ) => {
-          const trainID = ev.features?.[0]?.properties.objectID
+          const trainID = ev.features?.[0]?.properties.id
           if (trainID) navigateToTrain(trainID)
         }}
       >
@@ -207,13 +207,13 @@ function Map() {
         )}
 
         {trainData.features.map((f) => (
-          <Fragment key={f.properties.objectID}>
+          <Fragment key={f.properties.id}>
             <TrainMarker
               coordinates={f.geometry.coordinates}
               zoom={viewState.zoom}
               moving={moving}
               navigateToTrain={navigateToTrain}
-              isSelected={selectedTrain?.objectID === f.properties.objectID}
+              isSelected={selectedTrain?.id === f.properties.id}
               {...f.properties}
             />
             <TrainLabel
@@ -221,7 +221,7 @@ function Map() {
               zoom={viewState.zoom}
               moving={moving}
               navigateToTrain={navigateToTrain}
-              isSelected={selectedTrain?.objectID === f.properties.objectID}
+              isSelected={selectedTrain?.id === f.properties.id}
               {...f.properties}
             />
           </Fragment>
@@ -229,7 +229,7 @@ function Map() {
 
         {selectedTrain && viewState.zoom > 6 && (
           <TrainGPS
-            coordinates={[selectedTrain.lon, selectedTrain.lat]}
+            coordinates={selectedTrain.coordinates!}
             zoom={viewState.zoom}
             shortcode={getTrainShortcode(selectedTrain)}
           />

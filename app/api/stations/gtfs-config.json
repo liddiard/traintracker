@@ -112,5 +112,5 @@
   "csvOptions": {
     "skip_lines_with_error": true
   },
-  "downloadTimeout": 10000
+  "downloadTimeout": 30000
 }

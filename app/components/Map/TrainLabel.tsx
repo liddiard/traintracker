@@ -8,17 +8,17 @@ interface TrainLabelProps extends TrainFeatureProperties {
   moving: boolean
   navigateToTrain: (trainID: string) => void
   routeCode: string
-  trainNum: string
+  number: string
   isSelected: boolean
 }
 
 function TrainLabel({
-  objectID,
+  id,
   coordinates,
   zoom,
   moving,
   routeCode,
-  trainNum,
+  number,
   isSelected,
   navigateToTrain,
 }: TrainLabelProps) {
@@ -31,7 +31,7 @@ function TrainLabel({
     <Marker
       longitude={lon}
       latitude={lat}
-      onClick={() => navigateToTrain(objectID)}
+      onClick={() => navigateToTrain(id)}
       className="cursor-pointer p-2"
       anchor="left"
       offset={[6, 0]}
@@ -54,7 +54,7 @@ function TrainLabel({
             'text-amtrak-blue-500': !isSelected,
           })}
         >
-          {trainNum}
+          {number}
         </span>
       </span>
     </Marker>

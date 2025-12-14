@@ -1,16 +1,16 @@
 // NOTE: Interface definitions in this file are not exhaustive. We only define the
 // parts we use in some way in the upstream API responses.
 
-type TrainStatus = 'Predeparture' | 'Active' | 'Completed'
+import { TrainStatus } from '@/app/types'
 
-// Pacific, Mountain, Central, Eastern
-type AmtrakTZCode = 'P' | 'M' | 'C' | 'E'
+// Amtrak API timezones: Pacific, Mountain, Central, Eastern
+export type AmtrakTZCode = 'P' | 'M' | 'C' | 'E'
 
-// Amtrak API enums
-type AmtrakHeading = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW'
+// Amtrak API headings
+export type AmtrakHeading = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW'
 
 // Amtrak API GeoJSON properties available on train features
-interface AmtrakTrainInfoProperties {
+export interface AmtrakTrainInfoProperties {
   OBJECTID: number
   StatusMsg: string
   Heading: AmtrakHeading
@@ -22,8 +22,28 @@ interface AmtrakTrainInfoProperties {
   Velocity: string
 }
 
+// Amtrak API properties available on train feature properties' "Station\d+" keys
+export interface AmtrakStationInfoProperties {
+  code: string
+  tz: AmtrakTZCode
+  scharr?: string
+  schdep?: string
+  estarr?: string
+  estdep?: string
+  postarr?: string
+  postdep?: string
+}
+
+// Amtrak station info from US DOT
+export interface AmtrakStationCSV {
+  Code: string
+  StationName: string
+  lon: number
+  lat: number
+}
+
 // Via Rail API train info structure
-interface ViaTrainInfo {
+export interface ViaTrainInfo {
   lat: number
   lng: number
   speed: number
@@ -49,7 +69,7 @@ interface ViaTrainInfo {
 }
 
 // Via Rail API station info ("times" array) structure
-interface ViaStationInfo {
+export interface ViaStationInfo {
   code: string
   station: string
   scheduled: string
@@ -65,7 +85,7 @@ interface ViaStationInfo {
   }
 }
 
-interface BrightlineTrainInfo {
+export interface BrightlineTrainInfo {
   id: string
   vehicle: {
     trip: {
@@ -86,7 +106,7 @@ interface BrightlineTrainInfo {
   }
 }
 
-interface BrightlineTripInfo {
+export interface BrightlineTripInfo {
   id: string
   tripUpdate: {
     trip: {
@@ -103,7 +123,7 @@ interface BrightlineTripInfo {
   }
 }
 
-interface BrightlineStationInfo {
+export interface BrightlineStationInfo {
   stopId: string
   arrival: {
     delay: number
@@ -113,55 +133,4 @@ interface BrightlineStationInfo {
     delay: number
     time: string
   }
-}
-
-// Station data from Amtraker API (https://api-v3.amtraker.com/v3/stations)
-// Used to get Via station timezones
-interface AmatrakerStationInfo {
-  code: string
-  name: string
-  tz: string
-  lat: number
-  lon: number
-}
-
-// Our returned processed trains
-interface TrainResponse {
-  updated: Date | null
-  id: string
-  name: string
-  number: string
-  status: TrainStatus
-  alerts: string[]
-  coordinates: [number, number] | null // [lon, lat] per GeoJSON spec
-  speed: number | null
-  heading: number | null
-  stations: StopResponse[]
-}
-
-// Our returned processed train stops
-interface StopResponse {
-  code: string
-  name: string
-  timezone: string | null
-  departure: {
-    // estimated or actual departure time
-    time: Date | null
-    // deviation from scheduled time in minutes
-    delay: number | null
-  }
-  arrival: {
-    // estimated or actual arrival time
-    time: Date | null
-    // deviation from scheduled time in minutes
-    delay: number | null
-  }
-}
-
-// Our returned processed train stations
-interface StationResponse {
-  code: string
-  name: string | null
-  timezone: string | null
-  coordinates: [number, number] | null // [lon, lat] per GeoJSON spec
 }

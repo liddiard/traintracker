@@ -1,35 +1,29 @@
-import fs from 'fs/promises'
 import fetchAmtrak from './amtrak'
 import fetchVia from './via'
 import fetchBrightline from './brightline'
+import { Train } from '@/app/types'
 // import data from './example-response.json'
 
 // Caching
 const cacheDurationMs = 60 * 1000 // 1 minute
 let lastChecked: Date | null = null
-let cache: TrainResponse[] = []
+let cache: Train[] = []
 
 export async function GET() {
-  if (lastChecked && Date.now() - lastChecked.getTime() <= cacheDurationMs) {
-    // TODO: return cached data
-  }
-
-  const [amtrak, via, brightline] = await Promise.all([
-    fetchAmtrak(),
-    fetchVia(),
-    fetchBrightline(),
-  ])
-  cache = [...amtrak, ...via, ...brightline]
-  lastChecked = new Date()
-
-  await fs.writeFile('trains.json', JSON.stringify(cache, null, 2), 'utf8')
-
   try {
-    const res = await fetch('https://api-v3.amtraker.com/v3/trains', {
-      next: { revalidate: 60 }, // cache for 1 minute
-    })
-    const data = await res.json()
-    return Response.json(data)
+    if (lastChecked && Date.now() - lastChecked.getTime() <= cacheDurationMs) {
+      return Response.json(cache)
+    }
+
+    const [amtrak, via, brightline] = await Promise.all([
+      fetchAmtrak(),
+      fetchVia(),
+      fetchBrightline(),
+    ])
+    cache = [...amtrak, ...via, ...brightline]
+    lastChecked = new Date()
+
+    return Response.json(cache)
   } catch (error) {
     console.log(error)
     let message

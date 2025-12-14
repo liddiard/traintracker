@@ -1,86 +1,70 @@
 import { ReactNode } from 'react'
 
-export interface TrainResponse {
-  [key: string]: TrainRaw[]
+export type Route = Record<string, Set<string>>
+
+export type TrainStatus = 'Predeparture' | 'Active' | 'Completed'
+
+export interface Train {
+  updated: Date | null
+  id: string
+  name: string
+  number: string
+  status: TrainStatus
+  alerts: string[]
+  coordinates: [number, number] | null // [lon, lat] per GeoJSON spec
+  speed: number | null
+  heading: number | null
+  stops: Stop[]
 }
 
-interface TrainRaw {
-  routeName: string
-  trainNum: string
-  trainID: string
-  lat: number
-  lon: number
-  trainTimely: string
-  stations: StationTrainRaw[]
-  heading: string
-  eventCode: string
-  eventTZ: string
-  eventName: string
-  origCode: string
-  originTZ: string
-  origName: string
-  destCode: string
-  destTZ: string
-  destName: string
-  trainState: 'Predeparture' | 'Active' | 'Completed'
-  velocity: number
-  statusMsg: string
-  createdAt: string
-  updatedAt: string
-  lastValTS: string
-  objectID: number | null
-  provider: string
+// Train API response before parsing dates
+export interface TrainResponseItem extends Omit<Train, 'updated' | 'stops'> {
+  updated: string
+  stops: StopResponse
 }
 
-export interface Train extends Omit<
-  TrainRaw,
-  'objectID' | 'createdAt' | 'updatedAt' | 'lastValTS' | 'stations'
-> {
-  objectID: string
-  createdAt: Date
-  updatedAt: Date
-  lastValTS: Date
-  stations: StationTrain[]
+export type TrainResponse = TrainResponseItem[]
+
+export interface Stop {
+  code: string
+  name: string
+  timezone: string
+  departure: {
+    // estimated or actual departure time
+    time: Date
+    // deviation from scheduled time in minutes
+    delay: number
+  }
+  arrival: {
+    // estimated or actual arrival time
+    time: Date
+    // deviation from scheduled time in minutes
+    delay: number
+  }
 }
+
+// Train stops from API response before parsing dates
+export interface StopResponseItem extends Omit<Stop, 'departure' | 'arrival'> {
+  departure: {
+    time: string
+    delay: number
+  }
+  arrival: {
+    time: string
+    delay: number
+  }
+}
+
+export type StopResponse = StopResponseItem[]
 
 export interface Station {
-  name: string
   code: string
-  tz: string
-  lat: number
-  lon: number
-  hasAddress: boolean
-  address1: string
-  address2: string
-  city: string
-  state: string
-  zip: string
-  trains: string[]
+  name: string
+  timezone: string
+  coordinates: [number, number] // [lon, lat] per GeoJSON spec
 }
 
-export interface StationTrainRaw extends Station {
-  bus: boolean
-  schArr: string
-  schDep: string
-  arr: string | null
-  dep: string | null
-  arrCmnt: string
-  depCmnt: string
-  status: 'Departed' | 'Station' | 'Enroute'
-  platform: string
-}
-
-export interface StationTrain extends Omit<
-  StationTrainRaw,
-  'schArr' | 'schDep' | 'arr' | 'dep'
-> {
-  schArr: Date
-  schDep: Date
-  arr: Date | null
-  dep: Date | null
-}
-
-export type Route = Record<string, Set<string>>
+export type StationResponse = Record<string, Station>
 
 export enum TimeStatus {
   PREDEPARTURE,
@@ -89,21 +73,21 @@ export enum TimeStatus {
   COMPLETE,
 }
 
-export interface TrainStatus {
-  objectID: string
+export interface TrainMeta {
+  id: string
   code?: number
-  prevStation?: StationTrain
-  curStation?: StationTrain
-  nextStation?: StationTrain
-  deviation?: number
-  firstStation: StationTrain
-  lastStation: StationTrain
-  updatedAt: Date
+  prevStop?: Stop
+  curStop?: Stop
+  nextStop?: Stop
+  firstStop: Stop
+  lastStop: Stop
+  delay: number
+  updated: Date | null
 }
 
 export interface Option {
   value: string
-  label: string
+  label: string | null
 }
 
 export interface TrackFeatureProperties {
@@ -113,9 +97,9 @@ export interface TrackFeatureProperties {
 }
 
 export interface TrainFeatureProperties {
-  objectID: string
+  id: string
   routeCode: string
-  trainNum: string
+  number: string
   color?: string
   bearing?: number
 }

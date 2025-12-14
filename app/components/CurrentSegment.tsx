@@ -1,19 +1,19 @@
 import { useEffect, useRef } from 'react'
 import cn from 'classnames'
-import { TrainStatus } from '@/app/types'
+import { TrainMeta } from '@/app/types'
 import { formatDuration, getCurrentSegmentProgress } from '../utils'
 import Progress from './Progress'
 
 interface CurrentSegmentProps {
-  trainStatus: TrainStatus
+  trainMeta: TrainMeta
 }
 
-function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
+function CurrentSegment({ trainMeta }: CurrentSegmentProps) {
   const progressValueRef = useRef<HTMLDivElement>(null)
 
   const { minsToDeparture, minsToArrival, percent } =
-    getCurrentSegmentProgress(trainStatus)
-  const { prevStation, curStation, nextStation } = trainStatus
+    getCurrentSegmentProgress(trainMeta)
+  const { prevStop, curStop, nextStop } = trainMeta
   const atStation = !!minsToDeparture
 
   // when the stations change, cancel the previous animation so the progress
@@ -22,20 +22,20 @@ function CurrentSegment({ trainStatus }: CurrentSegmentProps) {
     if (progressValueRef.current) {
       progressValueRef.current.getAnimations()[0].cancel()
     }
-  }, [prevStation?.code, nextStation?.code, curStation?.code])
+  }, [prevStop?.code, nextStop?.code, curStop?.code])
 
   let segmentStartStation
   let segmentEndStation
   let label
   if (atStation) {
     // train is at a station waiting to depart
-    segmentStartStation = curStation
-    segmentEndStation = nextStation
+    segmentStartStation = curStop
+    segmentEndStation = nextStop
     label = `Departing in ${formatDuration(minsToDeparture)}`
   } else if (minsToArrival) {
     // train is enroute between stations
-    segmentStartStation = prevStation
-    segmentEndStation = nextStation
+    segmentStartStation = prevStop
+    segmentEndStation = nextStop
     label =
       Math.floor(minsToArrival) > 0
         ? `Arriving in ${formatDuration(minsToArrival)}`

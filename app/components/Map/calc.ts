@@ -26,18 +26,15 @@ import {
 } from 'geojson'
 import {
   Train,
-  TrainStatus,
+  TrainMeta,
   Station,
   TrackId,
   TrackFeatureProperties,
   TimeStatus,
+  Stop,
 } from '../../types'
 import _amtrakTrack from '@/public/map_data/amtrak-track.json'
-import {
-  createCachedFunction,
-  getArrival,
-  getStationCoordinates,
-} from '@/app/utils'
+import { createCachedFunction, getStationCoordinates } from '@/app/utils'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString,
@@ -49,21 +46,23 @@ const amtrakTrack = _amtrakTrack as FeatureCollection<
  *
  * @param pt - The point to check, represented as a GeoJSON Feature of type Point.
  * @param trainPosition - The current position of the train, represented as a GeoJSON Feature of type Point.
- * @param nextStation - The next station the train will arrive at, containing station information.
+ * @param nextStop - The next station the train will arrive at, containing station information.
  * @returns A boolean indicating whether the point is behind the train relative to the next station, or undefined if unknown.
  */
 const isPointBehindTrain = (
   pt: Feature<Point>,
   trainPosition: Feature<Point>,
   stations: Station[],
-  nextStation?: Station,
+  nextStop?: Stop,
 ) => {
-  const station = stations.find((s) => s.code === nextStation?.code)
-  if (!station) {
-    console.warn(`isPointBehindTrain: Station not found: ${nextStation?.code}`)
+  const station = stations.find((s) => s.code === nextStop?.code)
+  if (!station?.coordinates) {
+    console.warn(
+      `isPointBehindTrain: Station coordinates not found: ${nextStop?.code}`,
+    )
     return
   }
-  const stationPoint = point([station.lon, station.lat])
+  const stationPoint = point(station.coordinates)
   const distanceBetweenTrainAndStation = distance(trainPosition, stationPoint)
   const distanceBetweenPointAndStation = distance(pt, stationPoint)
   return distanceBetweenPointAndStation > distanceBetweenTrainAndStation
@@ -100,17 +99,17 @@ const normalizeBearing = (degree: number) => {
  *
  * @param trainPoint - The current position of the train as a GeoJSON Feature<Point>.
  * @param track - The track geometry as a GeoJSON MultiLineString.
- * @param nextStation - The next station the train is heading towards (optional).
+ * @param nextStop - The next station the train is heading towards (optional).
  * @returns The bearing in degrees, or undefined if the next station is not provided or if the nearest point is behind the train and cannot be determined.
  */
 export const getBearing = (
   trainPoint: Feature<Point>,
   track: MultiLineString | LineString,
   stations: Station[],
-  nextStation?: Station,
+  nextStop?: Stop,
 ) => {
   // if no next station, we can't make the calculation
-  if (!nextStation) {
+  if (!nextStop) {
     return
   }
   const trainPointJSON = JSON.stringify(trainPoint.geometry.coordinates)
@@ -131,7 +130,7 @@ export const getBearing = (
     nearestTrackPoint,
     trainPoint,
     stations,
-    nextStation,
+    nextStop,
   )
   // return if we're unsure if the nearest point is behind the train (e.g. if
   // the station) code isn't found in the station data
@@ -302,14 +301,18 @@ const getNearbyTrack = (
  *
  * @example
  * const train = { lon: -122.4194, lat: 37.7749 };
- * const nextStation = { code: 'NYP' };
+ * const nextStop = { code: 'NYP' };
  * const result = snapTrainToTrack(train);
  * console.log(result); // Snapped point on the track
  */
 export const snapTrainToTrack = (train: Train) => {
   // find the Point on a track nearest the train's GPS-reported coordinates
-  const { lon, lat, updatedAt } = train
-  const trainPoint = point([lon, lat])
+  const { coordinates, updated } = train
+  if (!coordinates) {
+    return {}
+  }
+
+  const trainPoint = point(coordinates)
   // for performance, and to avoid snapping a train to track far away from its
   // actual coordinates, only consider track within a small bounding box
   // around the train's coordinates
@@ -333,7 +336,7 @@ export const snapTrainToTrack = (train: Train) => {
     return {
       point: snappedTrainPoint,
       track,
-      updatedAt,
+      updated,
     }
   } else {
     // there is no track is near the train's GPS-reported position, so we
@@ -342,7 +345,7 @@ export const snapTrainToTrack = (train: Train) => {
     return {
       point: trainPoint,
       track: undefined,
-      updatedAt,
+      updated,
     }
   }
 }
@@ -352,9 +355,9 @@ export const snapTrainToTrack = (train: Train) => {
  */
 export const snapTrainToTrackCached = createCachedFunction(
   snapTrainToTrack,
-  (train) => train.objectID, // cache key
+  (train) => train.id, // cache key
   // cache validity condition
-  ({ updatedAt }, train) => !!updatedAt && updatedAt === train.updatedAt,
+  ({ updated }, train) => !!updated && updated === train.updated,
 )
 
 /**
@@ -399,7 +402,7 @@ const getTrackSegmentCached = createCachedFunction(
   getTrackSegment,
   (stationCode) => stationCode, // cache key
   // cache validity condition
-  (cachedValue, objectID, start, end) => {
+  (cachedValue, id, start, end) => {
     const cachedStart = JSON.stringify(cachedValue?.start)
     const cachedEnd = JSON.stringify(cachedValue?.end)
     return (
@@ -413,17 +416,17 @@ const getTrackSegmentCached = createCachedFunction(
  * Used to position markers for trains that have completed their full route.
  *
  * @param trackLine - The GeoJSON LineString feature representing the track.
- * @param lastStation - The final station object of the train's route.
+ * @param lastStop - The final stop object of the train's route.
  * @param stations - An array of all station objects, used to look up coordinates.
  * @returns An object with the snapped `point` on the track and an `undefined` bearing,
  * or `undefined` if the last station's coordinates cannot be found.
  */
 const getTrackTerminus = (
   trackLine: Feature<LineString>,
-  lastStation: Station,
+  lastStop: Stop,
   stations: Station[],
 ) => {
-  const stationCoords = getStationCoordinates(lastStation.code, stations)
+  const stationCoords = getStationCoordinates(lastStop.code, stations)
   if (!stationCoords) {
     return
   }
@@ -439,7 +442,7 @@ const getTrackTerminus = (
  *
  * @param trainPosition - The last-reported GPS coordinates of the train as [lon, lat].
  * @param trackId - The track on which the train is traveling, represented as an ID.
- * @param trainStatus - The status of the train, containing information about its timetable.
+ * @param trainMeta - The status of the train, containing information about its timetable.
  * @param stations - An array of station objects containing station codes and coordinates.
  * @returns An object containing the extrapolated position of the train as a Feature<Point>,
  * and the bearing along the track as a number of degrees, if able to calculate.
@@ -447,9 +450,9 @@ const getTrackTerminus = (
  * @example
  * const trainPosition = [-122.4194, 37.7749] // coordinates
  * const trackId = '4332'
- * const trainStatus = {
- *   nextStation: 'NYP',
- *   updatedAt: new Date(),
+ * const trainMeta = {
+ *   nextStop: 'NYP',
+ *   updated: new Date(),
  *   ...
  * }
  * const stations = [
@@ -459,7 +462,7 @@ const getTrackTerminus = (
  * const result = getExtrapolatedTrainPoint(
  *   train,
  *   { id: 'track-id', index: 0 },
- *   trainStatus,
+ *   trainMeta,
  *   stations,
  * );
  * console.log(result); // Extrapolated position + bearing of the train
@@ -478,10 +481,10 @@ const getTrackTerminus = (
 export const getExtrapolatedTrainPoint = (
   trainPosition: Position,
   trackId: TrackId,
-  trainStatus: TrainStatus,
+  trainMeta: TrainMeta,
   stations: Station[],
 ) => {
-  console.time(`getExtrapolatedTrainPoint ${trainStatus.objectID}`)
+  console.time(`getExtrapolatedTrainPoint ${trainMeta.id}`)
   const trackLine = getTrackFromId(trackId, amtrakTrack)
   if (!trackLine) {
     return
@@ -489,18 +492,18 @@ export const getExtrapolatedTrainPoint = (
 
   // If train has arrived, snap it to the track nearest the last station's
   // coordinates
-  if (trainStatus.code === TimeStatus.COMPLETE) {
-    return getTrackTerminus(trackLine, trainStatus.lastStation, stations)
+  if (trainMeta.code === TimeStatus.COMPLETE) {
+    return getTrackTerminus(trackLine, trainMeta.lastStop, stations)
   }
 
-  const prevStation = trainStatus.curStation ?? trainStatus.prevStation
-  const { nextStation } = trainStatus
-  if (!prevStation || !nextStation) {
+  const prevStop = trainMeta.curStop ?? trainMeta.prevStop
+  const { nextStop } = trainMeta
+  if (!prevStop || !nextStop) {
     return
   }
 
-  const prevStationCoords = getStationCoordinates(prevStation.code, stations)
-  const nextStationCoords = getStationCoordinates(nextStation.code, stations)
+  const prevStationCoords = getStationCoordinates(prevStop.code, stations)
+  const nextStationCoords = getStationCoordinates(nextStop.code, stations)
   if (!prevStationCoords || !nextStationCoords) {
     return
   }
@@ -508,12 +511,12 @@ export const getExtrapolatedTrainPoint = (
   // get the track segment between the train's previous/current and next
   // station
   let trackSegment = getTrackSegmentCached(
-    `${prevStation.code}-${nextStation.code}`,
+    `${prevStop.code}-${nextStop.code}`,
     prevStationCoords,
     nextStationCoords,
     trackLine,
   ).track
-  let startTime = getArrival(prevStation)
+  let startTime: Date | null = prevStop.arrival.time
 
   if (!trackSegment?.geometry?.coordinates?.length) {
     return
@@ -538,10 +541,10 @@ export const getExtrapolatedTrainPoint = (
     //   point(prevStationCoords),
     //   point(trainPosition),
     //   stations,
-    //   nextStation,
+    //   nextStop,
     // )
   ) {
-    console.log('train ID:', trainStatus.objectID)
+    console.log('train ID:', trainMeta.id)
     console.log('trainPosition:', trainPosition)
     console.log('nextStationCoords:', nextStationCoords)
     console.log('trackSegment:', cleanCoords(trackSegment))
@@ -553,10 +556,14 @@ export const getExtrapolatedTrainPoint = (
       // https://github.com/Turfjs/turf/issues/2808#issuecomment-2586619743
       cleanCoords(trackSegment),
     )
-    startTime = trainStatus.updatedAt
+    startTime = trainMeta.updated
   }
 
-  const totalTime = getArrival(nextStation).getTime() - startTime.getTime()
+  if (!nextStop.arrival.time || !startTime) {
+    return
+  }
+
+  const totalTime = nextStop.arrival.time.getTime() - startTime.getTime()
   const totalDistance = length(trackSegment)
   const timeElapsed = new Date().getTime() - startTime.getTime()
   const progress = timeElapsed / totalTime
@@ -567,9 +574,9 @@ export const getExtrapolatedTrainPoint = (
     extrapolatedPoint,
     trackSegment.geometry,
     stations,
-    nextStation,
+    nextStop,
   )
-  console.timeEnd(`getExtrapolatedTrainPoint ${trainStatus.objectID}`)
+  console.timeEnd(`getExtrapolatedTrainPoint ${trainMeta.id}`)
   return {
     point: extrapolatedPoint,
     bearing,

@@ -5,7 +5,7 @@ import {
   formatDuration,
   formatTime,
   getTrainColor,
-  getTrainStatus,
+  getTrainMeta,
 } from '@/app/utils'
 
 function StatusBadge({
@@ -15,9 +15,9 @@ function StatusBadge({
   train: Train
   className?: string
 }) {
-  const trainStatus = getTrainStatus(train)
-  const backgroundColor = getTrainColor(trainStatus)
-  const { code, deviation, firstStation, lastStation } = trainStatus
+  const trainMeta = getTrainMeta(train)
+  const backgroundColor = getTrainColor(trainMeta)
+  const { code, delay, firstStop, lastStop } = trainMeta
 
   let text
   switch (code) {
@@ -39,12 +39,16 @@ function StatusBadge({
   }
 
   const getTimeInfo = () => {
-    if (code === TimeStatus.PREDEPARTURE && firstStation.dep) {
-      return formatTime(firstStation.dep, firstStation.tz)
+    if (
+      code === TimeStatus.PREDEPARTURE &&
+      firstStop.departure.time &&
+      firstStop.timezone
+    ) {
+      return formatTime(firstStop.departure.time, firstStop.timezone)
     } else if (code === TimeStatus.DELAYED) {
-      return formatDuration(deviation ?? 0, { shortenMins: true })
-    } else if (code === TimeStatus.COMPLETE && lastStation.arr) {
-      return formatTime(lastStation.arr, lastStation.tz)
+      return formatDuration(delay, { shortenMins: true })
+    } else if (code === TimeStatus.COMPLETE) {
+      return formatTime(lastStop.arrival.time, lastStop.timezone)
     }
   }
 

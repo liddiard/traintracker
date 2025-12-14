@@ -6,9 +6,12 @@ import {
   formatTime,
   getOffset,
   getTrainParams,
-  getTrainStatus,
+  getTrainMeta,
   msToMins,
   mphToKmh,
+  getScheduledTime,
+  kmhToMph,
+  headingToDirection,
 } from '@/app/utils'
 import cn from 'classnames'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
@@ -21,20 +24,21 @@ import { headingToRotationMap, classNames } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
 import { useSettings } from '@/app/providers/settings'
 import CurrentSegment from '@/app/components/CurrentSegment'
-import { TimeStatus, TrainStatus } from '@/app/types'
+import { TimeStatus, Train, TrainMeta } from '@/app/types'
 import Timeline from '@/app/components/Timeline'
 import Link from 'next/link'
+import { JSX } from 'react'
 
 export default function TrainDetail() {
-  const { id } = useParams()
+  const { operator, id } = useParams()
   const trainSearchParams = getTrainParams(useSearchParams())
   const { trains } = useTrains()
   const { settings } = useSettings()
-  const train = trains.find((t) => t.objectID === id)
+  const train = trains.find((t) => t.id === `${operator}/${id}`)
 
   if (!train) return notFound()
 
-  const trainStatus = getTrainStatus(train)
+  const trainMeta = getTrainMeta(train)
 
   const renderRouteEndpoint = ({
     stationName,
@@ -72,46 +76,58 @@ export default function TrainDetail() {
     </>
   )
 
-  const renderTrainVelocity = (velocity: number, trainStatus: TrainStatus) => {
-    if (trainStatus.curStation) {
+  const renderTrainVelocity = (train: Train, trainMeta: TrainMeta) => {
+    if (trainMeta.curStop) {
       return <span>At Station</span>
     }
-    if (velocity) {
-      const isKilometers = settings.units === 'kilometers'
+    let speedEl,
+      headingEl: JSX.Element | null = null
+    if (train.speed !== null) {
+      const isMiles = settings.units === 'miles'
       // speed is returned in mph by default
-      const displaySpeed = isKilometers ? mphToKmh(velocity) : velocity
-      const unit = isKilometers ? 'km/h' : 'mph'
-
-      return (
-        <>
-          <span>
-            {Math.round(displaySpeed)} {unit}
-          </span>
-          <span className="flex items-baseline gap-1">
-            <Pointer
-              alt={train.heading}
-              title={train.heading}
-              className="w-4 self-center transition-all duration-1000 dark:fill-white"
-              style={{
-                transform: `rotate(${headingToRotationMap[train.heading]}deg)`,
-              }}
-            />
-            <span>{train.heading}</span>
-          </span>
-        </>
+      const displaySpeed = isMiles ? kmhToMph(train.speed) : train.speed
+      const unit = isMiles ? 'mph' : 'km/h'
+      speedEl = (
+        <span>
+          {Math.round(displaySpeed)} {unit}
+        </span>
       )
     }
-    return null
+    if (train.heading !== null) {
+      headingEl = (
+        <span className="flex items-baseline gap-1">
+          <Pointer
+            alt={train.heading}
+            title={train.heading}
+            className="w-4 self-center transition-all duration-1000 dark:fill-white"
+            style={{
+              transform: `rotate(${train.heading}deg)`,
+            }}
+          />
+          <span>{headingToDirection(train.heading)}</span>
+        </span>
+      )
+    }
+    return (
+      <>
+        {speedEl}
+        {headingEl}
+      </>
+    )
   }
 
-  const timezonesDiffer = train.originTZ !== train.destTZ
+  const timezonesDiffer = train.stops[0].timezone !== train.stops[0].timezone
   const hasTrainSearchParams = !!Object.entries(trainSearchParams).length
-  const minsSinceLastUpdate = msToMins(Date.now() - train.updatedAt.valueOf())
+  const minsSinceLastUpdate =
+    train.updated && msToMins(Date.now() - train.updated.valueOf())
   // last update is more than 10 minutes old
   const isStaleData =
-    ![TimeStatus.PREDEPARTURE, TimeStatus.COMPLETE].includes(
-      trainStatus.code!,
-    ) && minsSinceLastUpdate > 10
+    minsSinceLastUpdate !== null &&
+    ![TimeStatus.PREDEPARTURE, TimeStatus.COMPLETE].includes(trainMeta.code!) &&
+    minsSinceLastUpdate > 10
+  const { firstStop, lastStop } = trainMeta
+  const scheduledDeparture = getScheduledTime(firstStop.departure)
+  const scheduledArrival = getScheduledTime(lastStop.arrival)
   return (
     <div className="flex flex-col gap-5 p-3 pb-4">
       <Link
@@ -124,8 +140,8 @@ export default function TrainDetail() {
         {hasTrainSearchParams ? '← Back to Search' : '← All Trains'}
       </Link>
       <h1 className="text-3xl font-bold">
-        {train.routeName}{' '}
-        <span className={classNames.textAccent}>{train.trainNum}</span>
+        {train.name}{' '}
+        <span className={classNames.textAccent}>{train.number}</span>
       </h1>
       <div
         className={cn(
@@ -133,13 +149,14 @@ export default function TrainDetail() {
           classNames.sectionSeparator,
         )}
       >
-        {renderRouteEndpoint({
-          stationName: train.origName,
-          stationCode: train.origCode,
-          date: trainStatus.firstStation.schArr,
-          tz: train.originTZ,
-          displayTz: timezonesDiffer,
-        })}
+        {scheduledDeparture &&
+          renderRouteEndpoint({
+            stationName: firstStop.name,
+            stationCode: firstStop.code,
+            date: scheduledDeparture,
+            tz: firstStop.timezone,
+            displayTz: timezonesDiffer,
+          })}
         <CaretRight
           alt="to"
           className="fill-positron-gray-600 dark:fill-positron-gray-300 w-3 self-center"
@@ -147,20 +164,21 @@ export default function TrainDetail() {
         <span />
         <span />
         <span />
-        {renderRouteEndpoint({
-          stationName: train.destName,
-          stationCode: train.destCode,
-          date: trainStatus.lastStation.schArr,
-          tz: train.destTZ,
-          displayTz: timezonesDiffer,
-        })}
+        {scheduledArrival &&
+          renderRouteEndpoint({
+            stationName: lastStop.name,
+            stationCode: lastStop.code,
+            date: scheduledArrival,
+            tz: lastStop.timezone,
+            displayTz: timezonesDiffer,
+          })}
       </div>
       <div className="flex items-baseline gap-3">
         <StatusBadge train={train} />
-        {renderTrainVelocity(train.velocity, trainStatus)}
+        {renderTrainVelocity(train, trainMeta)}
       </div>
 
-      <CurrentSegment trainStatus={trainStatus} />
+      <CurrentSegment trainMeta={trainMeta} />
 
       <div className="flex flex-col gap-2">
         <div
@@ -170,14 +188,14 @@ export default function TrainDetail() {
           )}
         >
           <span>
-            Last update{' '}
+            Last updated{' '}
             <span
               className={cn({
                 'text-amtrak-yellow-500 dark:text-amtrak-yellow-300':
                   isStaleData,
               })}
             >
-              {formatTime(train.updatedAt)}
+              {train.updated && formatTime(train.updated)}
             </span>
             {isStaleData && (
               <Warning
@@ -205,7 +223,7 @@ export default function TrainDetail() {
         )}
       </div>
 
-      <Timeline stations={train.stations} trainStatus={trainStatus} />
+      <Timeline stops={train.stops} trainMeta={trainMeta} />
     </div>
   )
 }

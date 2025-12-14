@@ -1,8 +1,9 @@
 import { Fragment, useCallback, useMemo } from 'react'
 import cn from 'classnames'
-import { StationTrain, TrainStatus } from '../types'
+import { Stop, TrainMeta } from '../types'
 import {
   getCurrentSegmentProgress,
+  getScheduledTime,
   getSegmentDurationMinMax,
   msToMins,
 } from '../utils'
@@ -14,29 +15,29 @@ const MIN_SEGMENT_HEIGHT = 50
 const MAX_SEGMENT_HEIGHT = 150
 
 function Timeline({
-  stations,
-  trainStatus,
+  stops,
+  trainMeta,
 }: {
-  stations: StationTrain[]
-  trainStatus: TrainStatus
+  stops: Stop[]
+  trainMeta: TrainMeta
 }) {
-  const { prevStation, curStation } = trainStatus
+  const { prevStop, curStop } = trainMeta
 
   const segmentDurations = useMemo(
     () => ({
-      max: getSegmentDurationMinMax(stations, Math.max),
-      min: getSegmentDurationMinMax(stations, Math.min, Infinity),
+      max: getSegmentDurationMinMax(stops, Math.max),
+      min: getSegmentDurationMinMax(stops, Math.min, Infinity),
     }),
-    [stations],
+    [stops],
   )
 
   const getSegmentHeight = useCallback(
-    (station: StationTrain, nextStation: StationTrain) => {
-      if (!nextStation) {
+    (stop: Stop, nextStop: Stop) => {
+      if (!nextStop) {
         return MIN_SEGMENT_HEIGHT
       }
-      const curStationArr = station.schArr
-      const nextStationArr = nextStation.schArr
+      const curStationArr = getScheduledTime(stop.arrival)
+      const nextStationArr = getScheduledTime(nextStop.arrival)
       const segmentDuration =
         curStationArr && nextStationArr
           ? msToMins(nextStationArr.valueOf() - curStationArr.valueOf())
@@ -53,15 +54,12 @@ function Timeline({
   )
 
   const segmentHeights = useMemo(
-    () =>
-      stations.map((_, idx) =>
-        getSegmentHeight(stations[idx], stations[idx + 1]),
-      ),
-    [stations, getSegmentHeight],
+    () => stops.map((_, idx) => getSegmentHeight(stops[idx], stops[idx + 1])),
+    [stops, getSegmentHeight],
   )
 
-  const prevStationIndex = stations.findIndex(
-    ({ code }) => code === (curStation?.code || prevStation?.code),
+  const prevStationIndex = stops.findIndex(
+    ({ code }) => code === (curStop?.code || prevStop?.code),
   )
   const completedSegmentsHeight = segmentHeights
     .slice(0, prevStationIndex)
@@ -71,7 +69,7 @@ function Timeline({
       ? 0
       : completedSegmentsHeight +
         segmentHeights[prevStationIndex] *
-          getCurrentSegmentProgress(trainStatus).percent
+          getCurrentSegmentProgress(trainMeta).percent
 
   return (
     <>
@@ -87,7 +85,7 @@ function Timeline({
         <div
           className="absolute top-[2px] col-start-2 h-[calc(100%+1rem)] w-4"
           style={{
-            gridRowEnd: stations.length,
+            gridRowEnd: stops.length,
           }}
         >
           <Progress
@@ -96,9 +94,9 @@ function Timeline({
             showEndpoints={false}
           />
         </div>
-        {stations.map((_, idx, stations) => (
+        {stops.map((_, idx, stops) => (
           <TimelineSegment
-            stations={stations}
+            stops={stops}
             index={idx}
             height={segmentHeights[idx]}
             key={idx}

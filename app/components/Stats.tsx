@@ -1,46 +1,46 @@
 import cn from 'classnames'
 import { TimeStatus, Train } from '../types'
-import { getTrainColor, getTrainStatus, median } from '../utils'
+import { getTrainColor, getTrainMeta, median } from '../utils'
 import { classNames } from '../constants'
 
 function Stats({ trains }: { trains: Train[] }) {
-  const trainStatuses = trains.map((t) => getTrainStatus(t))
+  const trainMetas = trains.map((t) => getTrainMeta(t))
 
-  const numUnderway = trainStatuses.filter(
+  const numUnderway = trainMetas.filter(
     ({ code }) =>
       code && [TimeStatus.ON_TIME, TimeStatus.DELAYED].includes(code),
   ).length
 
   const onTimePct =
-    trainStatuses.filter(({ code }) => code === TimeStatus.ON_TIME).length /
+    trainMetas.filter(({ code }) => code === TimeStatus.ON_TIME).length /
     numUnderway
 
   const medianDelay = median(
-    trainStatuses
-      .filter(({ code, deviation }) => code === TimeStatus.DELAYED && deviation)
-      .map(({ deviation }) => deviation) as number[],
+    trainMetas
+      .filter(({ code, delay }) => code === TimeStatus.DELAYED && delay)
+      .map(({ delay }) => delay) as number[],
   )
 
   const renderGraph = () => (
     <>
-      {trainStatuses
+      {trainMetas
         .filter(({ code }) => code === TimeStatus.ON_TIME)
-        .map((ts) => (
+        .map((tm) => (
           <div
-            key={ts.objectID}
+            key={tm.id}
             className="w-full"
-            style={{ backgroundColor: getTrainColor(ts) }}
+            style={{ backgroundColor: getTrainColor(tm) }}
           />
         ))}
       <div className="w-full bg-white" />
-      {trainStatuses
+      {trainMetas
         .filter(({ code }) => code === TimeStatus.DELAYED)
-        .sort((a, b) => (a.deviation || 0) - (b.deviation || 0))
-        .map((ts) => (
+        .sort((a, b) => a.delay - b.delay)
+        .map((tm) => (
           <div
-            key={ts.objectID}
+            key={tm.id}
             className="w-full"
-            style={{ backgroundColor: getTrainColor(ts) }}
+            style={{ backgroundColor: getTrainColor(tm) }}
           />
         ))}
     </>
