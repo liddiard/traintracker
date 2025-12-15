@@ -4,9 +4,9 @@ import { readFileSync } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import gtfsConfig from './gtfs-config.json'
-import stationTimezoneMap from './station-timezone-map.json'
 import { Station, StationResponse } from '@/app/types'
 import { AmtrakStationCSV } from '../trains/types'
+import { stationCodeToTz, stationCodeToName } from './amtrakStations'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -18,56 +18,46 @@ const loadAmtrakStations = (): StationResponse => {
     path.join(__dirname, './amtrak-stations.csv'),
     'utf-8',
   )
-
   const parsed = Papa.parse<AmtrakStationCSV>(csvContent, {
     header: true,
     dynamicTyping: true,
     skipEmptyLines: true,
   })
-
   return parsed.data.reduce((acc, amtrakStation) => {
     if (!amtrakStation.Code) return acc // Skip rows without station codes
     return {
       ...acc,
-      [`amtrak/${amtrakStation.Code}`]: processAmtrakStation(amtrakStation),
+      [`amtrak/${amtrakStation.Code}`]: processCsvStation(amtrakStation),
     }
   }, {} as StationResponse)
 }
 
-const config = gtfsConfig as Config
-importGtfs(config).then(() => {
-  openDb(config)
-  const stops = getStops()
-  const gtfsStations = processStations(stops)
-  const amtrakStations = loadAmtrakStations()
-
-  // Merge CSV stations with GTFS stations, preferring GTFS data
-  stations = { ...amtrakStations, ...gtfsStations }
-})
-
 const processStationName = (name: string): string =>
   name.replace(/Station|Amtrak|Bus Stop/g, '').trim()
 
-const processStation = (stop: Stop): Station => ({
-  code: stop.stop_code || stop.stop_id.split('/')[1], // remove agency prefix
-  name: stop.stop_name
-    ? processStationName(stop.stop_name)
-    : stop.stop_code || stop.stop_id.split('/')[1],
-  timezone: stop.stop_timezone!,
-  coordinates: [stop.stop_lon!, stop.stop_lat!],
-})
+const processGtfsStation = (stop: Stop): Station => {
+  const code = stop.stop_code || stop.stop_id.split('/')[1] // remove agency prefix
+  return {
+    code,
+    name:
+      stationCodeToName[code] ||
+      (stop.stop_name ? processStationName(stop.stop_name) : code),
+    timezone: stop.stop_timezone!,
+    coordinates: [stop.stop_lon!, stop.stop_lat!],
+  }
+}
 
-const processAmtrakStation = (amtrakStation: AmtrakStationCSV): Station => ({
+const processCsvStation = (amtrakStation: AmtrakStationCSV): Station => ({
   code: amtrakStation.Code,
   // for stations in the form "city, state", format, retain only the city
-  name: processStationName(amtrakStation.StationName).split(', ')[0],
-  timezone:
-    stationTimezoneMap[amtrakStation.Code as keyof typeof stationTimezoneMap] ||
-    'UTC',
+  name:
+    stationCodeToName[amtrakStation.Code] ||
+    processStationName(amtrakStation.StationName).split(', ')[0],
+  timezone: stationCodeToTz[amtrakStation.Code] || 'UTC',
   coordinates: [amtrakStation.lon, amtrakStation.lat],
 })
 
-const processStations = (stops: Pick<Stop, keyof Stop>[]) =>
+const processGtfsStations = (stops: Pick<Stop, keyof Stop>[]) =>
   stops.reduce(
     (acc, stop) => ({
       ...acc,
@@ -75,10 +65,21 @@ const processStations = (stops: Pick<Stop, keyof Stop>[]) =>
       // them with the 4-letter station codes.
       [stop.stop_id.startsWith('via/')
         ? `via/${stop.stop_code}`
-        : stop.stop_id]: processStation(stop),
+        : stop.stop_id]: processGtfsStation(stop),
     }),
     {},
   )
+
+const config = gtfsConfig as Config
+importGtfs(config).then(() => {
+  openDb(config)
+  const stops = getStops()
+  const gtfsStations = processGtfsStations(stops)
+  const amtrakStations = loadAmtrakStations()
+
+  // Merge CSV stations with GTFS stations, preferring GTFS data
+  stations = { ...amtrakStations, ...gtfsStations }
+})
 
 export async function GET() {
   try {

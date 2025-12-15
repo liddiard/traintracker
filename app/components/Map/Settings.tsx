@@ -48,8 +48,8 @@ function MapSettings() {
   ]
 
   const timeZoneOptions: { value: TimeZone; label: string }[] = [
-    { value: 'local', label: 'Stations’ local time' },
-    { value: 'device', label: 'Your device’s time zone' },
+    { value: 'local', label: 'Stations’ time zones' },
+    { value: 'device', label: 'Your time zone' },
   ]
 
   const settingsConfig: SettingConfig[] = [
