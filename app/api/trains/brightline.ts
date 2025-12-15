@@ -163,7 +163,7 @@ const processTrain = (
 
   return {
     id: `brightline/${train.id}`,
-    name: `Brightline ${trainNumber}`,
+    name: 'Brightline',
     number: trainNumber,
     updated: timestamp ? new Date((timestamp as number) * 1000) : null,
     status,
