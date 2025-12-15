@@ -125,12 +125,11 @@ export const trainToGeoJSON = ({
     coordinates: coordinates!,
   },
   properties: {
-    lastUpdatedStr: formatDuration(
-      (updated!.getTime() - new Date().getTime()) / 60000,
-      {
-        shortenMins: true,
-      },
-    ),
+    lastUpdatedStr: updated
+      ? formatDuration((updated.getTime() - new Date().getTime()) / 60000, {
+          shortenMins: true,
+        })
+      : '',
   },
 })
 
