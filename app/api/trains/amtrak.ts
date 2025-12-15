@@ -100,7 +100,7 @@ const processTrain = (
   const statusMessage = properties.StatusMsg.trim()
   return {
     updated: amtrakParseDate(properties.updated_at, {
-      tzCode: properties.OriginTZ,
+      tzCode: 'E', // "Updated" times seem to always been in Eastern Time
       _24hr: false,
     }),
     id: `amtrak/${properties.OBJECTID.toString()}`,
