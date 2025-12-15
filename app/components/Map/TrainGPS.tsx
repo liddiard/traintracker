@@ -40,7 +40,7 @@ function TrainGPS({ coordinates, zoom, shortcode }: TrainGPSProps) {
           offset={[0, -10]}
           closeButton={false}
           closeOnClick={false}
-          className={cn(inter.className, 'text-sm')}
+          className={cn(inter.className, 'z-10 text-sm')}
         >
           {shortcode}’s last-reported location
         </Popup>
