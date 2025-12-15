@@ -118,7 +118,7 @@ export const createRouteNumMap = (trains: Train[]) =>
 export const formatTrainResponse = (res: TrainResponse): Train[] =>
   res.map((train) => ({
     ...train,
-    updated: new Date(train.updated),
+    updated: train.updated ? new Date(train.updated) : null,
     stops: train.stops.map(formatStopResponse),
   }))
 

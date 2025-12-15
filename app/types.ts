@@ -19,7 +19,7 @@ export interface Train {
 
 // Train API response before parsing dates
 export interface TrainResponseItem extends Omit<Train, 'updated' | 'stops'> {
-  updated: string
+  updated: string | null
   stops: StopResponse
 }
 

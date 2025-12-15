@@ -83,7 +83,7 @@ const processTrain = (
   coordinates: data.lng ? [data.lng, data.lat] : null,
   speed: data.speed ?? null,
   heading: data.direction ?? null,
-  updated: new Date(data.poll),
+  updated: data.poll ? new Date(data.poll) : null,
   status: data.departed
     ? data.arrived
       ? 'Completed'

@@ -48,7 +48,7 @@ export interface ViaTrainInfo {
   lng: number
   speed: number
   direction: number
-  poll: string
+  poll?: string
   departed: boolean
   arrived: boolean
   times: ViaStationInfo[]
