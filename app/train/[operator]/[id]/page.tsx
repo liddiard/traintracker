@@ -20,7 +20,7 @@ import CaretRight from '@/app/img/caret-right.svg'
 import Pie from '@/app/img/pie.svg'
 import Warning from '@/app/img/warning.svg'
 import Pointer from '@/app/img/pointer.svg'
-import { headingToRotationMap, classNames } from '@/app/constants'
+import { classNames } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
 import { useSettings } from '@/app/providers/settings'
 import CurrentSegment from '@/app/components/CurrentSegment'
@@ -119,10 +119,10 @@ export default function TrainDetail() {
   const timezonesDiffer = train.stops[0].timezone !== train.stops[0].timezone
   const hasTrainSearchParams = !!Object.entries(trainSearchParams).length
   const minsSinceLastUpdate =
-    train.updated && msToMins(Date.now() - train.updated.valueOf())
+    train.updated && msToMins(new Date().getTime() - train.updated.valueOf())
   // last update is more than 10 minutes old
   const isStaleData =
-    minsSinceLastUpdate !== null &&
+    minsSinceLastUpdate &&
     ![TimeStatus.PREDEPARTURE, TimeStatus.COMPLETE].includes(trainMeta.code!) &&
     minsSinceLastUpdate > 10
   const { firstStop, lastStop } = trainMeta
