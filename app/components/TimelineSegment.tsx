@@ -9,6 +9,7 @@ import {
   getDelayColor,
   getScheduledTime,
 } from '../utils'
+import { useSettings } from '../providers/settings'
 
 function TimelineSegment({
   stops,
@@ -19,10 +20,16 @@ function TimelineSegment({
   index: number
   height: number
 }) {
+  const { settings } = useSettings()
+  const { timeFormat, timeZone } = settings
   const stop = stops[index]
   const prevStop = stops[index - 1]
   const { code, name, arrival } = stop
   const { delay } = arrival
+  const formatTimeOptions = {
+    tz: timeZone === 'local' ? stop.timezone : undefined,
+    _24hr: timeFormat === '24hr',
+  }
 
   const renderDayLine = () => {
     if (
@@ -47,7 +54,10 @@ function TimelineSegment({
             classNames.textDeemphasized,
           )}
         >
-          {formatDate(arrival.time, stop.timezone)}
+          {formatDate(
+            arrival.time,
+            timeZone === 'local' ? stop.timezone : undefined,
+          )}
         </span>
         <hr className={cn('w-full border', classNames.sectionSeparator)} />
       </div>
@@ -64,7 +74,7 @@ function TimelineSegment({
             [classNames.textDeemphasized]: delay,
           })}
         >
-          {formatTime(getScheduledTime(arrival)!, stop.timezone)}
+          {formatTime(getScheduledTime(arrival)!, formatTimeOptions)}
         </span>
         {delay !== 0 ? (
           <span
@@ -74,7 +84,7 @@ function TimelineSegment({
             )}
             style={{ color: delay > 0 ? getDelayColor(delay) : '' }}
           >
-            {formatTime(arrival.time, stop.timezone)}
+            {formatTime(arrival.time, formatTimeOptions)}
           </span>
         ) : null}
       </div>

@@ -34,6 +34,7 @@ export default function TrainDetail() {
   const trainSearchParams = getTrainParams(useSearchParams())
   const { trains } = useTrains()
   const { settings } = useSettings()
+  const { timeFormat, timeZone } = settings
   const train = trains.find((t) => t.id === `${operator}/${id}`)
 
   if (!train) return notFound()
@@ -64,7 +65,11 @@ export default function TrainDetail() {
         {stationName}
       </div>
       <div>
-        {formatDate(date, tz)}, {formatTime(date, tz)}
+        {formatDate(date, tz)},{' '}
+        {formatTime(date, {
+          tz: timeZone === 'local' ? tz : undefined,
+          _24hr: timeFormat === '24hr',
+        })}
       </div>
       {displayTz ? (
         <div className={cn('text-sm', classNames.textDeemphasized)}>
@@ -155,7 +160,7 @@ export default function TrainDetail() {
             stationCode: firstStop.code,
             date: scheduledDeparture,
             tz: firstStop.timezone,
-            displayTz: timezonesDiffer,
+            displayTz: timeZone === 'local' && timezonesDiffer,
           })}
         <CaretRight
           alt="to"
@@ -170,7 +175,7 @@ export default function TrainDetail() {
             stationCode: lastStop.code,
             date: scheduledArrival,
             tz: lastStop.timezone,
-            displayTz: timezonesDiffer,
+            displayTz: timeZone === 'local' && timezonesDiffer,
           })}
       </div>
       <div className="flex items-baseline gap-3">
@@ -195,7 +200,8 @@ export default function TrainDetail() {
                   isStaleData,
               })}
             >
-              {train.updated && formatTime(train.updated)}
+              {train.updated &&
+                formatTime(train.updated, { _24hr: timeFormat === '24hr' })}
             </span>
             {isStaleData && (
               <Warning

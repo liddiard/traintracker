@@ -242,24 +242,29 @@ export const getOffset = (timeZone = 'UTC', date = new Date()) => {
   return (tzDate.getTime() - utcDate.getTime()) / 6e4
 }
 
+interface FormatTimeOptions {
+  tz?: string
+  _24hr?: boolean
+}
+
 /**
  * Format a given date as a string in the given timezone.
  *
- * The string is formatted as "HH:MM p" (e.g. "12:30 p")
+ * The string is formatted as "HH:MM p" (e.g. "1:30 p") in 12-hour format or "HH:MM"
+ * in 24-hour format (e.g. "13:30").
  *
  * @param date - The date to format
- * @param tz - The timezone to format the date in (defaults to the
- *             user's current timezone)
+ * @param options - The options object
+ * @param options.tz - The timezone to format the date in (defaults to the user's current timezone)
+ * @param options._24hr - Whether to use 24-hour format (defaults to false)
  * @returns A string representation of the formatted date
  */
-export const formatTime = (
-  date: Date,
-  tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
-) => {
+export const formatTime = (date: Date, { tz, _24hr }: FormatTimeOptions) => {
   const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric',
     minute: 'numeric',
-    timeZone: tz,
+    timeZone: tz || Intl.DateTimeFormat().resolvedOptions().timeZone,
+    hour12: !_24hr,
   }
   const parts = Intl.DateTimeFormat(
     Intl.DateTimeFormat().resolvedOptions().locale,
@@ -269,6 +274,7 @@ export const formatTime = (
   return parts
     .reduce((acc, { type, value }) => {
       if (type === 'dayPeriod') {
+        // replace "am"/"pm" with "a"/"p"
         return acc + value.toLowerCase().slice(0, 1)
       }
       return acc + value

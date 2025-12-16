@@ -7,6 +7,7 @@ import {
   getTrainColor,
   getTrainMeta,
 } from '@/app/utils'
+import { useSettings } from '../providers/settings'
 
 function StatusBadge({
   train,
@@ -16,6 +17,8 @@ function StatusBadge({
   className?: string
 }) {
   const trainMeta = getTrainMeta(train)
+  const { settings } = useSettings()
+  const { timeFormat, timeZone } = settings
   const backgroundColor = getTrainColor(trainMeta)
   const { code, delay, firstStop, lastStop } = trainMeta
 
@@ -44,11 +47,17 @@ function StatusBadge({
       firstStop.departure.time &&
       firstStop.timezone
     ) {
-      return formatTime(firstStop.departure.time, firstStop.timezone)
+      return formatTime(firstStop.departure.time, {
+        tz: timeZone === 'local' ? firstStop.timezone : undefined,
+        _24hr: timeFormat === '24hr',
+      })
     } else if (code === TimeStatus.DELAYED) {
       return formatDuration(delay, { shortenMins: true })
     } else if (code === TimeStatus.COMPLETE) {
-      return formatTime(lastStop.arrival.time, lastStop.timezone)
+      return formatTime(lastStop.arrival.time, {
+        tz: timeZone === 'local' ? lastStop.timezone : undefined,
+        _24hr: timeFormat === '24hr',
+      })
     }
   }
 

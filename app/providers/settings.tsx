@@ -44,7 +44,8 @@ const STORAGE_KEY = 'settings'
  * @returns {Settings} A validated settings object
  */
 const getSettings = (): Settings => {
-  const storedSettings = localStorage.getItem(STORAGE_KEY)
+  const storedSettings =
+    typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY)
   if (!storedSettings) {
     return defaultSettings
   }
@@ -76,19 +77,14 @@ const getSettings = (): Settings => {
   )
 }
 
-const SettingsContext = createContext<SettingsContextType | undefined>(
-  undefined,
-)
+const SettingsContext = createContext<SettingsContextType>({
+  settings: defaultSettings,
+  updateSetting: () => {},
+})
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(defaultSettings)
+  const [settings, setSettings] = useState<Settings>(() => getSettings())
   const { colorMode } = settings
-
-  useEffect(() => {
-    // on client-side mount, get settings from local storage if available
-    const settings = getSettings()
-    setSettings(settings)
-  }, [])
 
   // keep dark/light class name in sync with setting + current system
   // preference (if "auto")
