@@ -23,17 +23,19 @@ const loadAmtrakStations = (): StationResponse => {
     dynamicTyping: true,
     skipEmptyLines: true,
   })
-  return parsed.data.reduce((acc, amtrakStation) => {
-    if (!amtrakStation.Code) return acc // Skip rows without station codes
-    return {
-      ...acc,
-      [`amtrak/${amtrakStation.Code}`]: processCsvStation(amtrakStation),
-    }
-  }, {} as StationResponse)
+  return parsed.data
+    .filter((station) => station.StnType === 'TRAIN')
+    .reduce((acc, amtrakStation) => {
+      if (!amtrakStation.Code) return acc // Skip rows without station codes
+      return {
+        ...acc,
+        [`amtrak/${amtrakStation.Code}`]: processCsvStation(amtrakStation),
+      }
+    }, {} as StationResponse)
 }
 
 const processStationName = (name: string): string =>
-  name.replace(/Station|Amtrak|Bus Stop/g, '').trim()
+  name.replace(/Station|Amtrak/g, '').trim()
 
 const processGtfsStation = (stop: Stop): Station => {
   const code = stop.stop_code || stop.stop_id.split('/')[1] // remove agency prefix
@@ -58,17 +60,19 @@ const processCsvStation = (amtrakStation: AmtrakStationCSV): Station => ({
 })
 
 const processGtfsStations = (stops: Pick<Stop, keyof Stop>[]) =>
-  stops.reduce(
-    (acc, stop) => ({
-      ...acc,
-      // VIA Rail uses numeric stop IDs which aren't useful to us for lookup. Replace
-      // them with the 4-letter station codes.
-      [stop.stop_id.startsWith('via/')
-        ? `via/${stop.stop_code}`
-        : stop.stop_id]: processGtfsStation(stop),
-    }),
-    {},
-  )
+  stops
+    .filter((stop) => !stop.stop_name?.includes('Bus Stop'))
+    .reduce(
+      (acc, stop) => ({
+        ...acc,
+        // VIA Rail uses numeric stop IDs which aren't useful to us for lookup. Replace
+        // them with the 4-letter station codes.
+        [stop.stop_id.startsWith('via/')
+          ? `via/${stop.stop_code}`
+          : stop.stop_id]: processGtfsStation(stop),
+      }),
+      {},
+    )
 
 const config = gtfsConfig as Config
 importGtfs(config).then(() => {

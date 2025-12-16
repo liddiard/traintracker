@@ -38,6 +38,7 @@ export interface AmtrakStationInfoProperties {
 export interface AmtrakStationCSV {
   Code: string
   StationName: string
+  StnType: 'TRAIN' | 'BUS'
   lon: number
   lat: number
 }
