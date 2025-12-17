@@ -34,7 +34,7 @@ import {
   Stop,
 } from '../../types'
 import _amtrakTrack from '@/public/map_data/amtrak-track.json'
-import { createCachedFunction, getStationCoordinates } from '@/app/utils'
+import { createCachedFunction, getStopCoordinates } from '@/app/utils'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString,
@@ -426,7 +426,7 @@ const getTrackTerminus = (
   lastStop: Stop,
   stations: Station[],
 ) => {
-  const stationCoords = getStationCoordinates(lastStop.code, stations)
+  const stationCoords = getStopCoordinates(lastStop.code, stations)
   if (!stationCoords) {
     return
   }
@@ -502,8 +502,8 @@ export const getExtrapolatedTrainPoint = (
     return
   }
 
-  const prevStationCoords = getStationCoordinates(prevStop.code, stations)
-  const nextStationCoords = getStationCoordinates(nextStop.code, stations)
+  const prevStationCoords = getStopCoordinates(prevStop.code, stations)
+  const nextStationCoords = getStopCoordinates(nextStop.code, stations)
   if (!prevStationCoords || !nextStationCoords) {
     return
   }

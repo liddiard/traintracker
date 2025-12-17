@@ -151,7 +151,7 @@ export const trainToGeoJSON = ({
  */
 const createTrainFeature = (
   prevTrain: Feature<Point, TrainFeatureProperties> | undefined,
-  map: MapRef,
+  map: MapRef | undefined,
   train: Train,
   stations: Station[],
 ): Feature<Point, TrainFeatureProperties> => {
@@ -166,7 +166,11 @@ const createTrainFeature = (
   // if the map is zoomed in enough that we care about showing the train
   // exactly on the track with bearing, and the train is in the current map
   // viewport, calculate its snapped position
-  if (map.getZoom() > 6 && map.getBounds().contains(prevCoords as LngLatLike)) {
+  if (
+    map &&
+    map.getZoom() > 6 &&
+    map.getBounds().contains(prevCoords as LngLatLike)
+  ) {
     // get the last received (snapped) GPS position of the train + bearing
     const lastPosition = snapTrainToTrackCached(train)
     const { track } = lastPosition
