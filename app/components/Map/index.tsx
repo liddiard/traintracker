@@ -83,6 +83,7 @@ function Map() {
   const [trainData, setTrainData] = useState(emptyTrainData)
 
   const mapRef = useRef<MapRef>(null)
+  const flownToTrainRef = useRef<string | null | undefined>(null)
 
   const selectedTrain = useMemo(
     () => trains.find((t) => t.id === `${operator}/${id}`),
@@ -110,23 +111,26 @@ function Map() {
     })()
   }, [updateTrains])
 
-  const navigateToTrain = async (trainID: string) => {
-    await router.push(`/train/${trainID}`)
-    if (!mapRef.current) {
+  useEffect(() => {
+    if (!selectedTrain || !mapRef.current) {
+      flownToTrainRef.current = null
       return
     }
-    // update current (selected) train
-    setTrainData(trainsToGeoJson(trainData, mapRef.current!, trains, stations))
+
+    // Only fly to the train if it's a new selection
+    if (flownToTrainRef.current === selectedTrain.id) {
+      return
+    }
+
     const zoom = mapRef.current.getZoom()
-    const trainPosition = trainData.features.find(
-      (f) => f.properties.id === trainID,
-    )?.geometry.coordinates
     const minFlyZoom = 8
     mapRef.current.flyTo({
-      center: trainPosition as LngLatLike,
+      center: selectedTrain.coordinates as LngLatLike,
       zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
     })
-  }
+
+    flownToTrainRef.current = selectedTrain.id
+  }, [selectedTrain])
 
   const handleMoveEnd = async (ev: ViewStateChangeEvent) => {
     console.log('handleMoveEnd', new Date())
@@ -142,6 +146,10 @@ function Map() {
     url.searchParams.set('lng', longitude.toFixed(5))
     url.searchParams.set('z', zoom.toFixed(1))
     await router.replace(url.toString(), { scroll: false })
+  }
+
+  const navigateToTrain = (trainID: string) => {
+    router.push(`/train/${trainID}`)
   }
 
   const renderControls = () => (
