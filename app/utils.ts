@@ -196,7 +196,7 @@ export const getTrainMeta = (train: Train): TrainMeta => {
     return meta
   }
   // else train is underway
-  const stop = curStop ?? prevStop
+  const stop = curStop ?? nextStop
   if (!stop?.arrival.time) {
     return meta // unknown status code
   }
@@ -279,7 +279,7 @@ export const formatTime = (date: Date, { tz, _24hr }: FormatTimeOptions) => {
       }
       return acc + value
     }, '')
-    .replace(/\s+/g, ' ')
+    .replace(/\s+/g, ' ')
 }
 
 /**
@@ -524,7 +524,7 @@ export const getTrainShortcode = ({ name, number }: Train) =>
  * @param {Station[]} stations The list of stations to search.
  * @returns {[number, number] | undefined} The station's [lat, lon] coordinates, or undefined if not found.
  */
-export const getStationCoordinates = (code: string, stations: Station[]) =>
+export const getStopCoordinates = (code: string, stations: Station[]) =>
   stations.find((s) => s.code === code)?.coordinates ?? null
 
 /**

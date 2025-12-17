@@ -65,11 +65,12 @@ export default function TrainDetail() {
         {stationName}
       </div>
       <div>
-        {formatDate(date, tz)},{' '}
         {formatTime(date, {
           tz: timeZone === 'local' ? tz : undefined,
           _24hr: timeFormat === '24hr',
         })}
+        {' '}
+        {formatDate(date, tz)}
       </div>
       {displayTz ? (
         <div className={cn('text-sm', classNames.textDeemphasized)}>
