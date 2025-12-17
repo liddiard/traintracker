@@ -51,7 +51,7 @@ function Progress({
     <div
       id={id}
       className={cn(
-        'bg-positron-gray-200 dark:bg-positron-gray-600 relative flex appearance-none items-center justify-between rounded-full p-[2px]',
+        'bg-positron-gray-200 dark:bg-positron-gray-600 relative flex appearance-none items-center justify-between rounded-full p-0.5',
         showEndpoints ? internalClassNames.endpoints : '',
         vertical ? internalClassNames.vertical : internalClassNames.horizontal,
         classNames.outer,

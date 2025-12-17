@@ -88,7 +88,7 @@ function TimelineSegment({
           </span>
         ) : null}
       </div>
-      <div className="z-10 mx-[2px] my-1 aspect-square w-3 rounded-full bg-white" />
+      <div className="z-10 mx-0.5 my-1 aspect-square w-3 rounded-full bg-white" />
       <div className="leading-snug">
         <span className="block font-semibold text-balance">{name}</span>
         {/* {platform && <span className="block">Platform {platform}</span>} */}

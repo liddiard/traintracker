@@ -83,7 +83,7 @@ function Timeline({
       </h2>
       <div className="relative grid grid-cols-[max-content_min-content_1fr] gap-x-2">
         <div
-          className="absolute top-[2px] col-start-2 h-[calc(100%+1rem)] w-4"
+          className="absolute top-0.5 col-start-2 h-[calc(100%+1rem)] w-4"
           style={{
             gridRowEnd: stops.length,
           }}
