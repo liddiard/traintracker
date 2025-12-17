@@ -168,7 +168,19 @@ function Map() {
   )
 
   return (
-    <>
+    <div className="h-full w-full">
+      <header className="absolute top-0 left-0 z-10 flex w-full items-baseline gap-2 bg-linear-to-b from-white to-transparent px-2 pt-1 pb-2 dark:from-black dark:text-white">
+        <h1 className="text-xl font-bold">
+          Train
+          <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
+            Tracker
+          </span>
+        </h1>
+        <span>
+          Live tracking North America intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦
+          Via Rail, 🌴 Brightline
+        </span>
+      </header>
       <MapGL
         ref={mapRef}
         initialViewState={initialViewState}
@@ -244,7 +256,7 @@ function Map() {
         )}
       </MapGL>
       <MapSettings />
-    </>
+    </div>
   )
 }
 
