@@ -23,7 +23,13 @@ import type {
   MapRef,
   ViewStateChangeEvent,
 } from 'react-map-gl/maplibre'
-import { FeatureCollection, MultiLineString, Point, LineString } from 'geojson'
+import {
+  FeatureCollection,
+  MultiLineString,
+  Point,
+  LineString,
+  Position,
+} from 'geojson'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { useTrains } from '../../providers/train'
@@ -35,13 +41,12 @@ import {
   stationLayer,
   stationsToGeoJson,
   trackLayer,
-  trainToGeoJSON,
   trainGPSLabelLayer,
 } from './display'
 import _amtrakTrack from '@/public/map_data/amtrak-track.json'
 import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
-import { getTrainShortcode, sleep } from '@/app/utils'
+import { sleep } from '@/app/utils'
 import { sourceId } from './constants'
 import TrainGPS from './TrainGPS'
 import TrainLabel from './TrainLabel'
@@ -86,8 +91,8 @@ function Map() {
   const flownToTrainRef = useRef<string | null | undefined>(null)
 
   const selectedTrain = useMemo(
-    () => trains.find((t) => t.id === `${operator}/${id}`),
-    [trains, operator, id],
+    () => trainData.features.find((t) => t.id === `${operator}/${id}`),
+    [trainData, operator, id],
   )
 
   const updateTrains = useCallback(() => {
@@ -125,11 +130,11 @@ function Map() {
     const zoom = mapRef.current.getZoom()
     const minFlyZoom = 8
     mapRef.current.flyTo({
-      center: selectedTrain.coordinates as LngLatLike,
+      center: selectedTrain.geometry.coordinates as LngLatLike,
       zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
     })
 
-    flownToTrainRef.current = selectedTrain.id
+    flownToTrainRef.current = selectedTrain.id as string
   }, [selectedTrain])
 
   const handleMoveEnd = async (ev: ViewStateChangeEvent) => {
@@ -177,8 +182,8 @@ function Map() {
           </span>
         </h1>
         <span>
-          Live tracking North America intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦
-          Via Rail, 🌴 Brightline
+          Live tracking North America intercity passenger rail: 🇺🇸 Amtrak 🇨🇦 VIA
+          Rail 🌴 Brightline
         </span>
       </header>
       <MapGL
@@ -216,11 +221,17 @@ function Map() {
           <Layer {...stationLabelLayer} />
         </Source>
 
-        {selectedTrain && (
+        {selectedTrain?.properties.gpsCoordinates && (
           <Source
             id={sourceId.trainGPS}
             type="geojson"
-            data={trainToGeoJSON(selectedTrain)}
+            data={{
+              ...selectedTrain,
+              geometry: {
+                type: 'Point',
+                coordinates: selectedTrain.properties.gpsCoordinates,
+              },
+            }}
           >
             <Layer {...trainGPSLabelLayer} />
           </Source>
@@ -248,11 +259,7 @@ function Map() {
         ))}
 
         {selectedTrain && viewState.zoom > 6 && (
-          <TrainGPS
-            coordinates={selectedTrain.coordinates!}
-            zoom={viewState.zoom}
-            shortcode={getTrainShortcode(selectedTrain)}
-          />
+          <TrainGPS {...selectedTrain.properties} zoom={viewState.zoom} />
         )}
       </MapGL>
       <MapSettings />

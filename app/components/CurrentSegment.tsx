@@ -20,7 +20,7 @@ function CurrentSegment({ trainMeta }: CurrentSegmentProps) {
   // bar doesn't animate slowly back from 100% to 0%
   useEffect(() => {
     if (progressValueRef.current) {
-      progressValueRef.current.getAnimations()[0].cancel()
+      progressValueRef.current.getAnimations()[0]?.cancel()
     }
   }, [prevStop?.code, nextStop?.code, curStop?.code])
 

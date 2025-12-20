@@ -8,6 +8,7 @@ import {
   Station,
   StopResponseItem,
   TrainMeta,
+  TrainFeatureProperties,
 } from './types'
 import { colors, TRAIN_SEARCH_PARAMS } from './constants'
 import { routeToCodeMap } from './components/Map/constants'
@@ -504,7 +505,7 @@ export const getTrainColor = (trainMeta: TrainMeta) => {
 /**
  * Generates a short code identifier for a train by combining the route code and train number.
  *
- * @param {Train} train - The train object containing route name and train number
+ * @param {TrainFeatureProperties} train - The train feature object containing route name and train number
  * @returns {string} A formatted shortcode combining the route code and train number (e.g. "NE 123")
  *
  * @example

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Next.js application that tracks and visualizes real-time Amtrak, Via Rail, and Brightline train positions and schedules on an interactive map. The app fetches train data from the Amtraker API, snaps train positions to track geometries using Turf.js, and displays them on a MapLibre map with route-specific styling.
+This is a Next.js application that tracks and visualizes real-time Amtrak, VIA Rail, and Brightline train positions and schedules on an interactive map. The app fetches train data from the Amtraker API, snaps train positions to track geometries using Turf.js, and displays them on a MapLibre map with route-specific styling.
 
 ## General instructions
 
@@ -59,7 +59,7 @@ The map visualization system is the core feature and has several interconnected 
 - **Track Snapping** (`calc.ts`): Snaps GPS-reported train positions to the nearest point on Amtrak track geometries using Turf.js operations
   - `snapTrainToTrack`: Finds nearby track features using bounding box clipping and snaps train to nearest point
   - `getExtrapolatedTrainPoint`: Extrapolates train position based on timetable when between stations
-  - `getBearing`: Calculates train bearing/heading along track geometry
+  - `getHeading`: Calculates train bearing/heading along track geometry
 
 - **Track Data**: GeoJSON files in `public/map_data/amtrak-track.geojson` contain LineString/MultiLineString features representing physical track geometries with OBJECTID properties
 

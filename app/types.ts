@@ -96,12 +96,14 @@ export interface TrackFeatureProperties {
   shape_leng: number
 }
 
-export interface TrainFeatureProperties {
-  id: string
-  routeCode: string
-  number: string
+export interface TrainFeatureProperties extends Omit<
+  Train,
+  'status' | 'alerts' | 'stops' | 'coordinates'
+> {
   color?: string
-  bearing?: number
+  gpsCoordinates: number[] | null
+  lastUpdatedStr: string
+  shortcode: string
 }
 
 type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'

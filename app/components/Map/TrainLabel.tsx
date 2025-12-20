@@ -3,11 +3,11 @@ import cn from 'classnames'
 import { TrainFeatureProperties } from '@/app/types'
 
 interface TrainLabelProps extends TrainFeatureProperties {
-  coordinates: number[]
+  coordinates: number[] | null
   zoom: number
   moving: boolean
   navigateToTrain: (trainID: string) => void
-  routeCode: string
+  name: string
   number: string
   isSelected: boolean
 }
@@ -17,16 +17,15 @@ function TrainLabel({
   coordinates,
   zoom,
   moving,
-  routeCode,
+  name,
   number,
   isSelected,
   navigateToTrain,
 }: TrainLabelProps) {
-  const [lon, lat] = coordinates
-
-  if (zoom < 6) {
+  if (!coordinates || zoom < 6) {
     return null
   }
+  const [lon, lat] = coordinates
   return (
     <Marker
       longitude={lon}
@@ -48,7 +47,7 @@ function TrainLabel({
           isSelected ? 'bg-amtrak-bright-blue-400 text-white' : 'bg-white/50',
         )}
       >
-        {routeCode}
+        {name}
         <span
           className={cn('pl-1', {
             'text-amtrak-blue-500': !isSelected,

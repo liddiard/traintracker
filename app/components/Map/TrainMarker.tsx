@@ -5,7 +5,6 @@ import { TrainFeatureProperties } from '@/app/types'
 
 interface TrainMarkerProps extends TrainFeatureProperties {
   coordinates: number[] | null
-  bearing?: number
   zoom: number
   moving: boolean
   isSelected: boolean
@@ -16,7 +15,7 @@ function TrainMarker({
   id,
   color,
   coordinates,
-  bearing,
+  heading,
   zoom,
   moving,
   isSelected,
@@ -37,7 +36,7 @@ function TrainMarker({
     <Marker
       longitude={coordinates[0]}
       latitude={coordinates[1]}
-      rotation={bearing}
+      rotation={heading ?? undefined}
       rotationAlignment="map"
       pitchAlignment="map"
       className="cursor-pointer p-2"
@@ -48,7 +47,7 @@ function TrainMarker({
       }}
       onClick={() => navigateToTrain(id)}
     >
-      {bearing === undefined || zoom < 6 ? (
+      {heading === null || zoom < 6 ? (
         <Circle className="w-2" style={sharedStyles} />
       ) : (
         <Pointer className="w-4" style={sharedStyles} />

@@ -194,7 +194,7 @@ export default function TrainDetail() {
           )}
         >
           <span>
-            Last updated{' '}
+            Last update{' '}
             <span
               className={cn({
                 'text-amtrak-yellow-500 dark:text-amtrak-yellow-300':

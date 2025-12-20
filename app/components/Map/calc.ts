@@ -92,17 +92,17 @@ const normalizeBearing = (degree: number) => {
 }
 
 /**
- * Calculates the bearing of a train relative to its nearest point on the track.
- * For bearing to be accurate, this function should only be used with
+ * Calculates the heading of a train relative to its nearest point on the track.
+ * For heading to be accurate, this function should only be used with
  * `trainPoints` that have been snapped to the track – i.e. precisely overlay
  * with a track LineString.
  *
  * @param trainPoint - The current position of the train as a GeoJSON Feature<Point>.
  * @param track - The track geometry as a GeoJSON MultiLineString.
  * @param nextStop - The next station the train is heading towards (optional).
- * @returns The bearing in degrees, or undefined if the next station is not provided or if the nearest point is behind the train and cannot be determined.
+ * @returns The heading in degrees, or undefined if the next station is not provided or if the nearest point is behind the train and cannot be determined.
  */
-export const getBearing = (
+export const getHeading = (
   trainPoint: Feature<Point>,
   track: MultiLineString | LineString,
   stations: Station[],
@@ -340,7 +340,7 @@ export const snapTrainToTrack = (train: Train) => {
     }
   } else {
     // there is no track is near the train's GPS-reported position, so we
-    // can't snap it or calculate bearing – just return the GPS-reported
+    // can't snap it or calculate heading – just return the GPS-reported
     // position
     return {
       point: trainPoint,
@@ -418,7 +418,7 @@ const getTrackSegmentCached = createCachedFunction(
  * @param trackLine - The GeoJSON LineString feature representing the track.
  * @param lastStop - The final stop object of the train's route.
  * @param stations - An array of all station objects, used to look up coordinates.
- * @returns An object with the snapped `point` on the track and an `undefined` bearing,
+ * @returns An object with the snapped `point` on the track and an `undefined` heading,
  * or `undefined` if the last station's coordinates cannot be found.
  */
 const getTrackTerminus = (
@@ -432,7 +432,7 @@ const getTrackTerminus = (
   }
   return {
     point: nearestPointOnLine(trackLine, point(stationCoords)),
-    bearing: undefined,
+    heading: undefined,
   }
 }
 
@@ -445,7 +445,7 @@ const getTrackTerminus = (
  * @param trainMeta - The status of the train, containing information about its timetable.
  * @param stations - An array of station objects containing station codes and coordinates.
  * @returns An object containing the extrapolated position of the train as a Feature<Point>,
- * and the bearing along the track as a number of degrees, if able to calculate.
+ * and the heading along the track as a number of degrees, if able to calculate.
  *
  * @example
  * const trainPosition = [-122.4194, 37.7749] // coordinates
@@ -570,7 +570,7 @@ export const getExtrapolatedTrainPoint = (
   const distanceCovered = totalDistance * progress
 
   const extrapolatedPoint = along(trackSegment, distanceCovered)
-  const bearing = getBearing(
+  const heading = getHeading(
     extrapolatedPoint,
     trackSegment.geometry,
     stations,
@@ -579,7 +579,7 @@ export const getExtrapolatedTrainPoint = (
   console.timeEnd(`getExtrapolatedTrainPoint ${trainMeta.id}`)
   return {
     point: extrapolatedPoint,
-    bearing,
+    heading,
   }
 }
 

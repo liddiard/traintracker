@@ -7,7 +7,6 @@ import { Train, TrainSearchParams } from '../types'
 import { findTrainsFromSegment, formatDate, getScheduledTime } from '../utils'
 import StatusBadge from './StatusBadge'
 import CaretRight from '../img/caret-right.svg'
-import Spinner from '../img/spinner.svg'
 
 const filterToDisplayName: Record<string, string> = {
   from: 'From',
@@ -24,8 +23,6 @@ function TrainList({
   filters: TrainSearchParams
 }) {
   const router = useRouter()
-
-  const [loading, setLoading] = useState(false)
 
   const filteredTrains = useMemo(() => {
     let filteredTrains = trains
@@ -46,8 +43,9 @@ function TrainList({
   }, [trains, filters])
 
   useEffect(() => {
+    // if there's a single result, navigate to the train detail page
+    // rather than to the search results list
     if (filteredTrains.length === 1) {
-      setLoading(true)
       router.push(`/train/${filteredTrains[0].id}`)
     }
   }, [filteredTrains, router])
@@ -141,10 +139,6 @@ function TrainList({
           ))}
       </ul>
     )
-  }
-
-  if (loading) {
-    return <Spinner alt="Loading" className="mx-auto my-5 w-10" />
   }
 
   return (

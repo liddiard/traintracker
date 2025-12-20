@@ -105,7 +105,7 @@ const get = async () => {
     )
     return trains
   } catch (error) {
-    console.error('Error fetching Via Rail data:', error)
+    console.error('Error fetching VIA Rail data:', error)
     throw error
   }
 }

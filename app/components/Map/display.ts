@@ -6,7 +6,12 @@ import type {
   SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
 import { formatRgb } from 'culori'
-import { formatDuration, getTrainColor, getTrainMeta } from '../../utils'
+import {
+  formatDuration,
+  getTrainColor,
+  getTrainMeta,
+  getTrainShortcode,
+} from '../../utils'
 import { Train, Station, TrainFeatureProperties } from '../../types'
 import { getExtrapolatedTrainPoint, snapTrainToTrackCached } from './calc'
 import { sourceId, routeToCodeMap } from './constants'
@@ -111,29 +116,6 @@ export const stationsToGeoJson = (
 })
 
 /**
- * Converts a Train object into a GeoJSON Point feature
- * @param train The train object to convert
- * @returns A GeoJSON Point feature representing the train's location
- */
-export const trainToGeoJSON = ({
-  coordinates,
-  updated,
-}: Train): Feature<Point> => ({
-  type: 'Feature',
-  geometry: {
-    type: 'Point',
-    coordinates: coordinates!,
-  },
-  properties: {
-    lastUpdatedStr: updated
-      ? formatDuration((updated.getTime() - new Date().getTime()) / 60000, {
-          shortenMins: true,
-        })
-      : '',
-  },
-})
-
-/**
  * Creates a GeoJSON Feature representing a train on the map.
  *
  * @param {Feature<Point, TrainFeatureProperties> | undefined} prevTrain - The existing feature for this train, if any
@@ -155,23 +137,23 @@ const createTrainFeature = (
   train: Train,
   stations: Station[],
 ): Feature<Point, TrainFeatureProperties> => {
-  const { id, number, name } = train
+  const { id, number, name, updated, speed } = train
   const trainMeta = getTrainMeta(train)
   const color = getTrainColor(trainMeta)
   // existing coordinates for this train (which may have previously been
   // snapped/extrapolated by this function), otherwise use raw GPS coordinates
   const prevCoords = prevTrain?.geometry.coordinates ?? train.coordinates
 
-  let coordinates, bearing
+  let coordinates, heading
   // if the map is zoomed in enough that we care about showing the train
-  // exactly on the track with bearing, and the train is in the current map
+  // exactly on the track with heading, and the train is in the current map
   // viewport, calculate its snapped position
   if (
     map &&
     map.getZoom() > 6 &&
     map.getBounds().contains(prevCoords as LngLatLike)
   ) {
-    // get the last received (snapped) GPS position of the train + bearing
+    // get the last received (snapped) GPS position of the train + heading
     const lastPosition = snapTrainToTrackCached(train)
     const { track } = lastPosition
     // if we've identified a track for this train, extrapolate its current
@@ -181,8 +163,8 @@ const createTrainFeature = (
       getExtrapolatedTrainPoint(train.coordinates!, track, trainMeta, stations)
     coordinates =
       extrapolated?.point.geometry.coordinates ??
-      lastPosition.point.geometry.coordinates
-    bearing = extrapolated?.bearing
+      lastPosition.point?.geometry.coordinates
+    heading = extrapolated?.heading
   }
   // train is outside the map viewport or we're zoomed far out; just return
   // its raw GPS position
@@ -192,16 +174,26 @@ const createTrainFeature = (
 
   return {
     type: 'Feature',
+    id,
     geometry: {
       type: 'Point',
-      coordinates,
+      coordinates: coordinates!,
     },
     properties: {
       id,
       number,
+      name: routeToCodeMap[name],
+      shortcode: getTrainShortcode(train),
       color,
-      routeCode: routeToCodeMap[name],
-      bearing,
+      heading: heading ?? null,
+      updated,
+      speed,
+      gpsCoordinates: train.coordinates,
+      lastUpdatedStr: updated
+        ? formatDuration((updated.getTime() - new Date().getTime()) / 60000, {
+            shortenMins: true,
+          })
+        : '',
     },
   }
 }
@@ -211,7 +203,7 @@ const createTrainFeature = (
  *
  * @param prevTrains -
  * @param map - A reference to the MapGL instance, used for calculating the
- *              bearing of the train.
+ *              heading of the train.
  * @param trains - An array of train objects.
  * @param stations - An array of station objects, used to find the coordinates
  *                   of stations.
