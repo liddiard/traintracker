@@ -72,7 +72,7 @@ function StatusBadge({
       >
         {text}
       </span>
-      {timeInfo && <span>{timeInfo}</span>}
+      {timeInfo && <time>{timeInfo}</time>}
     </div>
   )
 }

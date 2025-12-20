@@ -68,16 +68,16 @@ function TimelineSegment({
     <Fragment key={code}>
       {renderDayLine()}
       <div className="leading-snug" style={{ height }}>
-        <span
+        <time
           className={cn('block', {
             'line-through': delay,
             [classNames.textDeemphasized]: delay,
           })}
         >
           {formatTime(getScheduledTime(arrival)!, formatTimeOptions)}
-        </span>
+        </time>
         {delay !== 0 ? (
-          <span
+          <time
             className={cn(
               'block dark:brightness-150',
               delay < 0 ? 'text-amtrak-green-500' : '',
@@ -85,7 +85,7 @@ function TimelineSegment({
             style={{ color: delay > 0 ? getDelayColor(delay) : '' }}
           >
             {formatTime(arrival.time, formatTimeOptions)}
-          </span>
+          </time>
         ) : null}
       </div>
       <div className="z-10 mx-0.5 my-1 aspect-square w-3 rounded-full bg-white" />

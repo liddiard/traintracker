@@ -1,4 +1,5 @@
 import { Inter } from 'next/font/google'
+import { Settings } from './types'
 
 // minimum completion of the progress bar to avoid display issues with border-radius
 export const MIN_PROGRESS_PX = 16
@@ -27,4 +28,22 @@ export const classNames: Record<string, string> = {
   textDeemphasized: 'text-positron-gray-600 dark:text-positron-gray-300',
   textAccent: 'text-amtrak-blue-500 dark:text-amtrak-blue-300',
   sectionSeparator: 'border-positron-gray-200 dark:border-positron-gray-700',
+}
+
+export const SETTINGS_COOKIE_NAME = 'settings'
+
+export const settingOptions = {
+  mapStyle: ['gray', 'simple', 'detailed'],
+  colorMode: ['auto', 'light', 'dark'],
+  units: ['miles', 'kilometers'],
+  timeFormat: ['12hr', '24hr'],
+  timeZone: ['local', 'device'],
+}
+
+export const defaultSettings: Settings = {
+  mapStyle: 'gray',
+  colorMode: 'auto',
+  units: 'miles',
+  timeFormat: '12hr',
+  timeZone: 'local',
 }

@@ -8,7 +8,6 @@ import {
   Station,
   StopResponseItem,
   TrainMeta,
-  TrainFeatureProperties,
 } from './types'
 import { colors, TRAIN_SEARCH_PARAMS } from './constants'
 import { routeToCodeMap } from './components/Map/constants'

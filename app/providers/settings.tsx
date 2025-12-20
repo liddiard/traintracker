@@ -7,35 +7,23 @@ import {
   useEffect,
   ReactNode,
 } from 'react'
+import * as cookie from 'cookie'
 import { Settings } from '../types'
+import {
+  SETTINGS_COOKIE_NAME,
+  settingOptions,
+  defaultSettings,
+} from '../constants'
 
 interface SettingsContextType {
   settings: Settings
   updateSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => void
 }
 
-const settingOptions = {
-  mapStyle: ['gray', 'simple', 'detailed'],
-  colorMode: ['auto', 'light', 'dark'],
-  units: ['miles', 'kilometers'],
-  timeFormat: ['12hr', '24hr'],
-  timeZone: ['local', 'device'],
-}
-
-const defaultSettings: Settings = {
-  mapStyle: 'gray',
-  colorMode: 'auto',
-  units: 'miles',
-  timeFormat: '12hr',
-  timeZone: 'local',
-}
-
-const STORAGE_KEY = 'settings'
-
 /**
- * Retrieves user settings from localStorage.
+ * Retrieves user settings from cookies.
  *
- * Attempts to load a settings object from localStorage. It validates that
+ * Attempts to load a settings object from cookies. It validates that
  * each setting has a valid value. If the settings don't exist or can't be
  * parsed, returns the default settings. If any individual setting is invalid,
  * it falls back to the default value for the entire settings object or for
@@ -43,25 +31,29 @@ const STORAGE_KEY = 'settings'
  *
  * @returns {Settings} A validated settings object
  */
-const getSettings = (): Settings => {
-  const storedSettings =
-    typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY)
+const getSettingsFromCookie = (): Settings => {
+  if (typeof window === 'undefined') {
+    return defaultSettings
+  }
+
+  const cookies = cookie.parse(document.cookie)
+  const storedSettings = cookies[SETTINGS_COOKIE_NAME]
+
   if (!storedSettings) {
     return defaultSettings
   }
+
   let parsedSettings: Settings
   try {
     parsedSettings = JSON.parse(storedSettings)
     if (typeof parsedSettings !== 'object' || parsedSettings === null) {
-      throw Error('localStorage settings is not an object:', parsedSettings)
+      throw Error('Cookie settings is not an object:', parsedSettings)
     }
   } catch (error) {
-    console.warn(
-      'Failed to load settings from localStorage, using defaults:',
-      error,
-    )
+    console.warn('Failed to load settings from cookies, using defaults:', error)
     return defaultSettings
   }
+
   // Validate that all required settings have valid values, falling back to
   // defaults if not
   return (
@@ -82,8 +74,18 @@ const SettingsContext = createContext<SettingsContextType>({
   updateSetting: () => {},
 })
 
-export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(() => getSettings())
+interface SettingsProviderProps {
+  children: ReactNode
+  initialSettings?: Settings
+}
+
+export function SettingsProvider({
+  children,
+  initialSettings,
+}: SettingsProviderProps) {
+  const [settings, setSettings] = useState<Settings>(
+    () => initialSettings || getSettingsFromCookie(),
+  )
   const { colorMode } = settings
 
   // keep dark/light class name in sync with setting + current system
@@ -112,11 +114,20 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     if (typeof window === 'undefined') {
       return
     }
-    // update localStorage
+    // update cookie
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings))
+      const cookieString = cookie.serialize(
+        SETTINGS_COOKIE_NAME,
+        JSON.stringify(newSettings),
+        {
+          path: '/',
+          maxAge: 365 * 24 * 60 * 60, // 1 year
+          sameSite: 'lax',
+        },
+      )
+      document.cookie = cookieString
     } catch (error) {
-      console.warn('Failed to save settings to localStorage:', error)
+      console.warn('Failed to save settings to cookies:', error)
     }
   }
 

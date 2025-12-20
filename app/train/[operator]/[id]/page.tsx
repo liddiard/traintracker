@@ -8,7 +8,6 @@ import {
   getTrainParams,
   getTrainMeta,
   msToMins,
-  mphToKmh,
   getScheduledTime,
   kmhToMph,
   headingToDirection,
@@ -64,14 +63,14 @@ export default function TrainDetail() {
       >
         {stationName}
       </div>
-      <div>
+      <time>
         {formatTime(date, {
           tz: timeZone === 'local' ? tz : undefined,
           _24hr: timeFormat === '24hr',
         })}
         {' '}
         {formatDate(date, tz)}
-      </div>
+      </time>
       {displayTz ? (
         <div className={cn('text-sm', classNames.textDeemphasized)}>
           UTC<span className="font-semibold">{getOffset(tz) / 60}</span>
@@ -195,7 +194,7 @@ export default function TrainDetail() {
         >
           <span>
             Last update{' '}
-            <span
+            <time
               className={cn({
                 'text-amtrak-yellow-500 dark:text-amtrak-yellow-300':
                   isStaleData,
@@ -203,7 +202,7 @@ export default function TrainDetail() {
             >
               {train.updated &&
                 formatTime(train.updated, { _24hr: timeFormat === '24hr' })}
-            </span>
+            </time>
             {isStaleData && (
               <Warning
                 alt="caution"
