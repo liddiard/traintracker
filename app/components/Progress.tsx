@@ -1,15 +1,5 @@
 import cn from 'classnames'
 import { MIN_PROGRESS_PX } from '../constants'
-import { useSyncExternalStore } from 'react'
-
-// Custom React hook to run client-side-only code in SSR components
-// https://react.dev/reference/react/useSyncExternalStore
-export const useIsClient = () =>
-  useSyncExternalStore(
-    () => () => {}, // subscribe (no-op)
-    () => true, // getSnapshot (client)
-    () => false, // getServerSnapshot (server)
-  )
 
 function Progress({
   percent = 0,
@@ -29,18 +19,11 @@ function Progress({
   showEndpoints?: boolean
   progressValueRef?: React.RefObject<HTMLDivElement | null>
 }) {
-  const isClient = useIsClient()
   const internalClassNames = {
     horizontal: 'h-4 w-full before-after:top-0',
     vertical: 'w-4 h-full before-after:left-0 flex-col',
     endpoints:
       'before-after:content-[""] before-after:block before-after:z-10 before-after:bg-white before-after:w-3 before-after:aspect-square before-after:shrink-0 before-after:rounded-full',
-  }
-
-  if (!isClient) {
-    // prevent hydration error with progress bar width not exactly matching
-    // in the time it takes to be rendered between client and server
-    return null
   }
 
   const progressPercent = Math.min(percent, 1) * 100
@@ -70,6 +53,9 @@ function Progress({
           classNames.inner,
         )}
         ref={progressValueRef}
+        // bar's width with be different on client and server by a miniscule amount
+        // due to time elapsed during request/response cycle – this is ok
+        suppressHydrationWarning
       />
     </div>
   )
