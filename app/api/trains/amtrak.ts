@@ -25,6 +25,10 @@ const headingToDegrees: Record<AmtrakHeading, number> = {
 const API_ENDPOINT =
   'https://maps.amtrak.com/services/MapDataService/trains/getTrainsData'
 
+const processRouteName = (name: string) =>
+  // Amtrak API sometimes misspells "Northeast" as "Northest" 🙄
+  name.replace('Northest', 'Northeast')
+
 const processStops = (
   properties: AmtrakTrainInfoProperties,
   stations: StationResponse,
@@ -104,7 +108,7 @@ const processTrain = (
       _24hr: false,
     }),
     id: `amtrak/${properties.OBJECTID.toString()}`,
-    name: properties.RouteName,
+    name: processRouteName(properties.RouteName),
     number: properties.TrainNum,
     status: properties.TrainState,
     alerts: statusMessage ? [statusMessage] : [],
