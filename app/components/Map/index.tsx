@@ -110,10 +110,11 @@ function Map() {
   }, [loaded, trains, stations])
 
   useEffect(() => {
-    ;(async () => {
-      await sleep(5000)
-      updateTrains()
-    })()
+    // starts an infinte loop of updating trains because whenever `updateTrains` is
+    // called, it changes (recreates) the `updateTrains` function reference because
+    // `trainData` is updated
+    const timeoutId = setTimeout(updateTrains, 5000)
+    return () => clearTimeout(timeoutId)
   }, [updateTrains])
 
   useEffect(() => {
@@ -174,7 +175,7 @@ function Map() {
 
   return (
     <div className="h-full w-full">
-      <header className="absolute top-0 left-0 z-10 flex w-full items-baseline gap-2 bg-linear-to-b from-white to-transparent px-2 pt-1 pb-2 dark:from-black dark:text-white">
+      <header className="absolute top-0 left-0 z-10 flex w-full items-baseline gap-2 bg-linear-to-b from-white to-transparent px-2 pt-1 pb-2 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
         <h1 className="text-xl font-bold">
           Train
           <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
