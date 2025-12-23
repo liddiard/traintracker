@@ -44,8 +44,8 @@ function TrainLabel({
     >
       <span
         className={cn(
-          'rounded-full px-2 py-[0.1em] text-sm font-medium backdrop-blur backdrop-brightness-150',
-          isSelected ? 'bg-amtrak-bright-blue-400 text-white' : 'bg-white/50',
+          'rounded-full px-2 py-[0.1em] text-sm font-medium backdrop-blur-xs',
+          isSelected ? 'bg-amtrak-bright-blue-400 text-white' : 'bg-white/75',
         )}
       >
         {name}
