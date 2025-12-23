@@ -214,10 +214,7 @@ export default function TrainDetail() {
             Next check
             <Pie
               alt="every 15 seconds"
-              className={cn(
-                'h-4 w-4 shrink-0 rounded-full border',
-                classNames.sectionSeparator,
-              )}
+              className="h-4 w-4 shrink-0 rounded-full border"
             />
           </span>
         </div>
