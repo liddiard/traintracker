@@ -370,7 +370,7 @@ export const snapTrainToTrackCached = createCachedFunction(
  * @returns The track segment as a GeoJSON Feature of type LineString
  */
 const getTrackSegment = (
-  stationCode: string,
+  stationCode: string, // used for function cache key
   start: Position,
   end: Position,
   trackLine: Feature<LineString>,
@@ -388,7 +388,8 @@ const getTrackSegment = (
   }
 
   return {
-    track: trackSegment,
+    // https://github.com/Turfjs/turf/issues/2808#issuecomment-2586619743
+    track: cleanCoords(trackSegment),
     length: length(trackSegment),
     start,
     end,
@@ -502,43 +503,43 @@ export const getExtrapolatedTrainPoint = (
     return
   }
 
-  const prevStationCoords = getStopCoordinates(prevStop.code, stations)
-  const nextStationCoords = getStopCoordinates(nextStop.code, stations)
-  if (!prevStationCoords || !nextStationCoords) {
+  const prevStopCoords = getStopCoordinates(prevStop.code, stations)
+  const nextStopCoords = getStopCoordinates(nextStop.code, stations)
+  if (!prevStopCoords || !nextStopCoords) {
     return
   }
 
   // get the track segment between the train's previous/current and next
-  // station
-  let trackSegment = getTrackSegmentCached(
+  // stop (per timetable)
+  let timetableTrackSegment = getTrackSegmentCached(
     `${prevStop.code}-${nextStop.code}`,
-    prevStationCoords,
-    nextStationCoords,
+    prevStopCoords,
+    nextStopCoords,
     trackLine,
   ).track
-  let startTime: Date | null = prevStop.arrival.time
 
-  if (!trackSegment?.geometry?.coordinates?.length) {
+  if (!timetableTrackSegment?.geometry?.coordinates?.length) {
     return
   }
 
-  // check if train's GPS coordinate is on the current track segment (according
-  // to the timetable)
-  // if the previous station (per timetable) is behind the train GPS position
+  // check if train's GPS coordinate is on the current track segment (per timetable)
   console.log('trainPosition:', trainPosition)
-  console.log('trackSegment:', cleanCoords(trackSegment))
-  let trainGPSOnTrackSegment
+  console.log('trackSegment:', timetableTrackSegment)
+  let trainGPSOnTimetableTrackSegment
   try {
-    trainGPSOnTrackSegment =
-      pointToLineDistance(point(trainPosition), cleanCoords(trackSegment)) < 0.1
+    // TODO: figure out if/why this would throw and if there's more appropriate error handling
+    trainGPSOnTimetableTrackSegment =
+      pointToLineDistance(point(trainPosition), timetableTrackSegment) < 0.1 // 100 meters
   } catch (e) {
     console.error(e)
     return
   }
+  let trackSegment
+  let startTime: Date | null
   if (
-    !trainGPSOnTrackSegment
+    trainGPSOnTimetableTrackSegment
     // isPointBehindTrain(
-    //   point(prevStationCoords),
+    //   point(prevStopCoords),
     //   point(trainPosition),
     //   stations,
     //   nextStop,
@@ -546,17 +547,23 @@ export const getExtrapolatedTrainPoint = (
   ) {
     console.log('train ID:', trainMeta.id)
     console.log('trainPosition:', trainPosition)
-    console.log('nextStationCoords:', nextStationCoords)
-    console.log('trackSegment:', cleanCoords(trackSegment))
-    // narrow the track segment from to only consider the portion between the
-    // train GPS position and next station
+    console.log('nextStopCoords:', nextStopCoords)
+    console.log('timetableTrackSegment:', cleanCoords(timetableTrackSegment))
+    // Narrow the track segment from to only consider the portion between the
+    // train GPS position and next station.
+    // This will calculate progress based on GPS location + its reported time
+    // (`train.updated`) -> next stop location + its estimated time.
     trackSegment = lineSlice(
       trainPosition,
-      nextStationCoords,
-      // https://github.com/Turfjs/turf/issues/2808#issuecomment-2586619743
-      cleanCoords(trackSegment),
+      nextStopCoords,
+      timetableTrackSegment,
     )
     startTime = trainMeta.updated
+  } else {
+    // Calculate progress based on previous stop location + time -> the next stop
+    // location + estimated time.
+    trackSegment = timetableTrackSegment
+    startTime = prevStop.arrival.time
   }
 
   if (!nextStop.arrival.time || !startTime) {
@@ -566,7 +573,9 @@ export const getExtrapolatedTrainPoint = (
   const totalTime = nextStop.arrival.time.getTime() - startTime.getTime()
   const totalDistance = length(trackSegment)
   const timeElapsed = new Date().getTime() - startTime.getTime()
-  const progress = timeElapsed / totalTime
+  // If the train has a current stop, it is currently at a station which means it has
+  // made zero progress on its upcoming segment.
+  const progress = trainMeta.curStop ? 0 : timeElapsed / totalTime
   const distanceCovered = totalDistance * progress
 
   const extrapolatedPoint = along(trackSegment, distanceCovered)
