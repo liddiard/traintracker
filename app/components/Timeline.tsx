@@ -11,7 +11,7 @@ import Progress from './Progress'
 import TimelineSegment from './TimelineSegment'
 import { classNames, MIN_PROGRESS_PX } from '../constants'
 
-const MIN_SEGMENT_HEIGHT = 50
+const MIN_SEGMENT_HEIGHT = 60
 const MAX_SEGMENT_HEIGHT = 150
 
 function Timeline({
@@ -31,26 +31,49 @@ function Timeline({
     [stops],
   )
 
+  /**
+   * Calculates the display height of a timeline segment between two stops.
+   * The height is scaled proportionally based on the travel duration so longer segment
+   * durations are taller. Height is calculated relative to the min and max segment
+   * durations for the entire trip.
+   */
   const getSegmentHeight = useCallback(
     (stop: Stop, nextStop: Stop) => {
+      // For the last stop, there is no next segment, so return a default height
       if (!nextStop) {
         return MIN_SEGMENT_HEIGHT
       }
+
+      // For single-segment trips (two stops), display the single segment as max height
+      if (stops.length === 2) {
+        return MAX_SEGMENT_HEIGHT
+      }
+
       const curStationArr = getScheduledTime(stop.arrival)
       const nextStationArr = getScheduledTime(nextStop.arrival)
       const segmentDuration =
         curStationArr && nextStationArr
           ? msToMins(nextStationArr.valueOf() - curStationArr.valueOf())
           : MIN_SEGMENT_HEIGHT + MAX_SEGMENT_HEIGHT / 2
+
+      // Scale the duration to a value between 0 and 1 relative to the min/max duration
+      // for all segments
       const distanceFromMin = segmentDuration - segmentDurations.min
       const totalDistance = segmentDurations.max - segmentDurations.min
-      const percentFromMin = distanceFromMin / totalDistance
+
+      // If all segments are of equal duration, totalDistance will be 0.
+      // To avoid division by zero, set percentFromMin to 0 (minimum segment height).
+      const percentFromMin =
+        totalDistance > 0 ? distanceFromMin / totalDistance : 0
+
+      // Convert the scaled value to a pixel height between the defined min and max
+      // heights
       return Math.round(
         (MAX_SEGMENT_HEIGHT - MIN_SEGMENT_HEIGHT) * percentFromMin +
           MIN_SEGMENT_HEIGHT,
       )
     },
-    [segmentDurations],
+    [segmentDurations, stops],
   )
 
   const segmentHeights = useMemo(
