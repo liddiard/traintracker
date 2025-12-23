@@ -36,7 +36,7 @@ function TrainList({
     }
     if (filters.trainNumber) {
       filteredTrains = filteredTrains.filter(
-        (t) => t.name === filters.trainNumber,
+        (t) => t.number === filters.trainNumber,
       )
     }
     return filteredTrains
