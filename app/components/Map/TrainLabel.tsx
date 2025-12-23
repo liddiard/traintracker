@@ -1,6 +1,7 @@
 import { Marker } from 'react-map-gl/maplibre'
 import cn from 'classnames'
 import { TrainFeatureProperties } from '@/app/types'
+import { DETAIL_ZOOM_LEVEL } from './constants'
 
 interface TrainLabelProps extends TrainFeatureProperties {
   coordinates: number[] | null
@@ -22,7 +23,7 @@ function TrainLabel({
   isSelected,
   navigateToTrain,
 }: TrainLabelProps) {
-  if (!coordinates || zoom < 6) {
+  if (!coordinates || zoom < DETAIL_ZOOM_LEVEL) {
     return null
   }
   const [lon, lat] = coordinates

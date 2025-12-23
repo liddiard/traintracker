@@ -2,6 +2,7 @@ import { Marker } from 'react-map-gl/maplibre'
 import Pointer from '@/app/img/pointer.svg'
 import Circle from '@/app/img/train-circle.svg'
 import { TrainFeatureProperties } from '@/app/types'
+import { DETAIL_ZOOM_LEVEL } from './constants'
 
 interface TrainMarkerProps extends TrainFeatureProperties {
   coordinates: number[] | null
@@ -47,7 +48,7 @@ function TrainMarker({
       }}
       onClick={() => navigateToTrain(id)}
     >
-      {heading === null || zoom < 6 ? (
+      {heading === null || zoom < DETAIL_ZOOM_LEVEL ? (
         <Circle className="w-2" style={sharedStyles} />
       ) : (
         <Pointer className="w-4" style={sharedStyles} />

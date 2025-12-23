@@ -1,3 +1,8 @@
+// at this and higher map zoom levels, extrapolate train positions and show their
+// headings with an arrow
+export const DETAIL_ZOOM_LEVEL = 8
+
+// MapLibre layer data sources
 export const sourceId = {
   amtrakTrack: 'amtrak-track',
   amtrakStations: 'amtrak-stations',

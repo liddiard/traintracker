@@ -14,7 +14,7 @@ import {
 } from '../../utils'
 import { Train, Station, TrainFeatureProperties } from '../../types'
 import { getExtrapolatedTrainPoint, snapTrainToTrackCached } from './calc'
-import { sourceId, routeToCodeMap } from './constants'
+import { sourceId, routeToCodeMap, DETAIL_ZOOM_LEVEL } from './constants'
 import { colors } from '@/app/constants'
 
 export const trackLayer: LineLayerSpecification = {
@@ -77,7 +77,13 @@ export const trainGPSLabelLayer: SymbolLayerSpecification = {
   type: 'symbol',
   source: sourceId.trainGPS,
   layout: {
-    'text-field': ['step', ['zoom'], '', 6, ['get', 'lastUpdatedStr']],
+    'text-field': [
+      'step',
+      ['zoom'],
+      '',
+      DETAIL_ZOOM_LEVEL,
+      ['get', 'lastUpdatedStr'],
+    ],
     'text-size': ['interpolate', ['linear'], ['zoom'], 3, 8, 10, 14],
     'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
     'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 5, 0.75, 10, 1],
@@ -126,10 +132,10 @@ export const stationsToGeoJson = (
  *
  * @description
  * This function creates a GeoJSON Feature for rendering a train on the map.
- * When zoomed in (zoom > 6) and the train is in view, it snaps the train to the nearest track
- * and extrapolates the position based on its status and schedule. Otherwise, it uses
- * the raw GPS coordinates. The function also determines the train's color based on its status
- * and includes properties needed for rendering.
+ * When zoomed in (zoom >= DETAIL_ZOOM_LEVEL) and the train is in view, it snaps the
+ * train to the nearest track and extrapolates the position based on its status and
+ * schedule. Otherwise, it uses the raw GPS coordinates. The function also determines
+ * the train's color based on its status and includes properties needed for rendering.
  */
 const createTrainFeature = (
   prevTrain: Feature<Point, TrainFeatureProperties> | undefined,
@@ -150,7 +156,7 @@ const createTrainFeature = (
   // viewport, calculate its snapped position
   if (
     map &&
-    map.getZoom() > 6 &&
+    map.getZoom() >= DETAIL_ZOOM_LEVEL &&
     map.getBounds().contains(prevCoords as LngLatLike)
   ) {
     // get the last received (snapped) GPS position of the train + heading
