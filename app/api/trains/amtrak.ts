@@ -44,13 +44,13 @@ const processStops = (
     })
     // Parse the JSON-serialized station info
     .map(([_, val]) => JSON.parse(val) as AmtrakStationInfoProperties)
-    // Filter out stops with no arrival and departure info
+    // Filter out stops with no arrival or departure info
     .filter(
       // arrival keys
       (stop) =>
         ['postarr', 'estarr', 'scharr', 'schdep'].find(
           (key) => stop[key as keyof AmtrakStationInfoProperties],
-        ) &&
+        ) ||
         // departure keys
         ['postdep', 'estdep', 'schdep'].find(
           (key) => stop[key as keyof AmtrakStationInfoProperties],
@@ -66,9 +66,11 @@ const processStops = (
         postarr || estarr || scharr || schdep!,
         { tzCode: tz },
       )
-      const departureTime = amtrakParseDate(postdep || estdep || schdep!, {
-        tzCode: tz,
-      })
+      // For final stations with no departure info, fall back to arrival time
+      const departureTime = amtrakParseDate(
+        postdep || estdep || schdep || postarr || estarr || scharr!,
+        { tzCode: tz },
+      )
       return {
         code,
         name: station?.name || code,
