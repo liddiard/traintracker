@@ -115,7 +115,7 @@ function MapSettings() {
       value: settings.timeFormat,
     },
     {
-      label: 'Display times in',
+      label: 'Show times in',
       key: 'timeZone' as const,
       options: timeZoneOptions,
       value: settings.timeZone,
