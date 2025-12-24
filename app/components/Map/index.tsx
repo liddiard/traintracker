@@ -97,14 +97,6 @@ function Map() {
     [trainData, operator, id],
   )
 
-  const trainRoute = useMemo(() => {
-    const train = trains.find((t) => t.id === `${operator}/${id}`)
-    if (!train) {
-      return
-    }
-    return trainRouteToGeoJson(train, stations)
-  }, [trains, stations, operator, id])
-
   const updateTrains = useCallback(() => {
     console.log('updateTrains', new Date())
     setTrainData(trainsToGeoJson(trainData, mapRef.current!, trains, stations))

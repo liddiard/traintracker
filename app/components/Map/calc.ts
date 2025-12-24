@@ -589,24 +589,3 @@ export const getExtrapolatedTrainPoint = (
     heading,
   }
 }
-
-export const getRouteTrack = (
-  trackId: TrackId,
-  trainMeta: TrainMeta,
-  stations: Station[],
-) => {
-  const trackLine = getTrackFromId(trackId, amtrakTrack)
-  if (!trackLine) {
-    return
-  }
-
-  const firstStation = stations.find((s) => s.code === trainMeta.firstStop.code)
-  const lastStation = stations.find((s) => s.code === trainMeta.lastStop.code)
-
-  if (!firstStation || !lastStation) {
-    return
-  }
-
-  return trackLine
-  // return lineSlice(firstStation.coordinates, lastStation.coordinates, trackLine)
-}
