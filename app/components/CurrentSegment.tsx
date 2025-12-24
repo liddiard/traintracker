@@ -64,6 +64,7 @@ function CurrentSegment({ trainMeta }: CurrentSegmentProps) {
       <span
         id="segmentProgress"
         className={cn('block', { 'text-right': !atStation })}
+        suppressHydrationWarning
       >
         {label}
       </span>
