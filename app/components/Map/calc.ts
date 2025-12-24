@@ -485,7 +485,6 @@ export const getExtrapolatedTrainPoint = (
   trainMeta: TrainMeta,
   stations: Station[],
 ) => {
-  console.time(`getExtrapolatedTrainPoint ${trainMeta.id}`)
   const trackLine = getTrackFromId(trackId, amtrakTrack)
   if (!trackLine) {
     return
@@ -534,7 +533,7 @@ export const getExtrapolatedTrainPoint = (
     console.error(e)
     return
   }
-  let trackSegment
+  let trackSegment: Feature<LineString>
   let startTime: Date | null
   if (
     trainGPSOnTimetableTrackSegment
@@ -585,13 +584,29 @@ export const getExtrapolatedTrainPoint = (
     stations,
     nextStop,
   )
-  console.timeEnd(`getExtrapolatedTrainPoint ${trainMeta.id}`)
   return {
     point: extrapolatedPoint,
     heading,
   }
 }
 
-const getRouteTrack = (map: MapRef, train: Train) => {
-  // lineSlice + along
+export const getRouteTrack = (
+  trackId: TrackId,
+  trainMeta: TrainMeta,
+  stations: Station[],
+) => {
+  const trackLine = getTrackFromId(trackId, amtrakTrack)
+  if (!trackLine) {
+    return
+  }
+
+  const firstStation = stations.find((s) => s.code === trainMeta.firstStop.code)
+  const lastStation = stations.find((s) => s.code === trainMeta.lastStop.code)
+
+  if (!firstStation || !lastStation) {
+    return
+  }
+
+  return trackLine
+  // return lineSlice(firstStation.coordinates, lastStation.coordinates, trackLine)
 }

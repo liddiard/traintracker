@@ -42,6 +42,8 @@ import {
   stationsToGeoJson,
   trackLayer,
   trainGPSLabelLayer,
+  trainRouteToGeoJson,
+  trainRouteLayer,
 } from './display'
 import _amtrakTrack from '@/public/map_data/amtrak-track.json'
 import TrainMarker from './TrainMarker'
@@ -237,6 +239,12 @@ function Map() {
             <Layer {...trainGPSLabelLayer} />
           </Source>
         )}
+
+        {/* {trainRoute && (
+          <Source id={sourceId.trainRoute} type="geojson" data={trainRoute}>
+            <Layer {...trainRouteLayer} />
+          </Source>
+        )} */}
 
         {trainData.features.map((f) => (
           <Fragment key={f.properties.id}>

@@ -13,7 +13,11 @@ import {
   getTrainShortcode,
 } from '../../utils'
 import { Train, Station, TrainFeatureProperties } from '../../types'
-import { getExtrapolatedTrainPoint, snapTrainToTrackCached } from './calc'
+import {
+  getExtrapolatedTrainPoint,
+  getRouteTrack,
+  snapTrainToTrackCached,
+} from './calc'
 import { sourceId, routeToCodeMap, DETAIL_ZOOM_LEVEL } from './constants'
 import { colors } from '@/app/constants'
 
@@ -27,6 +31,20 @@ export const trackLayer: LineLayerSpecification = {
   },
   paint: {
     'line-color': formatRgb(colors['amtrak-blue-400']),
+    'line-width': 2,
+  },
+}
+
+export const trainRouteLayer: LineLayerSpecification = {
+  id: sourceId.trainRoute,
+  type: 'line',
+  source: sourceId.trainRoute,
+  layout: {
+    'line-join': 'round',
+    'line-cap': 'round',
+  },
+  paint: {
+    'line-color': formatRgb(colors['amtrak-blue-200']),
     'line-width': 2,
   },
 }
@@ -236,3 +254,12 @@ export const trainsToGeoJson = (
       ),
     ),
 })
+
+export const trainRouteToGeoJson = (train: Train, stations: Station[]) => {
+  const trainMeta = getTrainMeta(train)
+  const { track } = snapTrainToTrackCached(train)
+  if (!track) {
+    return
+  }
+  return getRouteTrack(track, trainMeta, stations)
+}
