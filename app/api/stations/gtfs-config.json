@@ -76,5 +76,5 @@
   "csvOptions": {
     "skip_lines_with_error": true
   },
-  "downloadTimeout": 30000
+  "downloadTimeout": 60000
 }
