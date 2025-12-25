@@ -141,6 +141,7 @@ function Map() {
     }
     // if the selected train changed…
     else if (flownToTrain.current !== selectedTrain.id) {
+      updateSetting('follow', false)
       // …fly to it on the map, zooming in if the map is far zoomed out
       const zoom = mapRef.current.getZoom()
       const minFlyZoom = 8
@@ -151,7 +152,7 @@ function Map() {
       flownToTrain.current = selectedTrain.id as string
     }
     followSetting.current = settings.follow
-  }, [selectedTrain, settings.follow])
+  }, [selectedTrain, settings.follow, updateSetting])
 
   const syncMapState = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
