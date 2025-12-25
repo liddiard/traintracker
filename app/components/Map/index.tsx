@@ -36,8 +36,6 @@ import {
   stationsToGeoJson,
   trackLayer,
   trainGPSLabelLayer,
-  trainRouteToGeoJson,
-  trainRouteLayer,
 } from './display'
 import _amtrakTrack from '@/public/map_data/amtrak-track.json'
 import TrainMarker from './TrainMarker'
@@ -47,7 +45,6 @@ import { DETAIL_ZOOM_LEVEL, sourceId, TRAIN_UPDATE_FREQ } from './constants'
 import TrainGPS from './TrainGPS'
 import TrainLabel from './TrainLabel'
 import MapSettings from './Settings'
-import debounce from 'debounce'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
@@ -79,7 +76,6 @@ function Map() {
     bearing: 0,
   }
 
-  const [transition, setTransition] = useState(false)
   const [viewState, setViewState] = useState(initialViewState)
   const [trainData, setTrainData] = useState(emptyTrainData)
 
@@ -96,26 +92,6 @@ function Map() {
     console.log('updateTrains', new Date())
     setTrainData(trainsToGeoJson(trainData, mapRef.current!, trains, stations))
   }, [trainData, trains, stations])
-
-  const enableTransitionDebounced = useMemo(
-    () =>
-      debounce(() => {
-        setTransition(viewState.zoom >= DETAIL_ZOOM_LEVEL)
-      }, 500),
-    [viewState.zoom],
-  )
-
-  // immediately move trains to their updated positions if the browser tab just
-  // regained focus
-  useEffect(() => {
-    window.onfocus = () => {
-      setTransition(false)
-      setTimeout(() => enableTransitionDebounced())
-    }
-    return () => {
-      window.onfocus = null
-    }
-  }, [enableTransitionDebounced])
 
   // start an infinte loop of updating trains: whenever `updateTrains` is called, it
   // changes (recreates) the `updateTrains` function reference because `trainData` is
@@ -137,14 +113,9 @@ function Map() {
     if (flownToTrain.current === selectedTrain.id && settings.follow) {
       // …and if the follow setting was just turned on
       if (followSetting.current !== settings.follow) {
-        // disable transitions on map markers for the duration of the map move
-        const duration = 500
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setTransition(false)
-        setTimeout(() => enableTransitionDebounced(), duration)
         // move map to the updated train coordinates with default easing
         mapRef.current.panTo(selectedTrain.geometry.coordinates as LngLatLike, {
-          duration,
+          duration: 500,
         })
       } else {
         // if we were already following the train, move map linearly to the updated
@@ -167,7 +138,7 @@ function Map() {
       flownToTrain.current = selectedTrain.id as string
     }
     followSetting.current = settings.follow
-  }, [selectedTrain, settings.follow, enableTransitionDebounced])
+  }, [selectedTrain, settings.follow])
 
   const syncMapState = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
@@ -225,17 +196,14 @@ function Map() {
         mapStyle={mapStyleUrls[settings.mapStyle]}
         onLoad={() => {
           updateTrains()
-          enableTransitionDebounced()
         }}
         onMove={(ev: ViewStateChangeEvent) => {
+          // if it's a user-initiatied map move
           if (ev.originalEvent) {
             updateSetting('follow', false)
-            setTransition(false)
-            enableTransitionDebounced()
           }
         }}
         onMoveEnd={syncMapState}
-        onResize={() => setTransition(false)}
         onClick={(
           ev: MapLayerMouseEvent & {
             features?: MapGeoJSONFeature[]
@@ -281,7 +249,6 @@ function Map() {
             <TrainMarker
               coordinates={f.geometry.coordinates}
               zoom={viewState.zoom}
-              transition={transition}
               navigateToTrain={navigateToTrain}
               isSelected={selectedTrain?.id === f.properties.id}
               {...f.properties}
@@ -289,7 +256,6 @@ function Map() {
             <TrainLabel
               coordinates={f.geometry.coordinates}
               zoom={viewState.zoom}
-              transition={transition}
               navigateToTrain={navigateToTrain}
               isSelected={selectedTrain?.id === f.properties.id}
               {...f.properties}

@@ -101,7 +101,7 @@ export interface TrainFeatureProperties extends Omit<
   'status' | 'alerts' | 'stops' | 'coordinates'
 > {
   color?: string
-  gpsCoordinates: number[] | null
+  gpsCoordinates: [number, number] | null
   lastUpdatedStr: string
   shortcode: string
 }

@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Marker, Popup } from 'react-map-gl/maplibre'
+import { Marker as MarkerType } from 'maplibre-gl'
 import cn from 'classnames'
 import Crosshair from '@/app/img/crosshair.svg'
 import { inter } from '@/app/constants'
@@ -11,6 +12,15 @@ interface TrainGPSProps extends TrainFeatureProperties {
 
 function TrainGPS({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
   const [showPopup, setShowPopup] = useState(false)
+  const markerRef = useRef<MarkerType>(null)
+
+  // https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MarkerOptions/#subpixelpositioning
+  useEffect(() => {
+    if (!gpsCoordinates) {
+      return
+    }
+    markerRef.current?.setSubpixelPositioning(true)
+  }, [gpsCoordinates])
 
   if (!gpsCoordinates) {
     return null
@@ -27,7 +37,7 @@ function TrainGPS({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
         longitude={lon}
         latitude={lat}
         anchor="center"
-        subpixelPositioning={true}
+        ref={markerRef}
         className="cursor-default mix-blend-hard-light"
       >
         <Crosshair
