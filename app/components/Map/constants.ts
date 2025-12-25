@@ -1,6 +1,6 @@
 // at this and higher map zoom levels, extrapolate train positions and show their
 // headings with an arrow
-export const DETAIL_ZOOM_LEVEL = 7
+export const DETAIL_ZOOM_LEVEL = 8
 
 // how often to recalculate extrapolated train positions in ms
 export const TRAIN_UPDATE_FREQ = 5000

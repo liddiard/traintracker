@@ -186,8 +186,8 @@ function Map() {
           </span>
         </h1>
         <span>
-          Live tracking North America intercity passenger rail: 🇺🇸 Amtrak 🇨🇦 VIA
-          Rail 🌴 Brightline
+          Live tracking North America intercity passenger rail:
+          🇺🇸 Amtrak 🇨🇦 VIA Rail 🌴 Brightline
         </span>
       </header>
       <MapGL
