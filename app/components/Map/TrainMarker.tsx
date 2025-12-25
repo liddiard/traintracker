@@ -7,7 +7,7 @@ import { DETAIL_ZOOM_LEVEL } from './constants'
 interface TrainMarkerProps extends TrainFeatureProperties {
   coordinates: number[] | null
   zoom: number
-  moving: boolean
+  transition: boolean
   isSelected: boolean
   navigateToTrain: (trainID: string) => void
 }
@@ -18,7 +18,7 @@ function TrainMarker({
   coordinates,
   heading,
   zoom,
-  moving,
+  transition,
   isSelected,
   navigateToTrain,
 }: TrainMarkerProps) {
@@ -43,7 +43,7 @@ function TrainMarker({
       className="cursor-pointer p-2"
       style={{
         // reposition markers immediately while map is moving
-        transition: moving ? 'none' : 'transform 5s linear',
+        transition: transition ? 'transform 5s linear' : 'unset',
         zIndex: isSelected ? 1 : 'unset',
       }}
       onClick={() => navigateToTrain(id)}

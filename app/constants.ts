@@ -11,6 +11,7 @@ export const inter = Inter({ subsets: ['latin'] })
 
 // these color values should match those in globals.css
 export const colors: Record<string, string> = {
+  'amtrak-blue-200': 'oklch(0.8 0.1056 229.84)',
   'amtrak-blue-400': 'oklch(0.6 0.1056 229.84)',
   'amtrak-blue-500': 'oklch(0.5 0.1056 229.84)',
   'amtrak-blue-600': 'oklch(0.4 0.1056 229.84)',
@@ -38,6 +39,7 @@ export const settingOptions = {
   units: ['miles', 'kilometers'],
   timeFormat: ['12hr', '24hr'],
   timeZone: ['local', 'device'],
+  follow: [true, false],
 }
 
 export const defaultSettings: Settings = {
@@ -46,4 +48,5 @@ export const defaultSettings: Settings = {
   units: 'miles',
   timeFormat: '12hr',
   timeZone: 'local',
+  follow: false,
 }

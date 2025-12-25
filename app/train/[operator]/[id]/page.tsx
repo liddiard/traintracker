@@ -32,8 +32,8 @@ export default function TrainDetail() {
   const { operator, id } = useParams()
   const trainSearchParams = getTrainParams(useSearchParams())
   const { trains } = useTrains()
-  const { settings } = useSettings()
-  const { timeFormat, timeZone } = settings
+  const { settings, updateSetting } = useSettings()
+  const { timeFormat, timeZone, follow } = settings
   const train = trains.find((t) => t.id === `${operator}/${id}`)
 
   if (!train) return notFound()
@@ -69,7 +69,7 @@ export default function TrainDetail() {
           _24hr: timeFormat === '24hr',
         })}
         {' '}
-        {formatDate(date, tz)}
+        {formatDate(date, timeZone === 'local' ? tz : undefined)}
       </time>
       {displayTz ? (
         <div className={cn('text-sm', classNames.textDeemphasized)}>
@@ -224,6 +224,17 @@ export default function TrainDetail() {
             Its current location is estimated.
           </span>
         )}
+      </div>
+
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            checked={follow}
+            onChange={() => updateSetting('follow', !follow)}
+          />
+          Follow on map
+        </label>
       </div>
 
       <Timeline stops={train.stops} trainMeta={trainMeta} />

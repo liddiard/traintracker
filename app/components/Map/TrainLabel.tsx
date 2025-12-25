@@ -6,7 +6,7 @@ import { DETAIL_ZOOM_LEVEL } from './constants'
 interface TrainLabelProps extends TrainFeatureProperties {
   coordinates: number[] | null
   zoom: number
-  moving: boolean
+  transition: boolean
   navigateToTrain: (trainID: string) => void
   name: string
   number: string
@@ -17,7 +17,7 @@ function TrainLabel({
   id,
   coordinates,
   zoom,
-  moving,
+  transition,
   name,
   number,
   isSelected,
@@ -37,14 +37,14 @@ function TrainLabel({
       offset={[6, 0]}
       style={{
         // reposition markers immediately while map is moving
-        transition: moving ? 'none' : 'transform 5s linear',
+        transition: transition ? 'transform 5s linear' : 'unset',
         // 1 layer above the TrainMarker
         zIndex: isSelected ? 2 : 'unset',
       }}
     >
       <span
         className={cn(
-          'rounded-full px-2 py-[0.1em] text-sm font-medium backdrop-blur-xs',
+          'rounded-full border border-white/50 px-2 py-[0.1em] text-sm font-medium backdrop-blur-xs',
           isSelected ? 'bg-amtrak-bright-blue-400 text-white' : 'bg-white/75',
         )}
       >

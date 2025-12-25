@@ -131,6 +131,7 @@ export interface Settings {
   units: Units
   timeFormat: TimeFormat
   timeZone: TimeZone
+  follow: boolean
 }
 
 export type SettingValue = MapStyle | ColorMode | Units | TimeFormat | TimeZone

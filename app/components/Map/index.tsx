@@ -23,13 +23,7 @@ import type {
   MapRef,
   ViewStateChangeEvent,
 } from 'react-map-gl/maplibre'
-import {
-  FeatureCollection,
-  MultiLineString,
-  Point,
-  LineString,
-  Position,
-} from 'geojson'
+import { FeatureCollection, MultiLineString, Point, LineString } from 'geojson'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { useTrains } from '../../providers/train'
@@ -49,10 +43,11 @@ import _amtrakTrack from '@/public/map_data/amtrak-track.json'
 import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
 import { sleep } from '@/app/utils'
-import { sourceId } from './constants'
+import { DETAIL_ZOOM_LEVEL, sourceId, TRAIN_UPDATE_FREQ } from './constants'
 import TrainGPS from './TrainGPS'
 import TrainLabel from './TrainLabel'
 import MapSettings from './Settings'
+import debounce from 'debounce'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
@@ -71,7 +66,7 @@ const emptyTrainData: FeatureCollection<Point, TrainFeatureProperties> = {
 
 function Map() {
   const { trains, stations } = useTrains()
-  const { settings } = useSettings()
+  const { settings, updateSetting } = useSettings()
   const router = useRouter()
   const { operator, id } = useParams()
   const query = useSearchParams()
@@ -84,13 +79,13 @@ function Map() {
     bearing: 0,
   }
 
-  const [loaded, setLoaded] = useState(false)
-  const [moving, setMoving] = useState(false)
+  const [transition, setTransition] = useState(false)
   const [viewState, setViewState] = useState(initialViewState)
   const [trainData, setTrainData] = useState(emptyTrainData)
 
   const mapRef = useRef<MapRef>(null)
-  const flownToTrainRef = useRef<string | null | undefined>(null)
+  const flownToTrain = useRef<string | null | undefined>(null)
+  const followSetting = useRef<boolean>(null)
 
   const selectedTrain = useMemo(
     () => trainData.features.find((t) => t.id === `${operator}/${id}`),
@@ -102,53 +97,87 @@ function Map() {
     setTrainData(trainsToGeoJson(trainData, mapRef.current!, trains, stations))
   }, [trainData, trains, stations])
 
-  useEffect(() => {
-    if (!loaded) {
-      return
-    }
-    setTrainData(
-      trainsToGeoJson(emptyTrainData, mapRef.current!, trains, stations),
-    )
-  }, [loaded, trains, stations])
+  const enableTransitionDebounced = useMemo(
+    () =>
+      debounce(() => {
+        setTransition(viewState.zoom >= DETAIL_ZOOM_LEVEL)
+      }, 500),
+    [viewState.zoom],
+  )
 
+  // immediately move trains to their updated positions if the browser tab just
+  // regained focus
   useEffect(() => {
-    // starts an infinte loop of updating trains because whenever `updateTrains` is
-    // called, it changes (recreates) the `updateTrains` function reference because
-    // `trainData` is updated
-    const timeoutId = setTimeout(updateTrains, 5000)
+    window.onfocus = () => {
+      setTransition(false)
+      setTimeout(() => enableTransitionDebounced())
+    }
+    return () => {
+      window.onfocus = null
+    }
+  }, [enableTransitionDebounced])
+
+  // start an infinte loop of updating trains: whenever `updateTrains` is called, it
+  // changes (recreates) the `updateTrains` function reference because `trainData` is
+  // updated
+  useEffect(() => {
+    const timeoutId = setTimeout(updateTrains, TRAIN_UPDATE_FREQ)
     return () => clearTimeout(timeoutId)
   }, [updateTrains])
 
+  // move the map to keep centered a train we're following, or to fly to a new train
+  // the user just selected
   useEffect(() => {
     if (!selectedTrain || !mapRef.current) {
-      flownToTrainRef.current = null
+      flownToTrain.current = null
       return
     }
-
-    // Only fly to the train if it's a new selection
-    if (flownToTrainRef.current === selectedTrain.id) {
-      return
+    // if the selected train hasn't changed (its coordinates just updated), and we're
+    // following that train on the map…
+    if (flownToTrain.current === selectedTrain.id && settings.follow) {
+      // …and if the follow setting was just turned on
+      if (followSetting.current !== settings.follow) {
+        // disable transitions on map markers for the duration of the map move
+        const duration = 500
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setTransition(false)
+        setTimeout(() => enableTransitionDebounced(), duration)
+        // move map to the updated train coordinates with default easing
+        mapRef.current.panTo(selectedTrain.geometry.coordinates as LngLatLike, {
+          duration,
+        })
+      } else {
+        // if we were already following the train, move map linearly to the updated
+        // train coordinates in sync with the time until the next position update
+        mapRef.current.panTo(selectedTrain.geometry.coordinates as LngLatLike, {
+          duration: TRAIN_UPDATE_FREQ,
+          easing: (x) => x,
+        })
+      }
     }
+    // if the selected train changed…
+    else if (flownToTrain.current !== selectedTrain.id) {
+      // …fly to it on the map, zooming in if the map is far zoomed out
+      const zoom = mapRef.current.getZoom()
+      const minFlyZoom = 8
+      mapRef.current.flyTo({
+        center: selectedTrain.geometry.coordinates as LngLatLike,
+        zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
+      })
+      flownToTrain.current = selectedTrain.id as string
+    }
+    followSetting.current = settings.follow
+  }, [selectedTrain, settings.follow, enableTransitionDebounced])
 
-    const zoom = mapRef.current.getZoom()
-    const minFlyZoom = 8
-    mapRef.current.flyTo({
-      center: selectedTrain.geometry.coordinates as LngLatLike,
-      zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
-    })
-
-    flownToTrainRef.current = selectedTrain.id as string
-  }, [selectedTrain])
-
-  const handleMoveEnd = async (ev: ViewStateChangeEvent) => {
-    console.log('handleMoveEnd', new Date())
+  const syncMapState = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
     setViewState({ ...viewState, ...ev.viewState })
-    // arbitrary sleep to prevent race condition between updating the URL here
-    // and `navigateToTrain`, which also updates the URL and causes the map to
-    // move
+    if (ev.originalEvent) {
+      updateTrains()
+    }
+    // arbitrary sleep to prevent a race condition between updating the URL here and
+    // `navigateToTrain`, which also updates the URL and causes the map to move
     await sleep(100)
-    setMoving(false)
     const url = new URL(window.location.href)
     url.searchParams.set('lat', latitude.toFixed(5))
     url.searchParams.set('lng', longitude.toFixed(5))
@@ -156,8 +185,9 @@ function Map() {
     await router.replace(url.toString(), { scroll: false })
   }
 
-  const navigateToTrain = (trainID: string) => {
-    router.push(`/train/${trainID}`)
+  // redirect to a train by id, where `id` is in the format: <operator>/<operator_id>
+  const navigateToTrain = (id: string) => {
+    router.push(`/train/${id}`)
   }
 
   const renderControls = () => (
@@ -167,7 +197,7 @@ function Map() {
         position="bottom-right"
         showCompass={!!viewState.bearing}
         // `showCompass` only takes effect on component mount, so change the
-        // key to force a remount
+        // key to force a remount when the bearing changes from due north
         // https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/navigation-control#other-properties
         key={viewState.bearing ? 'nav-control-compass' : 'nav-control'}
       />
@@ -177,7 +207,7 @@ function Map() {
 
   return (
     <div className="h-full w-full">
-      <header className="absolute top-0 left-0 z-10 flex w-full items-baseline gap-2 bg-linear-to-b from-white to-transparent px-2 pt-1 pb-2 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
+      <header className="absolute top-0 left-0 z-10 flex w-full items-baseline gap-2 bg-linear-to-b from-white to-transparent px-2 pt-1 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
         <h1 className="text-xl font-bold">
           Train
           <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
@@ -195,11 +225,17 @@ function Map() {
         mapStyle={mapStyleUrls[settings.mapStyle]}
         onLoad={() => {
           updateTrains()
-          setLoaded(true)
+          enableTransitionDebounced()
         }}
-        onMoveStart={() => setMoving(true)}
-        onMoveEnd={handleMoveEnd}
-        onResize={() => setMoving(true)}
+        onMove={(ev: ViewStateChangeEvent) => {
+          if (ev.originalEvent) {
+            updateSetting('follow', false)
+            setTransition(false)
+            enableTransitionDebounced()
+          }
+        }}
+        onMoveEnd={syncMapState}
+        onResize={() => setTransition(false)}
         onClick={(
           ev: MapLayerMouseEvent & {
             features?: MapGeoJSONFeature[]
@@ -240,18 +276,12 @@ function Map() {
           </Source>
         )}
 
-        {/* {trainRoute && (
-          <Source id={sourceId.trainRoute} type="geojson" data={trainRoute}>
-            <Layer {...trainRouteLayer} />
-          </Source>
-        )} */}
-
         {trainData.features.map((f) => (
           <Fragment key={f.properties.id}>
             <TrainMarker
               coordinates={f.geometry.coordinates}
               zoom={viewState.zoom}
-              moving={moving}
+              transition={transition}
               navigateToTrain={navigateToTrain}
               isSelected={selectedTrain?.id === f.properties.id}
               {...f.properties}
@@ -259,7 +289,7 @@ function Map() {
             <TrainLabel
               coordinates={f.geometry.coordinates}
               zoom={viewState.zoom}
-              moving={moving}
+              transition={transition}
               navigateToTrain={navigateToTrain}
               isSelected={selectedTrain?.id === f.properties.id}
               {...f.properties}

@@ -7,6 +7,7 @@ import { Train, TrainSearchParams } from '../types'
 import { findTrainsFromSegment, formatDate, getScheduledTime } from '../utils'
 import StatusBadge from './StatusBadge'
 import CaretRight from '../img/caret-right.svg'
+import { useSettings } from '../providers/settings'
 
 const filterToDisplayName: Record<string, string> = {
   from: 'From',
@@ -23,6 +24,8 @@ function TrainList({
   filters: TrainSearchParams
 }) {
   const router = useRouter()
+  const { settings } = useSettings()
+  const { timeZone } = settings
 
   const filteredTrains = useMemo(() => {
     let filteredTrains = trains
@@ -130,7 +133,9 @@ function TrainList({
                       train.stops[0].timezone &&
                       formatDate(
                         getScheduledTime(train.stops[0].departure)!,
-                        train.stops[0].timezone,
+                        timeZone === 'local'
+                          ? train.stops[0].timezone
+                          : undefined,
                       )}
                   </span>
                 </div>

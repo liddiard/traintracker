@@ -1,4 +1,3 @@
-import type { MapRef } from 'react-map-gl/maplibre'
 import {
   point,
   nearestPointOnLine,
