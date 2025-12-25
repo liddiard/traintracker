@@ -184,26 +184,6 @@ export default function TrainDetail() {
         {renderTrainVelocity(train, trainMeta)}
       </div>
 
-      <div className="flex justify-center gap-2">
-        <label
-          className={cn(
-            'flex cursor-pointer items-center gap-[0.4em] rounded-full border px-4 py-2 text-sm font-semibold transition-colors duration-500',
-            {
-              'border-white/50': !follow,
-              'dark:text-amtrak-yellow-200 border-amtrak-yellow-200/50': follow,
-            },
-          )}
-        >
-          <input
-            type="checkbox"
-            checked={follow}
-            onChange={() => updateSetting('follow', !follow)}
-            className="hidden"
-          />
-          <Crosshair className="inline h-4 w-4" /> Follow on Map
-        </label>
-      </div>
-
       <CurrentSegment trainMeta={trainMeta} />
 
       <div className="flex flex-col gap-2">
@@ -245,6 +225,26 @@ export default function TrainDetail() {
             Its current location is estimated.
           </span>
         )}
+      </div>
+
+      <div className="flex justify-center gap-2">
+        <label
+          className={cn(
+            'flex cursor-pointer items-center gap-[0.4em] rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors duration-200',
+            {
+              [classNames.sectionSeparator]: !follow,
+              'border-amtrak-yellow-200 bg-amtrak-yellow-100/50': follow,
+            },
+          )}
+        >
+          <input
+            type="checkbox"
+            checked={follow}
+            onChange={() => updateSetting('follow', !follow)}
+            className="hidden"
+          />
+          <Crosshair className="inline h-4 w-4" /> Follow on Map
+        </label>
       </div>
 
       <Timeline stops={train.stops} trainMeta={trainMeta} />
