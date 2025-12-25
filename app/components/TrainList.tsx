@@ -97,7 +97,7 @@ function TrainList({
       <ul className="my-2 flex flex-col">
         {filteredTrains
           .filter((t) => t.updated)
-          .toSorted((a, b) => a.updated!.valueOf() - b.updated!.valueOf())
+          .toSorted((a, b) => b.updated!.valueOf() - a.updated!.valueOf())
           .map((train) => (
             <Link
               key={train.id}
