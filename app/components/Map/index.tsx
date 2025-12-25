@@ -83,6 +83,14 @@ function Map() {
   const flownToTrain = useRef<string | null | undefined>(null)
   const followSetting = useRef<boolean>(null)
 
+  // use refs so the data update interval doesn't restart on API updates
+  const trainsRef = useRef(trains)
+  const stationsRef = useRef(stations)
+  useEffect(() => {
+    trainsRef.current = trains
+    stationsRef.current = stations
+  }, [trains, stations])
+
   const selectedTrain = useMemo(
     () => trainData.features.find((t) => t.id === `${operator}/${id}`),
     [trainData, operator, id],
@@ -90,15 +98,20 @@ function Map() {
 
   const updateTrains = useCallback(() => {
     console.log('updateTrains', new Date())
-    setTrainData(trainsToGeoJson(trainData, mapRef.current!, trains, stations))
-  }, [trainData, trains, stations])
+    setTrainData((prevData) =>
+      trainsToGeoJson(
+        prevData,
+        mapRef.current!,
+        trainsRef.current,
+        stationsRef.current,
+      ),
+    )
+  }, [])
 
-  // start an infinte loop of updating trains: whenever `updateTrains` is called, it
-  // changes (recreates) the `updateTrains` function reference because `trainData` is
-  // updated
+  // update train positions at a fixed interval for consistent animation timing
   useEffect(() => {
-    const timeoutId = setTimeout(updateTrains, TRAIN_UPDATE_FREQ)
-    return () => clearTimeout(timeoutId)
+    const intervalId = setInterval(updateTrains, TRAIN_UPDATE_FREQ)
+    return () => clearInterval(intervalId)
   }, [updateTrains])
 
   // move the map to keep centered a train we're following, or to fly to a new train
