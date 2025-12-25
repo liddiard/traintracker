@@ -48,7 +48,7 @@ function Stats({ trains }: { trains: Train[] }) {
 
   const stats = [
     {
-      title: 'Active Trains',
+      title: 'Underway',
       value: numUnderway,
     },
     {
@@ -64,9 +64,9 @@ function Stats({ trains }: { trains: Train[] }) {
   ]
   return (
     <>
-      <div className="mt-4 flex h-4 w-full overflow-hidden px-3">
+      {/* <div className="mt-4 flex h-4 w-full overflow-hidden px-3">
         {renderGraph()}
-      </div>
+      </div> */}
       <div
         className={cn(
           'mx-3 flex justify-evenly gap-2 border-b py-3 text-center',
