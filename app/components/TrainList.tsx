@@ -71,7 +71,7 @@ function TrainList({
           ))}
       </div>
       <button
-        className="text-amtrak-blue-500 hover:text-amtrak-blue-400 font-semibold"
+        className="text-amtrak-blue-500 hover:text-amtrak-blue-400 cursor-pointer font-semibold"
         onClick={clearFilters}
       >
         Clear

@@ -201,7 +201,15 @@ export const getTrainMeta = (train: Train): TrainMeta => {
     return meta // unknown status code
   }
   meta.delay = stop.arrival.delay
-  meta.code = meta.delay > 0 ? TimeStatus.DELAYED : TimeStatus.ON_TIME
+
+  // determine if train should be marked as delayed
+  const isLongHaul =
+    new Date(meta.lastStop.arrival.time).getTime() -
+      new Date(meta.firstStop.departure.time).getTime() >
+    43200 * 1000 // 12 hours
+  const delayThreshold = isLongHaul ? 10 : 5 // minutes
+  meta.code =
+    meta.delay > delayThreshold ? TimeStatus.DELAYED : TimeStatus.ON_TIME
   return meta
 }
 
