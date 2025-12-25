@@ -23,10 +23,16 @@ function TrainLabel({
   number,
   isSelected,
   navigateToTrain,
+  skipAnimation,
 }: TrainLabelProps) {
   const markerRef = useRef<MarkerType>(null)
   // Pass heading=0 since label shouldn't rotate
-  const animPosition = useAnimatedPosition(coordinates, 0, TRAIN_UPDATE_FREQ)
+  const animPosition = useAnimatedPosition(
+    coordinates,
+    0,
+    TRAIN_UPDATE_FREQ,
+    skipAnimation,
+  )
 
   // Extract primitive values so they can be used as effect dependencies
   const lng = coordinates?.[0]
@@ -49,6 +55,9 @@ function TrainLabel({
     <Marker
       longitude={animPosition.coordinates[0]}
       latitude={animPosition.coordinates[1]}
+      // apply a very slight rotation to force Firefox to render subpixel `translate`
+      // values
+      rotation={0.1}
       ref={markerRef}
       onClick={() => navigateToTrain(id)}
       className="cursor-pointer p-2"
@@ -61,7 +70,7 @@ function TrainLabel({
     >
       <span
         className={cn(
-          'rounded-full border border-white/50 px-2 py-[0.1em] text-sm font-medium backdrop-blur-xs',
+          'rounded-full border border-white/50 px-2 py-[0.1em] text-sm font-medium brightness-110 backdrop-blur-xs',
           isSelected ? 'bg-amtrak-bright-blue-400 text-white' : 'bg-white/75',
         )}
       >

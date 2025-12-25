@@ -23,12 +23,14 @@ function TrainMarker({
   zoom,
   isSelected,
   navigateToTrain,
+  skipAnimation,
 }: TrainMarkerProps) {
   const markerRef = useRef<MarkerType>(null)
   const animPosition = useAnimatedPosition(
     coordinates,
     heading,
     TRAIN_UPDATE_FREQ,
+    skipAnimation,
   )
 
   // Extract primitive values so they can be used as effect dependencies

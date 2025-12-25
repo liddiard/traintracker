@@ -36,6 +36,9 @@ function TrainGPS({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
       <Marker
         longitude={lon}
         latitude={lat}
+        // apply a very slight rotation to force Firefox to render subpixel `translate`
+        // values
+        rotation={0.1}
         anchor="center"
         ref={markerRef}
         className="cursor-default mix-blend-hard-light"

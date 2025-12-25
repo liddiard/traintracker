@@ -104,6 +104,8 @@ export interface TrainFeatureProperties extends Omit<
   gpsCoordinates: [number, number] | null
   lastUpdatedStr: string
   shortcode: string
+  isExtrapolated: boolean
+  skipAnimation: boolean
 }
 
 type TrainSearchKeys = 'from' | 'to' | 'trainNumber' | 'trainName'

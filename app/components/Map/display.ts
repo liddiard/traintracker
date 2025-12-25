@@ -150,7 +150,7 @@ const createTrainFeature = (
   // snapped/extrapolated by this function), otherwise use raw GPS coordinates
   const prevCoords = prevTrain?.geometry.coordinates ?? train.coordinates
 
-  let coordinates, heading
+  let coordinates, heading, isExtrapolated
   // if the map is zoomed in enough that we care about showing the train
   // exactly on the track with heading, and the train is in the current map
   // viewport, calculate its snapped position
@@ -171,12 +171,27 @@ const createTrainFeature = (
       extrapolated?.point.geometry.coordinates ??
       lastPosition.point?.geometry.coordinates
     heading = extrapolated?.heading
+    isExtrapolated = true
   }
   // train is outside the map viewport or we're zoomed far out; just return
   // its raw GPS position
   else {
     coordinates = prevCoords
+    isExtrapolated = false
   }
+
+  // detect if GPS coordinates changed (new data from API)
+  const gpsChanged = prevTrain
+    ? prevTrain.properties.gpsCoordinates?.[0] !== train.coordinates?.[0] ||
+      prevTrain.properties.gpsCoordinates?.[1] !== train.coordinates?.[1]
+    : false
+
+  // detect if rendering mode changed (GPS position → extrapolated or vice versa)
+  const wasExtrapolated = prevTrain?.properties.isExtrapolated ?? false
+  const modeChanged = prevTrain ? wasExtrapolated !== isExtrapolated : false
+
+  // skip marker animation on first render, GPS update, or mode switch
+  const skipAnimation = !prevTrain || gpsChanged || modeChanged
 
   return {
     type: 'Feature',
@@ -200,6 +215,8 @@ const createTrainFeature = (
             shortenMins: true,
           })
         : '',
+      isExtrapolated,
+      skipAnimation,
     },
   }
 }

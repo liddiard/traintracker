@@ -22,12 +22,14 @@ export interface AnimatedPosition {
  * @param coordinates - Target coordinates [lng, lat]
  * @param heading - Target heading in degrees (optional, defaults to 0)
  * @param duration - Animation duration in ms
+ * @param skipAnimation - If true, immediately jump to new position without animating
  * @returns Current animated position, or null if no coordinates provided yet
  */
 export const useAnimatedPosition = (
   coordinates: [number, number] | null,
   heading: number = 0,
   duration: number,
+  skipAnimation: boolean = false,
 ): AnimatedPosition | null => {
   const [animPosition, setAnimPosition] = useState<AnimatedPosition | null>(
     null,
@@ -47,6 +49,18 @@ export const useAnimatedPosition = (
     // If we don't have an animated position yet, initialize without animating
     if (!animPosition) {
       setAnimPosition({ coordinates, heading })
+      return
+    }
+
+    // If skipAnimation is true, jump immediately without animating
+    if (skipAnimation) {
+      if (animFrameId.current !== null) {
+        cancelAnimationFrame(animFrameId.current)
+        animFrameId.current = null
+      }
+      setAnimPosition({ coordinates, heading })
+      // Set fromPosition so next animation starts from here
+      fromPosition.current = { coordinates, heading }
       return
     }
 
@@ -116,7 +130,7 @@ export const useAnimatedPosition = (
     }
     // Only re-run when the actual coordinate values change, not on every render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coordinates?.[0], coordinates?.[1], heading, duration])
+  }, [coordinates?.[0], coordinates?.[1], heading, duration, skipAnimation])
 
   return animPosition
 }
