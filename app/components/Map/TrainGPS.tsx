@@ -27,10 +27,11 @@ function TrainGPS({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
         longitude={lon}
         latitude={lat}
         anchor="center"
+        subpixelPositioning={true}
         className="cursor-default mix-blend-hard-light"
       >
         <Crosshair
-          className="fill-amtrak-blue-600 h-6 w-6 animate-spin [animation-duration:20s]"
+          className="text-amtrak-blue-600 h-6 w-6 animate-spin [animation-duration:20s]"
           style={{
             scale: `clamp(0.5, ${zoom * 0.1}, 1)`,
           }}

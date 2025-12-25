@@ -1,5 +1,9 @@
 'use client'
 
+import cn from 'classnames'
+import { JSX } from 'react'
+import { notFound, useParams, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import {
   formatDate,
   formatDuration,
@@ -12,8 +16,6 @@ import {
   kmhToMph,
   headingToDirection,
 } from '@/app/utils'
-import cn from 'classnames'
-import { notFound, useParams, useSearchParams } from 'next/navigation'
 import StatusBadge from '@/app/components/StatusBadge'
 import CaretRight from '@/app/img/caret-right.svg'
 import Pie from '@/app/img/pie.svg'
@@ -25,8 +27,7 @@ import { useSettings } from '@/app/providers/settings'
 import CurrentSegment from '@/app/components/CurrentSegment'
 import { TimeStatus, Train, TrainMeta } from '@/app/types'
 import Timeline from '@/app/components/Timeline'
-import Link from 'next/link'
-import { JSX } from 'react'
+import Crosshair from '@/app/img/crosshair.svg'
 
 export default function TrainDetail() {
   const { operator, id } = useParams()
@@ -183,6 +184,26 @@ export default function TrainDetail() {
         {renderTrainVelocity(train, trainMeta)}
       </div>
 
+      <div className="flex justify-center gap-2">
+        <label
+          className={cn(
+            'flex cursor-pointer items-center gap-[0.4em] rounded-full border px-4 py-2 text-sm font-semibold transition-colors duration-500',
+            {
+              'border-white/50': !follow,
+              'dark:text-amtrak-yellow-200 border-amtrak-yellow-200/50': follow,
+            },
+          )}
+        >
+          <input
+            type="checkbox"
+            checked={follow}
+            onChange={() => updateSetting('follow', !follow)}
+            className="hidden"
+          />
+          <Crosshair className="inline h-4 w-4" /> Follow on Map
+        </label>
+      </div>
+
       <CurrentSegment trainMeta={trainMeta} />
 
       <div className="flex flex-col gap-2">
@@ -224,17 +245,6 @@ export default function TrainDetail() {
             Its current location is estimated.
           </span>
         )}
-      </div>
-
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            checked={follow}
-            onChange={() => updateSetting('follow', !follow)}
-          />
-          Follow on map
-        </label>
       </div>
 
       <Timeline stops={train.stops} trainMeta={trainMeta} />
