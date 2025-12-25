@@ -26,10 +26,11 @@ const selectTheme = (theme: Theme) =>
     ...theme,
     colors: {
       ...theme.colors,
-      primary: 'rgba(22, 126, 166, 1)',
-      primary25: 'rgba(22, 126, 166, 0.25)',
-      primary50: 'rgba(22, 126, 166, 0.5)',
-      primary75: 'rgba(22, 126, 166, 0.75)',
+      // matches the Tailwind color definition for `amtrak-blue-200`
+      primary: 'rgba(111, 203, 245, 1)',
+      primary25: 'rgba(111, 203, 245, 0.25)',
+      primary50: 'rgba(111, 203, 245, 0.5)',
+      primary75: 'rgba(111, 203, 245, 0.75)',
     },
   }) as Theme
 
