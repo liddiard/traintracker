@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import cn from 'classnames'
-import { Stop } from '../types'
+import { Stop, NotificationType } from '../types'
 import { classNames } from '../constants'
 import {
   dayDiffers,
@@ -10,15 +10,26 @@ import {
   getScheduledTime,
 } from '../utils'
 import { useSettings } from '../providers/settings'
+import NotificationButton from './NotificationButton'
 
 function TimelineSegment({
   stops,
   index,
   height,
+  trainId,
+  activeSubscriptions,
+  onSubscriptionChange,
 }: {
   stops: Stop[]
   index: number
   height: number
+  trainId: string
+  activeSubscriptions: Set<string>
+  onSubscriptionChange: (
+    stopCode: string,
+    notificationType: NotificationType,
+    isSubscribed: boolean,
+  ) => void
 }) {
   const { settings } = useSettings()
   const { timeFormat, timeZone } = settings
@@ -28,7 +39,7 @@ function TimelineSegment({
   const { delay } = arrival
   const formatTimeOptions = {
     tz: timeZone === 'local' ? stop.timezone : undefined,
-    _24hr: timeFormat === '24hr',
+    timeFormat,
   }
 
   const renderDayLine = () => {
@@ -89,8 +100,16 @@ function TimelineSegment({
         ) : null}
       </div>
       <div className="z-10 mx-0.5 my-1 aspect-square w-3 rounded-full bg-white" />
-      <div className="leading-snug">
+      <div className="flex items-start gap-1 leading-snug">
         <span className="block font-semibold text-balance">{name}</span>
+        <NotificationButton
+          trainId={trainId}
+          stopCode={code}
+          stopName={name}
+          hasDeparted={stop.departure.time < new Date()}
+          activeSubscriptions={activeSubscriptions}
+          onSubscriptionChange={onSubscriptionChange}
+        />
         {/* {platform && <span className="block">Platform {platform}</span>} */}
       </div>
     </Fragment>

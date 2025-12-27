@@ -100,7 +100,7 @@ const determineTrainStatus = (stops: Stop[]): TrainStatus => {
  * @returns The estimated speed in km/h, or null if speed cannot be calculated
  */
 const calculateSpeed = (
-  trainCoordinates: [number, number] | null,
+  trainCoordinates: number[] | null,
   stops: Stop[],
 ): number | null => {
   if (!trainCoordinates) {
@@ -155,7 +155,7 @@ const processTrain = (
   const { timestamp, position } = train.vehicle
   const { longitude, latitude } = position || {}
   const stops = (trip?.tripUpdate?.stopTimeUpdate || []).map(processStop)
-  const coordinates: [number, number] | null =
+  const coordinates: number[] | null =
     longitude && latitude ? [longitude, latitude] : null
 
   const status = determineTrainStatus(stops)

@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum NotificationType {
+  arrival
+  departure
+}
+
+enum TimeFormat {
+  hr12
+  hr24
+}
+
+model PushSubscription {
+  id               String           @id @default(cuid())
+  endpoint         String           // Browser-provided notification endpoint URL
+  p256dh           String           // Encryption key
+  auth             String           // Auth secret
+
+  trainId          String           // e.g., "amtrak/97"
+  stopCode         String           // e.g., "NYP"
+  notificationType NotificationType // arrival | departure
+  timeFormat       TimeFormat       // hr12 | hr24
+
+  sent             Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+
+  @@unique([endpoint, trainId, stopCode, notificationType])
+  @@index([trainId, sent])
+  @@index([endpoint])
+}

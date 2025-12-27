@@ -11,7 +11,7 @@ export interface Train {
   number: string
   status: TrainStatus
   alerts: string[]
-  coordinates: [number, number] | null // [lon, lat] per GeoJSON spec
+  coordinates: number[] | null // [lon, lat] per GeoJSON spec
   speed: number | null
   heading: number | null
   stops: Stop[]
@@ -61,7 +61,7 @@ export interface Station {
   code: string
   name: string
   timezone: string
-  coordinates: [number, number] // [lon, lat] per GeoJSON spec
+  coordinates: number[] // [lon, lat] per GeoJSON spec
 }
 
 export type StationResponse = Record<string, Station>
@@ -101,7 +101,7 @@ export interface TrainFeatureProperties extends Omit<
   'status' | 'alerts' | 'stops' | 'coordinates'
 > {
   color?: string
-  gpsCoordinates: [number, number] | null
+  gpsCoordinates: number[] | null
   lastUpdatedStr: string
   shortcode: string
   isExtrapolated: boolean
@@ -124,8 +124,9 @@ export enum InputType {
 export type MapStyle = 'gray' | 'simple' | 'detailed'
 export type ColorMode = 'auto' | 'light' | 'dark'
 export type Units = 'miles' | 'kilometers'
-export type TimeFormat = '12hr' | '24hr'
+export type TimeFormat = 'hr12' | 'hr24'
 export type TimeZone = 'local' | 'device'
+export type Follow = boolean
 
 export interface Settings {
   mapStyle: MapStyle
@@ -133,10 +134,16 @@ export interface Settings {
   units: Units
   timeFormat: TimeFormat
   timeZone: TimeZone
-  follow: boolean
+  follow: Follow
 }
 
-export type SettingValue = MapStyle | ColorMode | Units | TimeFormat | TimeZone
+export type SettingValue =
+  | MapStyle
+  | ColorMode
+  | Units
+  | TimeFormat
+  | TimeZone
+  | Follow
 
 export interface SettingOption {
   label: string
@@ -153,4 +160,31 @@ export interface SettingConfig {
     isSelected: boolean,
     onChange: (value: SettingValue) => void,
   ) => ReactNode
+}
+
+// Web Push Notification Types
+export interface NotificationPayload {
+  title: string
+  body: string
+  icon: string
+  badge: string
+  tag: string
+  data: {
+    url: string
+    trainId: string
+    stopCode: string
+  }
+  actions: Array<{
+    action: string
+    title: string
+  }>
+}
+
+// Import and re-export Prisma enum for convenience
+import type { NotificationType } from '@/db/generated/enums'
+export { NotificationType } from '@/db/generated/enums'
+
+export interface ActiveSubscription {
+  stopCode: string
+  notificationType: NotificationType
 }

@@ -31,7 +31,10 @@ function CurrentSegment({ trainMeta }: CurrentSegmentProps) {
     // train is at a station waiting to depart
     segmentStartStation = curStop
     segmentEndStation = nextStop
-    label = `Departing in ${formatDuration(minsToDeparture)}`
+    label =
+      Math.floor(minsToDeparture) > 0
+        ? `Departing in ${formatDuration(minsToDeparture)}`
+        : 'Departing now'
   } else if (minsToArrival) {
     // train is enroute between stations
     segmentStartStation = prevStop

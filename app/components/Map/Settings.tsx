@@ -43,8 +43,8 @@ function MapSettings() {
   ]
 
   const timeFormatOptions: { value: TimeFormat; label: string }[] = [
-    { value: '12hr', label: '12-hour' },
-    { value: '24hr', label: '24-hour' },
+    { value: 'hr12', label: '12-hour' },
+    { value: 'hr24', label: '24-hour' },
   ]
 
   const timeZoneOptions: { value: TimeZone; label: string }[] = [
@@ -71,7 +71,9 @@ function MapSettings() {
             <input
               type="radio"
               name="mapStyle"
-              value={option.value}
+              // `settings.follow` is a boolean, but it is not rendered in MapSettings.
+              // all values shown here should be strings
+              value={option.value as string}
               checked={isSelected}
               onChange={() => onChange(option.value)}
               className="sr-only"
@@ -135,7 +137,7 @@ function MapSettings() {
   }) => (
     <Fragment key={config.key}>
       <span className="font-semibold">{config.label}</span>
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
         {config.options.map((option) => {
           const isSelected = config.value === option.value
           const handleChange = (value: Settings[T]) =>
@@ -170,13 +172,13 @@ function MapSettings() {
   )
 
   const renderSettings = () => (
-    <div className="dark:bg-positron-gray-700 mb-1 grid grid-cols-[max-content_max-content] gap-2 rounded-md bg-white p-4 shadow-md dark:text-white">
+    <div className="dark:bg-positron-gray-700 mb-1 grid max-w-full grid-cols-[max-content_minmax(0,1fr)] gap-2 rounded-md bg-white p-4 shadow-md dark:text-white">
       {settingsConfig.map((config) => renderRadioGroup(config))}
     </div>
   )
 
   return (
-    <div className="absolute bottom-0 left-0 z-10 m-2">
+    <div className="absolute bottom-0 left-0 z-1 m-2">
       {open && renderSettings()}
       <button
         onClick={() => setOpen(!open)}
@@ -188,7 +190,7 @@ function MapSettings() {
         )}
       >
         {open ? (
-          <XIcon className="w-4 fill-white" />
+          <XIcon className="w-4 fill-white" alt="Close" />
         ) : (
           <GearIcon className="w-4 dark:fill-white" />
         )}

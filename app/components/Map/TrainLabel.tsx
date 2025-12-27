@@ -7,7 +7,7 @@ import { DETAIL_ZOOM_LEVEL, TRAIN_UPDATE_FREQ } from './constants'
 import { useAnimatedPosition } from '../hooks'
 
 interface TrainLabelProps extends TrainFeatureProperties {
-  coordinates: [number, number] | null
+  coordinates: number[] | null
   zoom: number
   navigateToTrain: (trainID: string) => void
   name: string
@@ -65,13 +65,15 @@ function TrainLabel({
       offset={[6, 0]}
       style={{
         // 1 layer above the TrainMarker
-        zIndex: isSelected ? 2 : 'unset',
+        zIndex: isSelected ? 1 : 'unset',
       }}
     >
       <span
         className={cn(
-          'rounded-full border border-white/50 px-2 py-[0.1em] text-sm font-medium brightness-110 backdrop-blur-xs',
-          isSelected ? 'bg-amtrak-blue-500/75 text-white' : 'bg-white/35',
+          'rounded-full px-2 py-[0.1em] text-sm font-medium brightness-110 backdrop-blur-xs',
+          isSelected
+            ? 'bg-amtrak-bright-blue-400 text-white'
+            : 'border border-white/50 bg-white/35',
         )}
       >
         {name}

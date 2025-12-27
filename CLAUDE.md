@@ -8,7 +8,7 @@ This is a Next.js application that tracks and visualizes real-time Amtrak, VIA R
 
 ## General instructions
 
-Always use context7 when I need code generation, setup or configuration steps, or library/API documentation related to the following packages: Turf.js, TailwindCSS, Maplibre GL JS, React Map GL, and Next.js. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
+Always use context7 when I need code generation, setup or configuration steps, or library/API documentation related to the following packages: Turf.js, TailwindCSS, Maplibre GL JS, React Map GL, Prisma, Web Push, and Next.js. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
 
 ## Development Commands
 
@@ -52,6 +52,17 @@ npm run lint
 3. **Train Context Provider** (`app/providers/train.tsx`): Polls train data every 15 seconds and provides it to the app
 4. **Settings Context Provider** (`app/providers/settings.tsx`): Manages user settings (map style, color theme, units, time format, timezone) with localStorage persistence
 
+### Database & ORM
+
+The app uses **Prisma** as the ORM with a **SQLite** database for storing push notification subscriptions.
+
+- **Schema** (`db/schema.prisma`): Defines the `PushSubscription` model with web push credentials, train/stop identifiers, and notification preferences
+- **Client** (`app/lib/prisma.ts`): Singleton Prisma client instance with connection pooling
+- **Migrations**: Located in `db/migrations/` - Prisma manages schema changes
+- **Database file**: `db/app.db` (gitignored, auto-created on first run)
+
+The database is queried by the notification API endpoints and the background polling system to manage subscription state.
+
 ### Map System (`app/components/Map/`)
 
 The map visualization system is the core feature and has several interconnected parts:
@@ -94,6 +105,46 @@ The Amtrak data endpoint is encrypted. The `decrypt` function:
 1. Derives AES key using PBKDF2 with hardcoded salt and public key
 2. Decrypts train data and private key from response
 3. Returns JSON train data
+
+### Push Notification System
+
+The app supports web push notifications for train arrival and departure alerts. The system consists of server-side polling, a RESTful API, and client-side service worker integration.
+
+**Architecture:**
+
+- **Background Polling** (`app/lib/notifications.ts`): Server-side polling system that checks train status every 30 seconds
+  - Queries active (unsent) subscriptions from database
+  - Fetches current train data and compares with scheduled times
+  - Sends push notifications 5 minutes before arrival/departure
+  - Marks subscriptions as `sent: true` after sending to prevent duplicates
+
+- **Notification API** (`app/api/notifications/route.ts`): RESTful endpoint using HTTP methods
+  - `GET` - Check active subscriptions for a device + train (query params: `endpoint`, `trainId`)
+  - `POST` - Create new subscription (body: `subscription`, `trainId`, `stopCode`, `notificationType`, `timeFormat`)
+  - `DELETE` - Remove subscription (body: `endpoint`, `trainId`, `stopCode`, `notificationType`)
+  - Enforces 20 subscription limit per device
+
+- **Service Worker** (`public/service-worker.js`): Handles push events in the browser background
+  - Registered on app load via `ServiceWorkerRegistration` component
+  - Receives push notifications and displays them to the user
+  - Works even when the browser tab is not active
+
+- **Frontend Integration** (`app/components/NotificationButton.tsx`, `app/components/NotificationDialog.tsx`):
+  - Bell icon on timeline stops allows subscribing to arrival/departure notifications
+  - Uses `useNotifications` hook to manage permissions and subscriptions
+  - Visual feedback (yellow bell) indicates active notifications
+
+**Configuration:**
+
+- Requires VAPID keys for web push authentication (stored in environment variables)
+- `ENABLE_NOTIFICATIONS` env var enables polling in development mode
+- Notification timing threshold is 5 minutes before scheduled arrival/departure
+
+**Key Types:**
+
+- `NotificationType`: 'arrival' | 'departure'
+- `ActiveSubscription`: Minimal subscription data returned to frontend (stopCode, notificationType)
+- `PushSubscription` (Prisma model): Full subscription record with web push credentials
 
 ## Configuration Notes
 

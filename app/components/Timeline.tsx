@@ -1,6 +1,12 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cn from 'classnames'
-import { Stop, TrainMeta } from '../types'
+import {
+  ActiveSubscription,
+  Stop,
+  NotificationType,
+  Train,
+  TrainMeta,
+} from '../types'
 import {
   getCurrentSegmentProgress,
   getScheduledTime,
@@ -10,6 +16,7 @@ import {
 import Progress from './Progress'
 import TimelineSegment from './TimelineSegment'
 import { classNames, MIN_PROGRESS_PX } from '../constants'
+import { useNotifications } from './hooks'
 
 const MIN_SEGMENT_HEIGHT = 60
 const MAX_SEGMENT_HEIGHT = 150
@@ -17,12 +24,50 @@ const MAX_SEGMENT_HEIGHT = 150
 function Timeline({
   stops,
   trainMeta,
+  train,
 }: {
   stops: Stop[]
   trainMeta: TrainMeta
+  train: Train
 }) {
   const { prevStop, curStop } = trainMeta
+  const [activeSubscriptions, setActiveSubscriptions] = useState<Set<string>>(
+    new Set(),
+  )
+  const { isSupported, getActiveSubscriptions } = useNotifications()
 
+  // get notification subscriptions for the train
+  useEffect(() => {
+    if (!isSupported) return
+    getActiveSubscriptions(train.id).then((subs: ActiveSubscription[]) => {
+      const keys = subs.map((s) => `${s.stopCode}-${s.notificationType}`)
+      setActiveSubscriptions(new Set(keys))
+    })
+  }, [train.id, isSupported, getActiveSubscriptions])
+
+  // update subscriptions via API when child components subscribe/unsubscribe
+  const handleSubscriptionChange = useCallback(
+    (
+      stopCode: string,
+      notificationType: NotificationType,
+      isSubscribed: boolean,
+    ) => {
+      const subKey = `${stopCode}-${notificationType}`
+      setActiveSubscriptions((prev) => {
+        const next = new Set(prev)
+        if (isSubscribed) {
+          next.add(subKey)
+        } else {
+          next.delete(subKey)
+        }
+        return next
+      })
+    },
+    [],
+  )
+
+  // get the longest and shortest segments of this train route, to be used in timeline
+  // segment height calculation
   const segmentDurations = useMemo(
     () => ({
       max: getSegmentDurationMinMax(stops, Math.max),
@@ -122,6 +167,9 @@ function Timeline({
             stops={stops}
             index={idx}
             height={segmentHeights[idx]}
+            trainId={train.id}
+            activeSubscriptions={activeSubscriptions}
+            onSubscriptionChange={handleSubscriptionChange}
             key={idx}
           />
         ))}

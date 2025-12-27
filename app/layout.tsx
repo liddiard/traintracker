@@ -8,6 +8,7 @@ import { formatTrainResponse } from './utils'
 import { getServerSettings } from './settings'
 import { TrainProvider } from './providers/train'
 import { SettingsProvider } from './providers/settings'
+import ServiceWorkerRegistration from './components/ServiceWorkerRegistration'
 import { Station } from './types'
 import { inter } from './constants'
 
@@ -55,6 +56,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <ServiceWorkerRegistration />
         <SettingsProvider initialSettings={settings}>
           <TrainProvider initialTrains={trains} stations={stations}>
             <div className="flex h-screen flex-wrap md:flex-nowrap">

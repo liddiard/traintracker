@@ -8,8 +8,8 @@ import { DETAIL_ZOOM_LEVEL, TRAIN_UPDATE_FREQ } from './constants'
 import { useAnimatedPosition } from '../hooks'
 
 interface TrainMarkerProps extends TrainFeatureProperties {
-  coordinates: [number, number] | null
-  heading: number
+  coordinates: number[] | null
+  heading: number | null
   zoom: number
   isSelected: boolean
   navigateToTrain: (trainID: string) => void
@@ -45,7 +45,7 @@ function TrainMarker({
       return
     }
     markerRef.current?.setSubpixelPositioning(true)
-  }, [lng, lat, heading])
+  }, [lng, lat])
 
   const sharedStyles = {
     scale: `clamp(0.5, ${0.5 + zoom * 0.1}, 1.75)`,

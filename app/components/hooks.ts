@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import type { ActiveSubscription, NotificationType } from '@/app/types'
+import { useSettings } from '../providers/settings'
+import { urlBase64ToUint8Array } from '../utils'
 
 // access the previous value of a prop inside a component
 // https://stackoverflow.com/a/57706747
@@ -12,8 +15,8 @@ export const usePrevious = <T>(value: T): T | null => {
 }
 
 export interface AnimatedPosition {
-  coordinates: [number, number]
-  heading: number
+  coordinates: number[]
+  heading: number | null
 }
 
 /**
@@ -26,8 +29,8 @@ export interface AnimatedPosition {
  * @returns Current animated position, or null if no coordinates provided yet
  */
 export const useAnimatedPosition = (
-  coordinates: [number, number] | null,
-  heading: number = 0,
+  coordinates: number[] | null,
+  heading: number | null,
   duration: number,
   skipAnimation: boolean = false,
 ): AnimatedPosition | null => {
@@ -106,14 +109,14 @@ export const useAnimatedPosition = (
       // Calculate interpolated position
       const dx = to.coordinates[0] - from.coordinates[0]
       const dy = to.coordinates[1] - from.coordinates[1]
-      const dr = to.heading - from.heading
+      const dr = to.heading && from.heading ? to.heading - from.heading : 0
 
       setAnimPosition({
         coordinates: [
           from.coordinates[0] + dx * progress,
           from.coordinates[1] + dy * progress,
         ],
-        heading: from.heading + dr * progress,
+        heading: (from.heading ?? 0) + dr * progress,
       })
 
       animFrameId.current = requestAnimationFrame(animate)
@@ -133,4 +136,120 @@ export const useAnimatedPosition = (
   }, [coordinates?.[0], coordinates?.[1], heading, duration, skipAnimation])
 
   return animPosition
+}
+
+// Push notifications manager
+export const useNotifications = () => {
+  // check support on initial render
+  const isSupported =
+    typeof window !== 'undefined' &&
+    'Notification' in window &&
+    'serviceWorker' in navigator &&
+    'PushManager' in window
+
+  // whether or not the user has granted notification permissio
+  const [permission, setPermission] = useState<NotificationPermission>(() => {
+    if (isSupported && typeof Notification !== 'undefined') {
+      return Notification.permission
+    }
+    return 'default'
+  })
+
+  const { settings } = useSettings()
+  const { timeFormat } = settings
+
+  const requestPermission = useCallback(async () => {
+    const result = await Notification.requestPermission()
+    setPermission(result)
+    return result === 'granted'
+  }, [])
+
+  // create a push notification subscription
+  const subscribe = useCallback(
+    async (trainId: string, stopCode: string, type: NotificationType) => {
+      const registration = await navigator.serviceWorker.ready
+
+      // get VAPID public key
+      const { publicKey } = await fetch('/api/notifications/vapid-key').then(
+        (r) => r.json(),
+      )
+
+      // create subscription
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey),
+      })
+
+      // send to server
+      const response = await fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subscription: subscription.toJSON(),
+          trainId,
+          stopCode,
+          notificationType: type,
+          timeFormat,
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to subscribe')
+      }
+    },
+    [timeFormat],
+  )
+
+  // delete a push notification subscription
+  const unsubscribe = useCallback(
+    async (trainId: string, stopCode: string, type: NotificationType) => {
+      const registration = await navigator.serviceWorker.ready
+      const subscription = await registration.pushManager.getSubscription()
+
+      if (!subscription) return
+
+      await fetch('/api/notifications', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          endpoint: subscription.endpoint,
+          trainId,
+          stopCode,
+          notificationType: type,
+        }),
+      })
+    },
+    [],
+  )
+
+  // get notification subscriptions for current device + train
+  const getActiveSubscriptions = useCallback(
+    async (trainId: string): Promise<ActiveSubscription[]> => {
+      const registration = await navigator.serviceWorker.ready
+      const subscription = await registration.pushManager.getSubscription()
+
+      if (!subscription) return []
+
+      const params = new URLSearchParams({
+        endpoint: subscription.endpoint,
+        trainId,
+      })
+
+      const response = await fetch(`/api/notifications?${params}`)
+
+      const data = await response.json()
+      return data.subscriptions
+    },
+    [],
+  )
+
+  return {
+    permission,
+    isSupported,
+    requestPermission,
+    subscribe,
+    unsubscribe,
+    getActiveSubscriptions,
+  }
 }

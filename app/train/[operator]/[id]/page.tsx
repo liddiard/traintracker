@@ -67,7 +67,7 @@ export default function TrainDetail() {
       <time>
         {formatTime(date, {
           tz: timeZone === 'local' ? tz : undefined,
-          _24hr: timeFormat === '24hr',
+          timeFormat,
         })}
         {' '}
         {formatDate(date, timeZone === 'local' ? tz : undefined)}
@@ -192,7 +192,8 @@ export default function TrainDetail() {
             'flex cursor-pointer items-center gap-[0.4em] rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors duration-300',
             {
               [classNames.sectionSeparator]: !follow,
-              'border-amtrak-yellow-200 bg-amtrak-yellow-100/50': follow,
+              'border-amtrak-yellow-200 bg-amtrak-yellow-100/50 dark:bg-amtrak-yellow-100/20':
+                follow,
             },
           )}
         >
@@ -221,8 +222,7 @@ export default function TrainDetail() {
                   isStaleData,
               })}
             >
-              {train.updated &&
-                formatTime(train.updated, { _24hr: timeFormat === '24hr' })}
+              {train.updated && formatTime(train.updated, { timeFormat })}
             </time>
             {isStaleData && (
               <Warning
@@ -247,7 +247,7 @@ export default function TrainDetail() {
         )}
       </div>
 
-      <Timeline stops={train.stops} trainMeta={trainMeta} />
+      <Timeline stops={train.stops} trainMeta={trainMeta} train={train} />
     </div>
   )
 }

@@ -107,7 +107,7 @@ const processTrain = (
   return {
     updated: amtrakParseDate(properties.updated_at, {
       tzCode: 'E', // "Updated" times seem to always been in Eastern Time
-      _24hr: false,
+      hr24: false,
     }),
     id: `amtrak/${properties.OBJECTID.toString()}`,
     name: processRouteName(properties.RouteName),
