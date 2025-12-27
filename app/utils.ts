@@ -534,7 +534,7 @@ export const getTrainShortcode = ({ name, number }: Train) =>
  * Gets the coordinates for a station by its code.
  * @param {string} code The station code.
  * @param {Station[]} stations The list of stations to search.
- * @returns {[number, number] | undefined} The station's [lat, lon] coordinates, or undefined if not found.
+ * @returns {number[] | undefined} The station's [lat, lon] coordinates, or undefined if not found.
  */
 export const getStopCoordinates = (code: string, stations: Station[]) =>
   stations.find((s) => s.code === code)?.coordinates ?? null

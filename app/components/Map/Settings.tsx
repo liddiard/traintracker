@@ -71,7 +71,9 @@ function MapSettings() {
             <input
               type="radio"
               name="mapStyle"
-              value={option.value}
+              // `settings.follow` is a boolean, but it is not rendered in MapSettings.
+              // all values shown here should be strings
+              value={option.value as string}
               checked={isSelected}
               onChange={() => onChange(option.value)}
               className="sr-only"

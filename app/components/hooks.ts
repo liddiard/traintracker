@@ -15,8 +15,8 @@ export const usePrevious = <T>(value: T): T | null => {
 }
 
 export interface AnimatedPosition {
-  coordinates: [number, number]
-  heading: number
+  coordinates: number[]
+  heading: number | null
 }
 
 /**
@@ -29,8 +29,8 @@ export interface AnimatedPosition {
  * @returns Current animated position, or null if no coordinates provided yet
  */
 export const useAnimatedPosition = (
-  coordinates: [number, number] | null,
-  heading: number = 0,
+  coordinates: number[] | null,
+  heading: number | null,
   duration: number,
   skipAnimation: boolean = false,
 ): AnimatedPosition | null => {
@@ -109,14 +109,14 @@ export const useAnimatedPosition = (
       // Calculate interpolated position
       const dx = to.coordinates[0] - from.coordinates[0]
       const dy = to.coordinates[1] - from.coordinates[1]
-      const dr = to.heading - from.heading
+      const dr = to.heading && from.heading ? to.heading - from.heading : 0
 
       setAnimPosition({
         coordinates: [
           from.coordinates[0] + dx * progress,
           from.coordinates[1] + dy * progress,
         ],
-        heading: from.heading + dr * progress,
+        heading: (from.heading ?? 0) + dr * progress,
       })
 
       animFrameId.current = requestAnimationFrame(animate)
