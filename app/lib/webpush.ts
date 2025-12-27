@@ -43,7 +43,7 @@ export async function sendPushNotification(
     const result = await webpush.sendNotification(
       pushSubscription,
       JSON.stringify(payload),
-      { TTL: 60 * 60 }, // attempt to send for 1 hour
+      { TTL: 60 * 60 }, // attempt to deliver for 1 hour
     )
     console.log(
       '[WebPush] Notification sent successfully, status:',
