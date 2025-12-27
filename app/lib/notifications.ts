@@ -130,7 +130,7 @@ let pollInterval: NodeJS.Timeout | null = null
 export function startPolling() {
   if (pollInterval) return
   console.log('[Notifications] Starting notification polling')
-  pollInterval = setInterval(pollAndNotify, 60 * 1000)
+  pollInterval = setInterval(pollAndNotify, 30 * 1000) // 30 seconds
   pollAndNotify() // run immediately
 }
 
