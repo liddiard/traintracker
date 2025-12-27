@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import cn from 'classnames'
 import { useNotifications } from '@/app/components/hooks'
 import { useTrains } from '@/app/providers/train'
@@ -33,7 +33,10 @@ export default function NotificationButton({
   const [showDialog, setShowDialog] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { trains } = useTrains()
-  const train = trains.find((t) => t.id === trainId)
+  const train = useMemo(
+    () => trains.find((t) => t.id === trainId),
+    [trains, trainId],
+  )
   const { permission, isSupported, requestPermission, subscribe, unsubscribe } =
     useNotifications()
 

@@ -1,7 +1,7 @@
 'use client'
 
 import cn from 'classnames'
-import { JSX } from 'react'
+import { JSX, useEffect, useMemo } from 'react'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -35,9 +35,14 @@ export default function TrainDetail() {
   const { trains } = useTrains()
   const { settings, updateSetting } = useSettings()
   const { timeFormat, timeZone, follow } = settings
-  const train = trains.find((t) => t.id === `${operator}/${id}`)
+  const train = useMemo(
+    () => trains.find((t) => t.id === `${operator}/${id}`),
+    [trains, operator, id],
+  )
 
-  if (!train) return notFound()
+  if (!train) {
+    return <h1>Not found</h1>
+  }
 
   const trainMeta = getTrainMeta(train)
 

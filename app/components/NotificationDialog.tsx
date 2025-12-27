@@ -9,7 +9,7 @@ import Bell from '@/app/img/bell.svg'
 import Info from '@/app/img/info.svg'
 import { classNames } from '../constants'
 import { getTrainMeta } from '../utils'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 interface NotificationDialogProps {
   stopName: string
@@ -29,7 +29,10 @@ export default function NotificationDialog({
   activeSubscriptions,
 }: NotificationDialogProps) {
   const { trains } = useTrains()
-  const train = trains.find((t) => t.id === trainId)
+  const train = useMemo(
+    () => trains.find((t) => t.id === trainId),
+    [trains, trainId],
+  )
   const [permissionRequested, setPermissionRequested] = useState(false)
 
   if (!train) return null
