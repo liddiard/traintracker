@@ -137,7 +137,7 @@ function MapSettings() {
   }) => (
     <Fragment key={config.key}>
       <span className="font-semibold">{config.label}</span>
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
         {config.options.map((option) => {
           const isSelected = config.value === option.value
           const handleChange = (value: Settings[T]) =>
@@ -172,7 +172,7 @@ function MapSettings() {
   )
 
   const renderSettings = () => (
-    <div className="dark:bg-positron-gray-700 mb-1 grid grid-cols-[max-content_max-content] gap-2 rounded-md bg-white p-4 shadow-md dark:text-white">
+    <div className="dark:bg-positron-gray-700 mb-1 grid max-w-full grid-cols-[max-content_minmax(0,1fr)] gap-2 rounded-md bg-white p-4 shadow-md dark:text-white">
       {settingsConfig.map((config) => renderRadioGroup(config))}
     </div>
   )
@@ -190,7 +190,7 @@ function MapSettings() {
         )}
       >
         {open ? (
-          <XIcon className="w-4 fill-white" />
+          <XIcon className="w-4 fill-white" alt="Close" />
         ) : (
           <GearIcon className="w-4 dark:fill-white" />
         )}
