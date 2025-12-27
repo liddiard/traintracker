@@ -22,7 +22,7 @@ enum TimeFormat {
 
 model PushSubscription {
   id               String           @id @default(cuid())
-  endpoint         String
+  endpoint         String           // Browser-provided notification endpoint URL
   p256dh           String           // Encryption key
   auth             String           // Auth secret
 
