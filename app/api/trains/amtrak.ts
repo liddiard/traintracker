@@ -109,7 +109,7 @@ const processTrain = (
       tzCode: 'E', // "Updated" times seem to always been in Eastern Time
       hr24: false,
     }),
-    id: `amtrak/${properties.OBJECTID.toString()}`,
+    id: `amtrak/${properties.ID.toString()}`,
     name: processRouteName(properties.RouteName),
     number: properties.TrainNum,
     status: properties.TrainState,
