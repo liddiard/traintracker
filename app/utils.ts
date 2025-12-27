@@ -8,6 +8,7 @@ import {
   Station,
   StopResponseItem,
   TrainMeta,
+  TimeFormat,
 } from './types'
 import { colors, TRAIN_SEARCH_PARAMS } from './constants'
 import { routeToCodeMap } from './components/Map/constants'
@@ -252,7 +253,7 @@ export const getOffset = (timeZone = 'UTC', date = new Date()) => {
 
 interface FormatTimeOptions {
   tz?: string
-  _24hr?: boolean
+  timeFormat?: TimeFormat
 }
 
 /**
@@ -264,15 +265,18 @@ interface FormatTimeOptions {
  * @param date - The date to format
  * @param options - The options object
  * @param options.tz - The timezone to format the date in (defaults to the user's current timezone)
- * @param options._24hr - Whether to use 24-hour format (defaults to false)
+ * @param options.hr24 - Whether to use 24-hour format (defaults to false)
  * @returns A string representation of the formatted date
  */
-export const formatTime = (date: Date, { tz, _24hr }: FormatTimeOptions) => {
+export const formatTime = (
+  date: Date,
+  { tz, timeFormat = 'hr12' }: FormatTimeOptions,
+) => {
   const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric',
     minute: 'numeric',
     timeZone: tz || Intl.DateTimeFormat().resolvedOptions().timeZone,
-    hour12: !_24hr,
+    hour12: timeFormat === 'hr12',
   }
   const parts = Intl.DateTimeFormat(
     Intl.DateTimeFormat().resolvedOptions().locale,
@@ -550,4 +554,21 @@ export const headingToDirection = (heading: number) => {
   // Each direction covers 45°, offset by half a segment (22.5°)
   const index = Math.floor((normalized + 22.5) / 45) % 8
   return directions[index]
+}
+
+/**
+ * Decodes a URL-safe base64 string into a Uint8Array.
+ *
+ * @param base64String The URL-safe base64 string to decode.
+ * @returns The decoded Uint8Array.
+ */
+export const urlBase64ToUint8Array = (base64String: string) => {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
 }

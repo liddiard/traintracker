@@ -8,7 +8,7 @@ This is a Next.js application that tracks and visualizes real-time Amtrak, VIA R
 
 ## General instructions
 
-Always use context7 when I need code generation, setup or configuration steps, or library/API documentation related to the following packages: Turf.js, TailwindCSS, Maplibre GL JS, React Map GL, and Next.js. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
+Always use context7 when I need code generation, setup or configuration steps, or library/API documentation related to the following packages: Turf.js, TailwindCSS, Maplibre GL JS, React Map GL, Prisma, Web Push, and Next.js. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
 
 ## Development Commands
 

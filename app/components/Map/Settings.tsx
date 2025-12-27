@@ -43,8 +43,8 @@ function MapSettings() {
   ]
 
   const timeFormatOptions: { value: TimeFormat; label: string }[] = [
-    { value: '12hr', label: '12-hour' },
-    { value: '24hr', label: '24-hour' },
+    { value: 'hr12', label: '12-hour' },
+    { value: 'hr24', label: '24-hour' },
   ]
 
   const timeZoneOptions: { value: TimeZone; label: string }[] = [
@@ -176,7 +176,7 @@ function MapSettings() {
   )
 
   return (
-    <div className="absolute bottom-0 left-0 z-10 m-2">
+    <div className="absolute bottom-0 left-0 z-1 m-2">
       {open && renderSettings()}
       <button
         onClick={() => setOpen(!open)}

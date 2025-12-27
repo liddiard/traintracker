@@ -192,7 +192,7 @@ function Map() {
 
   return (
     <div className="h-full w-full">
-      <header className="absolute top-0 left-0 z-10 flex w-full items-baseline gap-2 bg-linear-to-b from-white to-transparent px-2 pt-1 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
+      <header className="absolute top-0 left-0 z-1 flex w-full items-baseline gap-2 bg-linear-to-b from-white to-transparent px-2 pt-1 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
         <h1 className="text-xl font-bold">
           Train
           <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">

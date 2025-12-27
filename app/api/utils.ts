@@ -64,12 +64,12 @@ const amtrakTZCodeToTZDB: Record<AmtrakTZCode, string> = {
 
 export const amtrakParseDate = (
   dateStr: string,
-  { tzCode, _24hr = true }: { tzCode: AmtrakTZCode; _24hr?: boolean },
+  { tzCode, hr24 = true }: { tzCode: AmtrakTZCode; hr24?: boolean },
 ) => {
   // Amtrak API returns dates in two totally different formats, because of course it does:
-  // - 24hr: MM/DD/YYYY HH:MM:SS
-  // - 12hr: M/D/YYYY h:MM:SS AM/PM
-  const inputFormat = _24hr ? 'MM/dd/yyyy HH:mm:ss z' : 'M/d/yyyy h:mm:ss a z'
+  // - hr24: MM/DD/YYYY HH:MM:SS
+  // - hr12: M/D/YYYY h:MM:SS AM/PM
+  const inputFormat = hr24 ? 'MM/dd/yyyy HH:mm:ss z' : 'M/d/yyyy h:mm:ss a z'
   return DateTime.fromFormat(
     `${dateStr} ${amtrakTZCodeToTZDB[tzCode]}`,
     inputFormat,

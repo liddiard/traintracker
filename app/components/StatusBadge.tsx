@@ -49,14 +49,14 @@ function StatusBadge({
     ) {
       return formatTime(firstStop.departure.time, {
         tz: timeZone === 'local' ? firstStop.timezone : undefined,
-        _24hr: timeFormat === '24hr',
+        timeFormat,
       })
     } else if (code === TimeStatus.DELAYED) {
       return formatDuration(delay, { shortenMins: true })
     } else if (code === TimeStatus.COMPLETE) {
       return formatTime(lastStop.arrival.time, {
         tz: timeZone === 'local' ? lastStop.timezone : undefined,
-        _24hr: timeFormat === '24hr',
+        timeFormat,
       })
     }
   }

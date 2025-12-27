@@ -124,7 +124,7 @@ export enum InputType {
 export type MapStyle = 'gray' | 'simple' | 'detailed'
 export type ColorMode = 'auto' | 'light' | 'dark'
 export type Units = 'miles' | 'kilometers'
-export type TimeFormat = '12hr' | '24hr'
+export type TimeFormat = 'hr12' | 'hr24'
 export type TimeZone = 'local' | 'device'
 
 export interface Settings {
@@ -153,4 +153,31 @@ export interface SettingConfig {
     isSelected: boolean,
     onChange: (value: SettingValue) => void,
   ) => ReactNode
+}
+
+// Web Push Notification Types
+export interface NotificationPayload {
+  title: string
+  body: string
+  icon: string
+  badge: string
+  tag: string
+  data: {
+    url: string
+    trainId: string
+    stopCode: string
+  }
+  actions: Array<{
+    action: string
+    title: string
+  }>
+}
+
+// Import and re-export Prisma enum for convenience
+import type { NotificationType } from '@/db/generated/enums'
+export { NotificationType } from '@/db/generated/enums'
+
+export interface ActiveSubscription {
+  stopCode: string
+  notificationType: NotificationType
 }

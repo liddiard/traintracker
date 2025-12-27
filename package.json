@@ -8,18 +8,22 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "prisma generate"
   },
   "engines": {
     "node": "22",
     "npm": "11"
   },
   "dependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.2.0",
+    "@prisma/client": "^7.2.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@turf/turf": "^7.3.1",
     "classnames": "^2.5.1",
     "cookie": "^1.1.1",
     "culori": "^4.0.2",
+    "dotenv": "^17.2.3",
     "gtfs": "^4.18.2",
     "gtfs-realtime-bindings": "^1.1.1",
     "luxon": "^3.7.2",
@@ -29,17 +33,20 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-map-gl": "^8.1.0",
-    "react-select": "^5.10.2"
+    "react-select": "^5.10.2",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/cookie": "^0.6.0",
     "@types/culori": "^4.0.1",
     "@types/luxon": "^3.7.1",
-    "@types/node": "^24",
+    "@types/node": "^24.10.4",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
     "@typescript-eslint/eslint-plugin": "^8",
     "eslint": "~9.39",
     "eslint-config-next": "16.0.6",
@@ -50,6 +57,7 @@
     "postcss": "^8.5.6",
     "prettier": "^3.7.3",
     "prettier-plugin-tailwindcss": "^0.7.1",
+    "prisma": "^7.2.0",
     "raw-loader": "^4.0.2",
     "tailwindcss": "^4.1.17",
     "typescript": "^5"
