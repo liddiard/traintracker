@@ -41,10 +41,11 @@ import _amtrakTrack from '@/public/map_data/amtrak-track.json'
 import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
 import { sleep } from '@/app/utils'
-import { DETAIL_ZOOM_LEVEL, sourceId, TRAIN_UPDATE_FREQ } from './constants'
+import { sourceId, TRAIN_UPDATE_FREQ } from './constants'
 import TrainGPS from './TrainGPS'
 import TrainLabel from './TrainLabel'
 import MapSettings from './Settings'
+import Header from './Header'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
@@ -97,7 +98,6 @@ function Map() {
   )
 
   const updateTrains = useCallback(() => {
-    console.log('updateTrains', new Date())
     setTrainData((prevData) =>
       trainsToGeoJson(
         prevData,
@@ -144,7 +144,7 @@ function Map() {
       updateSetting('follow', false)
       // …fly to it on the map, zooming in if the map is far zoomed out
       const zoom = mapRef.current.getZoom()
-      const minFlyZoom = 8
+      const minFlyZoom = 9
       mapRef.current.flyTo({
         center: selectedTrain.geometry.coordinates as LngLatLike,
         zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
@@ -192,18 +192,7 @@ function Map() {
 
   return (
     <div className="h-full w-full">
-      <header className="absolute top-0 left-0 z-1 flex w-full items-baseline gap-2 bg-linear-to-b from-white to-transparent px-2 pt-1 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
-        <h1 className="text-xl font-bold">
-          Train
-          <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
-            Tracker
-          </span>
-        </h1>
-        <span>
-          Live tracking North America intercity passenger rail:
-          🇺🇸 Amtrak 🇨🇦 VIA Rail 🌴 Brightline
-        </span>
-      </header>
+      <Header />
       <MapGL
         ref={mapRef}
         initialViewState={initialViewState}
