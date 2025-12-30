@@ -28,11 +28,13 @@
     "gtfs-realtime-bindings": "^1.1.1",
     "luxon": "^3.7.2",
     "maplibre-gl": "^5.13.0",
+    "motion": "^12.23.26",
     "next": "^16.0.6",
     "papaparse": "^5.5.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-map-gl": "^8.1.0",
+    "react-modal-sheet": "^5.2.1",
     "react-select": "^5.10.2",
     "web-push": "^3.6.7"
   },

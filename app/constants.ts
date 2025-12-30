@@ -10,6 +10,9 @@ export const TRAIN_SEARCH_PARAMS = ['from', 'to', 'trainName', 'trainNumber']
 // max number of active push notification subscriptions allowed per device
 export const MAX_PUSH_SUBSCRIPTIONS = 10
 
+// at this number of pixels wide, switch to 1-column mobile lyout
+export const MOBILE_BREAKPOINT = 768
+
 // typeface
 export const inter = Inter({ subsets: ['latin'] })
 

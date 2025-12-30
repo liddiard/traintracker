@@ -1,0 +1,190 @@
+'use client'
+
+import { ReactNode, useRef, useEffect, useCallback, useState } from 'react'
+import { Sheet, useScrollPosition } from 'react-modal-sheet'
+import { MOBILE_BREAKPOINT } from '../constants'
+
+interface BottomSheetProps {
+  children: ReactNode
+}
+
+export default function BottomSheet({ children }: BottomSheetProps) {
+  const [isWideScreen, setIsWideScreen] = useState(
+    typeof window !== 'undefined' && window.innerWidth > MOBILE_BREAKPOINT,
+  )
+
+  // vertical coordinate of a swipe start gesture
+  const touchStartY = useRef<number | null>(null)
+
+  // Track whether we've decided to prevent scroll for the current gesture.
+  // null = undecided, true = prevent scroll, false = allow scroll
+  const preventScrollForGesture = useRef<boolean | null>(null)
+
+  // Allow react-modal-sheet to track the scroll position of our custom scroller
+  // https://github.com/Temzasse/react-modal-sheet/blob/main/src/hooks/use-scroll-position.ts
+  const { scrollRef, scrollPosition } = useScrollPosition({ isEnabled: true })
+
+  // Ref to attach non-passive event listeners and to access `scrollTop` in `useEffect`
+  // hook below without adding `scrollPosition` dependency
+  const scrollerRef = useRef<HTMLDivElement | null>(null)
+
+  // Track current snap point as a ref to avoid adding a dependency to `useEffect` hook
+  // below
+  const currentSnapRef = useRef<number>(2) // initial snap
+
+  // Combined ref callback
+  const setScrollerRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      scrollerRef.current = el
+      scrollRef(el)
+    },
+    [scrollRef],
+  )
+
+  // track window size to determine whether or not to render the bottom sheet
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setIsWideScreen(window.innerWidth > MOBILE_BREAKPOINT)
+    }
+    window.addEventListener('resize', handleWindowResize, { passive: true })
+    return () => {
+      window.removeEventListener('resize', handleWindowResize)
+    }
+  }, [])
+
+  // Attach non-passive touch event listeners because React's `onTouchMove` is passive
+  // and can't be changed, so preventDefault() doesn't work
+  // See:
+  // - https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#using_passive_listeners
+  // - https://github.com/facebook/react/issues/22794
+  useEffect(() => {
+    const scroller = scrollerRef.current
+    if (!scroller) return
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY
+      // Reset scroll-locking decision for new gesture - null means "not yet decided"
+      preventScrollForGesture.current = null
+    }
+
+    const handleTouchMove = (e: TouchEvent) => {
+      // If we've already decided to prevent scroll for this gesture,
+      // keep preventing it on every touchmove event
+      if (preventScrollForGesture.current) {
+        e.preventDefault()
+        return
+      }
+
+      // If we've decided to allow scroll, or if we didn't record a touchstart
+      // reference point, let the scroll happen
+      if (
+        preventScrollForGesture.current === false ||
+        touchStartY.current === null
+      ) {
+        return
+      }
+
+      const currentY = e.touches[0].clientY
+      const deltaY = currentY - touchStartY.current
+
+      // Wait for a minimum movement threshold before making a decision
+      // This prevents jittery behavior from tiny movements
+      if (Math.abs(deltaY) < 5) {
+        return
+      }
+
+      const isSwipingDown = deltaY > 0
+
+      // we're at the top of the scrollable content
+      const isAtTop = scroller.scrollTop <= 0
+      // sheet is at the highest snap point (array index 3)
+      const isFullyOpen = currentSnapRef.current === 3
+
+      // Decide whether to prevent scroll for this entire gesture:
+      // 1. When not fully open: always prevent scroll (sheet should drag)
+      // 2. When fully open, at scroll top, and swiping down: prevent scroll
+      const shouldPrevent =
+        !isFullyOpen || (isFullyOpen && isAtTop && isSwipingDown)
+
+      // Lock in the decision for the rest of this gesture
+      preventScrollForGesture.current = shouldPrevent
+
+      if (shouldPrevent) {
+        e.preventDefault()
+      }
+    }
+
+    const handleTouchEnd = () => {
+      // Reset state for the next gesture
+      touchStartY.current = null
+      preventScrollForGesture.current = null
+    }
+
+    scroller.addEventListener('touchstart', handleTouchStart, {
+      passive: true,
+    })
+    // Use a non-passive listener so preventDefault() works
+    scroller.addEventListener('touchmove', handleTouchMove, { passive: false })
+    scroller.addEventListener('touchend', handleTouchEnd, { passive: true })
+    scroller.addEventListener('touchcancel', handleTouchEnd, { passive: true })
+
+    return () => {
+      scroller.removeEventListener('touchstart', handleTouchStart)
+      scroller.removeEventListener('touchmove', handleTouchMove)
+      scroller.removeEventListener('touchend', handleTouchEnd)
+      scroller.removeEventListener('touchcancel', handleTouchEnd)
+    }
+  }, [])
+
+  const handleSnap = (snapIndex: number) => {
+    currentSnapRef.current = snapIndex
+  }
+
+  // Disable drag when scrolled away from top (so content can scroll freely)
+  // `scrollPosition` is undefined when content isn't scrollable
+  const shouldDisableDrag =
+    scrollPosition !== 'top' && scrollPosition !== undefined
+
+  if (isWideScreen) {
+    return null
+  }
+
+  return (
+    <Sheet
+      isOpen={true}
+      onClose={() => {}}
+      snapPoints={[0, 0.15, 0.5, 1]}
+      initialSnap={2}
+      disableDismiss={true}
+      onSnap={handleSnap}
+      tweenConfig={{
+        duration: 0.25,
+        ease: 'circOut',
+      }}
+    >
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content
+          // Disable library's scroll handling - we're using a custom scroller
+          disableScroll
+          disableDrag={shouldDisableDrag}
+        >
+          {/* Custom scroller
+           * https://github.com/Temzasse/react-modal-sheet/tree/main?tab=readme-ov-file#creating-custom-scrollers
+           */}
+          <div
+            ref={setScrollerRef}
+            style={{
+              height: '100%',
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
+            }}
+            className="dark:bg-positron-gray-800 dark:text-white"
+          >
+            {children}
+          </div>
+        </Sheet.Content>
+      </Sheet.Container>
+    </Sheet>
+  )
+}

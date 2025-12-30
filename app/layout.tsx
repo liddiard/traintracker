@@ -4,6 +4,7 @@ import './globals.css'
 import './app.css'
 import Map from './components/Map'
 import Search from './components/Search'
+import BottomSheet from './components/BottomSheet'
 import { formatTrainResponse } from './utils'
 import { getServerSettings } from './settings'
 import { TrainProvider } from './providers/train'
@@ -59,15 +60,18 @@ export default async function RootLayout({
         <ServiceWorkerRegistration />
         <SettingsProvider initialSettings={settings}>
           <TrainProvider initialTrains={trains} stations={stations}>
-            <div className="flex h-screen flex-wrap md:flex-nowrap">
-              <div className="dark:bg-positron-gray-800 relative z-10 h-full w-full overflow-y-auto shadow-lg md:w-1/4 md:min-w-[300px] dark:text-white">
-                <Search />
+            <div className="flex h-screen flex-nowrap">
+              {/* Desktop sidebar - visible at md and above */}
+              <div className="dark:bg-positron-gray-800 relative z-10 hidden overflow-y-auto shadow-lg md:block md:w-1/4 md:min-w-[300px] dark:text-white">
+                <Search id="sidebar" />
                 {children}
               </div>
               <div className="relative h-full w-full md:w-3/4">
                 <Map />
               </div>
             </div>
+            {/* Mobile layout with bottom sheet - visible below md */}
+            <BottomSheet>{children}</BottomSheet>
           </TrainProvider>
         </SettingsProvider>
       </body>

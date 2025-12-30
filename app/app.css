@@ -1,3 +1,19 @@
-.dark .maplibregl-map {
-  filter: invert(1) hue-rotate(180deg);
+/* React Modal Sheet styling */
+.react-modal-sheet-container {
+  background-color: white !important;
+}
+
+.react-modal-sheet-header {
+  height: 20px !important;
+}
+
+.dark {
+  /* MapLibre GL JS */
+  .maplibregl-map {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+  .react-modal-sheet-container {
+    background-color: var(--color-positron-gray-800) !important;
+  }
 }
