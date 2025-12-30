@@ -28,6 +28,7 @@ import CurrentSegment from '@/app/components/CurrentSegment'
 import { TimeStatus, Train, TrainMeta } from '@/app/types'
 import Timeline from '@/app/components/Timeline'
 import Crosshair from '@/app/img/crosshair.svg'
+import ChevronLeft from '@/app/img/chevron-left.svg'
 
 export default function TrainDetail() {
   const { operator, id } = useParams()
@@ -41,6 +42,7 @@ export default function TrainDetail() {
   )
 
   if (!train) {
+    console.log('*** Train disappeared:', train, trains)
     return <h1>Not found</h1>
   }
 
@@ -144,11 +146,12 @@ export default function TrainDetail() {
       <Link
         href={`/?${new URLSearchParams(trainSearchParams).toString()}`}
         className={cn(
-          'hover:text-amtrak-blue-400 dark:hover:text-amtrak-blue-200 font-semibold',
+          'hover:text-amtrak-blue-400 dark:hover:text-amtrak-blue-200 flex items-center gap-1 font-semibold',
           classNames.textAccent,
         )}
       >
-        {hasTrainSearchParams ? '← Back to Search' : '← All Trains'}
+        <ChevronLeft className="h-4" />{' '}
+        {hasTrainSearchParams ? 'Back to Search' : 'All Trains'}
       </Link>
       <h1 className="text-3xl font-bold">
         {train.name}{' '}
