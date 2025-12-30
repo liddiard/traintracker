@@ -63,7 +63,7 @@ export default function NotificationDialog({
         disabled={disabled}
         title={disabled ? 'Not available for this stop' : ''}
         className={cn(
-          'flex w-full cursor-pointer flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg border-2 px-4 py-3 text-left leading-relaxed font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+          'flex w-full cursor-pointer flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg border-2 px-4 py-3 text-left font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40',
           isActive
             ? 'border-amtrak-blue-400 bg-amtrak-blue-400/10'
             : 'border-positron-gray-200 dark:border-positron-gray-700',
@@ -87,7 +87,7 @@ export default function NotificationDialog({
 
   return (
     <div
-      className="fixed inset-0 z-10 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-20 flex items-center justify-center bg-black/50"
       onClick={onClose}
     >
       <div
