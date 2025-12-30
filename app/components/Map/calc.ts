@@ -521,8 +521,6 @@ export const getExtrapolatedTrainPoint = (
   }
 
   // check if train's GPS coordinate is on the current track segment (per timetable)
-  console.log('trainPosition:', trainPosition)
-  console.log('trackSegment:', timetableTrackSegment)
   let trainGPSOnTimetableTrackSegment
   try {
     // TODO: figure out if/why this would throw and if there's more appropriate error handling
@@ -543,10 +541,6 @@ export const getExtrapolatedTrainPoint = (
     //   nextStop,
     // )
   ) {
-    console.log('train ID:', trainMeta.id)
-    console.log('trainPosition:', trainPosition)
-    console.log('nextStopCoords:', nextStopCoords)
-    console.log('timetableTrackSegment:', cleanCoords(timetableTrackSegment))
     // Narrow the track segment from to only consider the portion between the
     // train GPS position and next station.
     // This will calculate progress based on GPS location + its reported time
