@@ -181,12 +181,15 @@ function Map() {
       <NavigationControl
         position="bottom-right"
         showCompass={!!viewState.bearing}
+        // show pitch on the compass control, plus (undocumented): reset not just
+        // heading but also pitch on click
+        visualizePitch={true}
         // `showCompass` only takes effect on component mount, so change the
         // key to force a remount when the bearing changes from due north
         // https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/navigation-control#other-properties
         key={viewState.bearing ? 'nav-control-compass' : 'nav-control'}
       />
-      <GeolocateControl position="bottom-right" />
+      <GeolocateControl position="bottom-right" trackUserLocation={true} />
     </>
   )
 
