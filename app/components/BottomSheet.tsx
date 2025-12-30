@@ -33,6 +33,10 @@ export default function BottomSheet({ children }: BottomSheetProps) {
   // below
   const currentSnapRef = useRef<number>(2) // initial snap
 
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   // Combined ref callback
   const setScrollerRef = useCallback(
     (el: HTMLDivElement | null) => {
@@ -170,6 +174,7 @@ export default function BottomSheet({ children }: BottomSheetProps) {
         duration: 0.25,
         ease: 'circOut',
       }}
+      prefersReducedMotion={prefersReducedMotion}
     >
       <Sheet.Container>
         <Sheet.Header />
