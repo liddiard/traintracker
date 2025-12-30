@@ -13,7 +13,7 @@ const trainNamesToNumbers: Record<string, number[]> = {
     61, 63, 65, 67, 69, 669, 60, 62, 64, 66, 68, 668, 41, 45, 47, 53, 55, 59,
     643, 645, 40, 42, 44, 46, 48, 50, 52, 54, 29, 31, 33, 35, 37, 39, 633, 20,
     22, 24, 26, 28, 38, 622, 87, 84, 71, 73, 75, 79, 70, 72, 76, 78, 43, 82, 83,
-    646, 647,
+    624, 646, 647,
   ],
   'Maple Leaf': [97, 98],
   'Jasper–Prince Rupert': [5, 6],
@@ -78,7 +78,7 @@ const processTrain = (
   stations: StationResponse,
 ): Train => ({
   id: `via/${id}`,
-  name: getTrainName(id) || `VIA Rail ${id}`,
+  name: getTrainName(id) || 'VIA Rail',
   number: id,
   coordinates: data.lng ? [data.lng, data.lat] : null,
   speed: data.speed ?? null,
