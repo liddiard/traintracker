@@ -16,10 +16,15 @@ enum SearchType {
   Line,
 }
 
+interface SearchProps {
+  id: string
+  className?: string
+}
+
 const getOption = (options: Option[], value: string | null) =>
   options.find((option) => option.value === value) || null
 
-function Search() {
+function Search({ id, className = '' }: SearchProps) {
   const router = useRouter()
   const query = useSearchParams()
   const { trains, stations } = useTrains()
@@ -98,14 +103,14 @@ function Search() {
           <input
             type="radio"
             name="type"
-            id="segment"
+            id={`${id}-segment`}
             value="segment"
             checked={searchType === SearchType.Segment}
             onChange={() => setSearchType(SearchType.Segment)}
             className="hidden"
           />
           <label
-            htmlFor="segment"
+            htmlFor={`${id}-segment`}
             className={cn(labelClassNames, {
               [selectedLabelClassNames]: searchType === SearchType.Segment,
             })}
@@ -116,14 +121,14 @@ function Search() {
           <input
             type="radio"
             name="type"
-            id="line"
+            id={`${id}-line`}
             value="line"
             checked={searchType === SearchType.Line}
             onChange={() => setSearchType(SearchType.Line)}
             className="hidden"
           />
           <label
-            htmlFor="line"
+            htmlFor={`${id}-line`}
             className={cn(labelClassNames, {
               [selectedLabelClassNames]: searchType === SearchType.Line,
             })}
@@ -226,7 +231,10 @@ function Search() {
   return (
     <form
       id="search"
-      className="bg-amtrak-midnight-blue sticky top-0 z-20 flex flex-col gap-3 px-3 py-4 text-white shadow-md"
+      className={cn(
+        'bg-amtrak-midnight-blue sticky top-0 z-20 flex flex-col gap-3 px-3 py-4 text-white shadow-md',
+        className,
+      )}
       action={handleSubmit}
     >
       {renderSearchOptions()}
