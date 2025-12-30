@@ -9,9 +9,10 @@ interface BottomSheetProps {
 }
 
 export default function BottomSheet({ children }: BottomSheetProps) {
-  const [isWideScreen, setIsWideScreen] = useState(
-    typeof window !== 'undefined' && window.innerWidth > MOBILE_BREAKPOINT,
-  )
+  // whether or not the screen is narrow enough to render the bottom sheet
+  // default to null (unknown) to avoid hydration mismatch. we don't know the screen
+  // width until we're on the client. sheet will only render after mount.
+  const [isWideScreen, setIsWideScreen] = useState<boolean | null>(null)
 
   // vertical coordinate of a swipe start gesture
   const touchStartY = useRef<number | null>(null)
@@ -41,11 +42,15 @@ export default function BottomSheet({ children }: BottomSheetProps) {
     [scrollRef],
   )
 
-  // track window size to determine whether or not to render the bottom sheet
+  // Track window size to determine whether or not to render the bottom sheet.
+  // Also set initial value on mount to avoid hydration mismatch - Sheet component uses
+  // the Motion library for animations which has different states on server vs client.
   useEffect(() => {
     const handleWindowResize = () => {
       setIsWideScreen(window.innerWidth > MOBILE_BREAKPOINT)
     }
+    // set initial value on mount
+    handleWindowResize()
     window.addEventListener('resize', handleWindowResize, { passive: true })
     return () => {
       window.removeEventListener('resize', handleWindowResize)
@@ -134,7 +139,9 @@ export default function BottomSheet({ children }: BottomSheetProps) {
       scroller.removeEventListener('touchend', handleTouchEnd)
       scroller.removeEventListener('touchcancel', handleTouchEnd)
     }
-  }, [])
+    // Re-run when `isWideScreen` changes from null to false, since that's when
+    // the Sheet mounts and the scroller element becomes available
+  }, [isWideScreen])
 
   const handleSnap = (snapIndex: number) => {
     currentSnapRef.current = snapIndex
@@ -145,7 +152,9 @@ export default function BottomSheet({ children }: BottomSheetProps) {
   const shouldDisableDrag =
     scrollPosition !== 'top' && scrollPosition !== undefined
 
-  if (isWideScreen) {
+  // Don't render until we know the screen width (avoids hydration mismatch),
+  // or if the screen is wide
+  if (isWideScreen === null || isWideScreen) {
     return null
   }
 
