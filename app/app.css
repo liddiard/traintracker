@@ -7,6 +7,15 @@
   height: 20px !important;
 }
 
+.react-modal-sheet-drag-indicator-container {
+  opacity: 0.5;
+
+  .react-modal-sheet-drag-indicator {
+    background-color: var(--color-positron-gray-400) !important;
+    width: 22px !important;
+  }
+}
+
 .dark {
   /* MapLibre GL JS */
   .maplibregl-map {
