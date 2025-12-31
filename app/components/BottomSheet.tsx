@@ -1,18 +1,33 @@
 'use client'
 
 import { ReactNode, useRef, useEffect, useCallback, useState } from 'react'
-import { Sheet, useScrollPosition } from 'react-modal-sheet'
+import { Sheet, SheetRef, useScrollPosition } from 'react-modal-sheet'
 import { MOBILE_BREAKPOINT } from '../constants'
+import { useBottomSheet } from '../providers/bottomSheet'
+import { BottomSheetPosition } from '../types'
+import { keyMirror } from '../utils'
 
 interface BottomSheetProps {
   children: ReactNode
 }
+
+const positionToIndex: Record<BottomSheetPosition, number> = {
+  bottom: 1,
+  middle: 2,
+  top: 3,
+}
+const indexToPosition = keyMirror(positionToIndex)
+const initialSnap = positionToIndex.middle
 
 export default function BottomSheet({ children }: BottomSheetProps) {
   // whether or not the screen is narrow enough to render the bottom sheet
   // default to null (unknown) to avoid hydration mismatch. we don't know the screen
   // width until we're on the client. sheet will only render after mount.
   const [isWideScreen, setIsWideScreen] = useState<boolean | null>(null)
+
+  // external components can request the bottom sheet to be snapped to a specific
+  // position (bottom, middle, or top)
+  const { position, setPosition, setSheetTop } = useBottomSheet()
 
   // vertical coordinate of a swipe start gesture
   const touchStartY = useRef<number | null>(null)
@@ -25,13 +40,15 @@ export default function BottomSheet({ children }: BottomSheetProps) {
   // https://github.com/Temzasse/react-modal-sheet/blob/main/src/hooks/use-scroll-position.ts
   const { scrollRef, scrollPosition } = useScrollPosition({ isEnabled: true })
 
+  const sheetRef = useRef<SheetRef>(null)
+
   // Ref to attach non-passive event listeners and to access `scrollTop` in `useEffect`
   // hook below without adding `scrollPosition` dependency
-  const scrollerRef = useRef<HTMLDivElement | null>(null)
+  const scrollerRef = useRef<HTMLDivElement>(null)
 
   // Track current snap point as a ref to avoid adding a dependency to `useEffect` hook
   // below
-  const currentSnapRef = useRef<number>(2) // initial snap
+  const currentSnapRef = useRef<number>(initialSnap)
 
   const prefersReducedMotion =
     typeof window !== 'undefined' &&
@@ -60,6 +77,10 @@ export default function BottomSheet({ children }: BottomSheetProps) {
       window.removeEventListener('resize', handleWindowResize)
     }
   }, [])
+
+  useEffect(() => {
+    sheetRef.current?.snapTo(positionToIndex[position])
+  }, [position])
 
   // Attach non-passive touch event listeners because React's `onTouchMove` is passive
   // and can't be changed, so preventDefault() doesn't work
@@ -106,8 +127,8 @@ export default function BottomSheet({ children }: BottomSheetProps) {
 
       // we're at the top of the scrollable content
       const isAtTop = scroller.scrollTop <= 0
-      // sheet is at the highest snap point (array index 3)
-      const isFullyOpen = currentSnapRef.current === 3
+      // sheet is at the topmost snap point
+      const isFullyOpen = currentSnapRef.current === positionToIndex.top
 
       // Decide whether to prevent scroll for this entire gesture:
       // 1. When not fully open: always prevent scroll (sheet should drag)
@@ -149,6 +170,9 @@ export default function BottomSheet({ children }: BottomSheetProps) {
 
   const handleSnap = (snapIndex: number) => {
     currentSnapRef.current = snapIndex
+    // keep sheet position in sync with context
+    setPosition(indexToPosition[snapIndex])
+    setSheetTop(sheetRef.current?.yInverted.get() ?? 0)
   }
 
   // Disable drag when scrolled away from top (so content can scroll freely)
@@ -166,8 +190,8 @@ export default function BottomSheet({ children }: BottomSheetProps) {
     <Sheet
       isOpen={true}
       onClose={() => {}}
-      snapPoints={[0, 0.15, 0.5, 1]}
-      initialSnap={2}
+      snapPoints={[0, 125, 0.5, 1]}
+      initialSnap={initialSnap}
       disableDismiss={true}
       onSnap={handleSnap}
       tweenConfig={{
@@ -175,6 +199,7 @@ export default function BottomSheet({ children }: BottomSheetProps) {
         ease: 'circOut',
       }}
       prefersReducedMotion={prefersReducedMotion}
+      ref={sheetRef}
     >
       <Sheet.Container>
         <Sheet.Header />

@@ -1,12 +1,33 @@
 import Link from 'next/link'
 import cn from 'classnames'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MagnifyingGlass from '../../img/magnifying-glass.svg'
 import XIcon from '@/app/img/x.svg'
 import Search from '../Search'
+import { useBottomSheet } from '@/app/providers/bottomSheet'
+import { usePathname } from 'next/navigation'
 
 function Header() {
   const [showSearch, setShowSearch] = useState(false)
+  const { setPosition } = useBottomSheet()
+  const pathname = usePathname()
+
+  useEffect(() => {
+    // hide search if we've navigated away from the home page (e.g. to a train detail
+    // page)
+    if (pathname !== '/') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShowSearch(false)
+    }
+  }, [pathname])
+
+  const handleSearchClick = () => {
+    if (!showSearch) {
+      // will switch to showing search
+      setPosition('bottom') // close bottom sheet so search dropdowns aren't blocked
+    }
+    setShowSearch((prev) => !prev)
+  }
 
   return (
     <header className="absolute top-0 left-0 z-1 min-w-full bg-linear-to-b from-white to-transparent px-3 pt-2 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
@@ -31,7 +52,7 @@ function Header() {
                   showSearch,
               },
             )}
-            onClick={() => setShowSearch(!showSearch)}
+            onClick={handleSearchClick}
           >
             {showSearch ? (
               <>
