@@ -58,6 +58,7 @@ function MapSettings() {
       key: 'mapStyle' as const,
       options: mapStyleOptions,
       value: settings.mapStyle,
+      wrap: false,
       customUI: (option, isSelected, onChange) => (
         <div>
           <label
@@ -103,24 +104,28 @@ function MapSettings() {
       key: 'colorMode' as const,
       options: colorModeOptions,
       value: settings.colorMode,
+      wrap: true,
     },
     {
       label: 'Units',
       key: 'units' as const,
       options: unitsOptions,
       value: settings.units,
+      wrap: true,
     },
     {
       label: 'Time format',
       key: 'timeFormat' as const,
       options: timeFormatOptions,
       value: settings.timeFormat,
+      wrap: true,
     },
     {
       label: 'Show times in',
       key: 'timeZone' as const,
       options: timeZoneOptions,
       value: settings.timeZone,
+      wrap: true,
     },
   ]
 
@@ -129,6 +134,7 @@ function MapSettings() {
     key: T
     options: { value: Settings[T]; label: string }[]
     value: Settings[T]
+    wrap: boolean
     customUI?: (
       option: { value: Settings[T]; label: string },
       isSelected: boolean,
@@ -137,7 +143,7 @@ function MapSettings() {
   }) => (
     <Fragment key={config.key}>
       <span className="font-semibold">{config.label}</span>
-      <div className="flex flex-wrap gap-x-3 gap-y-1">
+      <div className={cn('flex gap-x-3', { 'flex-wrap': config.wrap })}>
         {config.options.map((option) => {
           const isSelected = config.value === option.value
           const handleChange = (value: Settings[T]) =>
