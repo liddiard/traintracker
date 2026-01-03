@@ -66,7 +66,7 @@ function Header() {
             )}
           </button>
         </div>
-        <nav className="flex gap-3">
+        <nav className="flex gap-3 font-medium">
           <a href="#">Gear Guide</a>
           <a href="#">About</a>
         </nav>
