@@ -1,0 +1,68 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: traintracker-app
+    restart: unless-stopped
+    environment:
+      # Database
+      - DATABASE_URL=file:/app/db/app.db
+      # VAPID keys for push notifications
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_SUBJECT=${VAPID_SUBJECT}
+      # Enable notifications in production
+      - ENABLE_NOTIFICATIONS=true
+    volumes:
+      # Persist SQLite database
+      - db-data:/app/db
+    networks:
+      - traintracker-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('http').get('http://localhost:3000/api/notifications/vapid-key', (r) => process.exit(r.statusCode === 200 ? 0 : 1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  nginx:
+    image: nginx:alpine
+    container_name: traintracker-nginx
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:${PORT:-8724}:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+    networks:
+      - traintracker-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--quiet',
+          '--tries=1',
+          '--spider',
+          'http://localhost/api/notifications/vapid-key',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  db-data:
+    name: traintracker-db
+
+networks:
+  traintracker-network:
+    name: traintracker-network
+    driver: bridge
