@@ -15,7 +15,11 @@ import {
 import Image from 'next/image'
 import { classNames } from '@/app/constants'
 
-function MapSettings() {
+interface MapSettingsProps {
+  style?: React.CSSProperties
+}
+
+function MapSettings({ style = {} }: MapSettingsProps) {
   const [open, setOpen] = useState(false)
   const { settings, updateSetting } = useSettings()
 
@@ -184,7 +188,7 @@ function MapSettings() {
   )
 
   return (
-    <div className="absolute bottom-0 left-0 z-1 m-2">
+    <div className="absolute bottom-0 left-0 z-10 m-2" style={style}>
       {open && renderSettings()}
       <button
         onClick={() => setOpen(!open)}

@@ -10,6 +10,7 @@ import { createRouteNumMap } from '../utils'
 import { useTrains } from '../providers/train'
 import { useRouter, useSearchParams } from 'next/navigation'
 import SearchSelect from './SearchSelect'
+import { useBottomSheet } from '../providers/bottomSheet'
 
 enum SearchType {
   Segment,
@@ -28,6 +29,7 @@ function Search({ id, className = '' }: SearchProps) {
   const router = useRouter()
   const query = useSearchParams()
   const { trains, stations } = useTrains()
+  const { setPosition } = useBottomSheet()
 
   const routes = useMemo(() => createRouteNumMap(trains), [trains])
 
@@ -226,6 +228,7 @@ function Search({ id, className = '' }: SearchProps) {
       url.searchParams.set('trainNumber', formData.get('trainNumber') as string)
     }
     router.push(url.toString())
+    setPosition('middle') // open mobile bottom sheet
   }
 
   return (

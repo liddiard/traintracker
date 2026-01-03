@@ -125,7 +125,7 @@ export default function NotificationDialog({
         >
           <strong>Heads up:</strong> Web notifications are not guaranteed. Your
           browser must be running in the background to receive them. Don’t rely
-          exclusively on this to catch a train!
+          on this alone to catch a train!
         </div>
 
         <button

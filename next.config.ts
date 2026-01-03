@@ -3,6 +3,7 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   // https://stackoverflow.com/a/72186766
   reactStrictMode: false,
+  output: 'standalone',
   logging: {
     fetches: {
       fullUrl: true,

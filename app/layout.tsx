@@ -12,6 +12,7 @@ import { SettingsProvider } from './providers/settings'
 import ServiceWorkerRegistration from './components/ServiceWorkerRegistration'
 import { Station } from './types'
 import { inter } from './constants'
+import { BottomSheetProvider } from './providers/bottomSheet'
 
 export const metadata: Metadata = {
   title: 'TrainTracker',
@@ -60,18 +61,20 @@ export default async function RootLayout({
         <ServiceWorkerRegistration />
         <SettingsProvider initialSettings={settings}>
           <TrainProvider initialTrains={trains} stations={stations}>
-            <div className="flex h-screen flex-nowrap">
-              {/* Desktop sidebar - visible at md and above */}
-              <div className="dark:bg-positron-gray-800 relative z-10 hidden overflow-y-auto shadow-lg md:block md:w-1/4 md:min-w-[300px] dark:text-white">
-                <Search id="sidebar" />
-                {children}
+            <BottomSheetProvider>
+              <div className="flex h-screen flex-nowrap">
+                {/* Desktop sidebar - visible at md and above */}
+                <div className="dark:bg-positron-gray-800 relative z-10 hidden overflow-y-auto shadow-lg md:block md:w-1/4 md:min-w-[300px] dark:text-white">
+                  <Search id="sidebar" />
+                  {children}
+                </div>
+                <div className="relative h-full w-full md:w-3/4">
+                  <Map />
+                </div>
               </div>
-              <div className="relative h-full w-full md:w-3/4">
-                <Map />
-              </div>
-            </div>
-            {/* Mobile layout with bottom sheet - visible below md */}
-            <BottomSheet>{children}</BottomSheet>
+              {/* Mobile layout with bottom sheet - visible below md */}
+              <BottomSheet>{children}</BottomSheet>
+            </BottomSheetProvider>
           </TrainProvider>
         </SettingsProvider>
       </body>

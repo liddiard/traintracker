@@ -15,6 +15,7 @@ import MapGL, {
   GeolocateControl,
   FullscreenControl,
   NavigationControl,
+  AttributionControl,
 } from 'react-map-gl/maplibre'
 import type {
   LngLatLike,
@@ -46,6 +47,7 @@ import TrainGPS from './TrainGPS'
 import TrainLabel from './TrainLabel'
 import MapSettings from './Settings'
 import Header from './Header'
+import { useBottomSheet } from '@/app/providers/bottomSheet'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
@@ -65,6 +67,7 @@ const emptyTrainData: FeatureCollection<Point, TrainFeatureProperties> = {
 function Map() {
   const { trains, stations } = useTrains()
   const { settings, updateSetting } = useSettings()
+  const { sheetTop } = useBottomSheet()
   const router = useRouter()
   const { operator, id } = useParams()
   const query = useSearchParams()
@@ -95,6 +98,16 @@ function Map() {
   const selectedTrain = useMemo(
     () => trainData.features.find((t) => t.id === `${operator}/${id}`),
     [trainData, operator, id],
+  )
+
+  const padding = useMemo(
+    () => ({
+      bottom:
+        typeof window == 'undefined'
+          ? 0
+          : Math.min((window.innerHeight - 35) / 2, sheetTop),
+    }),
+    [sheetTop],
   )
 
   const updateTrains = useCallback(() => {
@@ -129,6 +142,7 @@ function Map() {
         // move map to the updated train coordinates with default easing
         mapRef.current.panTo(selectedTrain.geometry.coordinates as LngLatLike, {
           duration: 500,
+          padding,
         })
       } else {
         // if we were already following the train, move map linearly to the updated
@@ -136,6 +150,7 @@ function Map() {
         mapRef.current.panTo(selectedTrain.geometry.coordinates as LngLatLike, {
           duration: TRAIN_UPDATE_FREQ,
           easing: (x) => x,
+          padding,
         })
       }
     }
@@ -148,11 +163,12 @@ function Map() {
       mapRef.current.flyTo({
         center: selectedTrain.geometry.coordinates as LngLatLike,
         zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
+        padding,
       })
       flownToTrain.current = selectedTrain.id as string
     }
     followSetting.current = settings.follow
-  }, [selectedTrain, settings.follow, updateSetting])
+  }, [selectedTrain, settings.follow, updateSetting, padding])
 
   const syncMapState = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
@@ -175,21 +191,40 @@ function Map() {
     router.push(`/train/${id}`)
   }
 
+  const controlStyle: React.CSSProperties = {
+    position: 'relative',
+    bottom: padding.bottom,
+    transition: 'bottom 500ms',
+  }
+
   const renderControls = () => (
     <>
-      <FullscreenControl position="bottom-right" />
-      <NavigationControl
+      <AttributionControl
         position="bottom-right"
-        showCompass={!!viewState.bearing}
-        // show pitch on the compass control, plus (undocumented): reset not just
-        // heading but also pitch on click
-        visualizePitch={true}
-        // `showCompass` only takes effect on component mount, so change the
-        // key to force a remount when the bearing changes from due north
-        // https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/navigation-control#other-properties
-        key={viewState.bearing ? 'nav-control-compass' : 'nav-control'}
+        style={controlStyle}
+        compact={true}
       />
-      <GeolocateControl position="bottom-right" trackUserLocation={true} />
+      <FullscreenControl position="bottom-right" style={controlStyle} />
+      {viewState.bearing ? (
+        <NavigationControl
+          position="bottom-right"
+          showZoom={false}
+          showCompass={!!viewState.bearing}
+          // show pitch on the compass control, plus (undocumented): reset not just
+          // heading but also pitch on click
+          visualizePitch={true}
+          // `showCompass` only takes effect on component mount, so change the
+          // key to force a remount when the bearing changes from due north
+          // https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/navigation-control#other-properties
+          key={viewState.bearing ? 'nav-control-compass' : 'nav-control'}
+          style={controlStyle}
+        />
+      ) : null}
+      <GeolocateControl
+        position="bottom-right"
+        trackUserLocation={true}
+        style={controlStyle}
+      />
     </>
   )
 
@@ -200,6 +235,7 @@ function Map() {
         ref={mapRef}
         initialViewState={initialViewState}
         mapStyle={mapStyleUrls[settings.mapStyle]}
+        attributionControl={false}
         onLoad={() => {
           updateTrains()
         }}
@@ -273,7 +309,9 @@ function Map() {
           <TrainGPS {...selectedTrain.properties} zoom={viewState.zoom} />
         )}
       </MapGL>
-      <MapSettings />
+      <MapSettings
+        style={{ bottom: padding.bottom, transition: 'bottom 500ms' }}
+      />
     </div>
   )
 }

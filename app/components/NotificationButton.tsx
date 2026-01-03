@@ -8,6 +8,7 @@ import type { NotificationType } from '@/app/types'
 import Bell from '@/app/img/bell.svg'
 import NotificationDialog from './NotificationDialog'
 import { MAX_PUSH_SUBSCRIPTIONS } from '../constants'
+import { useBottomSheet } from '../providers/bottomSheet'
 
 interface NotificationButtonProps {
   trainId: string
@@ -33,6 +34,7 @@ export default function NotificationButton({
   const [showDialog, setShowDialog] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { trains } = useTrains()
+  const { setPosition } = useBottomSheet()
   const train = useMemo(
     () => trains.find((t) => t.id === trainId),
     [trains, trainId],
@@ -49,6 +51,11 @@ export default function NotificationButton({
   // don't show bell until after hydration, or if train has departed the station, or
   // notifications not supported, or train not found
   if (!mounted || hasDeparted || !isSupported || !train) return null
+
+  const handleClick = () => {
+    setShowDialog(true)
+    setPosition('top') // fully open bottom sheet as modal is rendered inside of it
+  }
 
   const handleSubscribe = async (type: NotificationType) => {
     const subKey = `${stopCode}-${type}`
@@ -94,7 +101,7 @@ export default function NotificationButton({
   return (
     <>
       <button
-        onClick={() => setShowDialog(true)}
+        onClick={handleClick}
         className={cn(
           'hover:bg-positron-gray-400/15 cursor-pointer rounded p-1 transition-colors',
           hasSubscription

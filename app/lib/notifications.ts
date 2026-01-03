@@ -110,7 +110,7 @@ function createNotificationPayload(
   const delayStr = event.delay > 0 ? ` (${event.delay} min late)` : ''
 
   return {
-    title: `${train.name} ${train.number}`,
+    title: `🚆 ${train.name} ${train.number}`,
     body: `${action} ${stop.name} at ${timeStr}${delayStr}`,
     icon: '/img/train-circle.svg', // TODO: update with app icon
     badge: '/img/train-circle.svg', // TODO: update with app icon

@@ -155,12 +155,15 @@ export interface SettingConfig {
   key: keyof Settings
   options: SettingOption[]
   value: SettingValue
+  wrap: boolean
   customUI?: (
     option: SettingOption,
     isSelected: boolean,
     onChange: (value: SettingValue) => void,
   ) => ReactNode
 }
+
+export type BottomSheetPosition = 'bottom' | 'middle' | 'top'
 
 // Web Push Notification Types
 export interface NotificationPayload {

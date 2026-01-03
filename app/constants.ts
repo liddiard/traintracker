@@ -18,6 +18,7 @@ export const inter = Inter({ subsets: ['latin'] })
 
 // these color values should match those in globals.css
 export const colors: Record<string, string> = {
+  'amtrak-blue-50': 'oklch(0.95 0.1056 229.84)',
   'amtrak-blue-200': 'oklch(0.8 0.1056 229.84)',
   'amtrak-blue-400': 'oklch(0.6 0.1056 229.84)',
   'amtrak-blue-500': 'oklch(0.5 0.1056 229.84)',

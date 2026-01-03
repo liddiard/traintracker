@@ -1,7 +1,7 @@
 'use client'
 
 import cn from 'classnames'
-import { JSX, useEffect, useMemo } from 'react'
+import { JSX, useMemo } from 'react'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -29,11 +29,13 @@ import { TimeStatus, Train, TrainMeta } from '@/app/types'
 import Timeline from '@/app/components/Timeline'
 import Crosshair from '@/app/img/crosshair.svg'
 import ChevronLeft from '@/app/img/chevron-left.svg'
+import { useBottomSheet } from '@/app/providers/bottomSheet'
 
 export default function TrainDetail() {
   const { operator, id } = useParams()
   const trainSearchParams = getTrainParams(useSearchParams())
   const { trains } = useTrains()
+  const { setPosition } = useBottomSheet()
   const { settings, updateSetting } = useSettings()
   const { timeFormat, timeZone, follow } = settings
   const train = useMemo(
@@ -47,6 +49,14 @@ export default function TrainDetail() {
   }
 
   const trainMeta = getTrainMeta(train)
+
+  const handleFollow = () => {
+    if (!follow) {
+      // will switch to following
+      setPosition('middle') // partially close bottom sheet to reveal map
+    }
+    updateSetting('follow', !follow)
+  }
 
   const renderRouteEndpoint = ({
     stationName,
@@ -208,7 +218,7 @@ export default function TrainDetail() {
           <input
             type="checkbox"
             checked={follow}
-            onChange={() => updateSetting('follow', !follow)}
+            onChange={handleFollow}
             className="hidden"
           />
           <Crosshair className="inline h-4 w-4" /> Follow on Map

@@ -27,6 +27,19 @@ export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms))
 
 /**
+ * Reverses (mirrors) an object's keys and values
+ *
+ * @param obj Object for which to reverse keys
+ * @returns Object with keys as values, and values as keys
+ *
+ * @example
+ * // returns { a: 1, b: 2 }
+ * keyMirror({ 1: a, 2: b })
+ */
+export const keyMirror = (obj: Object) =>
+  Object.fromEntries(Object.entries(obj).map(([key, val]) => [val, key]))
+
+/**
  * Finds the median of an array of numbers.
  *
  * If the array has an even length, the median is the average of the two middle numbers.
