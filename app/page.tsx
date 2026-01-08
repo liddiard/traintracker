@@ -5,16 +5,22 @@ import TrainList from './components/TrainList'
 import { useTrains } from './providers/train'
 import { getTrainParams } from './utils'
 import Stats from './components/Stats'
+import TrainSort from './components/TrainSort'
+import { TRAIN_QUERY_PARAMS } from './constants'
 
 export default function Home({}) {
   const { trains } = useTrains()
   const query = useSearchParams()
-  const trainParams = getTrainParams(query)
+  const params = getTrainParams(query)
+  const hasSearchParams = Object.keys(params).some((p) =>
+    TRAIN_QUERY_PARAMS.search.includes(p),
+  )
 
   return (
     <>
-      {trains && !Object.keys(trainParams).length && <Stats trains={trains} />}
-      {trains && <TrainList trains={trains} filters={trainParams} />}
+      {trains && !hasSearchParams && <Stats trains={trains} />}
+      {trains && <TrainSort params={params} />}
+      {trains && <TrainList trains={trains} params={params} />}
     </>
   )
 }

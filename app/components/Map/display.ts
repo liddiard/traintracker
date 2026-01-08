@@ -8,6 +8,7 @@ import type {
 import { formatRgb } from 'culori'
 import {
   formatDuration,
+  getCSSVar,
   getTrainColor,
   getTrainMeta,
   getTrainShortcode,
@@ -37,7 +38,7 @@ export const stationLayer: CircleLayerSpecification = {
   paint: {
     'circle-color': 'white',
     'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 4],
-    'circle-stroke-color': formatRgb(colors['amtrak-blue-400']),
+    'circle-stroke-color': formatRgb(getCSSVar('--color-amtrak-blue-400')),
     'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 2],
   },
 }

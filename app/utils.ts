@@ -86,11 +86,11 @@ export const createCachedFunction = <Args extends unknown[], Result>(
 }
 
 /**
- * Extracts and returns train-related parameters from the given URLSearchParams.
+ * Extracts and returns train-related query params from the given URLSearchParams.
  *
  * Filters entries in the URLSearchParams object to only include keys defined
- * in `TRAIN_SEARCH_PARAMS` and have a non-empty value. These entries are
- * converted into an object with key-value pairs.
+ * in `TRAIN_QUERY_PARAMS` that have a non-empty value. These entries are converted
+ * into an object with key-value pairs.
  *
  * @param params - The URLSearchParams object containing the search parameters.
  * @returns An object containing filtered train-related parameters.
@@ -99,7 +99,10 @@ export const getTrainParams = (params: URLSearchParams) =>
   Object.fromEntries(
     params
       .entries()
-      .filter(([key, val]) => TRAIN_SEARCH_PARAMS.includes(key) && val),
+      .filter(
+        ([key, val]) =>
+          Object.values(TRAIN_QUERY_PARAMS).flat().includes(key) && val,
+      ),
   )
 
 /**

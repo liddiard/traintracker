@@ -4,8 +4,14 @@ import { Settings } from './types'
 // minimum completion of the progress bar to avoid display issues with border-radius
 export const MIN_PROGRESS_PX = 16
 
-// fields/query params that can be used to search for a train
-export const TRAIN_SEARCH_PARAMS = ['from', 'to', 'trainName', 'trainNumber']
+export const TRAIN_QUERY_PARAMS = {
+  // fields/query params that can be used to search for a train
+  search: ['from', 'to', 'trainName', 'trainNumber'],
+  // query params that can be used to filter the train list without submitting a search
+  filter: ['operator'],
+  // query params that can be used to sort the train list
+  sort: ['sort', 'sortDir'],
+}
 
 // max number of active push notification subscriptions allowed per device
 export const MAX_PUSH_SUBSCRIPTIONS = 10
