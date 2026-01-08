@@ -103,7 +103,7 @@ const processTrain = (
   stations: StationResponse,
 ): Train => {
   const { properties } = train
-  const statusMessage = properties.StatusMsg.trim()
+  const statusMessage = properties.StatusMsg?.trim()
   return {
     updated: amtrakParseDate(properties.updated_at, {
       tzCode: 'E', // "Updated" times seem to always been in Eastern Time
@@ -127,7 +127,13 @@ const get = async () => {
   const trains = amtrakDecryptResponse(data)
 
   await fs.writeFile('original.json', JSON.stringify(trains, null, 2), 'utf8')
-  return trains.features.map((train) => processTrain(train, stations))
+
+  return (
+    trains.features
+      .map((train) => processTrain(train, stations))
+      // Filter out trains with no listed stops
+      .filter((train) => train.stops.length > 0)
+  )
 }
 
 export default get

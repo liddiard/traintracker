@@ -12,7 +12,7 @@ export type AmtrakHeading = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW'
 // Amtrak API GeoJSON properties available on train features
 export interface AmtrakTrainInfoProperties {
   ID: number
-  StatusMsg: string
+  StatusMsg: string | null
   Heading: AmtrakHeading
   RouteName: string
   TrainState: TrainStatus
