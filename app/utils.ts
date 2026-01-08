@@ -353,18 +353,20 @@ export const formatDate = (
  * If the duration is zero, it is formatted as "now".
  *
  * @param minutes - The duration in minutes
- * @param options - An object with an optional property `shortenMins` that causes the
- *                  minutes string to be shortened from 'minutes' to 'min' if true.
+ * @param options - An object with optional properties `shortenMins` that causes the
+ *                  minutes string to be shortened from 'minutes' to 'min' if true, and
+ *                  `relative` that adds " ago" to the end of the string if the duration
+ *                  is negative.
  * @returns A string representation of the formatted duration
  */
 export const formatDuration = (
   minutes: number,
-  options?: { shortenMins?: boolean },
+  options?: { shortenMins?: boolean; relative?: boolean },
 ) => {
-  const { shortenMins = false } = options || {}
+  const { shortenMins = false, relative = true } = options || {}
   minutes = Math.round(minutes)
   let pastString = ''
-  if (minutes < 0) {
+  if (relative && minutes < 0) {
     pastString = ' ago'
   }
   minutes = Math.abs(minutes)

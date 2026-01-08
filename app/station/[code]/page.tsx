@@ -173,7 +173,7 @@ export default function StationPage() {
             })}
             style={{ color: delay > 0 ? delayColor : '' }}
           >
-            {formatDuration(delay, { shortenMins: true })}{' '}
+            {formatDuration(delay, { shortenMins: true, relative: false })}{' '}
             {delay > 0 ? 'late' : 'early'}
           </span>
         )}

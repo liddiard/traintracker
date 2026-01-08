@@ -69,7 +69,7 @@ function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
       ? 'Current sort: descending. Click for ascending sort.'
       : 'Current sort: ascending. Click for descending sort.'
   return (
-    <div className="mx-3 mt-4 mb-2 flex flex-col gap-3">
+    <div className="mx-3 mt-4 mb-2 flex flex-col gap-2">
       <div className="flex flex-wrap gap-2">
         {operators.map(({ name, value, selected }) => (
           <Fragment key={value}>
