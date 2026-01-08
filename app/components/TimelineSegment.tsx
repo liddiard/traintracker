@@ -85,6 +85,7 @@ function TimelineSegment({
             'line-through': delay,
             [classNames.textDeemphasized]: delay,
           })}
+          suppressHydrationWarning
         >
           {formatTime(getScheduledTime(arrival)!, formatTimeOptions)}
         </time>
@@ -95,6 +96,7 @@ function TimelineSegment({
               delay < 0 ? 'text-amtrak-green-500' : '',
             )}
             style={{ color: delay > 0 ? getDelayColor(delay) : '' }}
+            suppressHydrationWarning
           >
             {formatTime(arrival.time, formatTimeOptions)}
           </time>
