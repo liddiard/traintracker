@@ -67,7 +67,7 @@ const emptyTrainData: FeatureCollection<Point, TrainFeatureProperties> = {
 function Map() {
   const { trains, stations } = useTrains()
   const { settings, updateSetting } = useSettings()
-  const { sheetTop } = useBottomSheet()
+  const { sheetTop, setPosition } = useBottomSheet()
   const router = useRouter()
   const { operator, id, code } = useParams() // train operator, train ID, station code
   const query = useSearchParams()
@@ -171,9 +171,11 @@ function Map() {
     }
     // if the selected train changed…
     else if (flownToTrain.current !== selectedTrain.id) {
-      // …stop following any current train…
+      // stop following any current train
       updateSetting('follow', false)
-      // …fly to it on the map, zooming in if the map is far zoomed out
+      // partially close bottom sheet to reveal map
+      setPosition('middle')
+      // …fly to train on map, zooming in if the map is far zoomed out
       const zoom = mapRef.current.getZoom()
       const minFlyZoom = 9
       mapRef.current.flyTo({
@@ -184,7 +186,7 @@ function Map() {
       flownToTrain.current = selectedTrain.id as string
     }
     followSetting.current = settings.follow
-  }, [selectedTrain, settings.follow, updateSetting, padding])
+  }, [selectedTrain, settings.follow, updateSetting, padding, setPosition])
 
   // fly to a new station that the user selected
   useEffect(() => {
