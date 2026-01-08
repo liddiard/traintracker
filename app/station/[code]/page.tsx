@@ -349,16 +349,6 @@ export default function StationPage() {
                 </span>
               </div>
             )}
-            <p>
-              Dashes (—) in arrival or departure columns indicate “not
-              applicable” for a train; i.e., this station is the train’s first
-              or last stop.
-            </p>
-            <p>
-              Times that span both arrival and departure columns indicate that
-              the operator did not specify separate arrival and departure times,
-              usually indicating a brief stop.
-            </p>
           </footer>
         </div>
       )}
