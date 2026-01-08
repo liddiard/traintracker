@@ -6,6 +6,7 @@ import { useNotifications } from '@/app/components/hooks'
 import { useTrains } from '@/app/providers/train'
 import type { NotificationType } from '@/app/types'
 import Bell from '@/app/img/bell.svg'
+import BellRinging from '@/app/img/bell-ringing.svg'
 import NotificationDialog from './NotificationDialog'
 import { MAX_PUSH_SUBSCRIPTIONS } from '../constants'
 import { useBottomSheet } from '../providers/bottomSheet'
@@ -42,7 +43,8 @@ export default function NotificationButton({
   const { permission, isSupported, requestPermission, subscribe, unsubscribe } =
     useNotifications()
 
-  // set mounted state after hydration
+  // set mounted state on client side to force checking for browser notification
+  // support
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
@@ -97,13 +99,14 @@ export default function NotificationButton({
     activeSubscriptions.has(`${stopCode}-arrival`) ||
     activeSubscriptions.has(`${stopCode}-departure`)
   const actionText = hasSubscription ? 'Manage notifications' : 'Get notified'
+  const IconComponent = hasSubscription ? BellRinging : Bell
 
   return (
     <>
       <button
         onClick={handleClick}
         className={cn(
-          'hover:bg-positron-gray-400/15 cursor-pointer rounded p-1 transition-colors',
+          'hover:bg-positron-gray-400/15 cursor-pointer rounded p-1',
           hasSubscription
             ? 'text-amtrak-yellow-300 dark:text-amtrak-yellow-200'
             : 'text-positron-gray-400',
@@ -111,7 +114,7 @@ export default function NotificationButton({
         title={actionText}
         aria-label={`${actionText} for ${stopName}`}
       >
-        <Bell className="h-4 w-4" />
+        <IconComponent className="w-4" />
       </button>
 
       {showDialog && (
