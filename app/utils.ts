@@ -502,10 +502,6 @@ export const getSegmentDurationMinMax = (
  * @returns A color string representing the delay
  */
 export const getDelayColor = (delay: number) => {
-  console.log(
-    getCSSVar('--color-amtrak-yellow-400'),
-    getCSSVar('--color-amtrak-red-600'),
-  )
   const delayPalette = interpolate([
     getCSSVar('--color-amtrak-yellow-400'),
     average([
