@@ -9,6 +9,7 @@ import {
   StopResponseItem,
   TrainMeta,
   TimeFormat,
+  TrainQueryParams,
 } from './types'
 import { TRAIN_QUERY_PARAMS } from './constants'
 import { routeToCodeMap } from './components/Map/constants'
@@ -95,7 +96,7 @@ export const createCachedFunction = <Args extends unknown[], Result>(
  * @param params - The URLSearchParams object containing the search parameters.
  * @returns An object containing filtered train-related parameters.
  */
-export const getTrainParams = (params: URLSearchParams) =>
+export const getTrainParams = (params: URLSearchParams): TrainQueryParams =>
   Object.fromEntries(
     params
       .entries()

@@ -19,7 +19,7 @@ export default function Home({}) {
   return (
     <>
       {trains && !hasSearchParams && <Stats trains={trains} />}
-      {trains && <TrainSort params={params} />}
+      {trains && <TrainSort {...params} />}
       {trains && <TrainList trains={trains} params={params} />}
     </>
   )

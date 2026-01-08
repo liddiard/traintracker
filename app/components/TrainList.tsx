@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import cn from 'classnames'
 import { classNames, TRAIN_QUERY_PARAMS } from '../constants'
-import { Train, TrainSearchParams } from '../types'
+import { Train, TrainQueryParams } from '../types'
 import {
   findTrainsFromSegment,
   formatDate,
@@ -23,7 +23,7 @@ const filterToDisplayName: Record<string, string> = {
 
 interface TrainListProps {
   trains: Train[]
-  params: TrainSearchParams
+  params: TrainQueryParams
 }
 
 function TrainList({ trains, params }: TrainListProps) {

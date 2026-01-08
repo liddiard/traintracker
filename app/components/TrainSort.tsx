@@ -35,15 +35,12 @@ const operators = [
 ]
 
 interface TrainSortParams {
-  params: {
-    sort: keyof typeof sortOptions
-    sortDir: 'asc' | 'desc'
-    operator?: string
-  }
+  sort?: string
+  sortDir?: string
+  operator?: string
 }
 
-function TrainSort({ params }: TrainSortParams) {
-  const { sort, sortDir, operator = '' } = params
+function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
   const router = useRouter()
 
   const handleSortChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {

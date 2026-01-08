@@ -33,7 +33,7 @@ import { useBottomSheet } from '@/app/providers/bottomSheet'
 
 export default function TrainDetail() {
   const { operator, id } = useParams()
-  const trainSearchParams = getTrainParams(useSearchParams())
+  const TrainQueryParams = getTrainParams(useSearchParams())
   const { trains } = useTrains()
   const { setPosition } = useBottomSheet()
   const { settings, updateSetting } = useSettings()
@@ -140,7 +140,7 @@ export default function TrainDetail() {
   }
 
   const timezonesDiffer = train.stops[0].timezone !== train.stops[0].timezone
-  const hasTrainSearchParams = !!Object.entries(trainSearchParams).length
+  const hasTrainQueryParams = !!Object.entries(TrainQueryParams).length
   const minsSinceLastUpdate =
     train.updated && msToMins(new Date().getTime() - train.updated.valueOf())
   // last update is more than 10 minutes old
@@ -154,14 +154,14 @@ export default function TrainDetail() {
   return (
     <div className="flex flex-col gap-5 p-3 pb-4">
       <Link
-        href={`/?${new URLSearchParams(trainSearchParams).toString()}`}
+        href={`/?${new URLSearchParams(TrainQueryParams).toString()}`}
         className={cn(
           'hover:text-amtrak-blue-400 dark:hover:text-amtrak-blue-200 flex items-center gap-1 font-semibold',
           classNames.textAccent,
         )}
       >
         <ChevronLeft className="h-4" />{' '}
-        {hasTrainSearchParams ? 'Back to Trains' : 'All Trains'}
+        {hasTrainQueryParams ? 'Back to Trains' : 'All Trains'}
       </Link>
       <h1 className="text-3xl font-bold">
         {train.name}{' '}

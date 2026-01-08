@@ -108,7 +108,7 @@ export interface TrainFeatureProperties extends Omit<
   skipAnimation: boolean
 }
 
-type TrainSearchKeys =
+type TrainQueryKeys =
   | 'from'
   | 'to'
   | 'trainNumber'
@@ -116,7 +116,7 @@ type TrainSearchKeys =
   | 'operator'
   | 'sort'
   | 'sortDir'
-export type TrainSearchParams = Partial<Record<TrainSearchKeys, string>>
+export type TrainQueryParams = Partial<Record<TrainQueryKeys, string>>
 
 export interface TrackId {
   id: number
