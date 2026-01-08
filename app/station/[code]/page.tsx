@@ -151,6 +151,7 @@ export default function StationPage() {
             'text-amtrak-green-500 dark:brightness-175': hasDelay && delay < 0,
           })}
           style={{ color: delay > 0 ? delayColor : '' }}
+          suppressHydrationWarning
         >
           {formatTime(time, formatTimeOptions)}
         </time>
@@ -161,6 +162,7 @@ export default function StationPage() {
               'text-amtrak-green-500 dark:brightness-175': delay < 0,
             })}
             style={{ color: delay > 0 ? delayColor : '' }}
+            suppressHydrationWarning
           >
             {formatDuration(delay, { shortenMins: true })}{' '}
             {delay > 0 ? 'late' : 'early'}
