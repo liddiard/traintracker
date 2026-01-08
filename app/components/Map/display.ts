@@ -15,7 +15,6 @@ import {
 import { Train, Station, TrainFeatureProperties } from '../../types'
 import { getExtrapolatedTrainPoint, snapTrainToTrackCached } from './calc'
 import { sourceId, routeToCodeMap, DETAIL_ZOOM_LEVEL } from './constants'
-import { colors } from '@/app/constants'
 
 export const trackLayer: LineLayerSpecification = {
   id: sourceId.amtrakTrack,
@@ -26,7 +25,7 @@ export const trackLayer: LineLayerSpecification = {
     'line-cap': 'round',
   },
   paint: {
-    'line-color': formatRgb(colors['amtrak-blue-400']),
+    'line-color': formatRgb(getCSSVar('--color-amtrak-blue-400')),
     'line-width': 2,
   },
 }
@@ -65,7 +64,7 @@ export const stationLabelLayer: SymbolLayerSpecification = {
     'text-justify': 'auto',
   },
   paint: {
-    'text-color': formatRgb(colors['amtrak-blue-500']),
+    'text-color': formatRgb(getCSSVar('--color-amtrak-blue-500')),
     'text-halo-color': 'white',
     'text-halo-width': 1,
     'text-halo-blur': 1,
@@ -92,7 +91,7 @@ export const trainGPSLabelLayer: SymbolLayerSpecification = {
     'text-font': ['Noto Sans Regular'],
   },
   paint: {
-    'text-color': formatRgb(colors['amtrak-blue-500']),
+    'text-color': formatRgb(getCSSVar('--color-amtrak-blue-500')),
     'text-halo-color': 'white',
     'text-halo-width': 1,
     'text-halo-blur': 1,

@@ -1,10 +1,11 @@
 import cn from 'classnames'
 import { TimeStatus, Train } from '../types'
-import { getTrainColor, getTrainMeta, median } from '../utils'
+import { getTrainMeta, median } from '../utils'
 import { classNames } from '../constants'
+import { useMemo } from 'react'
 
 function Stats({ trains }: { trains: Train[] }) {
-  const trainMetas = trains.map((t) => getTrainMeta(t))
+  const trainMetas = useMemo(() => trains.map((t) => getTrainMeta(t)), [trains])
 
   const numUnderway = trainMetas.filter(
     ({ code }) =>
@@ -19,31 +20,6 @@ function Stats({ trains }: { trains: Train[] }) {
     trainMetas
       .filter(({ code, delay }) => code === TimeStatus.DELAYED && delay)
       .map(({ delay }) => delay) as number[],
-  )
-
-  const renderGraph = () => (
-    <>
-      {trainMetas
-        .filter(({ code }) => code === TimeStatus.ON_TIME)
-        .map((tm) => (
-          <div
-            key={tm.id}
-            className="w-full"
-            style={{ backgroundColor: getTrainColor(tm) }}
-          />
-        ))}
-      <div className="w-full bg-white" />
-      {trainMetas
-        .filter(({ code }) => code === TimeStatus.DELAYED)
-        .sort((a, b) => a.delay - b.delay)
-        .map((tm) => (
-          <div
-            key={tm.id}
-            className="w-full"
-            style={{ backgroundColor: getTrainColor(tm) }}
-          />
-        ))}
-    </>
   )
 
   const stats = [
@@ -63,38 +39,30 @@ function Stats({ trains }: { trains: Train[] }) {
     },
   ]
   return (
-    <>
-      {/* <div className="mt-4 flex h-4 w-full overflow-hidden px-3">
-        {renderGraph()}
-      </div> */}
-      <div
-        className={cn(
-          'mx-3 flex justify-evenly gap-2 border-b py-3 text-center',
-          classNames.sectionSeparator,
-        )}
-      >
-        {stats.map(({ title, value, unit }) => (
-          <div key={title} className="flex flex-col">
-            <div>
-              <span className="text-3xl">{value}</span>
-              {unit && (
-                <span className={cn('text-lg', classNames.textDeemphasized)}>
-                  {unit}
-                </span>
-              )}
-            </div>
-            <div
-              className={cn(
-                'text-sm font-semibold',
-                classNames.textDeemphasized,
-              )}
-            >
-              {title}
-            </div>
+    <div
+      className={cn(
+        'mx-3 flex justify-evenly gap-2 border-b py-3 text-center',
+        classNames.sectionSeparator,
+      )}
+    >
+      {stats.map(({ title, value, unit }) => (
+        <div key={title} className="flex flex-col">
+          <div>
+            <span className="text-3xl">{value}</span>
+            {unit && (
+              <span className={cn('text-lg', classNames.textDeemphasized)}>
+                {unit}
+              </span>
+            )}
           </div>
-        ))}
-      </div>
-    </>
+          <div
+            className={cn('text-sm font-semibold', classNames.textDeemphasized)}
+          >
+            {title}
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
 

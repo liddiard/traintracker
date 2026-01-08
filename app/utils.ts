@@ -10,7 +10,7 @@ import {
   TrainMeta,
   TimeFormat,
 } from './types'
-import { colors, TRAIN_SEARCH_PARAMS } from './constants'
+import { TRAIN_QUERY_PARAMS } from './constants'
 import { routeToCodeMap } from './components/Map/constants'
 
 // convert a whole number of milliseconds to seconds
@@ -494,11 +494,18 @@ export const getSegmentDurationMinMax = (
  * @returns A color string representing the delay
  */
 export const getDelayColor = (delay: number) => {
+  console.log(
+    getCSSVar('--color-amtrak-yellow-400'),
+    getCSSVar('--color-amtrak-red-600'),
+  )
   const delayPalette = interpolate([
-    colors['amtrak-yellow-400'],
-    average([colors['amtrak-yellow-400'], colors['amtrak-red-600']]),
-    colors['amtrak-red-600'],
-    colors['amtrak-red-400'],
+    getCSSVar('--color-amtrak-yellow-400'),
+    average([
+      getCSSVar('--color-amtrak-yellow-400'),
+      getCSSVar('--color-amtrak-red-600'),
+    ]),
+    getCSSVar('--color-amtrak-red-600'),
+    getCSSVar('--color-amtrak-red-400'),
   ])
   const maxDelay = 60 * 2 // minutes
   const color = delay
@@ -516,13 +523,13 @@ export const getDelayColor = (delay: number) => {
 export const getTrainColor = (trainMeta: TrainMeta) => {
   const { code, delay } = trainMeta
   if (code === undefined) {
-    return colors['positron-gray-600']
+    return getCSSVar('--color-positron-gray-600')
   }
   return {
-    [TimeStatus.PREDEPARTURE]: formatRgb(colors['amtrak-blue-500']),
-    [TimeStatus.ON_TIME]: formatRgb(colors['amtrak-green-400']),
+    [TimeStatus.PREDEPARTURE]: formatRgb(getCSSVar('--color-amtrak-blue-500')),
+    [TimeStatus.ON_TIME]: formatRgb(getCSSVar('--color-amtrak-green-400')),
     [TimeStatus.DELAYED]: getDelayColor(delay),
-    [TimeStatus.COMPLETE]: formatRgb(colors['amtrak-deep-blue']),
+    [TimeStatus.COMPLETE]: formatRgb(getCSSVar('--color-amtrak-deep-blue')),
   }[code]
 }
 
@@ -585,3 +592,21 @@ export const urlBase64ToUint8Array = (base64String: string) => {
   }
   return outputArray
 }
+
+/**
+ * Gets the value of a CSS variable (custom property)
+ * https://tailwindcss.com/docs/theme#referencing-in-javascript
+ *
+ * @param color Full CSS property name, including `--` prefix
+ * @returns CSS property value as a string
+ */
+export const getCSSVar = (name: string) =>
+  typeof window === 'undefined'
+    ? 'white'
+    : /* Note: It is critical that callers of this function specify the full property
+         value string as an argument, otherwise Tailwind's static analysis will not
+         detect the variable as used, and it will strip it from the client stylesheet.
+         That's why we don't prefix the property value in this function with like
+         `--color-`. Annoying "magic" that I wasted an hour figuring out? You bet.
+       */
+      getComputedStyle(document.documentElement).getPropertyValue(name)

@@ -8,6 +8,7 @@ import {
   getTrainMeta,
 } from '@/app/utils'
 import { useSettings } from '../providers/settings'
+import { useEffect, useState } from 'react'
 
 function StatusBadge({
   train,
@@ -21,6 +22,15 @@ function StatusBadge({
   const { timeFormat, timeZone } = settings
   const backgroundColor = getTrainColor(trainMeta)
   const { code, delay, firstStop, lastStop } = trainMeta
+
+  const [mounted, setMounted] = useState(false)
+
+  // set mounted state on client side to force train labels to get correct colors from
+  // CSS variables
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, [])
 
   let text
   switch (code) {
@@ -59,6 +69,10 @@ function StatusBadge({
         timeFormat,
       })
     }
+  }
+
+  if (!mounted) {
+    return null
   }
 
   const timeInfo = getTimeInfo()
