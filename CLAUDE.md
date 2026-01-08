@@ -12,7 +12,7 @@ Always use context7 when I need code generation, setup or configuration steps, o
 
 ## Testing changes
 
-After any change, run `npm run lint` to check for formatting issues. Also run `tsc --noEmit` to check for type errors.
+After any change, run `npm run lint` to check for formatting issues. Also run `npx tsc --noEmit` to check for type errors.
 
 ## Development Commands
 
