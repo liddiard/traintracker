@@ -166,6 +166,7 @@ function Search({ id, className = '' }: SearchProps) {
         </>
       )}
       required={true}
+      autoFocus={isFrom}
     />
   )
 
@@ -194,6 +195,7 @@ function Search({ id, className = '' }: SearchProps) {
           }
         }}
         required={true}
+        autoFocus
       />
       {trainName && (
         <SearchSelect
