@@ -11,6 +11,7 @@ import {
 } from '../utils'
 import { useSettings } from '../providers/settings'
 import NotificationButton from './NotificationButton'
+import Link from 'next/link'
 
 function TimelineSegment({
   stops,
@@ -101,7 +102,12 @@ function TimelineSegment({
       </div>
       <div className="z-10 mx-0.5 my-1 aspect-square w-3 rounded-full bg-white" />
       <div className="flex items-start gap-1 leading-snug">
-        <span className="block font-semibold text-balance">{name}</span>
+        <Link
+          href={`/station/${code}`}
+          className="block font-semibold text-balance hover:underline"
+        >
+          {name}
+        </Link>
         <NotificationButton
           trainId={trainId}
           stopCode={code}

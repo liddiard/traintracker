@@ -32,9 +32,9 @@ export const trackLayer: LineLayerSpecification = {
 }
 
 export const stationLayer: CircleLayerSpecification = {
-  id: sourceId.amtrakStations,
+  id: sourceId.stations,
   type: 'circle',
-  source: sourceId.amtrakStations,
+  source: sourceId.stations,
   paint: {
     'circle-color': 'white',
     'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 4],
@@ -44,9 +44,9 @@ export const stationLayer: CircleLayerSpecification = {
 }
 
 export const stationLabelLayer: SymbolLayerSpecification = {
-  id: 'station-labels',
+  id: sourceId.stationLabels,
   type: 'symbol',
-  source: sourceId.amtrakStations,
+  source: sourceId.stations,
   layout: {
     'text-field': [
       'step',
@@ -55,7 +55,7 @@ export const stationLabelLayer: SymbolLayerSpecification = {
       5,
       ['get', 'code'],
       10,
-      ['concat', ['get', 'name'], ' (', ['get', 'code'], ')'],
+      ['concat', ['get', 'code'], ' / ', ['get', 'name']],
     ],
     // font names from https://github.com/openmaptiles/fonts/
     'text-font': ['Noto Sans Regular'],

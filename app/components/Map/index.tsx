@@ -43,7 +43,7 @@ import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
 import { sleep } from '@/app/utils'
 import { sourceId, TRAIN_UPDATE_FREQ } from './constants'
-import TrainGPS from './TrainGPS'
+import Crosshair from './Crosshair'
 import TrainLabel from './TrainLabel'
 import MapSettings from './Settings'
 import Header from './Header'
@@ -69,7 +69,7 @@ function Map() {
   const { settings, updateSetting } = useSettings()
   const { sheetTop } = useBottomSheet()
   const router = useRouter()
-  const { operator, id } = useParams()
+  const { operator, id, code } = useParams() // train operator, train ID, station code
   const query = useSearchParams()
 
   const initialViewState = {
@@ -80,11 +80,12 @@ function Map() {
     bearing: 0,
   }
 
+  const [loaded, setLoaded] = useState(false)
   const [viewState, setViewState] = useState(initialViewState)
   const [trainData, setTrainData] = useState(emptyTrainData)
 
   const mapRef = useRef<MapRef>(null)
-  const flownToTrain = useRef<string | null | undefined>(null)
+  const flownToTrain = useRef<string>(null)
   const followSetting = useRef<boolean>(null)
 
   // use refs so the data update interval doesn't restart on API updates
@@ -98,6 +99,11 @@ function Map() {
   const selectedTrain = useMemo(
     () => trainData.features.find((t) => t.id === `${operator}/${id}`),
     [trainData, operator, id],
+  )
+
+  const selectedStation = useMemo(
+    () => stations.find((s) => s.code === code),
+    [stations, code],
   )
 
   const padding = useMemo(
@@ -156,6 +162,7 @@ function Map() {
     }
     // if the selected train changed…
     else if (flownToTrain.current !== selectedTrain.id) {
+      // …stop following any current train…
       updateSetting('follow', false)
       // …fly to it on the map, zooming in if the map is far zoomed out
       const zoom = mapRef.current.getZoom()
@@ -169,6 +176,18 @@ function Map() {
     }
     followSetting.current = settings.follow
   }, [selectedTrain, settings.follow, updateSetting, padding])
+
+  // fly to a new station that the user selected
+  useEffect(() => {
+    if (!mapRef.current || !selectedStation) {
+      return
+    }
+    mapRef.current.flyTo({
+      center: selectedStation.coordinates as LngLatLike,
+      zoom: 12,
+      padding,
+    })
+  }, [loaded, selectedStation, padding])
 
   const syncMapState = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
@@ -189,6 +208,16 @@ function Map() {
   // redirect to a train by id, where `id` is in the format: <operator>/<operator_id>
   const navigateToTrain = (id: string) => {
     router.push(`/train/${id}`)
+  }
+
+  const handleMapClick = (
+    ev: MapLayerMouseEvent & { features?: MapGeoJSONFeature[] },
+  ) => {
+    const stationCode = ev.features?.[0]?.properties.code
+    console.log('stationCode', stationCode)
+    if (stationCode) {
+      router.push(`/station/${stationCode}`)
+    }
   }
 
   const controlStyle: React.CSSProperties = {
@@ -228,6 +257,8 @@ function Map() {
     </>
   )
 
+  const { shortcode, gpsCoordinates } = selectedTrain?.properties ?? {}
+
   return (
     <div className="h-full w-full">
       <Header />
@@ -237,6 +268,7 @@ function Map() {
         mapStyle={mapStyleUrls[settings.mapStyle]}
         attributionControl={false}
         onLoad={() => {
+          setLoaded(true)
           updateTrains()
         }}
         onMove={(ev: ViewStateChangeEvent) => {
@@ -246,14 +278,14 @@ function Map() {
           }
         }}
         onMoveEnd={syncMapState}
-        onClick={(
-          ev: MapLayerMouseEvent & {
-            features?: MapGeoJSONFeature[]
-          },
-        ) => {
-          const trainID = ev.features?.[0]?.properties.id
-          if (trainID) navigateToTrain(trainID)
-        }}
+        interactiveLayerIds={[sourceId.stations, sourceId.stationLabels]}
+        onMouseEnter={() =>
+          (mapRef.current!.getCanvas().style.cursor = 'pointer')
+        }
+        onMouseLeave={() =>
+          (mapRef.current!.getCanvas().style.cursor = 'default')
+        }
+        onClick={handleMapClick}
       >
         {renderControls()}
 
@@ -262,7 +294,7 @@ function Map() {
         </Source>
 
         <Source
-          id={sourceId.amtrakStations}
+          id={sourceId.stations}
           type="geojson"
           data={stationsToGeoJson(stations)}
         >
@@ -305,8 +337,19 @@ function Map() {
           </Fragment>
         ))}
 
-        {selectedTrain && viewState.zoom > 6 && (
-          <TrainGPS {...selectedTrain.properties} zoom={viewState.zoom} />
+        {selectedTrain && gpsCoordinates && (
+          <Crosshair
+            gpsCoordinates={gpsCoordinates}
+            shortcode={shortcode}
+            zoom={viewState.zoom}
+          />
+        )}
+
+        {selectedStation && (
+          <Crosshair
+            gpsCoordinates={selectedStation.coordinates}
+            zoom={viewState.zoom}
+          />
         )}
       </MapGL>
       <MapSettings

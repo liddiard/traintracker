@@ -270,27 +270,31 @@ export const getOffset = (timeZone = 'UTC', date = new Date()) => {
 interface FormatTimeOptions {
   tz?: string
   timeFormat?: TimeFormat
+  seconds?: boolean
 }
 
 /**
  * Format a given date as a string in the given timezone.
  *
  * The string is formatted as "HH:MM p" (e.g. "1:30 p") in 12-hour format or "HH:MM"
- * in 24-hour format (e.g. "13:30").
+ * in 24-hour format (e.g. "13:30"). If seconds is true, the format includes
+ * seconds (e.g. "1:30:45 p" or "13:30:45").
  *
  * @param date - The date to format
  * @param options - The options object
  * @param options.tz - The timezone to format the date in (defaults to the user's current timezone)
- * @param options.hr24 - Whether to use 24-hour format (defaults to false)
+ * @param options.timeFormat - Whether to use 12-hour or 24-hour format (defaults to 'hr12')
+ * @param options.seconds - Whether to include seconds in the output (defaults to false)
  * @returns A string representation of the formatted date
  */
 export const formatTime = (
   date: Date,
-  { tz, timeFormat = 'hr12' }: FormatTimeOptions,
+  { tz, timeFormat = 'hr12', seconds = false }: FormatTimeOptions,
 ) => {
   const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric',
     minute: 'numeric',
+    ...(seconds ? { second: 'numeric' } : {}),
     timeZone: tz || Intl.DateTimeFormat().resolvedOptions().timeZone,
     hour12: timeFormat === 'hr12',
   }

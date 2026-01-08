@@ -4,21 +4,24 @@ import { Marker as MarkerType } from 'maplibre-gl'
 import cn from 'classnames'
 import Crosshair from '@/app/img/crosshair.svg'
 import { inter } from '@/app/constants'
-import { TrainFeatureProperties } from '@/app/types'
 
-interface TrainGPSProps extends TrainFeatureProperties {
+interface TrainGPSProps {
+  gpsCoordinates: number[]
   zoom: number
+  // shortcode is optional and not present when crosshair is used to identify a station
+  // (as opposed to a train)
+  shortcode?: string
 }
 
 function TrainGPS({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
   const [showPopup, setShowPopup] = useState(false)
   const markerRef = useRef<MarkerType>(null)
 
-  // https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MarkerOptions/#subpixelpositioning
   useEffect(() => {
     if (!gpsCoordinates) {
       return
     }
+    // https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MarkerOptions/#subpixelpositioning
     markerRef.current?.setSubpixelPositioning(true)
   }, [gpsCoordinates])
 
@@ -50,7 +53,7 @@ function TrainGPS({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
           }}
         />
       </Marker>
-      {showPopup && (
+      {shortcode && showPopup && (
         <Popup
           longitude={lon}
           latitude={lat}

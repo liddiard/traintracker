@@ -161,7 +161,7 @@ export default function TrainDetail() {
         )}
       >
         <ChevronLeft className="h-4" />{' '}
-        {hasTrainSearchParams ? 'Back to Search' : 'All Trains'}
+        {hasTrainSearchParams ? 'Back to Trains' : 'All Trains'}
       </Link>
       <h1 className="text-3xl font-bold">
         {train.name}{' '}
@@ -240,7 +240,9 @@ export default function TrainDetail() {
                   isStaleData,
               })}
             >
-              {train.updated && formatTime(train.updated, { timeFormat })}
+              {train.updated
+                ? formatTime(train.updated, { timeFormat })
+                : 'unknown'}
             </time>
             {isStaleData && (
               <Warning
