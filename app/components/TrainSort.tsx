@@ -69,8 +69,8 @@ function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
       ? 'Current sort: descending. Click for ascending sort.'
       : 'Current sort: ascending. Click for descending sort.'
   return (
-    <div className="mt-4 mb-2 flex flex-col gap-2">
-      <div className="relative flex gap-2 overflow-x-auto pl-3">
+    <div className="mx-3 mt-4 mb-2 flex flex-col gap-3">
+      <div className="flex flex-wrap gap-2">
         {operators.map(({ name, value, selected }) => (
           <Fragment key={value}>
             <input
@@ -86,7 +86,7 @@ function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
               htmlFor={`operator-${value}`}
               tabIndex={0}
               className={cn(
-                'shrink-0 rounded-full px-3 py-1',
+                'rounded-full px-3 py-1',
                 value === operator
                   ? `font-semibold text-white ${selected}`
                   : 'cursor-pointer font-medium inset-ring-2 inset-ring-black dark:inset-ring-white',
@@ -96,9 +96,8 @@ function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
             </label>
           </Fragment>
         ))}
-        <div className="sticky top-0 right-0 bottom-0 min-w-4 bg-linear-to-r from-transparent to-white" />
       </div>
-      <div className="mx-3 flex items-center justify-between gap-1">
+      <div className="flex items-center justify-between gap-1">
         <div className="flex items-center">
           <label htmlFor="sort">Sort by:</label>
           <select
