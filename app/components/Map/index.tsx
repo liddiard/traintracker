@@ -106,14 +106,23 @@ function Map() {
     [stations, code],
   )
 
+  // padding to keep map centered and controls above bottom sheet when the sheet is at
+  // its bottom or middle snap points
   const padding = useMemo(
     () => ({
-      bottom:
-        typeof window == 'undefined'
-          ? 0
-          : Math.min((window.innerHeight - 35) / 2, sheetTop),
+      bottom: !loaded
+        ? 0
+        : Math.min(
+            sheetTop,
+            // Estimated distance from the bottom of the viewport when the sheet is
+            // at its middle snap point. Add 35px for sheet top margin.
+            (window.innerHeight - 35) / 2,
+          ) +
+          // Subtract outerHeight from innerHeight to account for mobile browser
+          // bottom URL bar
+          (window.outerHeight - window.innerHeight),
     }),
-    [sheetTop],
+    [sheetTop, loaded],
   )
 
   const updateTrains = useCallback(() => {
@@ -182,9 +191,11 @@ function Map() {
     if (!mapRef.current || !selectedStation) {
       return
     }
+    const zoom = mapRef.current.getZoom()
+    const minFlyZoom = 12
     mapRef.current.flyTo({
       center: selectedStation.coordinates as LngLatLike,
-      zoom: 12,
+      zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
       padding,
     })
   }, [loaded, selectedStation, padding])
@@ -221,9 +232,8 @@ function Map() {
   }
 
   const controlStyle: React.CSSProperties = {
-    position: 'relative',
-    bottom: padding.bottom,
-    transition: 'bottom 500ms',
+    transform: `translateY(-${padding.bottom}px)`,
+    transition: 'transform 500ms',
   }
 
   const renderControls = () => (
@@ -354,9 +364,7 @@ function Map() {
           />
         )}
       </MapGL>
-      <MapSettings
-        style={{ bottom: padding.bottom, transition: 'bottom 500ms' }}
-      />
+      <MapSettings style={controlStyle} />
     </div>
   )
 }
