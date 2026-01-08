@@ -262,11 +262,13 @@ function Map() {
   return (
     <div className="h-full w-full">
       <Header />
+      {/* https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/map */}
       <MapGL
         ref={mapRef}
         initialViewState={initialViewState}
         mapStyle={mapStyleUrls[settings.mapStyle]}
         attributionControl={false}
+        renderWorldCopies={false}
         onLoad={() => {
           setLoaded(true)
           updateTrains()
