@@ -207,10 +207,10 @@ export default function TrainDetail() {
       <div className="flex justify-center gap-2">
         <label
           className={cn(
-            'flex cursor-pointer items-center gap-[0.4em] rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors duration-300',
+            'flex cursor-pointer items-center gap-[0.4em] rounded-full px-4 py-2 text-sm font-semibold shadow-md transition-all duration-300',
             {
-              [classNames.sectionSeparator]: !follow,
-              'border-amtrak-yellow-200 bg-amtrak-yellow-100/50 dark:bg-amtrak-yellow-100/20':
+              'bg-positron-gray-100 dark:bg-positron-gray-700': !follow,
+              'bg-amtrak-yellow-100/50 dark:bg-amtrak-yellow-100/20 ring-amtrak-yellow-200 ring-2':
                 follow,
             },
           )}
