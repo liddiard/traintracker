@@ -34,6 +34,12 @@ export default function StationPage() {
   const stationCode = typeof code === 'string' ? code.toUpperCase() : ''
   const station = stations.find((s) => s.code === stationCode)
 
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, [])
+
   // Real-time clock that updates every second
   const [currentTime, setCurrentTime] = useState(new Date())
   useEffect(() => {
@@ -140,6 +146,11 @@ export default function StationPage() {
   }
 
   const renderTimeCell = (time: Date, delay: number) => {
+    if (!mounted) {
+      // time rendering requires CSS variables that are only available on client side
+      return null
+    }
+
     const hasDelay = delay !== 0
     const delayColor = delay > 0 ? getDelayColor(delay) : undefined
 
@@ -151,7 +162,6 @@ export default function StationPage() {
             'text-amtrak-green-500 dark:brightness-175': hasDelay && delay < 0,
           })}
           style={{ color: delay > 0 ? delayColor : '' }}
-          suppressHydrationWarning
         >
           {formatTime(time, formatTimeOptions)}
         </time>
@@ -162,7 +172,6 @@ export default function StationPage() {
               'text-amtrak-green-500 dark:brightness-175': delay < 0,
             })}
             style={{ color: delay > 0 ? delayColor : '' }}
-            suppressHydrationWarning
           >
             {formatDuration(delay, { shortenMins: true })}{' '}
             {delay > 0 ? 'late' : 'early'}
