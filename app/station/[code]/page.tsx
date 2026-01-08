@@ -263,7 +263,7 @@ export default function StationPage() {
 
         <div className="flex gap-2 text-lg">
           Station time:
-          <time className="font-mono font-semibold" suppressHydrationWarning>
+          <time className="font-semibold" suppressHydrationWarning>
             {formatTime(currentTime, {
               tz: station.timezone,
               timeFormat,

@@ -20,7 +20,7 @@ const operators = [
   {
     name: 'Amtrak',
     value: 'amtrak',
-    selected: 'bg-amtrak-midnight-blue',
+    selected: 'bg-amtrak-deep-blue',
   },
   {
     name: 'VIA Rail',
@@ -86,10 +86,10 @@ function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
               htmlFor={`operator-${value}`}
               tabIndex={0}
               className={cn(
-                'rounded-full px-3 py-1 shadow',
+                'rounded-full px-3 py-1',
                 value === operator
                   ? `font-semibold text-white ${selected}`
-                  : 'bg-positron-gray-100 dark:bg-positron-gray-700 cursor-pointer',
+                  : 'cursor-pointer font-medium inset-ring-2 inset-ring-black dark:inset-ring-white',
               )}
             >
               {name}
