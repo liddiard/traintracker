@@ -48,6 +48,7 @@ import TrainLabel from './TrainLabel'
 import MapSettings from './Settings'
 import Header from './Header'
 import { useBottomSheet } from '@/app/providers/bottomSheet'
+import { MOBILE_BREAKPOINT } from '@/app/constants'
 
 const amtrakTrack = _amtrakTrack as FeatureCollection<
   LineString | MultiLineString
@@ -110,17 +111,18 @@ function Map() {
   // its bottom or middle snap points
   const padding = useMemo(
     () => ({
-      bottom: !loaded
-        ? 0
-        : Math.min(
-            sheetTop,
-            // Estimated distance from the bottom of the viewport when the sheet is
-            // at its middle snap point. Add 35px for sheet top margin.
-            (window.innerHeight - 35) / 2,
-          ) +
-          // Subtract outerHeight from innerHeight to account for mobile browser
-          // bottom URL bar
-          (window.outerHeight - window.innerHeight),
+      bottom:
+        !loaded || window.innerWidth > MOBILE_BREAKPOINT
+          ? 0
+          : Math.min(
+              sheetTop,
+              // Estimated distance from the bottom of the viewport when the sheet is
+              // at its middle snap point. Add 35px for sheet top margin.
+              (window.innerHeight - 35) / 2,
+            ) +
+            // Subtract outerHeight from innerHeight to account for mobile browser
+            // bottom URL bar
+            (window.outerHeight - window.innerHeight),
     }),
     [sheetTop, loaded],
   )
