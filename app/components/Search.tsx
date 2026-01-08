@@ -230,6 +230,8 @@ function Search({ id, className = '' }: SearchProps) {
       url.searchParams.set('trainNumber', formData.get('trainNumber') as string)
     }
     router.push(url.toString())
+    // blur any focused input to close the mobile keyboard
+    document.documentElement.blur()
     setPosition('middle') // open mobile bottom sheet
   }
 
