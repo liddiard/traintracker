@@ -190,7 +190,7 @@ export default function BottomSheet({ children }: BottomSheetProps) {
     <Sheet
       isOpen={true}
       onClose={() => {}}
-      snapPoints={[0, 125, 0.5, 1]}
+      snapPoints={[0, 100, 0.5, 1]}
       initialSnap={initialSnap}
       disableDismiss={true}
       onSnap={handleSnap}
