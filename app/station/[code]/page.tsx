@@ -188,10 +188,7 @@ export default function StationPage() {
     return (
       <tr
         key={`${train.id}-${stop.code}`}
-        className={cn(
-          'even:bg-positron-gray-400/10 border-b',
-          classNames.sectionSeparator,
-        )}
+        className="even:bg-positron-gray-400/10"
       >
         <td className="py-2 pl-3 align-top">
           <Link
