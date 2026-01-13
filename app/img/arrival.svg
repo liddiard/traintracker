@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg fill="currentColor" version="1.1" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <clipPath id="a" class="frame-clip frame-clip-def">
-      <rect y="0" width="128" height="128" rx="0" ry="0" />
-    </clipPath>
-  </defs>
+<svg version="1.1" viewBox="0 0 128 128" fill="currentColor"
+  xmlns="http://www.w3.org/2000/svg">
   <g width="24" height="24" rx="0" ry="0">
     <g display="none">
       <g class="fills">
-        <rect x="-16" width="128" height="128" rx="0" ry="0" />
+        <rect x="-23" width="128" height="128" rx="0" ry="0" />
       </g>
     </g>
     <g class="fills">
       <path
-        d="m23.093 128-15.093-15.088 49.808-48.933-49.808-48.891 15.093-15.088 64.907 63.979z" />
+        d="m16.093 128-15.093-15.088 49.808-48.933-49.808-48.891 15.093-15.088 64.907 63.979z" />
     </g>
   </g>
   <g class="fills">
-    <rect x="98" y="0" width="22" height="128" rx="0" ry="0" />
+    <rect x="106" y="0" width="22" height="128" rx="0" ry="0" />
   </g>
 </svg>
