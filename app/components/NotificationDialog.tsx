@@ -5,7 +5,7 @@ import { useTrains } from '@/app/providers/train'
 import { NotificationType } from '../types'
 import Arrival from '@/app/img/arrival.svg'
 import Departure from '@/app/img/departure.svg'
-import Bell from '@/app/img/bell.svg'
+import BellRinging from '@/app/img/bell-ringing.svg'
 import Info from '@/app/img/info.svg'
 import { classNames } from '../constants'
 import { getTrainMeta } from '../utils'
@@ -78,7 +78,7 @@ export default function NotificationDialog({
         </div>
         {isActive ? (
           <div className="text-amtrak-yellow-400 dark:text-amtrak-yellow-200 flex items-center gap-2 text-sm">
-            <Bell className="inline h-4 w-4" /> <span>Alert set</span>
+            <BellRinging className="inline h-4 w-4" /> <span>Alert set</span>
           </div>
         ) : null}
       </button>
@@ -87,7 +87,7 @@ export default function NotificationDialog({
 
   return (
     <div
-      className="fixed inset-0 z-20 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/50"
       onClick={onClose}
     >
       <div
@@ -123,9 +123,9 @@ export default function NotificationDialog({
             classNames.textDeemphasized,
           )}
         >
-          <strong>Heads up:</strong> Web notifications are not guaranteed. Your
-          browser must be running in the background to receive them. Don’t rely
-          on this alone to catch a train!
+          <strong>Heads up:</strong> Your web browser must be running in the
+          background to receive notifications. Don’t rely solely on this to
+          catch a train!
         </div>
 
         <button
