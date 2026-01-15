@@ -38,3 +38,50 @@ model PushSubscription {
   @@index([trainId, sent])
   @@index([endpoint])
 }
+
+// GTFS data models - populated at app startup from VIA Rail and Brightline feeds
+// Reference: https://gtfs.org/documentation/schedule/reference/#field-definitions
+model GtfsStop {
+  id                 String    @id // Format: "agency/stop_id" (e.g., "via/OTTW")
+  stopId             String    // Original GTFS stop_id
+  stopCode           String?   // stop_code (often the station code)
+  stopName           String?
+  stopDesc           String?
+  stopLat            Float?
+  stopLon            Float?
+  zoneId             String?
+  stopUrl            String?
+  locationType       Int?      // 0=stop, 1=station, 2=entrance, etc.
+  parentStation      String?
+  stopTimezone       String?
+  wheelchairBoarding Int?
+  platformCode       String?
+  agency             String    // "amtrak", "via", "brightline", etc.
+
+  @@index([agency])
+  @@index([stopCode])
+}
+
+model GtfsTrip {
+  id                   String  @id // Namespaced as: `agency/trip_id`
+  tripId               String  // Original GTFS `trip_id`
+  routeId              String
+  serviceId            String
+  tripHeadsign         String?
+  tripShortName        String?
+  directionId          Int?
+  blockId              String?
+  shapeId              String?
+  wheelchairAccessible Int?
+  bikesAllowed         Int?
+  agency               String
+
+  @@index([agency])
+  @@index([routeId])
+  @@index([serviceId])
+}
+
+model GtfsImportMeta {
+  id             String   @id @default("gtfs_import") // Singleton. Value should match `@app/constants.ts:GTFS_IMPORT_ID`
+  lastImportedAt DateTime
+}

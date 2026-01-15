@@ -1,5 +1,5 @@
 import { StationResponse, Stop, Train } from '@/app/types'
-import { stations } from '../stations/route'
+import { getStations } from '@/app/lib/stations'
 import { ViaStationInfo, ViaTrainInfo } from './types'
 import { msToMins } from '@/app/utils'
 
@@ -100,6 +100,7 @@ const get = async () => {
   try {
     const response = await fetch(API_ENDPOINT)
     const data = (await response.json()) as Record<number, ViaTrainInfo>
+    const stations = await getStations()
     const trains = Object.entries(data).map((train) =>
       processTrain(train, stations),
     )

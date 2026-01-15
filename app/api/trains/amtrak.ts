@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import { Feature, Point } from 'geojson'
 import { amtrakDecryptResponse, amtrakParseDate } from '../utils'
-import { stations } from '../stations/route'
+import { getStations } from '@/app/lib/stations'
 import { mphToKmh, msToMins } from '@/app/utils'
 import { Train, Stop, StationResponse } from '@/app/types'
 import {
@@ -127,6 +127,8 @@ const get = async () => {
   const trains = amtrakDecryptResponse(data)
 
   await fs.writeFile('original.json', JSON.stringify(trains, null, 2), 'utf8')
+
+  const stations = await getStations()
 
   return (
     trains.features

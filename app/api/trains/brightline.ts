@@ -1,7 +1,7 @@
 import GtfsRealtimeBindings, { transit_realtime } from 'gtfs-realtime-bindings'
 import { distance, point } from '@turf/turf'
-import { stations } from '../stations/route'
-import { Stop, Train, TrainStatus } from '@/app/types'
+import { getStations } from '@/app/lib/stations'
+import { Stop, Train, TrainStatus, StationResponse } from '@/app/types'
 
 // Source: http://feed.gobrightline.com/
 const API_ENDPOINTS = {
@@ -33,11 +33,10 @@ const parseTrainNumber = (tripId: string): string => {
   return parts[0] // "5333"
 }
 
-const processStop = ({
-  stopId,
-  arrival,
-  departure,
-}: transit_realtime.TripUpdate.IStopTimeUpdate): Stop => ({
+const processStop = (
+  { stopId, arrival, departure }: transit_realtime.TripUpdate.IStopTimeUpdate,
+  stations: StationResponse,
+): Stop => ({
   code: stopId!,
   name: stations[`brightline/${stopId}`]?.name || stopId!,
   timezone: 'America/New_York', // all current Brightline stations are in US Eastern Time
@@ -97,11 +96,13 @@ const determineTrainStatus = (stops: Stop[]): TrainStatus => {
  *
  * @param trainCoordinates - Current GPS coordinates of the train as [longitude, latitude]
  * @param stops - Array of train stops with arrival time information
+ * @param stations - Station lookup object
  * @returns The estimated speed in km/h, or null if speed cannot be calculated
  */
 const calculateSpeed = (
   trainCoordinates: number[] | null,
   stops: Stop[],
+  stations: StationResponse,
 ): number | null => {
   if (!trainCoordinates) {
     // unknown train position
@@ -147,6 +148,7 @@ const calculateSpeed = (
 const processTrain = (
   train: transit_realtime.IFeedEntity,
   trip: transit_realtime.IFeedEntity | undefined,
+  stations: StationResponse,
 ): Train | null => {
   if (!train.vehicle?.trip?.tripId) {
     return null
@@ -154,12 +156,14 @@ const processTrain = (
   const trainNumber = parseTrainNumber(train.vehicle.trip.tripId)
   const { timestamp, position } = train.vehicle
   const { longitude, latitude } = position || {}
-  const stops = (trip?.tripUpdate?.stopTimeUpdate || []).map(processStop)
+  const stops = (trip?.tripUpdate?.stopTimeUpdate || []).map((stop) =>
+    processStop(stop, stations),
+  )
   const coordinates: number[] | null =
     longitude && latitude ? [longitude, latitude] : null
 
   const status = determineTrainStatus(stops)
-  const speed = calculateSpeed(coordinates, stops)
+  const speed = calculateSpeed(coordinates, stops, stations)
 
   return {
     id: `brightline/${trainNumber}`,
@@ -180,12 +184,13 @@ const get = async () => {
     // train positions
     const positions = await fetchPositions()
     const trips = await fetchTrips()
+    const stations = await getStations()
     const trains = positions
       .map((position) => {
         const trip = trips.find(
           (t) => t.tripUpdate?.trip.tripId === position.vehicle?.trip?.tripId,
         )
-        return processTrain(position, trip)
+        return processTrain(position, trip, stations)
       })
       .filter((train) => train !== null)
     return trains

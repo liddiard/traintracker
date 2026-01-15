@@ -16,6 +16,9 @@ export const TRAIN_QUERY_PARAMS = {
 // max number of active push notification subscriptions allowed per device
 export const MAX_PUSH_SUBSCRIPTIONS = 10
 
+// Unique ID for GTFS data import "meta" record in db
+export const GTFS_IMPORT_ID = 'gtfs_import'
+
 // at this number of pixels wide, switch to 1-column mobile lyout
 export const MOBILE_BREAKPOINT = 768
 
