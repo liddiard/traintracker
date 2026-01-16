@@ -7,7 +7,7 @@ export const TRAIN_UPDATE_FREQ = 5000
 
 // MapLibre layer data sources
 export const sourceId = {
-  amtrakTrack: 'amtrak-track',
+  track: 'track',
   stations: 'stations',
   stationLabels: 'station-labels',
   trains: 'trains',

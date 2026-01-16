@@ -42,3 +42,6 @@ next-env.d.ts
 # prisma
 /db/generated
 /db/app.db
+
+# track data generated from GTFS on app startup
+public/map_data/track.json

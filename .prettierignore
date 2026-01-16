@@ -1,2 +1,2 @@
-public/map_data/amtrak-track.json
+public/map_data/*.json
 public/service-worker.js

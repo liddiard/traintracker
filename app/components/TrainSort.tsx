@@ -11,7 +11,7 @@ const sortOptions = {
   delay: 'Delay',
 }
 
-const operators = [
+const agencies = [
   {
     name: 'All',
     value: '',
@@ -25,22 +25,22 @@ const operators = [
   {
     name: 'VIA Rail',
     value: 'via',
-    selected: 'bg-amtrak-red-500',
+    selected: 'bg-via-red-400',
   },
   {
     name: 'Brightline',
     value: 'brightline',
-    selected: 'bg-amtrak-yellow-200 text-black!',
+    selected: 'bg-brightline-yellow-100 text-black!',
   },
 ]
 
 interface TrainSortParams {
   sort?: string
   sortDir?: string
-  operator?: string
+  agency?: string
 }
 
-function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
+function TrainSort({ sort, sortDir, agency = '' }: TrainSortParams) {
   const router = useRouter()
 
   const handleSortChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
@@ -59,7 +59,7 @@ function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
   const handleOperatorChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const url = new URL(window.location.href)
     const newOperator = ev.target.value
-    url.searchParams.set('operator', newOperator)
+    url.searchParams.set('agency', newOperator)
     router.push(url.toString())
   }
 
@@ -71,23 +71,23 @@ function TrainSort({ sort, sortDir, operator = '' }: TrainSortParams) {
   return (
     <div className="mx-3 mt-4 mb-2 flex flex-col gap-2">
       <div className="flex flex-wrap gap-2">
-        {operators.map(({ name, value, selected }) => (
+        {agencies.map(({ name, value, selected }) => (
           <Fragment key={value}>
             <input
-              id={`operator-${value}`}
+              id={`agency-${value}`}
               type="radio"
-              name="operator"
+              name="agency"
               value={value}
               onChange={handleOperatorChange}
-              checked={value === operator}
+              checked={value === agency}
               className="hidden"
             />
             <label
-              htmlFor={`operator-${value}`}
+              htmlFor={`agency-${value}`}
               tabIndex={0}
               className={cn(
                 'rounded-full px-3 py-1',
-                value === operator
+                value === agency
                   ? `font-semibold text-white ${selected}`
                   : 'cursor-pointer font-medium inset-ring-2 inset-ring-black dark:inset-ring-white',
               )}

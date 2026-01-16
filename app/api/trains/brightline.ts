@@ -2,6 +2,7 @@ import GtfsRealtimeBindings, { transit_realtime } from 'gtfs-realtime-bindings'
 import { distance, point } from '@turf/turf'
 import { getStations } from '@/app/lib/stations'
 import { Stop, Train, TrainStatus, StationResponse } from '@/app/types'
+import { getTrack } from './utils'
 
 // Source: http://feed.gobrightline.com/
 const API_ENDPOINTS = {
@@ -145,11 +146,11 @@ const calculateSpeed = (
   return Math.round(speed)
 }
 
-const processTrain = (
+const processTrain = async (
   train: transit_realtime.IFeedEntity,
   trip: transit_realtime.IFeedEntity | undefined,
   stations: StationResponse,
-): Train | null => {
+): Promise<Train | null> => {
   if (!train.vehicle?.trip?.tripId) {
     return null
   }
@@ -176,6 +177,7 @@ const processTrain = (
     speed,
     heading: position?.bearing ? position.bearing : null,
     stops,
+    track: await getTrack(trainNumber, 'brightline'),
   }
 }
 
@@ -185,15 +187,15 @@ const get = async () => {
     const positions = await fetchPositions()
     const trips = await fetchTrips()
     const stations = await getStations()
-    const trains = positions
-      .map((position) => {
+    const trains = await Promise.all(
+      positions.map((position) => {
         const trip = trips.find(
           (t) => t.tripUpdate?.trip.tripId === position.vehicle?.trip?.tripId,
         )
         return processTrain(position, trip, stations)
-      })
-      .filter((train) => train !== null)
-    return trains
+      }),
+    )
+    return trains.filter((train) => train !== null)
   } catch (error) {
     console.error('Error fetching Brightline data:', error)
     throw error

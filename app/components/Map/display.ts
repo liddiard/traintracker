@@ -14,19 +14,34 @@ import {
   getTrainShortcode,
 } from '../../utils'
 import { Train, Station, TrainFeatureProperties } from '../../types'
-import { getExtrapolatedTrainPoint, snapTrainToTrackCached } from './calc'
+import { getExtrapolatedTrainPoint } from './calc'
 import { sourceId, routeToCodeMap, DETAIL_ZOOM_LEVEL } from './constants'
 
+const colors = {
+  amtrakBlue400: formatRgb(getCSSVar('--color-amtrak-blue-400')),
+  amtrakBlue500: formatRgb(getCSSVar('--color-amtrak-blue-500')),
+  viaRed: formatRgb(getCSSVar('--color-via-red-400')),
+  brightlineYellow: formatRgb(getCSSVar('--color-brightline-yellow-400')),
+}
+
 export const trackLayer: LineLayerSpecification = {
-  id: sourceId.amtrakTrack,
+  id: sourceId.track,
   type: 'line',
-  source: sourceId.amtrakTrack,
+  source: sourceId.track,
   layout: {
     'line-join': 'round',
     'line-cap': 'round',
   },
   paint: {
-    'line-color': formatRgb(getCSSVar('--color-amtrak-blue-400')),
+    'line-color': [
+      'match',
+      ['get', 'agency'],
+      'via',
+      colors.viaRed!,
+      'brightline',
+      colors.brightlineYellow!,
+      colors.amtrakBlue400!,
+    ],
     'line-width': 2,
   },
 }
@@ -38,7 +53,15 @@ export const stationLayer: CircleLayerSpecification = {
   paint: {
     'circle-color': 'white',
     'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 4],
-    'circle-stroke-color': formatRgb(getCSSVar('--color-amtrak-blue-400')),
+    'circle-stroke-color': [
+      'match',
+      ['get', 'agency'],
+      'via',
+      colors.viaRed!,
+      'brightline',
+      colors.brightlineYellow!,
+      colors.amtrakBlue400!,
+    ],
     'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 2],
   },
 }
@@ -65,7 +88,15 @@ export const stationLabelLayer: SymbolLayerSpecification = {
     'text-justify': 'auto',
   },
   paint: {
-    'text-color': formatRgb(getCSSVar('--color-amtrak-blue-500')),
+    'text-color': [
+      'match',
+      ['get', 'agency'],
+      'via',
+      colors.viaRed!,
+      'brightline',
+      colors.brightlineYellow!,
+      colors.amtrakBlue400!,
+    ],
     'text-halo-color': 'white',
     'text-halo-width': 1,
     'text-halo-blur': 1,
@@ -92,7 +123,7 @@ export const trainGPSLabelLayer: SymbolLayerSpecification = {
     'text-font': ['Noto Sans Regular'],
   },
   paint: {
-    'text-color': formatRgb(getCSSVar('--color-amtrak-blue-500')),
+    'text-color': colors.amtrakBlue500,
     'text-halo-color': 'white',
     'text-halo-width': 1,
     'text-halo-blur': 1,
@@ -143,7 +174,8 @@ const createTrainFeature = (
   train: Train,
   stations: Station[],
 ): Feature<Point, TrainFeatureProperties> => {
-  const { id, number, name, updated, speed } = train
+  const { id, number, name, updated, speed, track } = train
+  const agency = id.split('/')[0]
   const trainMeta = getTrainMeta(train)
   const color = getTrainColor(trainMeta)
   // existing coordinates for this train (which may have previously been
@@ -159,19 +191,19 @@ const createTrainFeature = (
     map.getZoom() >= DETAIL_ZOOM_LEVEL &&
     map.getBounds().contains(prevCoords as LngLatLike)
   ) {
-    // get the last received (snapped) GPS position of the train + heading
-    const lastPosition = snapTrainToTrackCached(train)
-    const { track } = lastPosition
     // if we've identified a track for this train, extrapolate its current
     // position along it based on last update and next station ETA
-    const extrapolated =
-      track &&
-      getExtrapolatedTrainPoint(train.coordinates!, track, trainMeta, stations)
-    coordinates =
-      extrapolated?.point.geometry.coordinates ??
-      lastPosition.point?.geometry.coordinates
+    const extrapolated = track
+      ? getExtrapolatedTrainPoint(
+          train.coordinates!,
+          { id: track, agency },
+          trainMeta,
+          stations,
+        )
+      : null
+    coordinates = extrapolated?.point.geometry.coordinates ?? prevCoords
     heading = extrapolated?.heading
-    isExtrapolated = true
+    isExtrapolated = !!extrapolated
   }
   // train is outside the map viewport or we're zoomed far out; just return
   // its raw GPS position
@@ -217,6 +249,7 @@ const createTrainFeature = (
         : '',
       isExtrapolated,
       skipAnimation,
+      track,
     },
   }
 }

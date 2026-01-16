@@ -51,9 +51,9 @@ function TrainList({ trains, params }: TrainListProps) {
         (t) => t.number === params.trainNumber,
       )
     }
-    if (params.operator) {
+    if (params.agency) {
       filteredTrains = filteredTrains.filter((t) =>
-        t.id.startsWith(params.operator!),
+        t.id.startsWith(params.agency!),
       )
     }
     filteredTrains = filteredTrains.toSorted((a, b) => {

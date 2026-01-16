@@ -15,6 +15,7 @@ export interface Train {
   speed: number | null
   heading: number | null
   stops: Stop[]
+  track: string | null
 }
 
 // Train API response before parsing dates
@@ -58,6 +59,7 @@ export interface StopResponseItem extends Omit<Stop, 'departure' | 'arrival'> {
 export type StopResponse = StopResponseItem[]
 
 export interface Station {
+  agency: string
   code: string
   name: string
   timezone: string
@@ -91,9 +93,8 @@ export interface Option {
 }
 
 export interface TrackFeatureProperties {
-  OBJECTID: number
-  name: string
-  shape_leng: number
+  id: string
+  agency: string
 }
 
 export interface TrainFeatureProperties extends Omit<
@@ -113,15 +114,10 @@ type TrainQueryKeys =
   | 'to'
   | 'trainNumber'
   | 'trainName'
-  | 'operator'
+  | 'agency'
   | 'sort'
   | 'sortDir'
 export type TrainQueryParams = Partial<Record<TrainQueryKeys, string>>
-
-export interface TrackId {
-  id: number
-  index?: number
-}
 
 export enum InputType {
   TEXT,

@@ -24,21 +24,16 @@ import {
   Position,
 } from 'geojson'
 import {
-  Train,
   TrainMeta,
   Station,
-  TrackId,
   TrackFeatureProperties,
   TimeStatus,
   Stop,
 } from '../../types'
-import _amtrakTrack from '@/public/map_data/amtrak-track.json'
+import _track from '@/public/map_data/track.json'
 import { createCachedFunction, getStopCoordinates } from '@/app/utils'
 
-const amtrakTrack = _amtrakTrack as FeatureCollection<
-  LineString | MultiLineString,
-  TrackFeatureProperties
->
+const tracks = _track as FeatureCollection<LineString, TrackFeatureProperties>
 
 /**
  * Determines if a given point is behind a train relative to the next station.
@@ -97,13 +92,13 @@ const normalizeBearing = (degree: number) => {
  * with a track LineString.
  *
  * @param trainPoint - The current position of the train as a GeoJSON Feature<Point>.
- * @param track - The track geometry as a GeoJSON MultiLineString.
+ * @param track - The track geometry as a GeoJSON LineString.
  * @param nextStop - The next station the train is heading towards (optional).
  * @returns The heading in degrees, or undefined if the next station is not provided or if the nearest point is behind the train and cannot be determined.
  */
 export const getHeading = (
   trainPoint: Feature<Point>,
-  track: MultiLineString | LineString,
+  track: LineString,
   stations: Station[],
   nextStop?: Stop,
 ) => {
@@ -148,216 +143,24 @@ export const getHeading = (
 }
 
 /**
- * Finds the track associated with a given point feature.
+ * Retrieves a track feature by its agency and ID.
  *
- * @param point - The track vertex to search for.
- * @param clippedTracks - An array of clipped track features to search within.
- * @returns If the point is found in a track, the track ID and index (if the point
- * is in a MultiLineString), otherwise undefined.
- */
-const getTrackIdFromPoint = (
-  point: Feature<Point>,
-  clippedTracks: Feature<
-    LineString | MultiLineString,
-    TrackFeatureProperties
-  >[],
-): TrackId | undefined => {
-  const [lon, lat] = point.geometry.coordinates
-  // check if the exact lon/lat is found in the provided coordinate array
-  const hasPoint = (coord: Position) => coord[0] === lon && coord[1] === lat
-  for (const clippedTrack of clippedTracks) {
-    // Track clipping can cause MultiLineStrings to be converted to
-    // LineStrings, meaning we can't accurately determine where the point is
-    // in the overall track geometry. Therefore, retrieve the full track
-    // feature.
-    const track = amtrakTrack.features.find(
-      (f) => f.properties.OBJECTID === clippedTrack.properties.OBJECTID,
-    )
-    if (!track) {
-      console.warn(
-        'Unable to find full track from clipped track:',
-        clippedTrack,
-      )
-      continue
-    }
-    const id = track.properties.OBJECTID
-    // if the feature is a `LineString` (an array of coordinates), loop through
-    // it to look for the point
-    if (track.geometry.type === 'LineString') {
-      if (track.geometry.coordinates.some(hasPoint)) {
-        return {
-          id,
-          index: undefined,
-        }
-      }
-    }
-    // if the feature is a `MultiLineString` (an array of arrays of coordinates),
-    // loop through the nested geometry while tracking and returning the index
-    // of the appropriate `LineString`
-    else {
-      for (let i = 0; i < track.geometry.coordinates.length; i++) {
-        if (track.geometry.coordinates[i].some(hasPoint)) {
-          return {
-            id,
-            index: i,
-          }
-        }
-      }
-    }
-  }
-  console.warn('Unable to find track for point:', point)
-  return undefined
-}
-
-/**
- * Retrieves a track feature by its OBJECTID and index (if applicable).
- *
- * @param track - An object containing the OBJECTID and index (if applicable) of
- * the track to retrieve.
- * @param tracks - The FeatureCollection containing the track feature to
- * retrieve.
- * @returns The track feature as a LineString, or undefined if no track is
- * found.
+ * @param track - An object containing the track shape ID and agency name (e.g., 'amtrak', 'via', etc.).
+ * @param tracks - The FeatureCollection containing the track feature to retrieve.
+ * @returns The track feature as a LineString, or undefined if no track is found.
  */
 const getTrackFromId = (
-  track: TrackId,
-  tracks: FeatureCollection<
-    LineString | MultiLineString,
-    TrackFeatureProperties
-  >,
+  track: TrackFeatureProperties,
+  tracks: FeatureCollection<LineString, TrackFeatureProperties>,
 ) => {
   const trackFeature = tracks.features.find(
-    (f) => f.properties.OBJECTID === track.id,
+    (f) => f.properties.agency === track.agency && f.properties.id === track.id,
   )
   if (!trackFeature) {
-    console.warn(`Unable to find track with id: ${track.id}`)
-    return
+    console.warn(`Unable to find track: ${track}`)
   }
-  // if the track is a LineString (an array of coordinates), use it directly
-  // otherwise get the appropriate LineString from the MultiLineString
-  const coordArr =
-    track.index !== undefined
-      ? (trackFeature.geometry.coordinates[track.index] as Position[])
-      : (trackFeature.geometry.coordinates as Position[])
-  return lineString(coordArr)
+  return trackFeature
 }
-
-/**
- * Gets nearby track features and combines them into a single MultiLineString.
- *
- * @param point - Feature representing a point with coordinates.
- * @param track - FeatureCollection containing LineString or MultiLineString features with track properties.
- * @returns An object containing the nearby track features and the combined MultiLineString geometry.
- */
-const getNearbyTrack = (
-  point: Feature<Point>,
-  track: FeatureCollection<
-    LineString | MultiLineString,
-    TrackFeatureProperties
-  >,
-) => {
-  const [lon, lat] = point.geometry.coordinates
-  // corresponds to degrees of lat/lon in each cardinal direction from the
-  // train's coordinates
-  // 0.01 degrees is about 1 km: https://stackoverflow.com/a/16743805
-  const bboxSize = 0.01
-  // clip the track features to a bounding box around the point's coordinates
-  const nearbyFeatures = track.features
-    .map((f) =>
-      bboxClip(f, [
-        lon - bboxSize,
-        lat - bboxSize,
-        lon + bboxSize,
-        lat + bboxSize,
-      ]),
-    )
-    // filter out track geometries that are empty after clipping (which will
-    // be most of them for any given train)
-    .filter((f) => f.geometry.coordinates.length) as Feature<
-    LineString | MultiLineString,
-    TrackFeatureProperties
-  >[]
-
-  // combine the clipped features into a single MultiLineString which can be
-  // passed to `turf.nearestPointOnLine`
-  // `combine` appears to always return a FeatureCollection with a single
-  // feature, so we can just consider index 0
-  const nearbyTrack = combine(featureCollection(nearbyFeatures)).features[0]
-    ?.geometry as MultiLineString | undefined
-
-  return {
-    nearbyFeatures,
-    nearbyTrack,
-  }
-}
-
-/**
- * Snaps a train's GPS-reported coordinates to the nearest point on a track.
- * If no track is near the train's coordinates, returns the original coordinates.
- *
- * @param train - The train object containing GPS-reported coordinates.
- * @returns The snapped GeoJSON point.
- *
- * @example
- * const train = { lon: -122.4194, lat: 37.7749 };
- * const nextStop = { code: 'NYP' };
- * const result = snapTrainToTrack(train);
- * console.log(result); // Snapped point on the track
- */
-export const snapTrainToTrack = (train: Train) => {
-  // find the Point on a track nearest the train's GPS-reported coordinates
-  const { coordinates, updated } = train
-  if (!coordinates) {
-    return {}
-  }
-
-  const trainPoint = point(coordinates)
-  // for performance, and to avoid snapping a train to track far away from its
-  // actual coordinates, only consider track within a small bounding box
-  // around the train's coordinates
-  const { nearbyFeatures, nearbyTrack } = getNearbyTrack(
-    trainPoint,
-    amtrakTrack,
-  )
-
-  if (nearbyTrack) {
-    // there is some track near the train's GPS-reported position, so find the
-    // point on that track nearest the train
-    const snappedTrainPoint = nearestPointOnLine(nearbyTrack, trainPoint)
-    // get the vertex on the track geometry that's nearest the train
-    const nearestTrackPoint = nearestPoint(trainPoint, explode(nearbyTrack))
-    let track
-    // if we were able to find a track vertex near the train, find the track
-    // to which the vertex corresponds
-    if (nearestTrackPoint) {
-      track = getTrackIdFromPoint(nearestTrackPoint, nearbyFeatures)
-    }
-    return {
-      point: snappedTrainPoint,
-      track,
-      updated,
-    }
-  } else {
-    // there is no track is near the train's GPS-reported position, so we
-    // can't snap it or calculate heading – just return the GPS-reported
-    // position
-    return {
-      point: trainPoint,
-      track: undefined,
-      updated,
-    }
-  }
-}
-
-/**
- * Cached version of snapTrainToTrack.
- */
-export const snapTrainToTrackCached = createCachedFunction(
-  snapTrainToTrack,
-  (train) => train.id, // cache key
-  // cache validity condition
-  ({ updated }, train) => !!updated && updated === train.updated,
-)
 
 /**
  * Gets the track segment between a train's position and the next station.
@@ -480,11 +283,11 @@ const getTrackTerminus = (
  */
 export const getExtrapolatedTrainPoint = (
   trainPosition: Position,
-  trackId: TrackId,
+  track: TrackFeatureProperties,
   trainMeta: TrainMeta,
   stations: Station[],
 ) => {
-  const trackLine = getTrackFromId(trackId, amtrakTrack)
+  const trackLine = getTrackFromId(track, tracks)
   if (!trackLine) {
     return
   }

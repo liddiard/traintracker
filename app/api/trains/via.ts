@@ -2,6 +2,7 @@ import { StationResponse, Stop, Train } from '@/app/types'
 import { getStations } from '@/app/lib/stations'
 import { ViaStationInfo, ViaTrainInfo } from './types'
 import { msToMins } from '@/app/utils'
+import { getTrack } from './utils'
 
 const API_ENDPOINT = 'https://tsimobile.viarail.ca/data/allData.json'
 
@@ -73,13 +74,13 @@ const processStop = (
   }
 }
 
-const processTrain = (
+const processTrain = async (
   [id, data]: [string, ViaTrainInfo],
   stations: StationResponse,
-): Train => ({
+): Promise<Train> => ({
   id: `via/${id}`,
   name: getTrainName(id) || 'VIA Rail',
-  number: id,
+  number: parseInt(id).toString(), // remove the date string (e.g. 5-09) sometimes present after the train number
   coordinates: data.lng ? [data.lng, data.lat] : null,
   speed: data.speed ?? null,
   heading: data.direction ?? null,
@@ -94,6 +95,7 @@ const processTrain = (
       [alert.header.en, alert.description.en, alert.url.en].join('\n\n'),
     ) || [],
   stops: data.times.map((station) => processStop(station, stations)),
+  track: await getTrack(parseInt(id).toString(), 'via'),
 })
 
 const get = async () => {
@@ -101,8 +103,8 @@ const get = async () => {
     const response = await fetch(API_ENDPOINT)
     const data = (await response.json()) as Record<number, ViaTrainInfo>
     const stations = await getStations()
-    const trains = Object.entries(data).map((train) =>
-      processTrain(train, stations),
+    const trains = await Promise.all(
+      Object.entries(data).map((train) => processTrain(train, stations)),
     )
     return trains
   } catch (error) {

@@ -32,15 +32,15 @@ import ChevronLeft from '@/app/img/chevron-left.svg'
 import { useBottomSheet } from '@/app/providers/bottomSheet'
 
 export default function TrainDetail() {
-  const { operator, id } = useParams()
+  const { agency, id } = useParams()
   const TrainQueryParams = getTrainParams(useSearchParams())
   const { trains } = useTrains()
   const { setPosition } = useBottomSheet()
   const { settings, updateSetting } = useSettings()
   const { timeFormat, timeZone, follow } = settings
   const train = useMemo(
-    () => trains.find((t) => t.id === `${operator}/${id}`),
-    [trains, operator, id],
+    () => trains.find((t) => t.id === `${agency}/${id}`),
+    [trains, agency, id],
   )
 
   if (!train) {

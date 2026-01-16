@@ -38,7 +38,7 @@ import {
   trackLayer,
   trainGPSLabelLayer,
 } from './display'
-import _amtrakTrack from '@/public/map_data/amtrak-track.json'
+import _track from '@/public/map_data/track.json'
 import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
 import { sleep } from '@/app/utils'
@@ -50,9 +50,7 @@ import Header from './Header'
 import { useBottomSheet } from '@/app/providers/bottomSheet'
 import { MOBILE_BREAKPOINT } from '@/app/constants'
 
-const amtrakTrack = _amtrakTrack as FeatureCollection<
-  LineString | MultiLineString
->
+const track = _track as FeatureCollection<LineString | MultiLineString>
 
 const mapStyleUrls: Record<MapStyle, string> = {
   gray: 'https://tiles.openfreemap.org/styles/positron',
@@ -70,7 +68,7 @@ function Map() {
   const { settings, updateSetting } = useSettings()
   const { sheetTop, setPosition } = useBottomSheet()
   const router = useRouter()
-  const { operator, id, code } = useParams() // train operator, train ID, station code
+  const { agency, id, code } = useParams() // train agency, train ID, station code
   const query = useSearchParams()
 
   const initialViewState = {
@@ -98,8 +96,8 @@ function Map() {
   }, [trains, stations])
 
   const selectedTrain = useMemo(
-    () => trainData.features.find((t) => t.id === `${operator}/${id}`),
-    [trainData, operator, id],
+    () => trainData.features.find((t) => t.id === `${agency}/${id}`),
+    [trainData, agency, id],
   )
 
   const selectedStation = useMemo(
@@ -220,7 +218,7 @@ function Map() {
     await router.replace(url.toString(), { scroll: false })
   }
 
-  // redirect to a train by id, where `id` is in the format: <operator>/<operator_id>
+  // redirect to a train by id, where `id` is in the format: <agency>/<operator_id>
   const navigateToTrain = (id: string) => {
     router.push(`/train/${id}`)
   }
@@ -305,7 +303,7 @@ function Map() {
       >
         {renderControls()}
 
-        <Source id={sourceId.amtrakTrack} type="geojson" data={amtrakTrack}>
+        <Source id={sourceId.track} type="geojson" data={track}>
           <Layer {...trackLayer} />
         </Source>
 

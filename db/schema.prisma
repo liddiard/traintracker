@@ -39,8 +39,8 @@ model PushSubscription {
   @@index([endpoint])
 }
 
-// GTFS data models - populated at app startup from VIA Rail and Brightline feeds
-// Reference: https://gtfs.org/documentation/schedule/reference/#field-definitions
+// GTFS data models - populated at app startup
+// https://gtfs.org/documentation/schedule/reference/#stopstxt
 model GtfsStop {
   id                 String    @id // Format: "agency/stop_id" (e.g., "via/OTTW")
   stopId             String    // Original GTFS stop_id
@@ -62,6 +62,7 @@ model GtfsStop {
   @@index([stopCode])
 }
 
+// https://gtfs.org/documentation/schedule/reference/#tripstxt
 model GtfsTrip {
   id                   String  @id // Namespaced as: `agency/trip_id`
   tripId               String  // Original GTFS `trip_id`
@@ -79,6 +80,19 @@ model GtfsTrip {
   @@index([agency])
   @@index([routeId])
   @@index([serviceId])
+}
+
+// https://gtfs.org/documentation/schedule/reference/#shapestxt
+model GtfsShape {
+  id                String  @id // Namespaced as: `agency/shape_id-shape_pt_sequence`
+  shapeId           String  // Original GTFS `shape_id`
+  ptLat             Float
+  ptLon             Float
+  ptSequence        Int
+  distTraveled      Float?
+  agency            String
+
+  @@index([agency])
 }
 
 model GtfsImportMeta {

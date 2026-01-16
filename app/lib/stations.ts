@@ -18,8 +18,9 @@ const processStationName = (name: string): string =>
   name.replace(/Station|Amtrak/g, '').trim()
 
 const processGtfsStation = (stop: GtfsStop): Station => {
-  const code = stop.stopCode || stop.id.split('/')[1] // remove agency prefix
+  const [agency, code] = stop.id.split('/')
   return {
+    agency,
     code,
     name:
       stationCodeToName[code] ||
@@ -29,7 +30,8 @@ const processGtfsStation = (stop: GtfsStop): Station => {
   }
 }
 
-const processCsvStation = (amtrakStation: AmtrakStationCSV): Station => ({
+const processAmtrakStation = (amtrakStation: AmtrakStationCSV): Station => ({
+  agency: 'amtrak',
   code: amtrakStation.Code,
   // for stations in the form "city, state", format, retain only the city
   name:
@@ -48,7 +50,7 @@ const processGtfsStations = (stops: GtfsStop[]): StationResponse =>
     {} as StationResponse,
   )
 
-export const processCsvStations = (): StationResponse => {
+export const processAmtrakStations = (): StationResponse => {
   const csvContent = readFileSync(
     path.join(__dirname, '../api/stations/amtrak-stations.csv'),
     'utf-8',
@@ -66,7 +68,7 @@ export const processCsvStations = (): StationResponse => {
         if (!amtrakStation.Code) return acc // Skip rows without station codes
         return {
           ...acc,
-          [`amtrak/${amtrakStation.Code}`]: processCsvStation(amtrakStation),
+          [`amtrak/${amtrakStation.Code}`]: processAmtrakStation(amtrakStation),
         }
       }, {} as StationResponse)
   )
@@ -91,7 +93,7 @@ export async function getStations(): Promise<StationResponse> {
   // Why? Amtrak's GTFS station data is messy and doesn't provide a way to
   // differentiate rail vs. bus stops (we only want rail), hence getting it
   // from a separate data source.
-  const csvStations = processCsvStations()
+  const csvStations = processAmtrakStations()
 
   // Merge CSV stations with GTFS stations, preferring GTFS data
   stationsCache = { ...csvStations, ...gtfsStations }

@@ -58,6 +58,10 @@
   --color-amtrak-deep-blue: oklch(0.3419 0.0885 246.29);
   --color-amtrak-midnight-blue: oklch(0.2503 0.0541 236.36);
 
+  --color-via-red-400: oklch(0.6006 0.2291 25.45);
+  --color-brightline-yellow-100: oklch(0.8947 0.184466 97.0291);
+  --color-brightline-yellow-400: oklch(0.6 0.184466 97.0291);
+
   --color-positron-gray-100: oklch(0.9 0.0079 219.62);
   --color-positron-gray-200: oklch(0.8 0.0079 219.62);
   --color-positron-gray-300: oklch(0.7 0.0079 219.62);

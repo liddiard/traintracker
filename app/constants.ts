@@ -8,7 +8,7 @@ export const TRAIN_QUERY_PARAMS = {
   // fields/query params that can be used to search for a train
   search: ['from', 'to', 'trainName', 'trainNumber'],
   // query params that can be used to filter the train list without submitting a search
-  filter: ['operator'],
+  filter: ['agency'],
   // query params that can be used to sort the train list
   sort: ['sort', 'sortDir'],
 }

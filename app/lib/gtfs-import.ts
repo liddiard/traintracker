@@ -6,11 +6,15 @@ import {
   getTrips,
   Stop,
   Trip,
+  Shape,
   closeDb,
+  getShapes,
 } from 'gtfs'
 import { prisma } from './prisma'
 import gtfsConfig from './gtfs-config.json'
 import { GTFS_IMPORT_ID } from '../constants'
+import fs from 'fs/promises'
+import { roundToDecimals } from '../utils'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
 
@@ -25,38 +29,39 @@ async function isCacheValid(): Promise<boolean> {
   return age < CACHE_TTL_MS
 }
 
+// Extract agency prefix from ID in format "agency/original_id"
 function getAgencyFromId(id: string): string {
   return id.split('/')[0]
 }
 
+// Extract original ID from namespaced ID in format "agency/original_id"
+function getOriginalId(id: string): string {
+  return id.split('/')[1]
+}
+
 async function importStops(stops: Stop[]): Promise<number> {
   // Map to Prisma format
-  const stopData = stops.map((stop) => {
-    const agency = getAgencyFromId(stop.stop_id)
-    // VIA Rail uses numeric stop IDs that aren't useful to us; use stop_code
-    // (4-letter) instead
-    const id = stop.stop_id.startsWith('via/')
+  const stopData = stops.map((stop) => ({
+    // VIA Rail's GTFS data uses numeric stop IDs that aren't useful to us; use
+    // stop_code (4-letter) instead
+    id: stop.stop_id.startsWith('via/')
       ? `via/${stop.stop_code}`
-      : stop.stop_id
-
-    return {
-      id,
-      stopId: stop.stop_id,
-      stopCode: stop.stop_code || null,
-      stopName: stop.stop_name || null,
-      stopDesc: stop.stop_desc || null,
-      stopLat: stop.stop_lat || null,
-      stopLon: stop.stop_lon || null,
-      zoneId: stop.zone_id || null,
-      stopUrl: stop.stop_url || null,
-      locationType: stop.location_type || null,
-      parentStation: stop.parent_station || null,
-      stopTimezone: stop.stop_timezone || null,
-      wheelchairBoarding: stop.wheelchair_boarding || null,
-      platformCode: stop.platform_code || null,
-      agency,
-    }
-  })
+      : stop.stop_id,
+    stopId: getOriginalId(stop.stop_id),
+    stopCode: stop.stop_code || null,
+    stopName: stop.stop_name || null,
+    stopDesc: stop.stop_desc || null,
+    stopLat: stop.stop_lat || null,
+    stopLon: stop.stop_lon || null,
+    zoneId: stop.zone_id || null,
+    stopUrl: stop.stop_url || null,
+    locationType: stop.location_type || null,
+    parentStation: stop.parent_station || null,
+    stopTimezone: stop.stop_timezone || null,
+    wheelchairBoarding: stop.wheelchair_boarding || null,
+    platformCode: stop.platform_code || null,
+    agency: getAgencyFromId(stop.stop_id),
+  }))
 
   // Clear existing stops and insert new ones
   await prisma.gtfsStop.deleteMany()
@@ -67,30 +72,96 @@ async function importStops(stops: Stop[]): Promise<number> {
 
 async function importTrips(trips: Trip[]): Promise<number> {
   // Map to Prisma format
-  const tripData = trips.map((trip) => {
-    const agency = getAgencyFromId(trip.trip_id)
-
-    return {
-      id: trip.trip_id,
-      tripId: trip.trip_id,
-      routeId: trip.route_id,
-      serviceId: trip.service_id,
-      tripHeadsign: trip.trip_headsign || null,
-      tripShortName: trip.trip_short_name || null,
-      directionId: trip.direction_id || null,
-      blockId: trip.block_id || null,
-      shapeId: trip.shape_id || null,
-      wheelchairAccessible: trip.wheelchair_accessible || null,
-      bikesAllowed: trip.bikes_allowed || null,
-      agency,
-    }
-  })
+  const tripData = trips.map((trip) => ({
+    id: trip.trip_id,
+    tripId: getOriginalId(trip.trip_id),
+    routeId: trip.route_id,
+    serviceId: trip.service_id,
+    tripHeadsign: trip.trip_headsign || null,
+    tripShortName: trip.trip_short_name || null,
+    directionId: trip.direction_id || null,
+    blockId: trip.block_id || null,
+    shapeId: trip.shape_id || null,
+    wheelchairAccessible: trip.wheelchair_accessible || null,
+    bikesAllowed: trip.bikes_allowed || null,
+    agency: getAgencyFromId(trip.trip_id),
+  }))
 
   // Clear existing trips and insert new ones
   await prisma.gtfsTrip.deleteMany()
   await prisma.gtfsTrip.createMany({ data: tripData })
 
   return tripData.length
+}
+
+/**
+ * Queries imported GTFS shapes and generates a GeoJSON file for map display.
+ *
+ * @param outputPath GeoJSON file to output to, relative to app root
+ */
+async function generateGeoJson(
+  outputPath = 'public/map_data/track.json',
+): Promise<void> {
+  const shapes = await prisma.gtfsShape.groupBy({
+    by: ['agency', 'shapeId'],
+  })
+  // For each shape, get its points ordered by ptSequence
+  const shapesWithPoints = await Promise.all(
+    shapes.map(async (shape) => {
+      const points = await prisma.gtfsShape.findMany({
+        where: {
+          agency: shape.agency,
+          shapeId: shape.shapeId,
+        },
+        orderBy: {
+          ptSequence: 'asc',
+        },
+      })
+      return {
+        ...shape,
+        points,
+      }
+    }),
+  )
+  const features = shapesWithPoints.map((shape) => ({
+    type: 'Feature',
+    properties: {
+      id: shape.shapeId,
+      agency: shape.agency,
+    },
+    geometry: {
+      type: 'LineString',
+      coordinates: shape.points.map((point) => [
+        // round to 5 decimal places (~1 meter) to reduce file size
+        roundToDecimals(point.ptLon, 5),
+        roundToDecimals(point.ptLat, 5),
+      ]),
+    },
+  }))
+  const geojson = JSON.stringify({
+    type: 'FeatureCollection',
+    features,
+  })
+  await fs.writeFile(outputPath, geojson, 'utf-8')
+}
+
+export async function importShapes(shapes: Shape[]): Promise<number> {
+  // Map to Prisma format
+  const shapeData = shapes.map((shape) => ({
+    id: `${shape.shape_id}-${shape.shape_pt_sequence}`,
+    shapeId: getOriginalId(shape.shape_id),
+    ptLat: shape.shape_pt_lat,
+    ptLon: shape.shape_pt_lon,
+    ptSequence: shape.shape_pt_sequence,
+    distTraveled: shape.shape_dist_traveled || null,
+    agency: getAgencyFromId(shape.shape_id),
+  }))
+
+  // Clear existing shapes and insert new ones
+  await prisma.gtfsShape.deleteMany()
+  await prisma.gtfsShape.createMany({ data: shapeData })
+
+  return shapeData.length
 }
 
 export async function importGtfsData(): Promise<void> {
@@ -100,13 +171,9 @@ export async function importGtfsData(): Promise<void> {
     return
   }
 
-  console.log('Importing GTFS data from VIA Rail and Brightline feeds...')
+  console.log('Importing GTFS data...')
 
-  // Use in-memory database for node-gtfs
-  const config = {
-    ...gtfsConfig,
-    sqlitePath: ':memory:',
-  } as Config
+  const config = gtfsConfig as Config
 
   // Download and parse GTFS feeds
   await importGtfs(config)
@@ -115,10 +182,14 @@ export async function importGtfsData(): Promise<void> {
   // Get data from node-gtfs
   const stops = getStops()
   const trips = getTrips()
+  const shapes = getShapes()
+
+  console.log('Upserting GTFS data into database...')
 
   // Import into Prisma tables
   const stopCount = await importStops(stops)
   const tripCount = await importTrips(trips)
+  const shapeCount = await importShapes(shapes)
 
   // Update import metadata
   await prisma.gtfsImportMeta.upsert({
@@ -131,6 +202,10 @@ export async function importGtfsData(): Promise<void> {
   closeDb()
 
   console.log(
-    `GTFS import complete: ${stopCount} stops, ${tripCount} trips imported`,
+    `GTFS import complete: ${stopCount} stops, ${tripCount} trips, ${shapeCount} shapes`,
   )
+
+  console.log('Generating shapes GeoJSON...')
+  await generateGeoJson()
+  console.log('Shapes GeoJSON generated.')
 }

@@ -9,6 +9,7 @@ import {
   AmtrakStationInfoProperties,
   AmtrakTrainInfoProperties,
 } from './types'
+import { getTrack } from './utils'
 
 // heading name to degree mapping
 const headingToDegrees: Record<AmtrakHeading, number> = {
@@ -98,10 +99,10 @@ const processStops = (
       }
     })
 
-const processTrain = (
+const processTrain = async (
   train: Feature<Point, AmtrakTrainInfoProperties>,
   stations: StationResponse,
-): Train => {
+): Promise<Train> => {
   const { properties } = train
   const statusMessage = properties.StatusMsg?.trim()
   return {
@@ -118,6 +119,7 @@ const processTrain = (
     speed: Math.round(mphToKmh(parseFloat(properties.Velocity))),
     heading: headingToDegrees[properties.Heading] ?? null,
     stops: processStops(properties, stations),
+    track: await getTrack(properties.TrainNum, 'amtrak'),
   }
 }
 
@@ -130,12 +132,10 @@ const get = async () => {
 
   const stations = await getStations()
 
-  return (
-    trains.features
-      .map((train) => processTrain(train, stations))
-      // Filter out trains with no listed stops
-      .filter((train) => train.stops.length > 0)
+  const processedTrains = await Promise.all(
+    trains.features.map((train) => processTrain(train, stations)),
   )
+  return processedTrains.filter((train) => train.stops.length > 0)
 }
 
 export default get

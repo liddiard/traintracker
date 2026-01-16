@@ -76,7 +76,7 @@ The map visualization system is the core feature and has several interconnected 
   - `getExtrapolatedTrainPoint`: Extrapolates train position based on timetable when between stations
   - `getHeading`: Calculates train bearing/heading along track geometry
 
-- **Track Data**: GeoJSON files in `public/map_data/amtrak-track.geojson` contain LineString/MultiLineString features representing physical track geometries with OBJECTID properties
+- **Track Data**: GeoJSON file in `public/map_data/track.json` contain LineString features representing physical track geometries with agency and GTFS shape ID properties
 
 - **Display Logic** (`display.ts`): Converts train positions to map-ready features with styling
 
