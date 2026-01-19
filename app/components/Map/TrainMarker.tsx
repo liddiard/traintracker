@@ -12,7 +12,7 @@ interface TrainMarkerProps extends TrainFeatureProperties {
   heading: number | null
   zoom: number
   isSelected: boolean
-  navigateToTrain: (trainID: string) => void
+  navigateToTrain: (_trainID: string) => void
 }
 
 function TrainMarker({

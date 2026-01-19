@@ -67,10 +67,10 @@ export const median = (numbers: number[]) => {
  * @returns A wrapped function that uses caching
  */
 export const createCachedFunction = <Args extends unknown[], Result>(
-  fn: (...args: Args) => Result,
-  getKey: (...args: Args) => string,
-  isValidCache: (cachedValue: Result, ...args: Args) => boolean,
-): ((...args: Args) => Result) => {
+  fn: (..._args: Args) => Result,
+  getKey: (..._args: Args) => string,
+  isValidCache: (_cachedValue: Result, ..._args: Args) => boolean,
+): ((..._args: Args) => Result) => {
   const cache: Record<string, Result> = {}
   return (...args: Args): Result => {
     const key = getKey(...args)

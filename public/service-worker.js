@@ -1,5 +1,5 @@
 // Activate immediately when installed (don't wait for old SW to stop)
-self.addEventListener('install', (event) => {
+self.addEventListener('install', () => {
   console.log('[Service Worker] Installing...')
   // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/skipWaiting
   self.skipWaiting()

@@ -1,14 +1,11 @@
 import {
   point,
   nearestPointOnLine,
-  bboxClip,
   bearing,
   explode,
   nearestPoint,
   distance,
-  combine,
   lineSlice,
-  lineString,
   featureCollection,
   length,
   along,
@@ -19,7 +16,6 @@ import {
   Feature,
   FeatureCollection,
   LineString,
-  MultiLineString,
   Point,
   Position,
 } from 'geojson'

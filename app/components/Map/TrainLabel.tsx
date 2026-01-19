@@ -9,7 +9,7 @@ import { useAnimatedPosition } from '../hooks'
 interface TrainLabelProps extends TrainFeatureProperties {
   coordinates: number[] | null
   zoom: number
-  navigateToTrain: (trainID: string) => void
+  navigateToTrain: (_trainID: string) => void
   name: string
   number: string
   isSelected: boolean

@@ -16,7 +16,7 @@ interface NotificationDialogProps {
   stopCode: string
   trainId: string
   onClose: () => void
-  onSubscribe: (type: NotificationType) => void
+  onSubscribe: (_type: NotificationType) => void
   activeSubscriptions: Set<string>
 }
 

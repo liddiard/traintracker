@@ -140,9 +140,9 @@ function MapSettings({ style = {} }: MapSettingsProps) {
     value: Settings[T]
     wrap: boolean
     customUI?: (
-      option: { value: Settings[T]; label: string },
-      isSelected: boolean,
-      onChange: (value: Settings[T]) => void,
+      _option: { value: Settings[T]; label: string },
+      _isSelected: boolean,
+      _onChange: (_value: Settings[T]) => void,
     ) => React.ReactNode
   }) => (
     <Fragment key={config.key}>

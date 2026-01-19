@@ -18,9 +18,9 @@ interface NotificationButtonProps {
   hasDeparted: boolean
   activeSubscriptions: Set<string>
   onSubscriptionChange: (
-    stopCode: string,
-    notificationType: NotificationType,
-    isSubscribed: boolean,
+    _stopCode: string,
+    _notificationType: NotificationType,
+    _isSubscribed: boolean,
   ) => void
 }
 
