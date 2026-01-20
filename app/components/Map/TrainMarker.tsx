@@ -62,7 +62,9 @@ function TrainMarker({
     <Marker
       longitude={animPosition.coordinates[0]}
       latitude={animPosition.coordinates[1]}
-      rotation={animPosition.heading ?? undefined}
+      // apply a very slight rotation to force Firefox to render subpixel `translate`
+      // values
+      rotation={animPosition.heading ?? 0.1}
       rotationAlignment="map"
       pitchAlignment="map"
       ref={markerRef}
