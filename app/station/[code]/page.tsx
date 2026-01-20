@@ -311,19 +311,28 @@ export default function StationPage() {
             </details>
           )}
 
-          {upcomingDepartures.length > 0 && (
-            <details open>
-              <summary className="cursor-pointer px-3 text-2xl font-bold">
-                Upcoming Departures
-              </summary>
+          <details open>
+            <summary className="cursor-pointer px-3 text-2xl font-bold">
+              Upcoming Departures
+            </summary>
+            {upcomingDepartures.length > 0 ? (
               <div className="flex flex-col gap-4">
                 {Array.from(upcomingByDay.entries()).map(
                   ([dateKey, trainStops]) =>
                     renderDayGroup(dateKey, trainStops),
                 )}
               </div>
-            </details>
-          )}
+            ) : (
+              <div
+                className={cn(
+                  'mx-3 my-4 text-center',
+                  classNames.textDeemphasized,
+                )}
+              >
+                No scheduled trains
+              </div>
+            )}
+          </details>
 
           <footer
             className={cn(
