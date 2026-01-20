@@ -5,15 +5,10 @@ services:
       dockerfile: Dockerfile
     container_name: traintracker-app
     restart: unless-stopped
+    env_file: .env
     environment:
-      # Database
+      # Override DATABASE_URL for Docker path
       - DATABASE_URL=file:/app/db/app.db
-      # VAPID keys for push notifications
-      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
-      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
-      - VAPID_SUBJECT=${VAPID_SUBJECT}
-      # Enable notifications in production
-      - ENABLE_NOTIFICATIONS=true
     volumes:
       # Persist SQLite database
       - db-data:/app/db
