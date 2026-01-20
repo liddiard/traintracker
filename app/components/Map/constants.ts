@@ -14,8 +14,9 @@ export const sourceId = {
   trainGPS: 'train-gps',
 }
 
-// map from Amtrak API route name to 2-letter code (arbitrarily chosen by me)
+// map from API route name to 2-letter code (arbitrarily chosen by me)
 export const routeToCodeMap: Record<string, string> = {
+  // Amtrak
   Acela: 'AC',
   Adirondack: 'AD',
   'Amtrak Cascades': 'CA',
@@ -75,8 +76,15 @@ export const routeToCodeMap: Record<string, string> = {
   'Winter Park Express': 'WP',
   Wolverine: 'WV',
   'Wolverine/Michigan Service': 'WV',
-}
 
-export const codeToRouteMap = Object.fromEntries(
-  Object.entries(routeToCodeMap).map(([code, route]) => [route, code]),
-)
+  // VIA Rail
+  Canadian: 'CN',
+  Corridor: 'CR',
+  Ocean: 'OC',
+  'Jasper–Prince Rupert': 'JP',
+  'Montreal–Jonquière': 'MJ',
+  'Montreal–Senneterre': 'MS',
+  'Sudbury–White River': 'SW',
+  'Winnipeg–Churchill': 'WC',
+  'The Pas–Pukatawagan': 'PP',
+}
