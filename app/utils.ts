@@ -443,10 +443,10 @@ export const getCurrentSegmentProgress = (trainMeta: TrainMeta) => {
     minsToArrival: 0,
     percent: 0,
   }
-  const departureTime = prevStop?.arrival.time.valueOf()
+  const departureTime = prevStop?.departure.time.valueOf()
   const arrivalTime = nextStop?.arrival.time.valueOf()
 
-  if (curStop?.departure.time && nextStop && departureTime) {
+  if (curStop?.departure.time && nextStop) {
     // train is at a station
     progress.minsToDeparture = msToMins(
       curStop.departure.time.valueOf() - Date.now(),
