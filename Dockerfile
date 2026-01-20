@@ -12,9 +12,8 @@ FROM base AS deps
 COPY package*.json ./
 COPY db/schema.prisma ./db/
 
-# Install dependencies
+# Install dependencies for production (save to /tmp for later)
 RUN npm ci --only=production --ignore-scripts && \
-    npx prisma generate --schema=db/schema.prisma && \
     cp -R node_modules /tmp/prod_node_modules
 
 # Install all dependencies (including dev) for build stage
@@ -55,6 +54,7 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/db/schema.prisma ./db/schema.prisma
 COPY --from=builder /app/db/migrations ./db/migrations
+COPY --from=builder /app/db/generated ./db/generated
 
 # Copy production node_modules (includes Prisma)
 COPY --from=deps /tmp/prod_node_modules ./node_modules
