@@ -75,9 +75,12 @@ function Map() {
   const query = useSearchParams()
 
   const initialViewState = {
-    // default to geographic center of the US
-    longitude: Number(query.get('lng')) || -98.5795,
-    latitude: Number(query.get('lat')) || 39.8283,
+    // default to geographic center of all tracks, calculated statically for
+    // performance using Turf.js:
+    // const points = turf.explode(track) // `track` is the track.json GeoJSON
+    // const center = turf.center(points)
+    longitude: Number(query.get('lng')) || -96.81473,
+    latitude: Number(query.get('lat')) || 42.27393,
     zoom: Number(query.get('z')) || 3,
     bearing: 0,
   }
