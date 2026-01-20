@@ -23,13 +23,19 @@ RUN npm ci && \
 # ---- Builder Stage ----
 FROM base AS builder
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Copy source files first
 COPY . .
+
+# Copy dependencies and generated Prisma client from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/db/generated ./db/generated
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+
+# Generate track.json before build (required by build process)
+RUN npx tsx -e "import('./app/lib/gtfs-import.ts').then(m => m.importGtfsData())"
 
 # Build the Next.js application with standalone output
 RUN npm run build
@@ -55,13 +61,13 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/db/schema.prisma ./db/schema.prisma
 COPY --from=builder /app/db/migrations ./db/migrations
 COPY --from=builder /app/db/generated ./db/generated
+COPY --from=builder /app/db/app.db ./db/app.db
 
 # Copy production node_modules (includes Prisma)
 COPY --from=deps /tmp/prod_node_modules ./node_modules
 
-# Create db directory and set permissions
-RUN mkdir -p /app/db && \
-    chown -R nextjs:nodejs /app
+# Set permissions
+RUN chown -R nextjs:nodejs /app
 
 # Copy and set permissions for entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
