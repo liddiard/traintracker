@@ -354,7 +354,7 @@ export const getExtrapolatedTrainPoint = (
     // Calculate progress based on previous stop location + time -> the next stop
     // location + estimated time.
     trackSegment = timetableTrackSegment
-    startTime = prevStop.arrival.time
+    startTime = prevStop.departure.time
   }
 
   if (!nextStop.arrival.time || !startTime) {
