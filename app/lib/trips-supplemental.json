@@ -1,0 +1,86 @@
+[
+  {
+    "id": "amtrak/701",
+    "agency": "amtrak",
+    "tripShortName": "701",
+    "shapeId": "amtrak/gold_runner_sac"
+  },
+  {
+    "id": "amtrak/702",
+    "agency": "amtrak",
+    "tripShortName": "702",
+    "shapeId": "amtrak/gold_runner_sac"
+  },
+  {
+    "id": "amtrak/703",
+    "agency": "amtrak",
+    "tripShortName": "703",
+    "shapeId": "amtrak/gold_runner_sac"
+  },
+  {
+    "id": "amtrak/704",
+    "agency": "amtrak",
+    "tripShortName": "704",
+    "shapeId": "amtrak/gold_runner_sac"
+  },
+  {
+    "id": "amtrak/710",
+    "agency": "amtrak",
+    "tripShortName": "710",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/711",
+    "agency": "amtrak",
+    "tripShortName": "711",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/712",
+    "agency": "amtrak",
+    "tripShortName": "712",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/713",
+    "agency": "amtrak",
+    "tripShortName": "713",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/714",
+    "agency": "amtrak",
+    "tripShortName": "714",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/715",
+    "agency": "amtrak",
+    "tripShortName": "715",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/716",
+    "agency": "amtrak",
+    "tripShortName": "716",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/717",
+    "agency": "amtrak",
+    "tripShortName": "717",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/718",
+    "agency": "amtrak",
+    "tripShortName": "718",
+    "shapeId": "amtrak/gold_runner_okj"
+  },
+  {
+    "id": "amtrak/719",
+    "agency": "amtrak",
+    "tripShortName": "719",
+    "shapeId": "amtrak/gold_runner_okj"
+  }
+]
