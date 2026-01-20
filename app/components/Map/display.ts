@@ -70,12 +70,11 @@ export const stationLabelLayer: SymbolLayerSpecification = {
   id: sourceId.stationLabels,
   type: 'symbol',
   source: sourceId.stations,
+  minzoom: 6,
   layout: {
     'text-field': [
       'step',
       ['zoom'],
-      '',
-      5,
       ['get', 'code'],
       10,
       ['concat', ['get', 'code'], ' / ', ['get', 'name']],
@@ -107,14 +106,9 @@ export const trainGPSLabelLayer: SymbolLayerSpecification = {
   id: sourceId.trainGPS,
   type: 'symbol',
   source: sourceId.trainGPS,
+  minzoom: DETAIL_ZOOM_LEVEL,
   layout: {
-    'text-field': [
-      'step',
-      ['zoom'],
-      '',
-      DETAIL_ZOOM_LEVEL,
-      ['get', 'lastUpdatedStr'],
-    ],
+    'text-field': ['get', 'lastUpdatedStr'],
     'text-size': ['interpolate', ['linear'], ['zoom'], 3, 8, 10, 14],
     'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
     'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 5, 0.75, 10, 1],

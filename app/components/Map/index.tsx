@@ -63,6 +63,9 @@ const emptyTrainData: FeatureCollection<Point, TrainFeatureProperties> = {
   features: [],
 }
 
+// maximum zoom level for sources and layers
+const MAX_ZOOM = 12
+
 function Map() {
   const { trains, stations } = useTrains()
   const { settings, updateSetting } = useSettings()
@@ -281,6 +284,7 @@ function Map() {
         mapStyle={mapStyleUrls[settings.mapStyle]}
         attributionControl={false}
         renderWorldCopies={false}
+        minZoom={2}
         onLoad={() => {
           setLoaded(true)
           updateTrains()
@@ -303,7 +307,12 @@ function Map() {
       >
         {renderControls()}
 
-        <Source id={sourceId.track} type="geojson" data={track}>
+        <Source
+          id={sourceId.track}
+          type="geojson"
+          data={track}
+          maxzoom={MAX_ZOOM}
+        >
           <Layer {...trackLayer} />
         </Source>
 
@@ -311,6 +320,7 @@ function Map() {
           id={sourceId.stations}
           type="geojson"
           data={stationsToGeoJson(stations)}
+          maxzoom={MAX_ZOOM}
         >
           <Layer {...stationLayer} />
           <Layer {...stationLabelLayer} />
@@ -327,6 +337,7 @@ function Map() {
                 coordinates: selectedTrain.properties.gpsCoordinates,
               },
             }}
+            maxzoom={MAX_ZOOM}
           >
             <Layer {...trainGPSLabelLayer} />
           </Source>
