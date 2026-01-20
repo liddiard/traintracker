@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "prepare": "husky",
-    "postinstall": "prisma generate --schema=db/schema.prisma"
+    "postinstall": "prisma generate"
   },
   "engines": {
     "node": "24",
