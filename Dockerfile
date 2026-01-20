@@ -14,12 +14,12 @@ COPY db/schema.prisma ./db/
 
 # Install dependencies
 RUN npm ci --only=production && \
-    npx prisma generate && \
+    npx prisma generate --schema=db/schema.prisma && \
     cp -R node_modules /tmp/prod_node_modules
 
 # Install all dependencies (including dev) for build stage
 RUN npm ci && \
-    npx prisma generate
+    npx prisma generate --schema=db/schema.prisma
 
 # ---- Builder Stage ----
 FROM base AS builder
