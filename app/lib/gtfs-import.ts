@@ -15,8 +15,12 @@ import gtfsConfig from './gtfs-config.json'
 import { GTFS_IMPORT_ID } from '../constants'
 import fs from 'fs/promises'
 import { roundToDecimals } from '../utils'
+import supplementalTrips from './trips-supplemental.json'
+import goldRunnerOKJ from '@/gis/gold_runner_okj_flat.json'
+import goldRunnerSAC from '@/gis/gold_runner_sac_flat.json'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
+const supplementalTrack = [...goldRunnerOKJ.features, ...goldRunnerSAC.features]
 
 async function isCacheValid(): Promise<boolean> {
   const meta = await prisma.gtfsImportMeta.findUnique({
@@ -71,22 +75,15 @@ async function importStops(stops: Stop[]): Promise<number> {
 }
 
 async function importTrips(trips: Trip[]): Promise<number> {
-  // Map to Prisma format
-  const tripData = trips.map((trip) => ({
-    id: trip.trip_id,
-    tripId: getOriginalId(trip.trip_id),
-    routeId: trip.route_id,
-    serviceId: trip.service_id,
-    tripHeadsign: trip.trip_headsign || null,
-    tripShortName: trip.trip_short_name || null,
-    directionId: trip.direction_id || null,
-    blockId: trip.block_id || null,
-    shapeId: trip.shape_id || null,
-    wheelchairAccessible: trip.wheelchair_accessible || null,
-    bikesAllowed: trip.bikes_allowed || null,
-    agency: getAgencyFromId(trip.trip_id),
-  }))
-
+  // Map to Prisma format, adding missing Gold Runner trips from supplemental data
+  const tripData = trips
+    .map((trip) => ({
+      id: trip.trip_id,
+      agency: getAgencyFromId(trip.trip_id),
+      tripShortName: trip.trip_short_name || null,
+      shapeId: trip.shape_id || null,
+    }))
+    .concat(supplementalTrips)
   // Clear existing trips and insert new ones
   await prisma.gtfsTrip.deleteMany()
   await prisma.gtfsTrip.createMany({ data: tripData })
@@ -123,21 +120,25 @@ async function generateGeoJson(
       }
     }),
   )
-  const features = shapesWithPoints.map((shape) => ({
-    type: 'Feature',
-    properties: {
-      id: shape.shapeId,
-      agency: shape.agency,
-    },
-    geometry: {
-      type: 'LineString',
-      coordinates: shape.points.map((point) => [
-        // round to 5 decimal places (~1 meter) to reduce file size
-        roundToDecimals(point.ptLon, 5),
-        roundToDecimals(point.ptLat, 5),
-      ]),
-    },
-  }))
+  // map to GeoJSON features, adding missing `supplementalTrack`, which should have
+  // `agency` and `id` properties that match `supplementalTrips`
+  const features = shapesWithPoints
+    .map((shape) => ({
+      type: 'Feature',
+      properties: {
+        id: shape.shapeId,
+        agency: shape.agency,
+      },
+      geometry: {
+        type: 'LineString',
+        coordinates: shape.points.map((point) => [
+          // round to 5 decimal places (~1 meter) to reduce file size
+          roundToDecimals(point.ptLon, 5),
+          roundToDecimals(point.ptLat, 5),
+        ]),
+      },
+    }))
+    .concat(supplementalTrack)
   const geojson = JSON.stringify({
     type: 'FeatureCollection',
     features,
@@ -184,7 +185,7 @@ export async function importGtfsData(): Promise<void> {
   const trips = getTrips()
   const shapes = getShapes()
 
-  console.log('Upserting GTFS data into database...')
+  console.log('Upserting GTFS data into database (30-60 sec)...')
 
   // Import into Prisma tables
   const stopCount = await importStops(stops)
@@ -205,7 +206,7 @@ export async function importGtfsData(): Promise<void> {
     `GTFS import complete: ${stopCount} stops, ${tripCount} trips, ${shapeCount} shapes`,
   )
 
-  console.log('Generating shapes GeoJSON...')
+  console.log('Generating shapes GeoJSON (5-10 sec)...')
   await generateGeoJson()
   console.log('Shapes GeoJSON generated.')
 }
