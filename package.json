@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "prepare": "husky",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate --schema=db/schema.prisma"
   },
   "engines": {
     "node": "24",
@@ -63,8 +63,5 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
-  },
-  "prisma": {
-    "schema": "db/schema.prisma"
   }
 }
