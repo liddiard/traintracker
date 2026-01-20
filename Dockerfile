@@ -36,7 +36,7 @@ ENV NODE_ENV=production
 ENV DATABASE_URL=file:./db/app.db
 
 # Create database tables before GTFS import
-RUN npx prisma db push --schema=db/schema.prisma --skip-generate
+RUN npx prisma db push --schema=db/schema.prisma
 
 # Generate track.json before build (required by build process)
 RUN npx tsx -e "import('./app/lib/gtfs-import.ts').then(m => m.importGtfsData())"
