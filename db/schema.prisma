@@ -43,20 +43,13 @@ model PushSubscription {
 // https://gtfs.org/documentation/schedule/reference/#stopstxt
 model GtfsStop {
   id                 String    @id // Format: "agency/stop_id" (e.g., "via/OTTW")
-  stopId             String    // Original GTFS stop_id
+  agency             String    // "amtrak", "via", "brightline", etc.
   stopCode           String?   // stop_code (often the station code)
   stopName           String?
-  stopDesc           String?
   stopLat            Float?
   stopLon            Float?
-  zoneId             String?
-  stopUrl            String?
-  locationType       Int?      // 0=stop, 1=station, 2=entrance, etc.
-  parentStation      String?
   stopTimezone       String?
   wheelchairBoarding Int?
-  platformCode       String?
-  agency             String    // "amtrak", "via", "brightline", etc.
 
   @@index([agency])
   @@index([stopCode])
@@ -65,21 +58,12 @@ model GtfsStop {
 // https://gtfs.org/documentation/schedule/reference/#tripstxt
 model GtfsTrip {
   id                   String  @id // Namespaced as: `agency/trip_id`
-  tripId               String  // Original GTFS `trip_id`
-  routeId              String
-  serviceId            String
-  tripHeadsign         String?
-  tripShortName        String?
-  directionId          Int?
-  blockId              String?
-  shapeId              String?
-  wheelchairAccessible Int?
-  bikesAllowed         Int?
   agency               String
+  tripShortName        String?
+  shapeId              String?
 
   @@index([agency])
-  @@index([routeId])
-  @@index([serviceId])
+  @@index([tripShortName])
 }
 
 // https://gtfs.org/documentation/schedule/reference/#shapestxt
@@ -89,7 +73,6 @@ model GtfsShape {
   ptLat             Float
   ptLon             Float
   ptSequence        Int
-  distTraveled      Float?
   agency            String
 
   @@index([agency])

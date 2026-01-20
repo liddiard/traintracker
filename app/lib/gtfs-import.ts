@@ -51,20 +51,13 @@ async function importStops(stops: Stop[]): Promise<number> {
     id: stop.stop_id.startsWith('via/')
       ? `via/${stop.stop_code}`
       : stop.stop_id,
-    stopId: getOriginalId(stop.stop_id),
+    agency: getAgencyFromId(stop.stop_id),
     stopCode: stop.stop_code || null,
     stopName: stop.stop_name || null,
-    stopDesc: stop.stop_desc || null,
     stopLat: stop.stop_lat || null,
     stopLon: stop.stop_lon || null,
-    zoneId: stop.zone_id || null,
-    stopUrl: stop.stop_url || null,
-    locationType: stop.location_type || null,
-    parentStation: stop.parent_station || null,
     stopTimezone: stop.stop_timezone || null,
     wheelchairBoarding: stop.wheelchair_boarding || null,
-    platformCode: stop.platform_code || null,
-    agency: getAgencyFromId(stop.stop_id),
   }))
 
   // Clear existing stops and insert new ones
@@ -154,7 +147,6 @@ export async function importShapes(shapes: Shape[]): Promise<number> {
     ptLat: shape.shape_pt_lat,
     ptLon: shape.shape_pt_lon,
     ptSequence: shape.shape_pt_sequence,
-    distTraveled: shape.shape_dist_traveled || null,
     agency: getAgencyFromId(shape.shape_id),
   }))
 
