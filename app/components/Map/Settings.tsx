@@ -188,7 +188,7 @@ function MapSettings({ style = {} }: MapSettingsProps) {
   )
 
   return (
-    <div className="absolute bottom-0 left-0 z-10 m-2" style={style}>
+    <div className="absolute bottom-0 left-0 z-1 m-2" style={style}>
       {open && renderSettings()}
       <button
         onClick={() => setOpen(!open)}
