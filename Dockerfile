@@ -33,6 +33,7 @@ COPY --from=deps /app/db/generated ./db/generated
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV DATABASE_URL=file:./db/app.db
 
 # Generate track.json before build (required by build process)
 RUN npx tsx -e "import('./app/lib/gtfs-import.ts').then(m => m.importGtfsData())"
