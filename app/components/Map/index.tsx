@@ -222,24 +222,30 @@ function Map() {
   }
 
   // redirect to a train by id, where `id` is in the format: <agency>/<operator_id>
-  const navigateToTrain = (id: string) => {
-    router.push(`/train/${id}`)
-  }
+  const navigateToTrain = useCallback(
+    (id: string) => {
+      router.push(`/train/${id}`)
+    },
+    [router],
+  )
 
-  const handleMapClick = (
-    ev: MapLayerMouseEvent & { features?: MapGeoJSONFeature[] },
-  ) => {
-    const stationCode = ev.features?.[0]?.properties.code
-    console.log('stationCode', stationCode)
-    if (stationCode) {
-      router.push(`/station/${stationCode}`)
-    }
-  }
+  const handleMapClick = useCallback(
+    (ev: MapLayerMouseEvent & { features?: MapGeoJSONFeature[] }) => {
+      const stationCode = ev.features?.[0]?.properties.code
+      if (stationCode) {
+        router.push(`/station/${stationCode}`)
+      }
+    },
+    [router],
+  )
 
-  const controlStyle: React.CSSProperties = {
-    transform: `translateY(-${padding.bottom}px)`,
-    transition: 'transform 500ms',
-  }
+  const controlStyle = useMemo<React.CSSProperties>(
+    () => ({
+      transform: `translateY(-${padding.bottom}px)`,
+      transition: 'transform 500ms',
+    }),
+    [padding.bottom],
+  )
 
   const renderControls = () => (
     <>
@@ -290,8 +296,8 @@ function Map() {
           updateTrains()
         }}
         onMove={(ev: ViewStateChangeEvent) => {
-          // if it's a user-initiatied map move
-          if (ev.originalEvent) {
+          // if it's a user-initiated map move, and we're currently following a train
+          if (ev.originalEvent && settings.follow) {
             updateSetting('follow', false)
           }
         }}

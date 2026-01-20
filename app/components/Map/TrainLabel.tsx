@@ -1,9 +1,10 @@
 import { Marker } from 'react-map-gl/maplibre'
 import { Marker as MarkerType } from 'maplibre-gl'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, memo } from 'react'
 import cn from 'classnames'
 import { TrainFeatureProperties } from '@/app/types'
 import { DETAIL_ZOOM_LEVEL, TRAIN_UPDATE_FREQ } from './constants'
+import { coordsAreEqual, zoomIsEffectivelyEqual } from './utils'
 import { useAnimatedPosition } from '../hooks'
 
 interface TrainLabelProps extends TrainFeatureProperties {
@@ -15,7 +16,7 @@ interface TrainLabelProps extends TrainFeatureProperties {
   isSelected: boolean
 }
 
-function TrainLabel({
+function TrainLabelInner({
   id,
   coordinates,
   zoom,
@@ -88,5 +89,26 @@ function TrainLabel({
     </Marker>
   )
 }
+
+const TrainLabel = memo(TrainLabelInner, (prevProps, nextProps) => {
+  // Re-render if specific props changed
+  if (
+    prevProps.id !== nextProps.id ||
+    prevProps.name !== nextProps.name ||
+    prevProps.number !== nextProps.number ||
+    prevProps.isSelected !== nextProps.isSelected ||
+    prevProps.skipAnimation !== nextProps.skipAnimation
+  ) {
+    return false
+  }
+
+  // Re-render if coordinates changed
+  if (!coordsAreEqual(prevProps.coordinates, nextProps.coordinates)) {
+    return false
+  }
+
+  // Skip re-render if zoom change is below threshold
+  return zoomIsEffectivelyEqual(prevProps.zoom, nextProps.zoom)
+})
 
 export default TrainLabel

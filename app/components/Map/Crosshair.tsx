@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, memo } from 'react'
 import { Marker, Popup } from 'react-map-gl/maplibre'
 import { Marker as MarkerType } from 'maplibre-gl'
 import cn from 'classnames'
 import Crosshair from '@/app/img/crosshair.svg'
 import { inter } from '@/app/constants'
+import { coordsAreEqual, zoomIsEffectivelyEqual } from './utils'
 
 interface TrainGPSProps {
   gpsCoordinates: number[]
@@ -13,7 +14,7 @@ interface TrainGPSProps {
   shortcode?: string
 }
 
-function TrainGPS({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
+function CrosshairInner({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
   const [showPopup, setShowPopup] = useState(false)
   const markerRef = useRef<MarkerType>(null)
 
@@ -70,4 +71,19 @@ function TrainGPS({ gpsCoordinates, zoom, shortcode }: TrainGPSProps) {
   )
 }
 
-export default TrainGPS
+const CrosshairComponent = memo(CrosshairInner, (prevProps, nextProps) => {
+  // Re-render if specific props changed
+  if (prevProps.shortcode !== nextProps.shortcode) {
+    return false
+  }
+
+  // Re-render if coordinates changed
+  if (!coordsAreEqual(prevProps.gpsCoordinates, nextProps.gpsCoordinates)) {
+    return false
+  }
+
+  // Skip re-render if zoom change is below threshold
+  return zoomIsEffectivelyEqual(prevProps.zoom, nextProps.zoom)
+})
+
+export default CrosshairComponent

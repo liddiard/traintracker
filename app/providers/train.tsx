@@ -4,6 +4,7 @@ import React, {
   ReactNode,
   useState,
   useEffect,
+  useMemo,
   createContext,
   useContext,
 } from 'react'
@@ -57,11 +58,13 @@ export const TrainProvider: React.FC<{
     return () => clearInterval(interval)
   }, [])
 
-  return (
-    <TrainContext.Provider value={{ trains, stations, isLoading, error }}>
-      {children}
-    </TrainContext.Provider>
+  // Memoize context to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({ trains, stations, isLoading, error }),
+    [trains, stations, isLoading, error],
   )
+
+  return <TrainContext.Provider value={value}>{children}</TrainContext.Provider>
 }
 
 export const useTrains = () => {

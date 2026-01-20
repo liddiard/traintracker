@@ -2,6 +2,9 @@
 // headings with an arrow
 export const DETAIL_ZOOM_LEVEL = 8
 
+// Zoom threshold for skipping React.memo re-renders on minor zoom changes
+export const MEMO_ZOOM_THRESHOLD = 0.5
+
 // how often to recalculate extrapolated train positions in ms
 export const TRAIN_UPDATE_FREQ = 5000
 

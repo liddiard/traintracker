@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, useMemo, ReactNode } from 'react'
 import { BottomSheetPosition } from '../types'
 
 interface BottomSheetContextType {
@@ -26,10 +26,14 @@ export function BottomSheetProvider({ children }: BottomSheetProviderProps) {
   const [position, setPosition] = useState<BottomSheetPosition>('middle')
   const [sheetTop, setSheetTop] = useState<number>(0)
 
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({ position, setPosition, sheetTop, setSheetTop }),
+    [position, setPosition, sheetTop, setSheetTop],
+  )
+
   return (
-    <BottomSheetContext.Provider
-      value={{ position, setPosition, sheetTop, setSheetTop }}
-    >
+    <BottomSheetContext.Provider value={value}>
       {children}
     </BottomSheetContext.Provider>
   )

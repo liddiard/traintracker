@@ -1,10 +1,11 @@
 import { Marker } from 'react-map-gl/maplibre'
 import { Marker as MarkerType } from 'maplibre-gl'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, memo } from 'react'
 import Pointer from '@/app/img/pointer.svg'
 import Circle from '@/app/img/train-circle.svg'
 import { TrainFeatureProperties } from '@/app/types'
 import { DETAIL_ZOOM_LEVEL, TRAIN_UPDATE_FREQ } from './constants'
+import { coordsAreEqual, zoomIsEffectivelyEqual } from './utils'
 import { useAnimatedPosition } from '../hooks'
 
 interface TrainMarkerProps extends TrainFeatureProperties {
@@ -15,7 +16,7 @@ interface TrainMarkerProps extends TrainFeatureProperties {
   navigateToTrain: (_trainID: string) => void
 }
 
-function TrainMarker({
+function TrainMarkerInner({
   id,
   color,
   coordinates,
@@ -82,5 +83,26 @@ function TrainMarker({
     </Marker>
   )
 }
+
+const TrainMarker = memo(TrainMarkerInner, (prevProps, nextProps) => {
+  // Re-render if specific props changed
+  if (
+    prevProps.id !== nextProps.id ||
+    prevProps.color !== nextProps.color ||
+    prevProps.isSelected !== nextProps.isSelected ||
+    prevProps.heading !== nextProps.heading ||
+    prevProps.skipAnimation !== nextProps.skipAnimation
+  ) {
+    return false
+  }
+
+  // Re-render if coordinates changed
+  if (!coordsAreEqual(prevProps.coordinates, nextProps.coordinates)) {
+    return false
+  }
+
+  // Skip re-render if zoom change is below threshold
+  return zoomIsEffectivelyEqual(prevProps.zoom, nextProps.zoom)
+})
 
 export default TrainMarker
