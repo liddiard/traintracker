@@ -66,9 +66,12 @@ COPY --chown=nextjs:nodejs --from=builder /app/public ./public
 COPY --chown=nextjs:nodejs --from=builder /app/.next/standalone ./
 COPY --chown=nextjs:nodejs --from=builder /app/.next/static ./.next/static
 
-# Copy Prisma and DB files
+# Copy Prisma and DB files (schema + migrations, not the database itself)
 COPY --chown=nextjs:nodejs --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --chown=nextjs:nodejs --from=builder /app/db ./db
+
+# Create data directory for persistent database (mounted as volume in docker-compose)
+RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
 
 # Copy runtime data
 COPY --chown=nextjs:nodejs --from=builder /app/app/api/stations/amtrak-stations.csv ./app/api/stations/amtrak-stations.csv

@@ -5,13 +5,14 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      # Override DATABASE_URL for Docker path
-      - DATABASE_URL=file:/app/db/app.db
+      # Override DATABASE_URL for Docker path (uses /app/data for persistence)
+      - DATABASE_URL=file:/app/data/app.db
       # Always use port 3000 internally (nginx proxies to this)
       - PORT=3000
     volumes:
-      # Persist SQLite database
-      - db-data:/app/db
+      # Persist only the SQLite database file, not the entire db directory
+      # This ensures new migrations from updated images are visible
+      - db-data:/app/data
     networks:
       - traintracker-network
     healthcheck:
