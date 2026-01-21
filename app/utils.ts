@@ -127,6 +127,15 @@ export const createRouteNumMap = (trains: Train[]) =>
   )
 
 /**
+ * Creates a list of unique train numbers from an array of trains.
+ *
+ * @param trains - The array of trains to extract train numbers from.
+ * @returns An Set of unique train numbers.
+ */
+export const getTrainNums = (trains: Train[]) =>
+  new Set(trains.map(({ number }) => number))
+
+/**
  * Formats the raw train API response by converting date strings to Date
  * objects.
  *

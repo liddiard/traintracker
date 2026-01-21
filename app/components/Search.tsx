@@ -6,7 +6,7 @@ import cn from 'classnames'
 import { InputType, Option } from '../types'
 import MagnifyingGlass from '../img/magnifying-glass.svg'
 import CaretRight from '../img/caret-right.svg'
-import { createRouteNumMap } from '../utils'
+import { createRouteNumMap, getTrainNums } from '../utils'
 import { useTrains } from '../providers/train'
 import { useRouter, useSearchParams } from 'next/navigation'
 import SearchSelect from './SearchSelect'
@@ -32,6 +32,7 @@ function Search({ id, className = '' }: SearchProps) {
   const { setPosition } = useBottomSheet()
 
   const routes = useMemo(() => createRouteNumMap(trains), [trains])
+  const trainNums = useMemo(() => getTrainNums(trains), [trains])
 
   const stationOptions = useMemo(
     () =>
@@ -62,13 +63,15 @@ function Search({ id, className = '' }: SearchProps) {
 
   const lineNumberOptions = useMemo(
     () =>
-      Array.from(routes[trainName?.value || ''] || new Set())
+      // if a train is selected, only show numbers for that train
+      // otherwise, show all train numbers
+      Array.from(routes[trainName?.value || ''] || trainNums)
         ?.toSorted((a, b) => Number(a) - Number(b))
         ?.map((num) => ({
           value: num,
           label: num,
         })),
-    [routes, trainName],
+    [routes, trainName, trainNums],
   )
 
   const [searchType, setSearchType] = useState<SearchType>(SearchType.Segment)
@@ -194,29 +197,25 @@ function Search({ id, className = '' }: SearchProps) {
             trainNumberSelect.current?.focus()
           }
         }}
-        required={true}
-        autoFocus
+        autoFocus={true}
       />
-      {trainName && (
-        <SearchSelect
-          instanceId="trainNumber"
-          ref={trainNumberSelect}
-          name="trainNumber"
-          options={lineNumberOptions}
-          value={trainNumber}
-          className="w-20 grow-0 text-black"
-          placeholder="#"
-          classNames={{
-            menu: () => '',
-          }}
-          autoFocus={true}
-          onChange={(option) => {
-            setTrainNumber(option as Option)
-          }}
-          onFocus={() => setTrainNumber(null)}
-          inputType={InputType.NUMBER}
-        />
-      )}
+      <SearchSelect
+        instanceId="trainNumber"
+        ref={trainNumberSelect}
+        name="trainNumber"
+        options={lineNumberOptions}
+        value={trainNumber}
+        className="w-20 grow-0 text-black"
+        placeholder="#"
+        classNames={{
+          menu: () => '',
+        }}
+        onChange={(option) => {
+          setTrainNumber(option as Option)
+        }}
+        onFocus={() => setTrainNumber(null)}
+        inputType={InputType.NUMBER}
+      />
     </div>
   )
 
