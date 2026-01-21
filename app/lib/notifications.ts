@@ -13,12 +13,14 @@ import type {
 let isPolling = false
 
 const getBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_BASE_PATH) {
-    return process.env.NEXT_PUBLIC_BASE_PATH
+  // For server-side internal API calls, always use localhost
+  // This works in both local dev and Docker containers
+  // Use INTERNAL_API_URL env var to override if needed
+  if (process.env.INTERNAL_API_URL) {
+    return process.env.INTERNAL_API_URL
   }
-  return process.env.NODE_ENV === 'production'
-    ? 'https://traintracker.app'
-    : 'http://localhost:3000'
+  const port = process.env.PORT || '3000'
+  return `http://localhost:${port}`
 }
 
 export async function pollAndNotify() {
