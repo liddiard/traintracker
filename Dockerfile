@@ -76,6 +76,10 @@ COPY --chown=nextjs:nodejs --from=builder /app/app/api/stations/amtrak-stations.
 # Copy production node_modules
 COPY --chown=nextjs:nodejs --from=deps /tmp/prod_node_modules ./node_modules
 
+# Copy Prisma CLI from builder (needed for migrations at runtime)
+COPY --chown=nextjs:nodejs --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --chown=nextjs:nodejs --from=builder /app/node_modules/prisma ./node_modules/prisma
+
 # Copy entrypoint script
 COPY --chown=nextjs:nodejs --chmod=755 docker-entrypoint.sh /usr/local/bin/
 
