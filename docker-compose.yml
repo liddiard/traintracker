@@ -1,8 +1,6 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/liddiard/traintracker:latest
     container_name: traintracker-app
     restart: unless-stopped
     env_file: .env
