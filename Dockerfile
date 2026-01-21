@@ -42,6 +42,8 @@ RUN npx prisma db push --schema=db/schema.prisma
 RUN npx tsx -e "import('./app/lib/gtfs-import.ts').then(m => m.importGtfsData())"
 
 # Build the Next.js application with standalone output
+# Increase Node.js heap size to handle builds on low-memory VPS (1GB RAM + 2GB swap)
+ENV NODE_OPTIONS="--max-old-space-size=1536"
 RUN npm run build
 
 # ---- Runner Stage ----
