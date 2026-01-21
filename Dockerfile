@@ -61,25 +61,23 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Copy necessary files from builder
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder /app/db/schema.prisma ./db/schema.prisma
-COPY --from=builder /app/db/migrations ./db/migrations
-COPY --from=builder /app/db/generated ./db/generated
-COPY --from=builder /app/db/app.db ./db/app.db
+# Copy Next.js build artifacts
+COPY --chown=nextjs:nodejs --from=builder /app/public ./public
+COPY --chown=nextjs:nodejs --from=builder /app/.next/standalone ./
+COPY --chown=nextjs:nodejs --from=builder /app/.next/static ./.next/static
 
-# Copy production node_modules (includes Prisma)
-COPY --from=deps /tmp/prod_node_modules ./node_modules
+# Copy Prisma and DB files
+COPY --chown=nextjs:nodejs --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --chown=nextjs:nodejs --from=builder /app/db ./db
 
-# Set permissions
-RUN chown -R nextjs:nodejs /app
+# Copy runtime data
+COPY --chown=nextjs:nodejs --from=builder /app/app/api/stations/amtrak-stations.csv ./app/api/stations/amtrak-stations.csv
 
-# Copy and set permissions for entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Copy production node_modules
+COPY --chown=nextjs:nodejs --from=deps /tmp/prod_node_modules ./node_modules
+
+# Copy entrypoint script
+COPY --chown=nextjs:nodejs --chmod=755 docker-entrypoint.sh /usr/local/bin/
 
 USER nextjs
 
