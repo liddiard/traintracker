@@ -13,8 +13,8 @@ import type {
 let isPolling = false
 
 const getBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL
+  if (process.env.NEXT_PUBLIC_BASE_PATH) {
+    return process.env.NEXT_PUBLIC_BASE_PATH
   }
   return process.env.NODE_ENV === 'production'
     ? 'https://traintracker.app'
