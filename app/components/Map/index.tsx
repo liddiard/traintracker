@@ -88,6 +88,7 @@ function Map() {
   const [loaded, setLoaded] = useState(false)
   const [viewState, setViewState] = useState(initialViewState)
   const [trainData, setTrainData] = useState(emptyTrainData)
+  const [isMobile, setIsMobile] = useState(false)
 
   const mapRef = useRef<MapRef>(null)
   const flownToTrain = useRef<string>(null)
@@ -100,6 +101,12 @@ function Map() {
     trainsRef.current = trains
     stationsRef.current = stations
   }, [trains, stations])
+
+  // set mounted flag to avoid hydration errors when checking window dimensions
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT)
+  }, [])
 
   const selectedTrain = useMemo(
     () => trainData.features.find((t) => t.id === `${agency}/${id}`),
@@ -255,13 +262,13 @@ function Map() {
       <AttributionControl
         position="bottom-right"
         style={controlStyle}
-        compact={true}
+        compact={isMobile}
       />
       <FullscreenControl position="bottom-right" style={controlStyle} />
-      {viewState.bearing ? (
+      {viewState.bearing || !isMobile ? (
         <NavigationControl
           position="bottom-right"
-          showZoom={false}
+          showZoom={!isMobile}
           showCompass={!!viewState.bearing}
           // show pitch on the compass control, plus (undocumented): reset not just
           // heading but also pitch on click

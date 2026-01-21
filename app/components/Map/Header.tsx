@@ -39,7 +39,10 @@ function Header() {
               <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
                 Tracker
               </span>
-              <sup className="text-amtrak-red-500 font-semibold"> beta</sup>
+              <sup className="text-amtrak-red-500 dark:text-amtrak-red-300 font-semibold">
+                {' '}
+                beta
+              </sup>
             </h1>
           </Link>
           <span className="hidden md:block">
