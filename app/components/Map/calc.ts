@@ -36,7 +36,9 @@ const tracks = _track as FeatureCollection<LineString, TrackFeatureProperties>
  *
  * @param pt - The point to check, represented as a GeoJSON Feature of type Point.
  * @param trainPosition - The current position of the train, represented as a GeoJSON Feature of type Point.
+ * @param stations - An array of all station objects, used to look up coordinates.
  * @param nextStop - The next station the train will arrive at, containing station information.
+ * @param agency - The agency code of the last stop (e.g., 'amtrak', 'via', etc.).
  * @returns A boolean indicating whether the point is behind the train relative to the next station, or undefined if unknown.
  */
 const isPointBehindTrain = (
@@ -44,8 +46,11 @@ const isPointBehindTrain = (
   trainPosition: Feature<Point>,
   stations: Station[],
   nextStop?: Stop,
+  agency?: string,
 ) => {
-  const station = stations.find((s) => s.code === nextStop?.code)
+  const station = stations.find(
+    (s) => s.agency === agency && s.code === nextStop?.code,
+  )
   if (!station?.coordinates) {
     console.warn(
       `isPointBehindTrain: Station coordinates not found: ${nextStop?.code}`,
@@ -90,6 +95,7 @@ const normalizeBearing = (degree: number) => {
  * @param trainPoint - The current position of the train as a GeoJSON Feature<Point>.
  * @param track - The track geometry as a GeoJSON LineString.
  * @param nextStop - The next station the train is heading towards (optional).
+ * @param agency - The agency code of the last stop (optional).
  * @returns The heading in degrees, or undefined if the next station is not provided or if the nearest point is behind the train and cannot be determined.
  */
 export const getHeading = (
@@ -97,6 +103,7 @@ export const getHeading = (
   track: LineString,
   stations: Station[],
   nextStop?: Stop,
+  agency?: string,
 ) => {
   // if no next station, we can't make the calculation
   if (!nextStop) {
@@ -121,6 +128,7 @@ export const getHeading = (
     trainPoint,
     stations,
     nextStop,
+    agency,
   )
   // return if we're unsure if the nearest point is behind the train (e.g. if
   // the station) code isn't found in the station data
@@ -215,6 +223,7 @@ const getTrackSegmentCached = createCachedFunction(
  * Used to position markers for trains that have completed their full route.
  *
  * @param trackLine - The GeoJSON LineString feature representing the track.
+ * @param agency - The agency code of the train.
  * @param lastStop - The final stop object of the train's route.
  * @param stations - An array of all station objects, used to look up coordinates.
  * @returns An object with the snapped `point` on the track and an `undefined` heading,
@@ -222,10 +231,11 @@ const getTrackSegmentCached = createCachedFunction(
  */
 const getTrackTerminus = (
   trackLine: Feature<LineString>,
+  agency: string,
   lastStop: Stop,
   stations: Station[],
 ) => {
-  const stationCoords = getStopCoordinates(lastStop.code, stations)
+  const stationCoords = getStopCoordinates(agency, lastStop.code, stations)
   if (!stationCoords) {
     return
   }
@@ -284,6 +294,8 @@ export const getExtrapolatedTrainPoint = (
   stations: Station[],
 ) => {
   const trackLine = getTrackFromId(track, tracks)
+  const agency = trainMeta.id.split('/')[0]
+
   if (!trackLine) {
     return
   }
@@ -291,7 +303,7 @@ export const getExtrapolatedTrainPoint = (
   // If train has arrived, snap it to the track nearest the last station's
   // coordinates
   if (trainMeta.code === TimeStatus.COMPLETE) {
-    return getTrackTerminus(trackLine, trainMeta.lastStop, stations)
+    return getTrackTerminus(trackLine, agency, trainMeta.lastStop, stations)
   }
 
   const prevStop = trainMeta.curStop ?? trainMeta.prevStop
@@ -300,8 +312,8 @@ export const getExtrapolatedTrainPoint = (
     return
   }
 
-  const prevStopCoords = getStopCoordinates(prevStop.code, stations)
-  const nextStopCoords = getStopCoordinates(nextStop.code, stations)
+  const prevStopCoords = getStopCoordinates(agency, prevStop.code, stations)
+  const nextStopCoords = getStopCoordinates(agency, nextStop.code, stations)
   if (!prevStopCoords || !nextStopCoords) {
     return
   }
@@ -331,15 +343,7 @@ export const getExtrapolatedTrainPoint = (
   }
   let trackSegment: Feature<LineString>
   let startTime: Date | null
-  if (
-    trainGPSOnTimetableTrackSegment
-    // isPointBehindTrain(
-    //   point(prevStopCoords),
-    //   point(trainPosition),
-    //   stations,
-    //   nextStop,
-    // )
-  ) {
+  if (trainGPSOnTimetableTrackSegment) {
     // Narrow the track segment from to only consider the portion between the
     // train GPS position and next station.
     // This will calculate progress based on GPS location + its reported time
@@ -375,6 +379,7 @@ export const getExtrapolatedTrainPoint = (
     trackSegment.geometry,
     stations,
     nextStop,
+    agency,
   )
   return {
     point: extrapolatedPoint,

@@ -5,7 +5,7 @@ Data in this directory is intended to be read and edited with a GIS application 
 ## Data sources
 
 - Amtrak: https://content.amtrak.com/content/gtfs/GTFS.zip [via Transitland](https://www.transit.land/feeds/f-9-amtrak~amtrakcalifornia~amtrakcharteredvehicle)
-  - Supplemental data Gold Runner (formerly San Joaquins) track missing from Amtrak GTFS data: https://data-usdot.opendata.arcgis.com/datasets/amtrak-routes/explore
+  - Supplemental data Gold Runner (formerly San Joaquins) track missing from Amtrak GTFS data: https://data-usdot.opendata.arcgis.com/datasets/amtrak-routes/explore. Details below.
 - VIA Rail: https://www.viarail.ca/sites/all/files/gtfs/viarail.zip via [VIA Rail developer resources](https://www.viarail.ca/en/developer-resources)
 - Brightline: http://feed.gobrightline.com/bl_gtfs.zip via [Transitland](https://www.transit.land/feeds/f-brightline~trails)
 
