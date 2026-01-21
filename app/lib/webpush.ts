@@ -1,23 +1,37 @@
 import webpush from 'web-push'
 
-// Validate that required environment variables are defined
-const requiredEnvVars = [
-  'VAPID_SUBJECT',
-  'VAPID_PUBLIC_KEY',
-  'VAPID_PRIVATE_KEY',
-]
-const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar])
-if (missingEnvVars.length) {
-  throw new Error(
-    `Missing required environment variables: ${missingEnvVars.join(', ')}`,
-  )
-}
+let vapidConfigured = false
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-)
+/**
+ * Validates and configures VAPID details for web push.
+ * This is called lazily on first use rather than at module load time
+ * to allow the build to succeed without environment variables present.
+ */
+function ensureVapidConfigured() {
+  if (vapidConfigured) return
+
+  const requiredEnvVars = [
+    'VAPID_SUBJECT',
+    'VAPID_PUBLIC_KEY',
+    'VAPID_PRIVATE_KEY',
+  ]
+  const missingEnvVars = requiredEnvVars.filter(
+    (envVar) => !process.env[envVar],
+  )
+  if (missingEnvVars.length) {
+    throw new Error(
+      `Missing required environment variables: ${missingEnvVars.join(', ')}`,
+    )
+  }
+
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT!,
+    process.env.VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!,
+  )
+
+  vapidConfigured = true
+}
 
 /**
  * Sends a push notification to a client.
@@ -31,6 +45,8 @@ export async function sendPushNotification(
   subscription: { endpoint: string; p256dh: string; auth: string },
   payload: any,
 ) {
+  ensureVapidConfigured()
+
   const pushSubscription = {
     endpoint: subscription.endpoint,
     keys: { p256dh: subscription.p256dh, auth: subscription.auth },
