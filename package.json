@@ -36,7 +36,8 @@
     "react-map-gl": "^8.1.0",
     "react-modal-sheet": "^5.2.1",
     "react-select": "^5.10.2",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
