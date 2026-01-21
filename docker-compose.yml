@@ -7,6 +7,8 @@ services:
     environment:
       # Override DATABASE_URL for Docker path
       - DATABASE_URL=file:/app/db/app.db
+      # Always use port 3000 internally (nginx proxies to this)
+      - PORT=3000
     volumes:
       # Persist SQLite database
       - db-data:/app/db
@@ -15,8 +17,10 @@ services:
     healthcheck:
       test:
         [
-          'CMD-SHELL',
-          'node -e "require(''http'').get(''http://localhost:'' + (process.env.PORT || ''3000'') + ''/api/notifications/vapid-key'', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"',
+          'CMD',
+          'node',
+          '-e',
+          "require('http').get('http://localhost:3000/api/notifications/vapid-key', (r) => process.exit(r.statusCode === 200 ? 0 : 1))",
         ]
       interval: 30s
       timeout: 10s
