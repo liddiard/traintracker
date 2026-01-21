@@ -42,6 +42,9 @@ function TimelineSegment({
     tz: timeZone === 'local' ? stop.timezone : undefined,
     timeFormat,
   }
+  // Extract agency from trainId (format: "agency/id")
+  const agency = trainId.split('/')[0]
+  const stationId = `${agency}/${code}`
 
   const renderDayLine = () => {
     if (
@@ -77,7 +80,7 @@ function TimelineSegment({
   }
 
   return (
-    <Fragment key={code}>
+    <Fragment key={stationId}>
       {renderDayLine()}
       <div className="leading-snug" style={{ height }}>
         <time
@@ -105,7 +108,7 @@ function TimelineSegment({
       <div className="z-10 mx-0.5 my-1 aspect-square w-3 rounded-full bg-white" />
       <div className="flex items-start gap-1 leading-snug">
         <Link
-          href={`/station/${code}`}
+          href={`/station/${stationId}`}
           className="block font-semibold text-balance hover:underline"
         >
           {name}

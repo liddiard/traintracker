@@ -114,8 +114,8 @@ function Map() {
   )
 
   const selectedStation = useMemo(
-    () => stations.find((s) => s.code === code),
-    [stations, code],
+    () => stations.find((s) => s.agency === agency && s.code === code),
+    [stations, code, agency],
   )
 
   // padding to keep map centered and controls above bottom sheet when the sheet is at
@@ -241,9 +241,9 @@ function Map() {
 
   const handleMapClick = useCallback(
     (ev: MapLayerMouseEvent & { features?: MapGeoJSONFeature[] }) => {
-      const stationCode = ev.features?.[0]?.properties.code
-      if (stationCode) {
-        router.push(`/station/${stationCode}`)
+      const station = ev.features?.[0]?.properties
+      if (station?.code && station?.agency) {
+        router.push(`/station/${station.agency}/${station.code}`)
       }
     },
     [router],

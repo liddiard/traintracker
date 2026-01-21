@@ -26,13 +26,16 @@ interface TrainStop {
 }
 
 export default function StationPage() {
-  const { code } = useParams()
+  const { agency, code } = useParams()
   const { trains, stations } = useTrains()
   const { settings } = useSettings()
   const { timeFormat, timeZone } = settings
 
+  const stationAgency = typeof agency === 'string' ? agency.toLowerCase() : ''
   const stationCode = typeof code === 'string' ? code.toUpperCase() : ''
-  const station = stations.find((s) => s.code === stationCode)
+  const station = stations.find(
+    (s) => s.agency === stationAgency && s.code === stationCode,
+  )
 
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
