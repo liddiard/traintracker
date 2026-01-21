@@ -64,7 +64,7 @@ export default async function RootLayout({
             <BottomSheetProvider>
               <div className="flex h-screen flex-nowrap">
                 {/* Desktop sidebar - visible at md and above */}
-                <div className="dark:bg-positron-gray-800 relative z-10 hidden overflow-y-auto shadow-lg md:block md:w-1/4 md:min-w-[300px] dark:text-white">
+                <div className="dark:bg-positron-gray-800 relative z-10 hidden overflow-y-auto shadow-lg md:block md:w-1/4 md:max-w-90 md:min-w-75 dark:text-white">
                   <Search id="sidebar" />
                   {children}
                 </div>
