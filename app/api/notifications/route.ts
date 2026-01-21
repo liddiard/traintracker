@@ -40,8 +40,14 @@ export async function GET(request: Request) {
 // create a notification subscription
 export async function POST(request: Request) {
   try {
-    const { subscription, trainId, stopCode, notificationType, timeFormat } =
-      await request.json()
+    const {
+      subscription,
+      trainId,
+      stopCode,
+      notificationType,
+      timeFormat,
+      userTz,
+    } = await request.json()
 
     // Check subscription limit per device
     const existingCount = await prisma.pushSubscription.count({
@@ -70,6 +76,7 @@ export async function POST(request: Request) {
         stopCode,
         notificationType,
         timeFormat,
+        userTz,
       },
     })
 

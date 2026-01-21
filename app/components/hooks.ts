@@ -157,6 +157,7 @@ export const useNotifications = () => {
 
   const { settings } = useSettings()
   const { timeFormat } = settings
+  const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const requestPermission = useCallback(async () => {
     const result = await Notification.requestPermission()
@@ -190,6 +191,7 @@ export const useNotifications = () => {
           stopCode,
           notificationType: type,
           timeFormat,
+          userTz,
         }),
       })
 
@@ -198,7 +200,7 @@ export const useNotifications = () => {
         throw new Error(error.error || 'Failed to subscribe')
       }
     },
-    [timeFormat],
+    [timeFormat, userTz],
   )
 
   // delete a push notification subscription

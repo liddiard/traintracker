@@ -66,6 +66,7 @@ export async function pollAndNotify() {
             stop,
             sub.notificationType as NotificationType,
             sub.timeFormat,
+            sub.userTz,
           )
 
           await sendPushNotification(sub, payload)
@@ -105,9 +106,10 @@ function createNotificationPayload(
   stop: Stop,
   type: NotificationType,
   timeFormat: TimeFormat,
+  userTz: string,
 ): NotificationPayload {
   const event = type === 'arrival' ? stop.arrival : stop.departure
-  const timeStr = formatTime(event.time, { timeFormat })
+  const timeStr = formatTime(event.time, { timeFormat, tz: userTz })
   const action = type === 'arrival' ? 'Arrived at' : 'Departed'
   const delayStr = event.delay > 0 ? ` (${event.delay} min late)` : ''
 

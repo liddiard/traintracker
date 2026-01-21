@@ -30,6 +30,7 @@ model PushSubscription {
   stopCode         String           // e.g., "NYP"
   notificationType NotificationType // arrival | departure
   timeFormat       TimeFormat       // hr12 | hr24
+  userTz           String           // User's timezone e.g., "America/New_York"
 
   sent             Boolean          @default(false)
   createdAt        DateTime         @default(now())
