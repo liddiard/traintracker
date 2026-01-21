@@ -16,7 +16,7 @@ else
   if grep -q "P3005" /tmp/migrate-output.txt; then
     echo "Existing database detected without migration history"
     echo "Using db push to sync schema (safe for existing data)..."
-    npx prisma db push --skip-generate
+    npx prisma db push --accept-data-loss
   else
     # Some other error occurred
     echo "Migration failed with unexpected error"
