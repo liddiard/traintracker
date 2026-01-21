@@ -1,4 +1,3 @@
-import fs from 'fs/promises'
 import { Feature, Point } from 'geojson'
 import { amtrakDecryptResponse, amtrakParseDate } from '../utils'
 import { getStations } from '@/app/lib/stations'
@@ -127,8 +126,6 @@ const get = async () => {
   const response = await fetch(API_ENDPOINT + `?${Date.now()}=true`)
   const data = await response.text()
   const trains = amtrakDecryptResponse(data)
-
-  await fs.writeFile('original.json', JSON.stringify(trains, null, 2), 'utf8')
 
   const stations = await getStations()
 
