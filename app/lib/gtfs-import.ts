@@ -171,7 +171,7 @@ export async function importGtfsData(): Promise<void> {
   const trips = getTrips()
   const shapes = getShapes()
 
-  console.log('Upserting GTFS data into database (30-60 sec)...')
+  console.log('Upserting GTFS data into database...')
 
   // Import stops and trips into Prisma tables (shapes are only used for GeoJSON generation)
   const stopCount = await importStops(stops)
@@ -188,7 +188,7 @@ export async function importGtfsData(): Promise<void> {
     `GTFS import complete: ${stopCount} stops, ${tripCount} trips, ${shapes.length} shapes`,
   )
 
-  console.log('Generating shapes GeoJSON (5-10 sec)...')
+  console.log('Generating shapes GeoJSON...')
   await generateGeoJson(shapes)
   console.log('Shapes GeoJSON generated.')
 
