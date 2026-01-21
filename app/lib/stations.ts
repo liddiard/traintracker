@@ -1,7 +1,6 @@
 import Papa from 'papaparse'
 import { readFileSync } from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 import { prisma } from './prisma'
 import { GtfsStop } from '@/db/generated/client'
 import { Station, StationResponse } from '@/app/types'
@@ -10,9 +9,6 @@ import {
   stationCodeToTz,
   stationCodeToName,
 } from '@/app/api/stations/amtrakStations'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const processStationName = (name: string): string =>
   name.replace(/Station|Amtrak/g, '').trim()
@@ -52,7 +48,7 @@ const processGtfsStations = (stops: GtfsStop[]): StationResponse =>
 
 export const processAmtrakStations = (): StationResponse => {
   const csvContent = readFileSync(
-    path.join(__dirname, '../api/stations/amtrak-stations.csv'),
+    path.join(process.cwd(), 'app/api/stations/amtrak-stations.csv'),
     'utf-8',
   )
   const parsed = Papa.parse<AmtrakStationCSV>(csvContent, {
