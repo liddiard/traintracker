@@ -85,76 +85,70 @@ async function importTrips(trips: Trip[]): Promise<number> {
 }
 
 /**
- * Queries imported GTFS shapes and generates a GeoJSON file for map display.
+ * Generates a GeoJSON file for map display from in-memory GTFS shapes data.
  *
+ * @param shapes Array of Shape objects from GTFS data
  * @param outputPath GeoJSON file to output to, relative to app root
  */
 async function generateGeoJson(
+  shapes: Shape[],
   outputPath = 'public/map_data/track.json',
 ): Promise<void> {
-  const shapes = await prisma.gtfsShape.groupBy({
-    by: ['agency', 'shapeId'],
-  })
-  // For each shape, get its points ordered by ptSequence
-  const shapesWithPoints = await Promise.all(
-    shapes.map(async (shape) => {
-      const points = await prisma.gtfsShape.findMany({
-        where: {
-          agency: shape.agency,
-          shapeId: shape.shapeId,
-        },
-        orderBy: {
-          ptSequence: 'asc',
-        },
-      })
+  // Group shapes by agency and shapeId, collecting points for each
+  const shapeMap = new Map<
+    string,
+    {
+      agency: string
+      shapeId: string
+      points: Array<{ ptLat: number; ptLon: number; ptSequence: number }>
+    }
+  >()
+
+  for (const shape of shapes) {
+    const agency = getAgencyFromId(shape.shape_id)
+    const shapeId = getOriginalId(shape.shape_id)
+    const key = `${agency}:${shapeId}`
+
+    if (!shapeMap.has(key)) {
+      shapeMap.set(key, { agency, shapeId, points: [] })
+    }
+
+    shapeMap.get(key)!.points.push({
+      ptLat: shape.shape_pt_lat,
+      ptLon: shape.shape_pt_lon,
+      ptSequence: shape.shape_pt_sequence,
+    })
+  }
+
+  // Sort points by sequence and convert to GeoJSON features
+  const features = Array.from(shapeMap.values())
+    .map((shape) => {
+      // Sort points by sequence
+      shape.points.sort((a, b) => a.ptSequence - b.ptSequence)
+
       return {
-        ...shape,
-        points,
+        type: 'Feature',
+        properties: {
+          id: shape.shapeId,
+          agency: shape.agency,
+        },
+        geometry: {
+          type: 'LineString',
+          coordinates: shape.points.map((point) => [
+            // round to 5 decimal places (~1 meter) to reduce file size
+            roundToDecimals(point.ptLon, 5),
+            roundToDecimals(point.ptLat, 5),
+          ]),
+        },
       }
-    }),
-  )
-  // map to GeoJSON features, adding missing `supplementalTrack`, which should have
-  // `agency` and `id` properties that match `supplementalTrips`
-  const features = shapesWithPoints
-    .map((shape) => ({
-      type: 'Feature',
-      properties: {
-        id: shape.shapeId,
-        agency: shape.agency,
-      },
-      geometry: {
-        type: 'LineString',
-        coordinates: shape.points.map((point) => [
-          // round to 5 decimal places (~1 meter) to reduce file size
-          roundToDecimals(point.ptLon, 5),
-          roundToDecimals(point.ptLat, 5),
-        ]),
-      },
-    }))
+    })
     .concat(supplementalTrack)
+
   const geojson = JSON.stringify({
     type: 'FeatureCollection',
     features,
   })
   await fs.writeFile(outputPath, geojson, 'utf-8')
-}
-
-export async function importShapes(shapes: Shape[]): Promise<number> {
-  // Map to Prisma format
-  const shapeData = shapes.map((shape) => ({
-    id: `${shape.shape_id}-${shape.shape_pt_sequence}`,
-    shapeId: getOriginalId(shape.shape_id),
-    ptLat: shape.shape_pt_lat,
-    ptLon: shape.shape_pt_lon,
-    ptSequence: shape.shape_pt_sequence,
-    agency: getAgencyFromId(shape.shape_id),
-  }))
-
-  // Clear existing shapes and insert new ones
-  await prisma.gtfsShape.deleteMany()
-  await prisma.gtfsShape.createMany({ data: shapeData })
-
-  return shapeData.length
 }
 
 export async function importGtfsData(): Promise<void> {
@@ -179,10 +173,9 @@ export async function importGtfsData(): Promise<void> {
 
   console.log('Upserting GTFS data into database (30-60 sec)...')
 
-  // Import into Prisma tables
+  // Import stops and trips into Prisma tables (shapes are only used for GeoJSON generation)
   const stopCount = await importStops(stops)
   const tripCount = await importTrips(trips)
-  const shapeCount = await importShapes(shapes)
 
   // Update import metadata
   await prisma.gtfsImportMeta.upsert({
@@ -191,14 +184,14 @@ export async function importGtfsData(): Promise<void> {
     create: { id: GTFS_IMPORT_ID, lastImportedAt: new Date() },
   })
 
-  // Close the in-memory database after import
-  closeDb()
-
   console.log(
-    `GTFS import complete: ${stopCount} stops, ${tripCount} trips, ${shapeCount} shapes`,
+    `GTFS import complete: ${stopCount} stops, ${tripCount} trips, ${shapes.length} shapes`,
   )
 
   console.log('Generating shapes GeoJSON (5-10 sec)...')
-  await generateGeoJson()
+  await generateGeoJson(shapes)
   console.log('Shapes GeoJSON generated.')
+
+  // Close the in-memory database after import
+  closeDb()
 }

@@ -66,18 +66,6 @@ model GtfsTrip {
   @@index([tripShortName])
 }
 
-// https://gtfs.org/documentation/schedule/reference/#shapestxt
-model GtfsShape {
-  id                String  @id // Namespaced as: `agency/shape_id-shape_pt_sequence`
-  shapeId           String  // Original GTFS `shape_id`
-  ptLat             Float
-  ptLon             Float
-  ptSequence        Int
-  agency            String
-
-  @@index([agency])
-}
-
 model GtfsImportMeta {
   id             String   @id @default("gtfs_import") // Singleton. Value should match `@app/constants.ts:GTFS_IMPORT_ID`
   lastImportedAt DateTime
