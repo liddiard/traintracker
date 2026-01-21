@@ -63,5 +63,8 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
+  },
+  "prisma": {
+    "schema": "db/schema.prisma"
   }
 }
