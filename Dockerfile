@@ -8,8 +8,9 @@ RUN apk add --no-cache libc6-compat python3 make g++
 # ---- Dependencies Stage ----
 FROM base AS deps
 
-# Copy package files
+# Copy package files and Prisma config
 COPY package*.json ./
+COPY prisma.config.ts ./
 COPY db/schema.prisma ./db/
 
 # Install dependencies for production (save to /tmp for later)
@@ -18,7 +19,7 @@ RUN npm ci --only=production --ignore-scripts && \
 
 # Install all dependencies (including dev) for build stage
 RUN npm ci && \
-    npx prisma generate --schema=db/schema.prisma
+    npx prisma generate
 
 # ---- Builder Stage ----
 FROM base AS builder
@@ -36,7 +37,7 @@ ENV NODE_ENV=production
 ENV DATABASE_URL=file:./db/app.db
 
 # Create database tables before GTFS import
-RUN npx prisma db push --schema=db/schema.prisma
+RUN npx prisma db push
 
 # Generate track.json before build (required by build process)
 RUN npx tsx -e "import('./app/lib/gtfs-import.ts').then(m => m.importGtfsData())"
@@ -64,6 +65,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/db/schema.prisma ./db/schema.prisma
 COPY --from=builder /app/db/migrations ./db/migrations
 COPY --from=builder /app/db/generated ./db/generated
