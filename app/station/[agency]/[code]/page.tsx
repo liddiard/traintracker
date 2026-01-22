@@ -1,6 +1,6 @@
 'use client'
 
-import { useParams } from 'next/navigation'
+import { notFound, useParams } from 'next/navigation'
 import Link from 'next/link'
 import cn from 'classnames'
 import { useTrains } from '@/app/providers/train'
@@ -135,12 +135,7 @@ export default function StationPage() {
   )
 
   if (!station) {
-    return (
-      <div className="flex flex-col gap-4 p-3">
-        <h1 className="text-3xl font-bold">Station Not Found</h1>
-        <p>No station found with stationCode: {stationCode}</p>
-      </div>
-    )
+    return notFound()
   }
 
   const formatTimeOptions = {
@@ -256,13 +251,7 @@ export default function StationPage() {
   return (
     <div className="flex flex-col gap-4 py-3">
       <header className="flex flex-col gap-3 px-3">
-        <Link
-          href="/"
-          className={cn(
-            'hover:text-amtrak-blue-400 dark:hover:text-amtrak-blue-200 flex items-center gap-1 font-semibold',
-            classNames.textAccent,
-          )}
-        >
+        <Link href="/" className={cn(classNames.link, classNames.textAccent)}>
           <ChevronLeft className="h-4" /> All Trains
         </Link>
         <h1 className="text-3xl font-bold">

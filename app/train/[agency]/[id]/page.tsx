@@ -44,8 +44,7 @@ export default function TrainDetail() {
   )
 
   if (!train) {
-    console.log('*** Train disappeared:', train, trains)
-    return <h1>Not found</h1>
+    return notFound()
   }
 
   const trainMeta = getTrainMeta(train)
@@ -155,10 +154,7 @@ export default function TrainDetail() {
     <div className="flex flex-col gap-5 p-3 pb-4">
       <Link
         href={`/?${new URLSearchParams(TrainQueryParams).toString()}`}
-        className={cn(
-          'hover:text-amtrak-blue-400 dark:hover:text-amtrak-blue-200 flex items-center gap-1 font-semibold',
-          classNames.textAccent,
-        )}
+        className={cn(classNames.link, classNames.textAccent)}
       >
         <ChevronLeft className="h-4" />{' '}
         {hasTrainQueryParams ? 'Back to Trains' : 'All Trains'}

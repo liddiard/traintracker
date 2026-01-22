@@ -47,7 +47,6 @@ export const TrainProvider: React.FC<{
       setError(
         err instanceof Error ? err : new Error('An unknown error occurred'),
       )
-      setTrains([])
     } finally {
       setIsLoading(false)
     }

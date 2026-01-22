@@ -32,11 +32,11 @@ import { useSettings } from '../../providers/settings'
 import { MapStyle } from '@/app/types'
 import {
   trainsToGeoJson,
-  stationLabelLayer,
-  stationLayer,
+  getStationLabelLayer,
+  getStationLayer,
   stationsToGeoJson,
-  trackLayer,
-  trainGPSLabelLayer,
+  getTrackLayer,
+  getTrainGPSLabelLayer,
 } from './display'
 import _track from '@/public/map_data/track.json'
 import TrainMarker from './TrainMarker'
@@ -93,6 +93,12 @@ function Map() {
   const mapRef = useRef<MapRef>(null)
   const flownToTrain = useRef<string>(null)
   const followSetting = useRef<boolean>(null)
+
+  // Create layers after mount to ensure CSS color variables are available
+  const trackLayer = useMemo(() => getTrackLayer(), [])
+  const stationLayer = useMemo(() => getStationLayer(), [])
+  const stationLabelLayer = useMemo(() => getStationLabelLayer(), [])
+  const trainGPSLabelLayer = useMemo(() => getTrainGPSLabelLayer(), [])
 
   // use refs so the data update interval doesn't restart on API updates
   const trainsRef = useRef(trains)
