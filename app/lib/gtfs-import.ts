@@ -152,46 +152,87 @@ async function generateGeoJson(
 }
 
 export async function importGtfsData(): Promise<void> {
-  // Check if we can use cached data
-  if (await isCacheValid()) {
-    console.log('Using cached GTFS data (less than 24 hours old)')
-    return
+  try {
+    // Check if we can use cached data
+    if (await isCacheValid()) {
+      console.log('Using cached GTFS data (less than 24 hours old)')
+      return
+    }
+  } catch (error) {
+    // If we can't check cache (e.g., database error), log warning and skip import
+    // This prevents the app from crashing on startup if the database is readonly
+    const errorCode = (error as { code?: string }).code
+    if (errorCode === 'SQLITE_READONLY') {
+      console.warn(
+        'GTFS import skipped: Database is read-only. This may happen if volume permissions are incorrect.',
+      )
+      console.warn(
+        'To fix: docker-compose down && docker volume rm traintracker-db && docker-compose up -d',
+      )
+      return
+    }
+    console.warn('Could not check GTFS cache validity:', error)
   }
 
   console.log('Importing GTFS data...')
 
-  const config = gtfsConfig as Config
+  let config: Config | null = null
+  try {
+    config = gtfsConfig as Config
 
-  // Download and parse GTFS feeds
-  await importGtfs(config)
-  openDb(config)
+    // Download and parse GTFS feeds
+    await importGtfs(config)
+    openDb(config)
 
-  // Get data from node-gtfs
-  const stops = getStops()
-  const trips = getTrips()
-  const shapes = getShapes()
+    // Get data from node-gtfs
+    const stops = getStops()
+    const trips = getTrips()
+    const shapes = getShapes()
 
-  console.log('Upserting GTFS data into database...')
+    console.log('Upserting GTFS data into database...')
 
-  // Import stops and trips into Prisma tables (shapes are only used for GeoJSON generation)
-  const stopCount = await importStops(stops)
-  const tripCount = await importTrips(trips)
+    // Import stops and trips into Prisma tables (shapes are only used for GeoJSON generation)
+    const stopCount = await importStops(stops)
+    const tripCount = await importTrips(trips)
 
-  // Update import metadata
-  await prisma.gtfsImportMeta.upsert({
-    where: { id: GTFS_IMPORT_ID },
-    update: { lastImportedAt: new Date() },
-    create: { id: GTFS_IMPORT_ID, lastImportedAt: new Date() },
-  })
+    // Update import metadata
+    await prisma.gtfsImportMeta.upsert({
+      where: { id: GTFS_IMPORT_ID },
+      update: { lastImportedAt: new Date() },
+      create: { id: GTFS_IMPORT_ID, lastImportedAt: new Date() },
+    })
 
-  console.log(
-    `GTFS import complete: ${stopCount} stops, ${tripCount} trips, ${shapes.length} shapes`,
-  )
+    console.log(
+      `GTFS import complete: ${stopCount} stops, ${tripCount} trips, ${shapes.length} shapes`,
+    )
 
-  console.log('Generating shapes GeoJSON...')
-  await generateGeoJson(shapes)
-  console.log('Shapes GeoJSON generated.')
-
-  // Close the in-memory database after import
-  closeDb()
+    // Only generate GeoJSON in development (in production, it's pre-built at Docker build time)
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Generating shapes GeoJSON...')
+      await generateGeoJson(shapes)
+      console.log('Shapes GeoJSON generated.')
+    }
+  } catch (error) {
+    const errorCode = (error as { code?: string }).code
+    if (errorCode === 'SQLITE_READONLY') {
+      console.error(
+        'GTFS import failed: Database is read-only. The app will continue but GTFS data may be stale.',
+      )
+      console.error(
+        'To fix: docker-compose down && docker volume rm traintracker-db && docker-compose up -d',
+      )
+    } else {
+      console.error('GTFS import failed:', error)
+    }
+    // Don't rethrow - allow app to start even if GTFS import fails
+  } finally {
+    // Close the in-memory database after import (if it was opened)
+    if (config) {
+      try {
+        closeDb()
+      } catch {
+        // Ignore errors closing the db
+      }
+    }
+  }
 }

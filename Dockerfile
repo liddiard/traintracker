@@ -52,7 +52,9 @@ FROM node:24-alpine AS runner
 WORKDIR /app
 
 # Install runtime dependencies
-RUN apk add --no-cache libc6-compat
+# - libc6-compat: required for Node.js native modules
+# - su-exec: lightweight alternative to gosu for privilege dropping
+RUN apk add --no-cache libc6-compat su-exec
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -83,15 +85,14 @@ COPY --chown=nextjs:nodejs --from=deps /tmp/prod_node_modules ./node_modules
 COPY --chown=nextjs:nodejs --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
 COPY --chown=nextjs:nodejs --from=builder /app/node_modules/prisma ./node_modules/prisma
 
-# Copy entrypoint script
-COPY --chown=nextjs:nodejs --chmod=755 docker-entrypoint.sh /usr/local/bin/
-
-USER nextjs
+# Copy entrypoint script (needs to run as root initially for permission fixes)
+COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
 
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
+# Run as root initially to allow permission fixes, then drop to nextjs in entrypoint
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "server.js"]
