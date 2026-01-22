@@ -16,7 +16,8 @@ import { BottomSheetProvider } from './providers/bottomSheet'
 
 export const metadata: Metadata = {
   title: 'TrainTracker',
-  description: 'Track your US Amtrak train with a live map and notifications',
+  description:
+    'Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
 }
 
 async function getTrains() {
