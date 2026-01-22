@@ -206,11 +206,18 @@ export async function importGtfsData(): Promise<void> {
       `GTFS import complete: ${stopCount} stops, ${tripCount} trips, ${shapes.length} shapes`,
     )
 
-    // Only generate GeoJSON in development (in production, it's pre-built at Docker build time)
-    if (process.env.NODE_ENV !== 'production') {
+    // Generate GeoJSON (may fail at runtime in production due to read-only filesystem)
+    try {
       console.log('Generating shapes GeoJSON...')
       await generateGeoJson(shapes)
       console.log('Shapes GeoJSON generated.')
+    } catch (geoJsonError) {
+      // This is expected at runtime in production (read-only filesystem)
+      // The track.json is pre-built during Docker image build
+      console.log(
+        'GeoJSON generation skipped (expected in production):',
+        (geoJsonError as Error).message,
+      )
     }
   } catch (error) {
     const errorCode = (error as { code?: string }).code
