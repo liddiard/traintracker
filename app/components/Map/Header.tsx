@@ -32,14 +32,14 @@ function Header() {
   return (
     <header className="absolute top-0 left-0 z-1 min-w-full bg-linear-to-b from-white to-transparent px-3 pt-2 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
       <div className="flex items-baseline justify-between gap-4">
-        <div className="flex items-baseline gap-2">
+        <div className="flex shrink-0 items-baseline gap-2 md:shrink">
           <Link href="/" className="hidden md:block">
             <h1 className="text-xl font-bold">
               Train
               <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
                 Tracker
               </span>
-              <sup className="text-amtrak-red-500 dark:text-amtrak-red-300 font-semibold">
+              <sup className="text-amtrak-yellow-400 dark:text-amtrak-yellow-200 font-semibold">
                 {' '}
                 beta
               </sup>
@@ -50,7 +50,7 @@ function Header() {
           </span>
           <button
             className={cn(
-              'box-content flex cursor-pointer items-center gap-1 rounded-full border-2 px-3 py-1 font-semibold backdrop-blur-xs md:hidden',
+              'box-content flex cursor-pointer items-center gap-1 rounded-full border-2 px-3 py-1 font-semibold backdrop-blur-xs backdrop-brightness-110 md:hidden',
               {
                 'bg-amtrak-red-500 border-amtrak-red-500 text-white':
                   showSearch,
@@ -71,8 +71,15 @@ function Header() {
           </button>
         </div>
         <nav className="flex gap-3 font-medium">
-          <a href="#">Gear Guide</a>
-          <a href="#">About</a>
+          {/* Shorten link name on mobile to prevent text wrapping */}
+          <Link href="#" className="sm:hidden">
+            Gear
+          </Link>
+          <Link href="#" className="hidden sm:block">
+            Gear Guide
+          </Link>
+          <Link href="#">About</Link>
+          <Link href="/privacy">Privacy</Link>
         </nav>
       </div>
       {showSearch && (

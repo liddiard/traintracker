@@ -1,18 +1,18 @@
 import type { Metadata } from 'next'
 
-import './globals.css'
-import './app.css'
-import Map from './components/Map'
-import Search from './components/Search'
-import BottomSheet from './components/BottomSheet'
-import { formatTrainResponse } from './utils'
-import { getServerSettings } from './settings'
-import { TrainProvider } from './providers/train'
-import { SettingsProvider } from './providers/settings'
-import ServiceWorkerRegistration from './components/ServiceWorkerRegistration'
-import { Station } from './types'
-import { inter } from './constants'
-import { BottomSheetProvider } from './providers/bottomSheet'
+import '@/app/globals.css'
+import '@/app/app.css'
+import Map from '@/app/components/Map'
+import Search from '@/app/components/Search'
+import BottomSheet from '@/app/components/BottomSheet'
+import { formatTrainResponse } from '@/app/utils'
+import { getServerSettings } from '@/app/settings'
+import { TrainProvider } from '@/app/providers/train'
+import { SettingsProvider } from '@/app/providers/settings'
+import ServiceWorkerRegistration from '@/app/components/ServiceWorkerRegistration'
+import { Station } from '@/app/types'
+import { inter } from '@/app/constants'
+import { BottomSheetProvider } from '@/app/providers/bottomSheet'
 
 export const metadata: Metadata = {
   title: 'TrainTracker',
@@ -47,7 +47,7 @@ async function getStations() {
   }
 }
 
-export default async function RootLayout({
+export default async function MapLayout({
   children,
 }: Readonly<{
   children: React.ReactNode

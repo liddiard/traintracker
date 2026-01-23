@@ -71,7 +71,7 @@ function TrainLabelInner({
     >
       <span
         className={cn(
-          'rounded-full px-2 py-[0.1em] text-sm font-medium brightness-110 backdrop-blur-xs',
+          'rounded-full px-2 py-[0.1em] text-sm font-medium backdrop-blur-xs backdrop-brightness-120',
           isSelected
             ? 'bg-amtrak-bright-blue-400 text-white'
             : 'border border-white/50 bg-white/35',

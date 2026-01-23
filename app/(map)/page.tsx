@@ -1,12 +1,12 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import TrainList from './components/TrainList'
-import { useTrains } from './providers/train'
-import { getTrainParams } from './utils'
-import Stats from './components/Stats'
-import TrainSort from './components/TrainSort'
-import { TRAIN_QUERY_PARAMS } from './constants'
+import TrainList from '@/app/components/TrainList'
+import { useTrains } from '@/app/providers/train'
+import { getTrainParams } from '@/app/utils'
+import Stats from '@/app/components/Stats'
+import TrainSort from '@/app/components/TrainSort'
+import { TRAIN_QUERY_PARAMS } from '@/app/constants'
 
 export default function Home({}) {
   const { trains } = useTrains()

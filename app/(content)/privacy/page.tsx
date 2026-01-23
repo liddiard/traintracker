@@ -14,8 +14,8 @@ export default async function Privacy() {
   const html = marked.parse(markdown)
 
   return (
-    <main className="prose mx-auto px-3 py-8">
+    <article className="prose">
       <div dangerouslySetInnerHTML={{ __html: html }} />
-    </main>
+    </article>
   )
 }

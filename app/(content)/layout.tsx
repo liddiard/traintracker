@@ -1,0 +1,83 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import cn from 'classnames'
+import { classNames } from '@/app/constants'
+
+import '@/app/globals.css'
+import '@/app/app.css'
+import { getServerSettings } from '@/app/settings'
+import { SettingsProvider } from '@/app/providers/settings'
+import { inter } from '@/app/constants'
+
+export const metadata: Metadata = {
+  title: 'TrainTracker',
+  description:
+    'Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
+}
+
+const links = [
+  {
+    href: '/',
+    label: 'Map',
+  },
+  {
+    href: '/gear-guide',
+    label: 'Gear Guide',
+  },
+  {
+    href: '/about',
+    label: 'About',
+  },
+]
+
+export default async function ContentLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  const settings = await getServerSettings()
+
+  return (
+    <html lang="en">
+      <body
+        className={cn(
+          inter.className,
+          'dark:bg-positron-gray-800 flex min-h-screen flex-col dark:text-white',
+        )}
+      >
+        <SettingsProvider initialSettings={settings}>
+          <header className="bg-amtrak-midnight-blue text-white shadow-md">
+            <div className="mx-auto flex max-w-xl items-center justify-between p-4">
+              <Link href="/" className="text-xl font-bold text-white">
+                Train<span className="text-amtrak-blue-300">Tracker</span>
+              </Link>
+              <nav className="flex items-center gap-3 font-medium sm:gap-5">
+                {links.map((link) => (
+                  <Link key={link.href} href={link.href} className="text-white">
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </header>
+
+          <main className="mx-auto max-w-xl flex-1 px-4 py-8">{children}</main>
+
+          <footer className="bg-positron-gray-100 dark:bg-positron-gray-900">
+            <div
+              className={cn(
+                'mx-auto flex max-w-xl items-center justify-between px-4 py-6 text-center text-sm',
+                classNames.textDeemphasized,
+              )}
+            >
+              <p>&copy; {new Date().getFullYear()} TrainTracker</p>
+              <nav className="flex items-center gap-3 underline sm:gap-4">
+                <Link href="/privacy">Privacy Policy</Link>
+              </nav>
+            </div>
+          </footer>
+        </SettingsProvider>
+      </body>
+    </html>
+  )
+}
