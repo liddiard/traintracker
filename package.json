@@ -28,6 +28,7 @@
     "gtfs-realtime-bindings": "^1.1.1",
     "luxon": "^3.7.2",
     "maplibre-gl": "^5.16.0",
+    "marked": "^17.0.1",
     "motion": "^12.26.2",
     "next": "^16.1.2",
     "papaparse": "^5.5.3",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/better-sqlite3": "^7.6.13",
     "@types/culori": "^4.0.1",
     "@types/luxon": "^3.7.1",
