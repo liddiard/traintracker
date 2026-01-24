@@ -78,7 +78,9 @@ const processTrain = async (
   [id, data]: [string, ViaTrainInfo],
   stations: StationResponse,
 ): Promise<Train> => ({
-  id: `via/${id}`,
+  // VIA Rail train IDs sometimes include the date, like "692 (01-22)"
+  // Replace the space with an underscore to make the ID URL-friendly
+  id: `via/${id.replace(' ', '_')}`,
   name: getTrainName(id) || 'VIA Rail',
   number: parseInt(id).toString(), // remove the date string (e.g. 5-09) sometimes present after the train number
   coordinates: data.lng ? [data.lng, data.lat] : null,
