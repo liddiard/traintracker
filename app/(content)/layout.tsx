@@ -48,7 +48,7 @@ export default async function ContentLayout({
         <SettingsProvider initialSettings={settings}>
           <header className="bg-amtrak-midnight-blue text-white shadow-md">
             <div className="mx-auto flex max-w-xl items-center justify-between p-4">
-              <Link href="/" className="text-xl font-bold text-white">
+              <Link href="/" className="text-2xl font-bold text-white">
                 Train<span className="text-amtrak-blue-300">Tracker</span>
               </Link>
               <nav className="flex items-center gap-3 font-medium sm:gap-5">
@@ -66,7 +66,7 @@ export default async function ContentLayout({
           <footer className="bg-positron-gray-100 dark:bg-positron-gray-900">
             <div
               className={cn(
-                'mx-auto flex max-w-xl items-center justify-between px-4 py-6 text-center text-sm',
+                'mx-auto flex max-w-xl items-center justify-between p-4 text-center text-sm',
                 classNames.textDeemphasized,
               )}
             >
