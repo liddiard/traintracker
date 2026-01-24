@@ -72,13 +72,13 @@ function Header() {
         </div>
         <nav className="flex gap-3 font-medium">
           {/* Shorten link name on mobile to prevent text wrapping */}
-          <Link href="#" className="sm:hidden">
+          <Link href="/gear-guide" className="sm:hidden">
             Gear
           </Link>
-          <Link href="#" className="hidden sm:block">
+          <Link href="/gear-guide" className="hidden sm:block">
             Gear Guide
           </Link>
-          <Link href="#">About</Link>
+          <Link href="/about">About</Link>
           <Link href="/privacy">Privacy</Link>
         </nav>
       </div>
