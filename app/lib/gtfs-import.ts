@@ -11,7 +11,7 @@ import {
   getShapes,
 } from 'gtfs'
 import { prisma } from './prisma'
-import gtfsConfig from './gtfs-config.json'
+import gtfsConfig from './gtfs-config.json' // see @/app/gis/README.md for info on data sources
 import { GTFS_IMPORT_ID } from './constants'
 import fs from 'fs/promises'
 import { roundToDecimals } from './utils'
