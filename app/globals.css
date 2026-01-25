@@ -49,12 +49,12 @@
   --color-amtrak-green-800: oklch(0.2 0.195 148.63);
 
   --color-amtrak-indigo-200: oklch(0.8 0.1901 268.38);
-  --color-amtrak-indigo-200: oklch(0.7 0.1901 268.38);
-  --color-amtrak-indigo-200: oklch(0.6 0.1901 268.38);
-  --color-amtrak-indigo-200: oklch(0.5 0.1901 268.38);
-  --color-amtrak-indigo-200: oklch(0.4 0.1901 268.38);
-  --color-amtrak-indigo-200: oklch(0.3 0.1901 268.38);
-  --color-amtrak-indigo-200: oklch(0.2 0.1901 268.38);
+  --color-amtrak-indigo-300: oklch(0.7 0.1901 268.38);
+  --color-amtrak-indigo-400: oklch(0.6 0.1901 268.38);
+  --color-amtrak-indigo-500: oklch(0.5 0.1901 268.38);
+  --color-amtrak-indigo-600: oklch(0.4 0.1901 268.38);
+  --color-amtrak-indigo-700: oklch(0.3 0.1901 268.38);
+  --color-amtrak-indigo-800: oklch(0.2 0.1901 268.38);
 
   --color-amtrak-deep-blue: oklch(0.3419 0.0885 246.29);
   --color-amtrak-midnight-blue: oklch(0.2503 0.0541 236.36);
