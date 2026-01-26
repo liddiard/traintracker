@@ -12,6 +12,7 @@ import {
 } from '../utils'
 import StatusBadge from './StatusBadge'
 import CaretRight from '../img/caret-right.svg'
+import NoTrain from '../img/no-train.svg'
 import { useSettings } from '../providers/settings'
 
 const filterToDisplayName: Record<string, string> = {
@@ -112,10 +113,11 @@ function TrainList({ trains, params }: TrainListProps) {
       return (
         <div
           className={cn(
-            'mx-auto my-5 text-center text-lg',
+            'mx-auto my-6 flex flex-col gap-2 text-center text-lg',
             classNames.textDeemphasized,
           )}
         >
+          <NoTrain className="text-positron-gray-400 mx-auto max-w-16" />
           No trains found
         </div>
       )

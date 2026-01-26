@@ -17,6 +17,7 @@ import { Train, Stop } from '@/app/types'
 import { useMemo, useState, useEffect } from 'react'
 import Pie from '@/app/img/pie.svg'
 import ChevronLeft from '@/app/img/chevron-left.svg'
+import NoTrain from '@/app/img/no-train.svg'
 
 type Sequence = 'First' | 'Intermediate' | 'Last'
 interface TrainStop {
@@ -282,10 +283,11 @@ export default function StationPage() {
       {trainsUsingStation.length === 0 ? (
         <p
           className={cn(
-            'p-3 text-center text-lg text-balance',
+            'flex flex-col gap-4 p-4 text-center text-lg text-balance',
             classNames.textDeemphasized,
           )}
         >
+          <NoTrain className="text-positron-gray-400 mx-auto max-w-16" />
           No trains currently scheduled for this station.
         </p>
       ) : (
