@@ -9,6 +9,23 @@ import { startPolling } from '@/app/lib/notifications'
 const cacheDurationMs = 60 * 1000 // 1 minute
 let lastChecked: Date | null = null
 let cache: Train[] = []
+// Per-agency caches to handle individual API failures gracefully
+const agencyCache: Record<string, Train[]> = {}
+
+/** Fetch data from an agency API, falling back to cached data on failure */
+const fetchWithFallback = async (
+  name: string,
+  fetchFn: () => Promise<Train[]>,
+): Promise<Train[]> => {
+  try {
+    const data = await fetchFn()
+    agencyCache[name] = data
+    return data
+  } catch (error) {
+    console.error(`${name} API fetch failed, using cached data:`, error)
+    return agencyCache[name] || []
+  }
+}
 
 // Start notification polling when module loads
 if (process.env.NODE_ENV === 'production' || process.env.ENABLE_NOTIFICATIONS) {
@@ -23,10 +40,11 @@ export async function GET() {
     }
 
     const [amtrak, via, brightline] = await Promise.all([
-      fetchAmtrak(),
-      fetchVia(),
-      fetchBrightline(),
+      fetchWithFallback('Amtrak', fetchAmtrak),
+      fetchWithFallback('VIA Rail', fetchVia),
+      fetchWithFallback('Brightline', fetchBrightline),
     ])
+
     cache = [...amtrak, ...via, ...brightline]
     lastChecked = new Date()
 

@@ -42,8 +42,20 @@ const processStops = (
       const bNum = parseInt(bKey.replace('Station', ''))
       return aNum - bNum
     })
-    // Parse the JSON-serialized station info
-    .map(([_, val]) => JSON.parse(val) as AmtrakStationInfoProperties)
+    // Parse the JSON-serialized station info with error handling
+    .map(([key, val]) => {
+      try {
+        return JSON.parse(val) as AmtrakStationInfoProperties
+      } catch (error) {
+        console.warn(
+          `Failed to parse station data for ${key}:`,
+          error instanceof Error ? error.message : String(error),
+        )
+        return null
+      }
+    })
+    // Filter out failed parses
+    .filter((stop): stop is AmtrakStationInfoProperties => stop !== null)
     // Filter out stops with no arrival or departure info
     .filter(
       // arrival keys

@@ -44,6 +44,13 @@ export const amtrakDecryptSegment = (content: string, key: string) => {
 export const amtrakDecryptResponse = (
   data: string,
 ): FeatureCollection<Point, AmtrakTrainInfoProperties> => {
+  // Validate response has minimum expected length
+  if (!data || data.length < MASTER_SEGMENT) {
+    throw new Error(
+      `Invalid Amtrak API response: too short (${data?.length || 0} bytes, expected at least ${MASTER_SEGMENT})`,
+    )
+  }
+
   const mainContent = data.substring(0, data.length - MASTER_SEGMENT)
   const encryptedPrivateKey = data.substring(data.length - MASTER_SEGMENT)
   const privateKey = amtrakDecryptSegment(
@@ -51,7 +58,29 @@ export const amtrakDecryptResponse = (
     PUBLIC_KEY,
   ).split('|')[0]
   const decryptedData = amtrakDecryptSegment(mainContent, privateKey)
-  return JSON.parse(decryptedData)
+
+  // Parse and validate JSON structure
+  let parsed
+  try {
+    parsed = JSON.parse(decryptedData)
+  } catch (error) {
+    throw new Error(
+      `Failed to parse Amtrak API response as JSON: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+
+  // Validate expected GeoJSON structure
+  if (
+    !parsed ||
+    typeof parsed !== 'object' ||
+    !Array.isArray(parsed.features)
+  ) {
+    throw new Error(
+      `Invalid Amtrak API response structure: expected GeoJSON FeatureCollection with features array`,
+    )
+  }
+
+  return parsed
 }
 
 // Amtrak API timezone code to IANA timezone database name map
