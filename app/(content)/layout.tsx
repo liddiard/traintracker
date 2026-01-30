@@ -15,21 +15,6 @@ export const metadata: Metadata = {
     'Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
 }
 
-const links = [
-  {
-    href: '/',
-    label: 'Map',
-  },
-  {
-    href: '/gear-guide',
-    label: 'Gear Guide',
-  },
-  {
-    href: '/about',
-    label: 'About',
-  },
-]
-
 export default async function ContentLayout({
   children,
 }: Readonly<{
@@ -51,12 +36,16 @@ export default async function ContentLayout({
               <Link href="/" className="text-2xl font-bold text-white">
                 Train<span className="text-amtrak-blue-300">Tracker</span>
               </Link>
-              <nav className="flex items-center gap-3 font-medium sm:gap-5">
-                {links.map((link) => (
-                  <Link key={link.href} href={link.href} className="text-white">
-                    {link.label}
-                  </Link>
-                ))}
+              <nav className="flex items-center gap-3 font-medium text-white sm:gap-5">
+                <Link href="/">Map</Link>
+                {/* Shorten link name on mobile to prevent text wrapping */}
+                <Link href="/gear-guide" className="xs:hidden">
+                  Gear
+                </Link>
+                <Link href="/gear-guide" className="xs:block hidden">
+                  Gear Guide
+                </Link>
+                <Link href="/privacy">Privacy</Link>
               </nav>
             </div>
           </header>

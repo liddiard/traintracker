@@ -45,7 +45,7 @@ function Header() {
               </sup>
             </h1>
           </Link>
-          <span className="hidden md:block">
+          <span className="hidden lg:block">
             Live tracking North American intercity passenger rail
           </span>
           <button
@@ -70,12 +70,12 @@ function Header() {
             )}
           </button>
         </div>
-        <nav className="flex gap-3 font-medium">
+        <nav className="flex gap-3 font-medium md:gap-4">
           {/* Shorten link name on mobile to prevent text wrapping */}
-          <Link href="/gear-guide" className="sm:hidden">
+          <Link href="/gear-guide" className="xs:hidden">
             Gear
           </Link>
-          <Link href="/gear-guide" className="hidden sm:block">
+          <Link href="/gear-guide" className="xs:block hidden">
             Gear Guide
           </Link>
           <Link href="/about">About</Link>
