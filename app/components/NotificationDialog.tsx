@@ -3,8 +3,7 @@
 import cn from 'classnames'
 import { useTrains } from '@/app/providers/train'
 import { NotificationType } from '../types'
-import Arrival from '@/app/img/arrival.svg'
-import Departure from '@/app/img/departure.svg'
+import ArrowRight from '@/app/img/arrow-right.svg'
 import BellRinging from '@/app/img/bell-ringing.svg'
 import Info from '@/app/img/info.svg'
 import { classNames } from '../constants'
@@ -55,7 +54,6 @@ export default function NotificationDialog({
   ) => {
     const isActive = activeSubscriptions.has(`${stopCode}-${type}`)
     const isArrival = type === 'arrival'
-    const IconComponent = isArrival ? Arrival : Departure
 
     return (
       <button
@@ -70,8 +68,13 @@ export default function NotificationDialog({
           { 'hover:border-amtrak-blue-400/50': !disabled },
         )}
       >
-        <div className="flex items-center gap-2">
-          <IconComponent className="h-4 w-4 shrink-0" />
+        <div className="flex items-center gap-3">
+          <ArrowRight
+            className={cn(
+              'box-content h-4 w-4 shrink-0',
+              isArrival ? 'border-r-3 pr-1' : 'border-l-3 pl-1',
+            )}
+          />
           <span>
             {isArrival ? 'Arrives at' : 'Departs'} {stopName}
           </span>
