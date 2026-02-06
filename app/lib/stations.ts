@@ -18,9 +18,7 @@ const processGtfsStation = (stop: GtfsStop): Station => {
   return {
     agency,
     code,
-    name:
-      stationCodeToName[code] ||
-      (stop.stopName ? processStationName(stop.stopName) : code),
+    name: stop.stopName ? processStationName(stop.stopName) : code,
     timezone: stop.stopTimezone!,
     coordinates: [stop.stopLon!, stop.stopLat!],
   }
