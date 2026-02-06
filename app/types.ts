@@ -194,3 +194,18 @@ export interface ActiveSubscription {
   stopCode: string
   notificationType: NotificationType
 }
+
+// Blog post types
+export interface BlogPostFrontmatter {
+  title: string
+  date: string // ISO date string (YYYY-MM-DD)
+  description: string
+  image?: string // Optional: path to image in /public (e.g., /img/blog/photo.jpg)
+  author?: string
+}
+
+export interface BlogPost {
+  slug: string
+  frontmatter: BlogPostFrontmatter
+  content: string
+}
