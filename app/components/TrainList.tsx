@@ -18,7 +18,7 @@ import { useSettings } from '../providers/settings'
 const filterToDisplayName: Record<string, string> = {
   from: 'From',
   to: 'To',
-  trainName: 'Name',
+  routeName: 'Name',
   trainNumber: 'Number',
 }
 
@@ -44,8 +44,8 @@ function TrainList({ trains, params }: TrainListProps) {
     if (params.from && params.to) {
       filteredTrains = findTrainsFromSegment(trains, params.from, params.to)
     }
-    if (params.trainName) {
-      filteredTrains = filteredTrains.filter((t) => t.name === params.trainName)
+    if (params.routeName) {
+      filteredTrains = filteredTrains.filter((t) => t.name === params.routeName)
     }
     if (params.trainNumber) {
       filteredTrains = filteredTrains.filter(
@@ -58,16 +58,16 @@ function TrainList({ trains, params }: TrainListProps) {
       )
     }
     filteredTrains = filteredTrains.toSorted((a, b) => {
-      if (params.sort === 'name') {
-        return a.name.localeCompare(b.name)
-      } else if (params.sort === 'number') {
+      if (params.sort === 'number') {
         return parseInt(a.number) - parseInt(b.number)
+      } else if (params.sort === 'updated') {
+        // treat more recently updated trains as the "smaller" values
+        return (b.updated?.valueOf() ?? 0) - (a.updated?.valueOf() ?? 0)
       } else if (params.sort === 'delay') {
         return getTrainMeta(a).delay - getTrainMeta(b).delay
       } else {
-        // params.sort === 'updated' (default sort)
-        // treat more recently updated trains as the "smaller" values
-        return (b.updated?.valueOf() ?? 0) - (a.updated?.valueOf() ?? 0)
+        // params.sort === 'name' (default sort)
+        return a.name.localeCompare(b.name)
       }
     })
     if (params.sortDir === 'desc') {

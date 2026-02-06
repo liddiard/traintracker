@@ -6,7 +6,7 @@ export const MIN_PROGRESS_PX = 16
 
 export const TRAIN_QUERY_PARAMS = {
   // fields/query params that can be used to search for a train
-  search: ['from', 'to', 'trainName', 'trainNumber'],
+  search: ['from', 'to', 'routeName', 'trainNumber'],
   // query params that can be used to filter the train list without submitting a search
   filter: ['agency'],
   // query params that can be used to sort the train list

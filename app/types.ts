@@ -113,7 +113,7 @@ type TrainQueryKeys =
   | 'from'
   | 'to'
   | 'trainNumber'
-  | 'trainName'
+  | 'routeName'
   | 'agency'
   | 'sort'
   | 'sortDir'

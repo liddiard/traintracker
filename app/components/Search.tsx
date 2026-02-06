@@ -57,21 +57,21 @@ function Search({ id, className = '' }: SearchProps) {
     [routes],
   )
 
-  const [trainName, setTrainName] = useState<Option | null>(
-    getOption(routeOptions, query.get('trainName')),
+  const [routeName, setRouteName] = useState<Option | null>(
+    getOption(routeOptions, query.get('routeName')),
   )
 
   const lineNumberOptions = useMemo(
     () =>
       // if a train is selected, only show numbers for that train
       // otherwise, show all train numbers
-      Array.from(routes[trainName?.value || ''] || trainNums)
+      Array.from(routes[routeName?.value || ''] || trainNums)
         ?.toSorted((a, b) => Number(a) - Number(b))
         ?.map((num) => ({
           value: num,
           label: num,
         })),
-    [routes, trainName, trainNums],
+    [routes, routeName, trainNums],
   )
 
   const [searchType, setSearchType] = useState<SearchType>(SearchType.Segment)
@@ -184,14 +184,14 @@ function Search({ id, className = '' }: SearchProps) {
   const renderLineSearch = () => (
     <div className="flex grow gap-2">
       <SearchSelect
-        instanceId="trainName"
-        name="trainName"
+        instanceId="routeName"
+        name="routeName"
         options={routeOptions}
-        value={trainName}
+        value={routeName}
         className="grow text-black"
-        placeholder="Train name"
+        placeholder="Route name"
         onChange={(option) => {
-          setTrainName(option as Option)
+          setRouteName(option as Option)
           setTrainNumber(null)
           if (option) {
             trainNumberSelect.current?.focus()
@@ -225,7 +225,7 @@ function Search({ id, className = '' }: SearchProps) {
       url.searchParams.set('from', formData.get('from') as string)
       url.searchParams.set('to', formData.get('to') as string)
     } else {
-      url.searchParams.set('trainName', formData.get('trainName') as string)
+      url.searchParams.set('routeName', formData.get('routeName') as string)
       url.searchParams.set('trainNumber', formData.get('trainNumber') as string)
     }
     router.push(url.toString())

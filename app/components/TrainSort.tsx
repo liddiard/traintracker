@@ -5,9 +5,9 @@ import SortDesc from '../img/sort-desc.svg'
 import { useRouter } from 'next/navigation'
 
 const sortOptions = {
-  updated: 'Last updated',
-  name: 'Train name',
+  name: 'Route name',
   number: 'Train number',
+  updated: 'Last updated',
   delay: 'Delay',
 }
 
