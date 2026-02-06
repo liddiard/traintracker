@@ -45,7 +45,7 @@ export default async function ContentLayout({
                 <Link href="/gear-guide" className="xs:block hidden">
                   Gear Guide
                 </Link>
-                <Link href="/privacy">Privacy</Link>
+                <Link href="/about">About</Link>
               </nav>
             </div>
           </header>
