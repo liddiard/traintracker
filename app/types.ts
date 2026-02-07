@@ -89,6 +89,7 @@ export interface TrainMeta {
 
 export interface Option {
   value: string
+  code?: string
   label: string | null
 }
 

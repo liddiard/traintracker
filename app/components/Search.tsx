@@ -40,7 +40,8 @@ function Search({ id, className = '' }: SearchProps) {
         .filter((s) => typeof s.code === 'string')
         .toSorted((a, b) => a.code.localeCompare(b.code))
         .map((station) => ({
-          value: station.code,
+          value: `${station.agency}/${station.code}`,
+          code: station.code,
           label: station.name,
         })),
     [stations],
@@ -164,7 +165,7 @@ function Search({ id, className = '' }: SearchProps) {
       }}
       formatOptionLabel={(option: Option) => (
         <>
-          <strong className="mr-2">{option.value}</strong>
+          <strong className="mr-2">{option.code}</strong>
           {option.label}
         </>
       )}
@@ -222,8 +223,10 @@ function Search({ id, className = '' }: SearchProps) {
   const handleSubmit = (formData: FormData) => {
     const url = new URL(window.location.origin)
     if (searchType === SearchType.Segment) {
-      url.searchParams.set('from', formData.get('from') as string)
-      url.searchParams.set('to', formData.get('to') as string)
+      const from = formData.get('from') as string
+      const to = formData.get('to') as string
+      url.searchParams.set('from', from.split('/')[1]) // only keep station code, not agency
+      url.searchParams.set('to', to.split('/')[1])
     } else {
       url.searchParams.set('routeName', formData.get('routeName') as string)
       url.searchParams.set('trainNumber', formData.get('trainNumber') as string)
