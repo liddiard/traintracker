@@ -112,6 +112,14 @@ function Map() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT)
+
+    // update isMobile on window resize
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const selectedTrain = useMemo(
@@ -129,7 +137,7 @@ function Map() {
   const padding = useMemo(
     () => ({
       bottom:
-        !loaded || window.innerWidth > MOBILE_BREAKPOINT
+        !loaded || !isMobile
           ? 0
           : Math.min(
               sheetTop,
@@ -141,7 +149,7 @@ function Map() {
             // bottom URL bar
             (window.outerHeight - window.innerHeight),
     }),
-    [sheetTop, loaded],
+    [sheetTop, loaded, isMobile],
   )
 
   const updateTrains = useCallback(() => {
