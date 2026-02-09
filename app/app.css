@@ -1,7 +1,9 @@
 /* React Modal Sheet styling */
 .react-modal-sheet-container {
   background-color: white !important;
-  /* Override library's default sheet top margin when fully open (34px)  */
+  /* Override library's default sheet top margin when fully open (34px):
+   * https://github.com/Temzasse/react-modal-sheet/blob/e01de7e14f97d1b0ccb342d8306904775baf91a2/src/constants.ts#L34
+   */
   height: calc(100% - env(safe-area-inset-top) - 48px) !important;
 }
 
