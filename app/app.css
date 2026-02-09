@@ -1,9 +1,12 @@
 /* React Modal Sheet styling */
 .react-modal-sheet-container {
   background-color: white !important;
+  /* Override library's default sheet top margin when fully open (34px)  */
+  height: calc(100% - env(safe-area-inset-top) - 48px) !important;
 }
 
 .react-modal-sheet-header {
+  /* Decrease the height of the draggable header area */
   height: 20px !important;
 }
 
@@ -11,6 +14,7 @@
   opacity: 0.5;
 
   .react-modal-sheet-drag-indicator {
+    /* Increase the width of the drag indicator */
     background-color: var(--color-positron-gray-400) !important;
     width: 22px !important;
   }
