@@ -1,4 +1,4 @@
-/* React Modal Sheet styling */
+/* React Modal Sheet */
 .react-modal-sheet-container {
   background-color: white !important;
   /* Override library's default sheet top margin when fully open (34px):
@@ -22,12 +22,14 @@
   }
 }
 
+/* Dark mode */
 .dark {
   /* MapLibre GL JS */
   .maplibregl-map {
     filter: invert(1) hue-rotate(180deg);
   }
 
+  /* React Modal Sheet */
   .react-modal-sheet-container {
     background-color: var(--color-positron-gray-800) !important;
   }
