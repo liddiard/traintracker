@@ -321,7 +321,7 @@ function Map() {
         mapStyle={mapStyleUrls[settings.mapStyle]}
         attributionControl={false}
         renderWorldCopies={false}
-        minZoom={2}
+        minZoom={1.5}
         onLoad={() => {
           setLoaded(true)
           updateTrains()
