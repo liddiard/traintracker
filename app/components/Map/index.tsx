@@ -18,6 +18,7 @@ import MapGL, {
   AttributionControl,
 } from 'react-map-gl/maplibre'
 import type {
+  LngLatBoundsLike,
   LngLatLike,
   MapGeoJSONFeature,
   MapLayerMouseEvent,
@@ -81,7 +82,12 @@ function Map() {
     // const turf = require('@turf/turf')
     // const track = require('./public/map_data/track.json')
     // const bbox = turf.bbox(track)
-    bounds: [-130.35971 - 5, 25.78015, -63.26974 + 5, 58.76772],
+    bounds: [
+      -130.35971 - 5,
+      25.78015,
+      -63.26974 + 5,
+      58.76772,
+    ] as LngLatBoundsLike,
     zoom: Number(query.get('z')) || 3,
     bearing: 0,
   }
