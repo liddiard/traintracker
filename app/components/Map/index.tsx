@@ -22,6 +22,7 @@ import type {
   MapGeoJSONFeature,
   MapLayerMouseEvent,
   MapRef,
+  ViewState,
   ViewStateChangeEvent,
 } from 'react-map-gl/maplibre'
 import { FeatureCollection, MultiLineString, Point, LineString } from 'geojson'
@@ -75,12 +76,12 @@ function Map() {
   const query = useSearchParams()
 
   const initialViewState = {
-    // default to geographic center of all tracks, calculated statically for
-    // performance using Turf.js:
-    // const points = turf.explode(track) // `track` is the track.json GeoJSON
-    // const center = turf.center(points)
-    longitude: Number(query.get('lng')) || -96.81473,
-    latitude: Number(query.get('lat')) || 42.27393,
+    // default to bounding box of all tracks plus a 10-degree margin in each direction,
+    // calculated statically for performance using Turf.js:
+    // const turf = require('@turf/turf')
+    // const track = require('./public/map_data/track.json')
+    // const bbox = turf.bbox(track)
+    bounds: [-130.35971 - 5, 25.78015, -63.26974 + 5, 58.76772],
     zoom: Number(query.get('z')) || 3,
     bearing: 0,
   }
