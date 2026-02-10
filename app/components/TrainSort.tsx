@@ -5,8 +5,8 @@ import SortDesc from '../img/sort-desc.svg'
 import { useRouter } from 'next/navigation'
 
 const sortOptions = {
-  name: 'Route name',
   number: 'Train number',
+  name: 'Route name',
   updated: 'Last updated',
   delay: 'Delay',
 }
@@ -40,7 +40,7 @@ interface TrainSortParams {
   agency?: string
 }
 
-function TrainSort({ sort, sortDir, agency = '' }: TrainSortParams) {
+function TrainSort({ sort = 'number', sortDir, agency = '' }: TrainSortParams) {
   const router = useRouter()
 
   const handleSortChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {

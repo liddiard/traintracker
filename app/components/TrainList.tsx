@@ -58,16 +58,16 @@ function TrainList({ trains, params }: TrainListProps) {
       )
     }
     filteredTrains = filteredTrains.toSorted((a, b) => {
-      if (params.sort === 'number') {
-        return parseInt(a.number) - parseInt(b.number)
+      if (params.sort === 'name') {
+        return a.name.localeCompare(b.name)
       } else if (params.sort === 'updated') {
         // treat more recently updated trains as the "smaller" values
         return (b.updated?.valueOf() ?? 0) - (a.updated?.valueOf() ?? 0)
       } else if (params.sort === 'delay') {
         return getTrainMeta(a).delay - getTrainMeta(b).delay
       } else {
-        // params.sort === 'name' (default sort)
-        return a.name.localeCompare(b.name)
+        // params.sort === 'number' (default sort)
+        return parseInt(a.number) - parseInt(b.number)
       }
     })
     if (params.sortDir === 'desc') {
