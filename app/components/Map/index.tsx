@@ -31,7 +31,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { useTrains } from '../../providers/train'
 import { useSettings } from '../../providers/settings'
-import { MapStyle } from '@/app/types'
+import { BottomSheetPosition, MapStyle } from '@/app/types'
 import {
   trainsToGeoJson,
   getStationLabelLayer,
@@ -54,6 +54,27 @@ import { MOBILE_BREAKPOINT } from '@/app/constants'
 
 const track = _track as FeatureCollection<LineString | MultiLineString>
 
+// Compute expected bottom padding from sheet position without waiting for the sheet
+// animation. This avoids race conditions where the map moves before the sheet reports
+// its height.
+function computePadding(
+  position: BottomSheetPosition,
+  isMobile: boolean,
+): { bottom: number } {
+  if (!isMobile || typeof window === 'undefined') return { bottom: 0 }
+  const sheetHeight =
+    position === 'bottom'
+      ? 100
+      : position === 'middle'
+        ? window.innerHeight * 0.5
+        : window.innerHeight
+  return {
+    bottom:
+      Math.min(sheetHeight, (window.innerHeight - 35) / 2) +
+      (window.outerHeight - window.innerHeight),
+  }
+}
+
 const mapStyleUrls: Record<MapStyle, string> = {
   gray: 'https://tiles.openfreemap.org/styles/positron',
   simple: 'https://tiles.openfreemap.org/styles/bright',
@@ -71,26 +92,29 @@ const MAX_ZOOM = 12
 function Map() {
   const { trains, stations } = useTrains()
   const { settings, updateSetting } = useSettings()
-  const { sheetTop, setPosition } = useBottomSheet()
+  const { position, setPosition } = useBottomSheet()
   const router = useRouter()
   const { agency, id, code } = useParams() // train agency, train ID, station code
   const query = useSearchParams()
 
-  const initialViewState = {
-    // default to bounding box of all tracks plus a 10-degree margin in each direction,
-    // calculated statically for performance using Turf.js:
-    // const turf = require('@turf/turf')
-    // const track = require('./public/map_data/track.json')
-    // const bbox = turf.bbox(track)
-    bounds: [
-      -130.35971 - 5,
-      25.78015,
-      -63.26974 + 5,
-      58.76772,
-    ] as LngLatBoundsLike,
-    zoom: Number(query.get('z')) || 3,
-    bearing: 0,
-  }
+  const initialViewState = useMemo(
+    () => ({
+      // default to bounding box of all tracks plus a 10-degree margin in each direction,
+      // calculated statically for performance using Turf.js:
+      // const turf = require('@turf/turf')
+      // const track = require('./public/map_data/track.json')
+      // const bbox = turf.bbox(track)
+      bounds: [
+        -130.35971 - 5,
+        25.78015,
+        -63.26974 + 5,
+        58.76772,
+      ] as LngLatBoundsLike,
+      zoom: Number(query.get('z')) || 3,
+      bearing: 0,
+    }),
+    [query],
+  )
 
   const [loaded, setLoaded] = useState(false)
   const [viewState, setViewState] = useState(initialViewState)
@@ -144,19 +168,9 @@ function Map() {
   const padding = useMemo(
     () => ({
       bottom:
-        !loaded || !isMobile
-          ? 0
-          : Math.min(
-              sheetTop,
-              // Estimated distance from the bottom of the viewport when the sheet is
-              // at its middle snap point. Add 35px for sheet top margin.
-              (window.innerHeight - 35) / 2,
-            ) +
-            // Subtract outerHeight from innerHeight to account for mobile browser
-            // bottom URL bar
-            (window.outerHeight - window.innerHeight),
+        !loaded || !isMobile ? 0 : computePadding(position, isMobile).bottom,
     }),
-    [sheetTop, loaded, isMobile],
+    [position, loaded, isMobile],
   )
 
   const updateTrains = useCallback(() => {
@@ -215,12 +229,19 @@ function Map() {
       mapRef.current.flyTo({
         center: selectedTrain.geometry.coordinates as LngLatLike,
         zoom: zoom < minFlyZoom ? minFlyZoom : undefined,
-        padding,
+        padding: computePadding('middle', isMobile),
       })
       flownToTrain.current = selectedTrain.id as string
     }
     followSetting.current = settings.follow
-  }, [selectedTrain, settings.follow, updateSetting, padding, setPosition])
+  }, [
+    selectedTrain,
+    settings.follow,
+    updateSetting,
+    padding,
+    setPosition,
+    isMobile,
+  ])
 
   // fly to a new station that the user selected
   useEffect(() => {
@@ -259,6 +280,19 @@ function Map() {
     },
     [router],
   )
+
+  const handleMapLoad = useCallback(() => {
+    setLoaded(true)
+    // Immediately load train data (before the setInterval first runs)
+    updateTrains()
+    // Re-fit bounds with padding to center tracks above bottom sheet
+    if (window.innerWidth <= MOBILE_BREAKPOINT) {
+      mapRef.current?.fitBounds(initialViewState.bounds as LngLatBoundsLike, {
+        padding: computePadding('middle', true),
+        duration: 0,
+      })
+    }
+  }, [updateTrains, initialViewState.bounds])
 
   const handleMapClick = useCallback(
     (ev: MapLayerMouseEvent & { features?: MapGeoJSONFeature[] }) => {
@@ -322,10 +356,7 @@ function Map() {
         attributionControl={false}
         renderWorldCopies={false}
         minZoom={1.5}
-        onLoad={() => {
-          setLoaded(true)
-          updateTrains()
-        }}
+        onLoad={handleMapLoad}
         onMove={(ev: ViewStateChangeEvent) => {
           // if it's a user-initiated map move, and we're currently following a train
           if (ev.originalEvent && settings.follow) {

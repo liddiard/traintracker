@@ -27,7 +27,7 @@ export default function BottomSheet({ children }: BottomSheetProps) {
 
   // external components can request the bottom sheet to be snapped to a specific
   // position (bottom, middle, or top)
-  const { position, setPosition, setSheetTop } = useBottomSheet()
+  const { position, setPosition } = useBottomSheet()
 
   // vertical coordinate of a swipe start gesture
   const touchStartY = useRef<number | null>(null)
@@ -172,7 +172,6 @@ export default function BottomSheet({ children }: BottomSheetProps) {
     currentSnapRef.current = snapIndex
     // keep sheet position in sync with context
     setPosition(indexToPosition[snapIndex])
-    setSheetTop(sheetRef.current?.yInverted.get() ?? 0)
   }
 
   // Disable drag when scrolled away from top (so content can scroll freely)

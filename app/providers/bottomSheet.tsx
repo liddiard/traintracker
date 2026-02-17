@@ -6,15 +6,11 @@ import { BottomSheetPosition } from '../types'
 interface BottomSheetContextType {
   position: BottomSheetPosition
   setPosition: (position: BottomSheetPosition) => void
-  sheetTop: number
-  setSheetTop: (top: number) => void
 }
 
 const BottomSheetContext = createContext<BottomSheetContextType>({
   position: 'middle',
   setPosition: () => {},
-  sheetTop: 0,
-  setSheetTop: () => {},
 })
 
 interface BottomSheetProviderProps {
@@ -24,12 +20,11 @@ interface BottomSheetProviderProps {
 
 export function BottomSheetProvider({ children }: BottomSheetProviderProps) {
   const [position, setPosition] = useState<BottomSheetPosition>('middle')
-  const [sheetTop, setSheetTop] = useState<number>(0)
 
   // Memoize context value to prevent unnecessary re-renders
   const value = useMemo(
-    () => ({ position, setPosition, sheetTop, setSheetTop }),
-    [position, setPosition, sheetTop, setSheetTop],
+    () => ({ position, setPosition }),
+    [position, setPosition],
   )
 
   return (
