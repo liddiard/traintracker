@@ -232,6 +232,7 @@ function Map() {
         padding: computePadding('middle', isMobile),
       })
       flownToTrain.current = selectedTrain.id as string
+      // after flyTo, immediately update train positions and follow the new train
       setTimeout(() => {
         updateTrains()
         updateSetting('follow', true)
