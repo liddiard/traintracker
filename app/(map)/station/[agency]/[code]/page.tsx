@@ -230,7 +230,7 @@ export default function StationPage() {
     <div key={dateKey} className="flex flex-col">
       <h3
         className={cn(
-          'my-3 px-3 text-xl font-semibold',
+          'my-3 px-3 text-lg font-semibold',
           classNames.textDeemphasized,
         )}
       >
@@ -294,7 +294,7 @@ export default function StationPage() {
         <div className="flex flex-col gap-4">
           {pastDepartures.length > 0 && (
             <details>
-              <summary className="cursor-pointer px-3 text-2xl font-bold">
+              <summary className="cursor-pointer px-3 text-xl font-bold">
                 Past Departures
               </summary>
               <div className="flex flex-col gap-4">
@@ -306,7 +306,7 @@ export default function StationPage() {
           )}
 
           <details open>
-            <summary className="cursor-pointer px-3 text-2xl font-bold">
+            <summary className="cursor-pointer px-3 text-xl font-bold">
               Upcoming Departures
             </summary>
             {upcomingDepartures.length > 0 ? (
