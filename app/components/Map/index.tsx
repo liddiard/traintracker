@@ -232,6 +232,11 @@ function Map() {
         padding: computePadding('middle', isMobile),
       })
       flownToTrain.current = selectedTrain.id as string
+      setTimeout(() => {
+        updateTrains()
+        updateSetting('follow', true)
+        followSetting.current = true
+      }, 5000)
     }
     followSetting.current = settings.follow
   }, [
@@ -241,6 +246,7 @@ function Map() {
     padding,
     setPosition,
     isMobile,
+    updateTrains,
   ])
 
   // fly to a new station that the user selected
