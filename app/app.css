@@ -22,6 +22,18 @@
   }
 }
 
+/* MapLibre GL JS */
+.maplibregl-control-container {
+  /* Relatively position so z-index takes effect */
+  position: relative;
+  /* Put map controls behind the settings popup (which has z-index: 1) */
+  z-index: 0;
+  /* Give map controls container a height */
+  height: 100vh;
+  /* Make the container itself non-interactive */
+  pointer-events: none;
+}
+
 /* Dark mode */
 .dark {
   /* MapLibre GL JS */
