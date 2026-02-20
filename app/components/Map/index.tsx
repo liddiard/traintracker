@@ -16,6 +16,7 @@ import MapGL, {
   FullscreenControl,
   NavigationControl,
   AttributionControl,
+  LngLatBounds,
 } from 'react-map-gl/maplibre'
 import type {
   LngLatBoundsLike,
@@ -24,9 +25,11 @@ import type {
   MapLayerMouseEvent,
   MapRef,
   ViewState,
+  LngLat,
   ViewStateChangeEvent,
 } from 'react-map-gl/maplibre'
 import { FeatureCollection, MultiLineString, Point, LineString } from 'geojson'
+import { booleanContains, bboxPolygon, point } from '@turf/turf'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { useTrains } from '../../providers/train'
@@ -120,6 +123,10 @@ function Map() {
   const [viewState, setViewState] = useState(initialViewState)
   const [trainData, setTrainData] = useState(emptyTrainData)
   const [isMobile, setIsMobile] = useState(false)
+  const [mapBounds, setMapBounds] = useState<{
+    ne: LngLat
+    sw: LngLat
+  } | null>(null)
 
   const mapRef = useRef<MapRef>(null)
   const flownToTrain = useRef<string>(null)
@@ -153,9 +160,11 @@ function Map() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  const selectedId = agency && id ? `${agency}/${id}` : null
+
   const selectedTrain = useMemo(
-    () => trainData.features.find((t) => t.id === `${agency}/${id}`),
-    [trainData, agency, id],
+    () => trainData.features.find((t) => t.id === selectedId),
+    [trainData, selectedId],
   )
 
   const selectedStation = useMemo(
@@ -173,6 +182,15 @@ function Map() {
     [position, loaded, isMobile],
   )
 
+  const updateMapBounds = useCallback(() => {
+    const bounds = mapRef.current?.getBounds()
+    if (!bounds) return
+    setMapBounds({
+      ne: bounds.getNorthEast(),
+      sw: bounds.getSouthWest(),
+    })
+  }, [])
+
   const updateTrains = useCallback(() => {
     setTrainData((prevData) =>
       trainsToGeoJson(
@@ -183,6 +201,25 @@ function Map() {
       ),
     )
   }, [])
+
+  // Only render markers/labels for trains visible in the current viewport.
+  const visibleTrains = useMemo(() => {
+    if (!mapBounds) {
+      return trainData.features
+    }
+    const boundsPolygon = bboxPolygon([
+      ...mapBounds.ne.toArray(),
+      ...mapBounds.sw.toArray(),
+    ])
+    return trainData.features.filter((f) => {
+      // Always include the selected train so it's present when the map arrives at it.
+      if (f.id === selectedId) {
+        return true
+      }
+      const [lng, lat] = f.geometry.coordinates
+      return booleanContains(boundsPolygon, point([lng, lat]))
+    })
+  }, [trainData.features, mapBounds, selectedId])
 
   // update train positions at a fixed interval for consistent animation timing
   useEffect(() => {
@@ -267,6 +304,7 @@ function Map() {
   const handleMoveEnd = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
     setViewState({ ...viewState, ...ev.viewState })
+    updateMapBounds()
     if (ev.originalEvent) {
       // map move was user-initiated
       updateTrains()
@@ -299,6 +337,7 @@ function Map() {
 
   const handleMapLoad = useCallback(() => {
     setLoaded(true)
+    updateMapBounds()
     // Immediately load train data (before the setInterval first runs)
     updateTrains()
     // Re-fit bounds with padding to center tracks above bottom sheet
@@ -308,7 +347,7 @@ function Map() {
         duration: 0,
       })
     }
-  }, [updateTrains, initialViewState.bounds])
+  }, [updateTrains, updateMapBounds, initialViewState.bounds])
 
   const handleMapClick = useCallback(
     (ev: MapLayerMouseEvent & { features?: MapGeoJSONFeature[] }) => {
@@ -427,7 +466,7 @@ function Map() {
           </Source>
         )}
 
-        {trainData.features.map((f) => (
+        {visibleTrains.map((f) => (
           <Fragment key={f.properties.id}>
             <TrainMarker
               coordinates={f.geometry.coordinates}
