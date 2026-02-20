@@ -264,11 +264,20 @@ function Map() {
     })
   }, [loaded, selectedStation, padding])
 
-  const syncMapState = async (ev: ViewStateChangeEvent) => {
+  const handleMoveEnd = async (ev: ViewStateChangeEvent) => {
     const { latitude, longitude, zoom } = ev.viewState
     setViewState({ ...viewState, ...ev.viewState })
     if (ev.originalEvent) {
+      // map move was user-initiated
       updateTrains()
+    } else if (!settings.follow) {
+      // map move was programmatic, and we're not following a train
+      // therefore, map move was to fly to a new train
+      // at the end of a `flyTo`, immediately update trains and start
+      // following the new train
+      updateTrains()
+      updateSetting('follow', true)
+      followSetting.current = true
     }
     // arbitrary sleep to prevent a race condition between updating the URL here and
     // `navigateToTrain`, which also updates the URL and causes the map to move
@@ -370,7 +379,7 @@ function Map() {
             updateSetting('follow', false)
           }
         }}
-        onMoveEnd={syncMapState}
+        onMoveEnd={handleMoveEnd}
         interactiveLayerIds={[sourceId.stations, sourceId.stationLabels]}
         onMouseEnter={() =>
           (mapRef.current!.getCanvas().style.cursor = 'pointer')
