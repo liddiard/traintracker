@@ -1,6 +1,6 @@
 // at this and higher map zoom levels, extrapolate train positions and show their
 // headings with an arrow
-export const DETAIL_ZOOM_LEVEL = 8
+export const DETAIL_ZOOM_LEVEL = 7
 
 // Zoom threshold for skipping React.memo re-renders on minor zoom changes
 export const MEMO_ZOOM_THRESHOLD = 0.5
