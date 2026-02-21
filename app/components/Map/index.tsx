@@ -46,7 +46,7 @@ import {
 import _track from '@/public/map_data/track.json'
 import TrainMarker from './TrainMarker'
 import { TrainFeatureProperties } from '@/app/types'
-import { sleep } from '@/app/utils'
+import { getCSSVar, sleep } from '@/app/utils'
 import { sourceId, TRAIN_UPDATE_FREQ } from './constants'
 import Crosshair from './Crosshair'
 import TrainLabel from './TrainLabel'
@@ -64,16 +64,22 @@ function computePadding(
   position: BottomSheetPosition,
   isMobile: boolean,
 ): { bottom: number } {
-  if (!isMobile || typeof window === 'undefined') return { bottom: 0 }
+  if (!isMobile || typeof window === 'undefined') {
+    return { bottom: 0 }
+  }
+  // margin always present above the sheet, even when sheet is fully open
+  // should match value in app.css -> .react-modal-sheet-container
+  const topMargin = parseInt(getCSSVar('--sheet-top-margin'))
+  const totalHeight = window.innerHeight - topMargin
   const sheetHeight =
     position === 'bottom'
       ? 100
       : position === 'middle'
-        ? window.innerHeight * 0.5
-        : window.innerHeight
+        ? totalHeight * 0.5
+        : totalHeight
   return {
     bottom:
-      Math.min(sheetHeight, (window.innerHeight - 35) / 2) +
+      Math.min(sheetHeight, totalHeight / 2) +
       (window.outerHeight - window.innerHeight),
   }
 }

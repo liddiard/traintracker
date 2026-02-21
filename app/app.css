@@ -1,10 +1,20 @@
+:root {
+  /* Margin always visible above sheet, even when fully open. 
+   * Used in both app.css and Map/index.tsx
+   */
+  --sheet-top-margin: 48px;
+}
+
 /* React Modal Sheet */
 .react-modal-sheet-container {
   background-color: white !important;
   /* Override library's default sheet top margin when fully open (34px):
    * https://github.com/Temzasse/react-modal-sheet/blob/e01de7e14f97d1b0ccb342d8306904775baf91a2/src/constants.ts#L34
+   * This ensures that the "Find a Train" button is visible when the sheet is fully open.
    */
-  height: calc(100% - env(safe-area-inset-top) - 48px) !important;
+  height: calc(
+    100% - env(safe-area-inset-top) - var(--sheet-top-margin)
+  ) !important;
 }
 
 .react-modal-sheet-header {
