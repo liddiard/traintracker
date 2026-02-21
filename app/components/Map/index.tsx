@@ -104,25 +104,38 @@ function Map() {
   const { position, setPosition } = useBottomSheet()
   const router = useRouter()
   const { agency, id, code } = useParams() // train agency, train ID, station code
-  const query = useSearchParams()
 
-  const initialViewState = useMemo(
-    () => ({
-      // default to bounding box of all tracks plus a 10-degree margin in each direction,
-      // calculated statically for performance using Turf.js:
-      // const turf = require('@turf/turf')
-      // const track = require('./public/map_data/track.json')
-      // const bbox = turf.bbox(track)
-      bounds: [
-        -130.35971 - 5,
-        25.78015,
-        -63.26974 + 5,
-        58.76772,
-      ] as LngLatBoundsLike,
-      zoom: Number(query.get('z')) || 3,
-      bearing: 0,
-    }),
-    [query],
+  const query = useSearchParams()
+  const zoom = Number(query.get('z')) || 3
+  const longitude = Number(query.get('lng'))
+  const latitude = Number(query.get('lat'))
+
+  const initialViewState: Partial<ViewState> & {
+    bounds?: LngLatBoundsLike
+    zoom: number
+  } = useMemo(
+    () =>
+      longitude && latitude
+        ? {
+            longitude,
+            latitude,
+            zoom,
+          }
+        : // default to bounding box of all tracks plus a 10-degree margin in each direction,
+          // calculated statically for performance using Turf.js:
+          // const turf = require('@turf/turf')
+          // const track = require('./public/map_data/track.json')
+          // const bbox = turf.bbox(track)
+          {
+            bounds: [
+              -130.35971 - 5,
+              25.78015,
+              -63.26974 + 5,
+              58.76772,
+            ] as LngLatBoundsLike,
+            zoom,
+          },
+    [zoom, longitude, latitude],
   )
 
   const [loaded, setLoaded] = useState(false)
@@ -311,17 +324,11 @@ function Map() {
     const { latitude, longitude, zoom } = ev.viewState
     setViewState({ ...viewState, ...ev.viewState })
     updateMapBounds()
-    if (ev.originalEvent) {
-      // map move was user-initiated
+    if (
+      ev.originalEvent || // map move was user-initiated
+      !settings.follow // map move was programmatic, and we're not following a train
+    ) {
       updateTrains()
-    } else if (!settings.follow) {
-      // map move was programmatic, and we're not following a train
-      // therefore, map move was to fly to a new train
-      // at the end of a `flyTo`, immediately update trains and start
-      // following the new train
-      updateTrains()
-      updateSetting('follow', true)
-      followSetting.current = true
     }
     // arbitrary sleep to prevent a race condition between updating the URL here and
     // `navigateToTrain`, which also updates the URL and causes the map to move
@@ -347,8 +354,8 @@ function Map() {
     // Immediately load train data (before the setInterval first runs)
     updateTrains()
     // Re-fit bounds with padding to center tracks above bottom sheet
-    if (window.innerWidth <= MOBILE_BREAKPOINT) {
-      mapRef.current?.fitBounds(initialViewState.bounds as LngLatBoundsLike, {
+    if (window.innerWidth <= MOBILE_BREAKPOINT && initialViewState.bounds) {
+      mapRef.current?.fitBounds(initialViewState.bounds, {
         padding: computePadding('middle', true),
         duration: 0,
       })
@@ -400,6 +407,14 @@ function Map() {
         position="bottom-right"
         trackUserLocation={true}
         style={controlStyle}
+        onGeolocate={() => {
+          // if we're currently following a train, stop so we can follow the user's
+          // location instead
+          if (settings.follow) {
+            updateSetting('follow', false)
+            followSetting.current = false
+          }
+        }}
       />
     </>
   )
@@ -422,6 +437,7 @@ function Map() {
           // if it's a user-initiated map move, and we're currently following a train
           if (ev.originalEvent && settings.follow) {
             updateSetting('follow', false)
+            followSetting.current = false
           }
         }}
         onMoveEnd={handleMoveEnd}
