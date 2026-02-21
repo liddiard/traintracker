@@ -30,7 +30,7 @@ function Header() {
   }
 
   return (
-    <header className="absolute top-0 left-0 z-1 min-w-full bg-linear-to-b from-white to-transparent px-3 pt-2 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
+    <header className="absolute top-0 left-0 z-10 min-w-full bg-linear-to-b from-white to-transparent px-3 pt-2 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
       <div className="flex items-baseline justify-between gap-4">
         <div className="flex shrink-0 items-baseline gap-2 md:shrink">
           <Link href="/" className="hidden md:block">
