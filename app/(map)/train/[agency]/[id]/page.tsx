@@ -1,7 +1,7 @@
 'use client'
 
 import cn from 'classnames'
-import { JSX, useMemo } from 'react'
+import { JSX, useEffect, useMemo } from 'react'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -33,7 +33,8 @@ import { useBottomSheet } from '@/app/providers/bottomSheet'
 
 export default function TrainDetail() {
   const { agency, id } = useParams()
-  const TrainQueryParams = getTrainParams(useSearchParams())
+  const searchParams = useSearchParams()
+  const TrainQueryParams = getTrainParams(searchParams)
   const { trains } = useTrains()
   const { setPosition } = useBottomSheet()
   const { settings, updateSetting } = useSettings()
@@ -42,6 +43,15 @@ export default function TrainDetail() {
     () => trains.find((t) => t.id === `${agency}/${id}`),
     [trains, agency, id],
   )
+
+  // searchParams is included as a dependency because the map calls router.replace()
+  // on every zoom/pan, which causes Next.js to reset the title to the layout default.
+  // Re-running this effect on searchParams change restores the correct title.
+  useEffect(() => {
+    if (train) {
+      document.title = `${train.name} ${train.number} | TrainTracker`
+    }
+  }, [train, searchParams])
 
   if (!train) {
     return notFound()

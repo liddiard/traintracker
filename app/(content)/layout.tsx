@@ -10,7 +10,10 @@ import { SettingsProvider } from '@/app/providers/settings'
 import { inter } from '@/app/constants'
 
 export const metadata: Metadata = {
-  title: 'TrainTracker',
+  title: {
+    template: '%s | TrainTracker',
+    default: 'TrainTracker',
+  },
   description:
     'Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
 }

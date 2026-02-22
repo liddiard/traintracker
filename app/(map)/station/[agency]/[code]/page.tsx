@@ -1,6 +1,6 @@
 'use client'
 
-import { notFound, useParams } from 'next/navigation'
+import { notFound, useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import cn from 'classnames'
 import { useTrains } from '@/app/providers/train'
@@ -28,6 +28,7 @@ interface TrainStop {
 
 export default function StationPage() {
   const { agency, code } = useParams()
+  const searchParams = useSearchParams()
   const { trains, stations } = useTrains()
   const { settings } = useSettings()
   const { timeFormat, timeZone } = settings
@@ -37,6 +38,15 @@ export default function StationPage() {
   const station = stations.find(
     (s) => s.agency === stationAgency && s.code === stationCode,
   )
+
+  // searchParams is included as a dependency because the map calls router.replace()
+  // on every zoom/pan, which causes Next.js to reset the title to the layout default.
+  // Re-running this effect on searchParams change restores the correct title.
+  useEffect(() => {
+    if (station) {
+      document.title = `${station.code} / ${station.name} | TrainTracker`
+    }
+  }, [station, searchParams])
 
   const [mounted, setMounted] = useState(false)
   useEffect(() => {

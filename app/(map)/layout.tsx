@@ -15,7 +15,10 @@ import { inter } from '@/app/constants'
 import { BottomSheetProvider } from '@/app/providers/bottomSheet'
 
 export const metadata: Metadata = {
-  title: 'TrainTracker',
+  title: {
+    template: '%s | TrainTracker',
+    default: 'TrainTracker',
+  },
   description:
     'Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
 }
