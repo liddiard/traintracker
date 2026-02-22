@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Settings } from './types'
 
@@ -31,6 +32,17 @@ export const classNames: Record<string, string> = {
   textAccent: 'text-amtrak-blue-500 dark:text-amtrak-blue-300',
   sectionSeparator: 'border-positron-gray-200 dark:border-positron-gray-700',
   link: 'hover:text-amtrak-blue-400 dark:hover:text-amtrak-blue-200 flex items-center gap-1 font-semibold',
+}
+
+// default metadata for all pages
+export const pageMetadata: Metadata = {
+  title: {
+    template: '%s | TrainTracker',
+    default: 'TrainTracker',
+  },
+  description:
+    'Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
+  manifest: '/site.webmanifest',
 }
 
 // browser cookie used to store user settings

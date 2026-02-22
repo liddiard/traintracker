@@ -1,22 +1,13 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
 import cn from 'classnames'
-import { classNames } from '@/app/constants'
+import { classNames, inter, pageMetadata } from '@/app/constants'
 
 import '@/app/globals.css'
 import '@/app/app.css'
 import { getServerSettings } from '@/app/settings'
 import { SettingsProvider } from '@/app/providers/settings'
-import { inter } from '@/app/constants'
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s | TrainTracker',
-    default: 'TrainTracker',
-  },
-  description:
-    'Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
-}
+export const metadata = pageMetadata
 
 export default async function ContentLayout({
   children,

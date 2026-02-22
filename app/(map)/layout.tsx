@@ -1,5 +1,3 @@
-import type { Metadata } from 'next'
-
 import '@/app/globals.css'
 import '@/app/app.css'
 import Map from '@/app/components/Map'
@@ -11,17 +9,10 @@ import { TrainProvider } from '@/app/providers/train'
 import { SettingsProvider } from '@/app/providers/settings'
 import ServiceWorkerRegistration from '@/app/components/ServiceWorkerRegistration'
 import { Station } from '@/app/types'
-import { inter } from '@/app/constants'
+import { inter, pageMetadata } from '@/app/constants'
 import { BottomSheetProvider } from '@/app/providers/bottomSheet'
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s | TrainTracker',
-    default: 'TrainTracker',
-  },
-  description:
-    'Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
-}
+export const metadata = pageMetadata
 
 async function getTrains() {
   try {
