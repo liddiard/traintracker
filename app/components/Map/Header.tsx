@@ -72,12 +72,12 @@ function Header() {
         </div>
         <nav className="flex gap-3 font-medium md:gap-4">
           {/* Shorten link name on mobile to prevent text wrapping */}
-          <Link href="/gear-guide" className="xs:hidden">
+          {/* <Link href="/gear-guide" className="xs:hidden">
             Gear
           </Link>
           <Link href="/gear-guide" className="xs:block hidden">
             Gear Guide
-          </Link>
+          </Link> */}
           <Link href="/about">About</Link>
           <Link href="/privacy">Privacy</Link>
         </nav>

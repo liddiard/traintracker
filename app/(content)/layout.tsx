@@ -33,12 +33,12 @@ export default async function ContentLayout({
               <nav className="flex items-center gap-3 font-medium text-white sm:gap-5">
                 <Link href="/">Map</Link>
                 {/* Shorten link name on mobile to prevent text wrapping */}
-                <Link href="/gear-guide" className="xs:hidden">
+                {/* <Link href="/gear-guide" className="xs:hidden">
                   Gear
                 </Link>
                 <Link href="/gear-guide" className="xs:block hidden">
                   Gear Guide
-                </Link>
+                </Link> */}
                 <Link href="/about">About</Link>
               </nav>
             </div>
