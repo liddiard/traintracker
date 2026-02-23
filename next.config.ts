@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   // https://stackoverflow.com/a/72186766
   reactStrictMode: false,
   output: 'standalone',
+  // Disable Next.js gzip so responses reach Cloudflare uncompressed,
+  // allowing Cloudflare to apply Brotli/zstd at the edge.
+  compress: false,
   logging: {
     fetches: {
       fullUrl: true,
