@@ -153,8 +153,8 @@ ssh ${VPS_USER}@${VPS_HOST} << EOF
 
     # Check if .env exists
     if [[ ! -f .env ]]; then
-        echo "WARNING: .env file not found. Copying .env.docker as template..."
-        cp .env.docker .env
+        echo "WARNING: .env file not found. Copying .env.example as template..."
+        cp .env.example .env
         echo "IMPORTANT: Edit ${APP_DIR}/.env and add your VAPID keys!"
     fi
 

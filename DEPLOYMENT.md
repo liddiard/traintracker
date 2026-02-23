@@ -1,24 +1,25 @@
-# VPS Deployment Guide
+# Deployment Guide
 
-This guide covers deploying TrainTracker to a VPS (Virtual Private Server) with an existing nginx setup, such as a DigitalOcean Droplet hosting multiple applications.
+This guide covers deploying TrainTracker to a VPS (Virtual Private Server) with Docker and a two-tier nginx architecture.
 
-## Architecture Overview
-
-The VPS deployment uses a two-tier nginx architecture:
+## Architecture
 
 ```
 Internet (HTTPS)
     ↓
+Cloudflare (CDN, Brotli compression, DDoS protection)
+    ↓
 Host Nginx (:443)
-├── SSL Termination (Certbot)
+├── TLS Termination (Certbot)
 ├── Domain Routing (server_name)
+├── Security (blocks exploit paths, rate limits sensitive endpoints)
 └── Proxy to localhost:8724
     ↓
 Container Nginx (:8724 → :80)
-├── Rate Limiting (10 req/s)
+├── Rate Limiting (10 req/s per IP)
 ├── Caching (static assets, map data)
-├── Compression (gzip)
 ├── Security Headers
+├── Real IP resolution (from X-Real-IP header)
 └── Proxy to app:3000
     ↓
 Next.js App (:3000, internal)
@@ -28,131 +29,72 @@ Next.js App (:3000, internal)
 └── SQLite Database (Docker volume)
 ```
 
-**Benefits:**
+**Why two nginx tiers?**
 
-- Host nginx manages SSL and domain routing centrally
-- Container nginx provides application-specific optimizations
-- Configuration stays in version control
-- Easy to migrate or replicate the application
+- **Host nginx** manages SSL and domain routing centrally (shared with other apps on the VPS)
+- **Container nginx** provides application-specific caching, rate limiting, and optimization
+- Container nginx config (`nginx.conf`) stays in version control
 
 ## Prerequisites
 
-### On Your VPS
+On your VPS:
 
-1. **Operating System**: Debian 11+ or Ubuntu 20.04+ recommended
-2. **Docker**: Version 20.10 or higher
-3. **Docker Compose**: Version 2.0 or higher
-4. **Nginx**: Installed and running on the host
-5. **Certbot**: For SSL certificate management
-6. **Domain**: DNS configured to point to your VPS IP address
-
-### Installation Commands (if needed)
+- **OS**: Debian 11+ or Ubuntu 20.04+
+- **Docker Engine** 20.10+ and **Docker Compose** v2.0+
+- **Nginx** installed on the host
+- **Certbot** for SSL certificate management
+- **Domain** with DNS pointing to your VPS IP
 
 ```bash
-# Update system
-sudo apt update && sudo apt upgrade -y
-
 # Install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo usermod -aG docker $USER
 
-# Install Docker Compose
-sudo apt install docker-compose-plugin
-
-# Install nginx and Certbot
-sudo apt install nginx certbot python3-certbot-nginx
-
-# Verify installations
-docker --version
-docker compose version
-nginx -v
-certbot --version
+# Install Docker Compose, nginx, and Certbot
+sudo apt install docker-compose-plugin nginx certbot python3-certbot-nginx
 ```
 
-### On Your Local Machine
+On your local machine:
 
-1. **SSH access** to your VPS configured
-2. **Git** to clone the repository
-3. **rsync** for the deployment script (usually pre-installed)
+- SSH access to the VPS (preferably key-based)
+- Git and rsync
 
 ## Initial Setup
 
-### 1. Prepare Your VPS
-
-SSH into your VPS and create the application directory:
+### 1. Create application directory
 
 ```bash
-ssh your-user@your-vps-ip
+ssh your-user@your-vps
 sudo mkdir -p /opt/traintracker
 sudo chown $USER:$USER /opt/traintracker
 ```
 
-### 2. Configure Domain DNS
+### 2. Configure environment variables
 
-Ensure your domain has an A record pointing to your VPS IP:
-
-```
-Type: A
-Name: traintracker (or @ for root domain)
-Value: YOUR_VPS_IP
-TTL: 3600
-```
-
-Wait for DNS propagation (check with `dig traintracker.yourdomain.com`).
-
-### 3. Generate VAPID Keys
-
-On your local machine, generate keys for web push notifications:
+On the VPS:
 
 ```bash
-npx web-push generate-vapid-keys
-```
-
-Save these keys - you'll need them for the `.env` file.
-
-### 4. Configure Environment Variables
-
-On your VPS, create the environment file:
-
-```bash
-ssh your-user@your-vps-ip
 cd /opt/traintracker
-cp .env.docker .env
+cp .env.example .env
 nano .env
 ```
 
-Update with your VAPID keys:
+Update with your VAPID keys (generate with `npx web-push generate-vapid-keys`):
 
 ```env
-DATABASE_URL=file:/app/db/app.db
-
-VAPID_PUBLIC_KEY=your-actual-public-key
-VAPID_PRIVATE_KEY=your-actual-private-key
+VAPID_PUBLIC_KEY=your-generated-public-key
+VAPID_PRIVATE_KEY=your-generated-private-key
 VAPID_SUBJECT=mailto:your-email@example.com
-
 ENABLE_NOTIFICATIONS=true
-
 PORT=8724
 ```
 
-Save and exit (Ctrl+X, Y, Enter).
+> **Note:** `DATABASE_URL` can be omitted — `docker-compose.yml` overrides it automatically with the Docker volume path.
 
-## Deployment Methods
+### 3. Configure the deployment script
 
-You can deploy using either the automated script or manual steps.
-
-### Method 1: Automated Deployment (Recommended)
-
-**On your local machine:**
-
-1. Edit the deployment script configuration:
-
-```bash
-nano deploy.sh
-```
-
-Update these variables:
+On your local machine, edit `deploy.sh`:
 
 ```bash
 VPS_HOST="your-vps-hostname-or-ip"
@@ -162,443 +104,202 @@ APP_DIR="/opt/traintracker"
 CONTAINER_PORT="8724"
 ```
 
-2. Set up SSH key authentication (if not already):
+Set up SSH key auth if you haven't:
 
 ```bash
-ssh-copy-id your-user@your-vps-ip
+ssh-copy-id your-user@your-vps
 ```
 
-3. Run the deployment script:
+### 4. Deploy
 
 ```bash
+chmod +x deploy.sh
 ./deploy.sh
 ```
 
-The script will:
+The script syncs files, deploys the nginx config, builds and starts Docker containers, and verifies the deployment.
 
-- Sync application files to the VPS
-- Deploy the nginx configuration
-- Build and start Docker containers
-- Configure host nginx
-- Verify the deployment
-
-4. Set up SSL (first time only):
+### 5. Set up SSL (first time only)
 
 ```bash
-ssh your-user@your-vps-ip
+ssh your-user@your-vps
 sudo certbot --nginx -d traintracker.yourdomain.com
 ```
 
 Follow the prompts to obtain an SSL certificate.
 
-### Method 2: Manual Deployment
+## Deploying Updates
 
-**On your local machine:**
-
-1. Clone or sync the repository to your VPS:
-
-```bash
-rsync -avz --exclude 'node_modules' --exclude '.next' --exclude 'db/app.db' \
-  ./ your-user@your-vps-ip:/opt/traintracker/
-```
-
-**On your VPS:**
-
-2. Deploy the nginx configuration:
-
-```bash
-cd /opt/traintracker
-
-# Replace domain placeholder
-sudo sed "s/DOMAIN_PLACEHOLDER/traintracker.yourdomain.com/g" \
-  nginx-vps.conf | sudo tee /etc/nginx/sites-available/traintracker
-
-# Enable the site
-sudo ln -s /etc/nginx/sites-available/traintracker /etc/nginx/sites-enabled/
-
-# Test configuration
-sudo nginx -t
-
-# If test passes, reload nginx
-sudo systemctl reload nginx
-```
-
-3. Build and start Docker containers:
-
-```bash
-cd /opt/traintracker
-docker compose up -d --build
-```
-
-4. Set up SSL certificate:
-
-```bash
-sudo certbot --nginx -d traintracker.yourdomain.com
-```
-
-5. Verify deployment:
-
-```bash
-# Check containers are running
-docker compose ps
-
-# Test local endpoint
-curl http://localhost:8724/api/notifications/vapid-key
-
-# Test public endpoint
-curl https://traintracker.yourdomain.com/api/notifications/vapid-key
-```
-
-## Updating the Application
-
-### Using Deployment Script
-
-Simply run the script again:
+### Automated (recommended)
 
 ```bash
 ./deploy.sh
 ```
 
-### Manual Update
+### Manual
 
 ```bash
-ssh your-user@your-vps-ip
+ssh your-user@your-vps
 cd /opt/traintracker
 
-# Pull latest changes (if using git)
-git pull origin main
-
-# Or sync from local (from your local machine)
+# Sync files from local machine (run from local):
 rsync -avz --exclude 'node_modules' --exclude '.next' --exclude 'db/app.db' \
-  ./ your-user@your-vps-ip:/opt/traintracker/
+  ./ your-user@your-vps:/opt/traintracker/
 
-# Rebuild and restart containers
+# On the VPS, rebuild and restart:
 docker compose up -d --build
-
-# Check status
-docker compose ps
 ```
 
-## Monitoring and Maintenance
+### Updating the host nginx config
 
-### Viewing Logs
+> **WARNING — Certbot footgun:** The `nginx-vps.conf` template in this repo is an HTTP-only server block. When you deploy it (either via `deploy.sh` or manually with `sed`), it **overwrites the certbot-managed config** at `/etc/nginx/sites-available/traintracker`, which includes the HTTPS server block, SSL certificate paths, and HTTP→HTTPS redirect that certbot added.
+>
+> **After any update to the host nginx config, you must re-run certbot to restore HTTPS:**
+>
+> ```bash
+> sudo certbot --nginx -d traintracker.app
+> ```
+>
+> Select the option to reinstall the existing certificate (not issue a new one). Then reload:
+>
+> ```bash
+> sudo nginx -t && sudo systemctl reload nginx
+> ```
+>
+> If you skip this step, Cloudflare will return **520 errors** because it can't establish an HTTPS connection to the origin.
 
-**Container logs:**
+### Updating the container nginx config
+
+Changes to `nginx.conf` are picked up when the container restarts. To reload without a full restart (avoids the `depends_on: service_healthy` wait):
 
 ```bash
-cd /opt/traintracker
-
-# All services
-docker compose logs -f
-
-# Specific service
-docker compose logs -f app
-docker compose logs -f nginx
-
-# Last 100 lines
-docker compose logs --tail=100
+docker compose exec nginx nginx -s reload
 ```
 
-**Host nginx logs:**
+## Nginx Configuration
+
+### `nginx-vps.conf` — Host nginx (template)
+
+Deployed to `/etc/nginx/sites-available/traintracker` with domain substitution. Handles:
+
+- Blocking common exploit/scan paths (`.env`, `.git`, `wp-admin`, `phpMyAdmin`, etc.)
+- Rate limiting: 10 req/s general, 1 req/s for notification endpoints
+- Forwarding real client IP from Cloudflare's `CF-Connecting-IP` header
+- Proxying to the container nginx on `127.0.0.1:8724`
+- HSTS header
+
+Certbot adds the HTTPS server block, SSL cert paths, and HTTP→HTTPS redirect to the deployed copy.
+
+### `nginx.conf` — Container nginx
+
+Mounted read-only into the Docker container. Handles:
+
+- Real IP resolution from the `X-Real-IP` header (trusts Docker network ranges)
+- Rate limiting: 10 req/s for API routes
+- Static asset caching (1 year for `/_next/static/`, 1 week for `/map_data/`)
+- Service worker served with `no-cache`
+- Security headers (`X-Frame-Options`, `X-Content-Type-Options`, `X-XSS-Protection`)
+- Proxying to the Next.js app on `app:3000`
+- Compression is off (Cloudflare handles Brotli at the edge)
+
+### Port mapping
+
+| Component       | Port                                 | Visibility                     |
+| --------------- | ------------------------------------ | ------------------------------ |
+| Next.js app     | 3000                                 | Internal (Docker network only) |
+| Container nginx | 80 (mapped to host `127.0.0.1:8724`) | Localhost only                 |
+| Host nginx      | 443                                  | Public (via Cloudflare)        |
+
+## Management
+
+### Viewing logs
 
 ```bash
-# Access log
+# Container logs
+docker compose logs -f          # all services
+docker compose logs -f app      # Next.js app only
+docker compose logs -f nginx    # container nginx only
+docker compose logs --tail=100  # last 100 lines
+
+# Host nginx logs
 sudo tail -f /var/log/nginx/traintracker-access.log
-
-# Error log
 sudo tail -f /var/log/nginx/traintracker-error.log
-
-# All nginx logs
-sudo tail -f /var/log/nginx/access.log
-sudo tail -f /var/log/nginx/error.log
 ```
 
-### Health Checks
-
-**Check container health:**
+### Health checks
 
 ```bash
+# Container health status
 docker compose ps
-```
 
-Look for "healthy" status on both containers.
-
-**Test endpoints:**
-
-```bash
-# Container endpoint
+# Test container endpoint directly
 curl http://localhost:8724/api/notifications/vapid-key
 
-# Public endpoint
+# Test public endpoint
 curl https://yourdomain.com/api/notifications/vapid-key
-```
 
-**Check resource usage:**
-
-```bash
+# Resource usage
 docker stats
 ```
 
-### Database Operations
+### Stopping and restarting
 
-**Backup database:**
+```bash
+docker compose stop       # stop containers
+docker compose start      # start stopped containers
+docker compose restart    # restart containers
+docker compose down       # stop and remove containers (preserves volumes)
+```
+
+## Database Operations
+
+The app uses SQLite, persisted in a Docker volume (`traintracker-db`) mounted at `/app/data/` inside the container. Prisma migrations run automatically on container startup.
+
+### Backup
 
 ```bash
 docker run --rm \
   -v traintracker-db:/data \
-  -v /opt/traintracker/backups:/backup \
+  -v $(pwd)/backups:/backup \
   alpine cp /data/app.db /backup/traintracker-$(date +%Y%m%d-%H%M%S).db
 ```
 
-**Restore database:**
+### Restore
 
 ```bash
-# Stop application
-cd /opt/traintracker
 docker compose stop app
 
-# Restore
 docker run --rm \
   -v traintracker-db:/data \
-  -v /opt/traintracker/backups:/backup \
+  -v $(pwd)/backups:/backup \
   alpine cp /backup/your-backup.db /data/app.db
 
-# Restart application
 docker compose start app
 ```
 
-**Access database directly:**
+### Direct access
 
 ```bash
 docker compose exec app sh
-cd /app/db
-sqlite3 app.db
+sqlite3 /app/data/app.db
 ```
 
-### SSL Certificate Renewal
-
-Certbot automatically renews certificates. To test renewal:
+### Check integrity
 
 ```bash
-sudo certbot renew --dry-run
+docker compose exec app sh -c 'sqlite3 /app/data/app.db "PRAGMA integrity_check;"'
 ```
 
-To check renewal status:
+### Reset database (destructive)
 
 ```bash
-sudo systemctl status certbot.timer
+docker compose down -v  # removes volume with database
+docker compose up -d    # recreates everything
 ```
 
-## Troubleshooting
+### Scheduled backups
 
-### Container Not Starting
-
-**Check logs:**
-
-```bash
-docker compose logs app
-docker compose logs nginx
-```
-
-**Common issues:**
-
-- Missing `.env` file or invalid VAPID keys
-- Port 8724 already in use
-- Database migration failures
-
-**Solutions:**
-
-```bash
-# Check if port is in use
-sudo lsof -i :8724
-
-# Verify environment file
-cat .env
-
-# Check Docker networks
-docker network ls
-docker network inspect traintracker-network
-```
-
-### Cannot Access Application
-
-**Verify nginx configuration:**
-
-```bash
-sudo nginx -t
-```
-
-**Check if container is accessible:**
-
-```bash
-curl http://localhost:8724/api/notifications/vapid-key
-```
-
-**Check host nginx logs:**
-
-```bash
-sudo tail -f /var/log/nginx/traintracker-error.log
-```
-
-**Common issues:**
-
-- DNS not propagated yet
-- Firewall blocking ports 80/443
-- Host nginx not proxying correctly
-- Container not bound to correct port
-
-**Solutions:**
-
-```bash
-# Check firewall
-sudo ufw status
-
-# Allow HTTP/HTTPS if needed
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-
-# Verify nginx is running
-sudo systemctl status nginx
-
-# Check container port mapping
-docker port traintracker-nginx
-```
-
-### SSL Certificate Issues
-
-**Certificate not found:**
-
-```bash
-sudo certbot certificates
-```
-
-**Re-obtain certificate:**
-
-```bash
-sudo certbot --nginx -d yourdomain.com --force-renewal
-```
-
-**Check certificate expiry:**
-
-```bash
-echo | openssl s_client -connect yourdomain.com:443 2>/dev/null | \
-  openssl x509 -noout -dates
-```
-
-### Performance Issues
-
-**Check resource usage:**
-
-```bash
-docker stats
-
-# System resources
-htop
-df -h
-```
-
-**Container resource limits:**
-Edit `docker-compose.yml` to add resource limits:
-
-```yaml
-services:
-  app:
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 512M
-```
-
-### Database Issues
-
-**Database locked:**
-
-```bash
-# Stop app container
-docker compose stop app
-
-# Wait a few seconds
-sleep 5
-
-# Start app container
-docker compose start app
-```
-
-**Corrupt database:**
-
-```bash
-# Restore from backup (see Database Operations section)
-```
-
-**Check database integrity:**
-
-```bash
-docker compose exec app sh
-cd /app/db
-sqlite3 app.db "PRAGMA integrity_check;"
-```
-
-## Security Best Practices
-
-### Firewall Configuration
-
-```bash
-# Default deny incoming
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-
-# Allow SSH (change 22 if using custom port)
-sudo ufw allow 22/tcp
-
-# Allow HTTP and HTTPS
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-
-# Enable firewall
-sudo ufw enable
-
-# Check status
-sudo ufw status
-```
-
-### Secure SSH
-
-Edit SSH configuration:
-
-```bash
-sudo nano /etc/ssh/sshd_config
-```
-
-Recommended settings:
-
-```
-PermitRootLogin no
-PasswordAuthentication no
-PubkeyAuthentication yes
-```
-
-Restart SSH:
-
-```bash
-sudo systemctl restart sshd
-```
-
-### Regular Updates
-
-```bash
-# Update system packages
-sudo apt update && sudo apt upgrade -y
-
-# Update Docker images
-cd /opt/traintracker
-docker compose pull
-docker compose up -d
-```
-
-### Backup Strategy
-
-Create a backup script `/opt/traintracker/backup.sh`:
+Create `/opt/traintracker/backup.sh`:
 
 ```bash
 #!/bin/bash
@@ -607,187 +308,152 @@ DATE=$(date +%Y%m%d-%H%M%S)
 
 mkdir -p $BACKUP_DIR
 
-# Backup database
 docker run --rm \
   -v traintracker-db:/data \
   -v $BACKUP_DIR:/backup \
   alpine cp /data/app.db /backup/traintracker-$DATE.db
 
-# Backup environment file
-cp /opt/traintracker/.env $BACKUP_DIR/.env-$DATE
-
-# Keep only last 30 days of backups
+# Keep only last 30 days
 find $BACKUP_DIR -name "traintracker-*.db" -mtime +30 -delete
-find $BACKUP_DIR -name ".env-*" -mtime +30 -delete
 
 echo "Backup completed: $BACKUP_DIR/traintracker-$DATE.db"
 ```
-
-Make executable and schedule:
 
 ```bash
 chmod +x /opt/traintracker/backup.sh
 
 # Add to crontab (daily at 2 AM)
 crontab -e
-# Add line:
-0 2 * * * /opt/traintracker/backup.sh
+# Add: 0 2 * * * /opt/traintracker/backup.sh
 ```
 
-## Advanced Configuration
+## SSL / Certbot
 
-### Using a Different Port
-
-Edit `.env` on the VPS:
-
-```env
-PORT=3002
-```
-
-Update the host nginx configuration:
+### Obtain certificate (first time)
 
 ```bash
-sudo nano /etc/nginx/sites-available/traintracker
-# Change proxy_pass to http://localhost:3002
-sudo nginx -t
+sudo certbot --nginx -d yourdomain.com
+```
+
+### Reinstall certificate after nginx config update
+
+```bash
+sudo certbot --nginx -d yourdomain.com
+# Select "reinstall existing certificate"
 sudo systemctl reload nginx
 ```
 
-Restart containers:
+### Check certificate status
 
 ```bash
-docker compose up -d
+sudo certbot certificates
 ```
 
-### Multiple Environments
-
-Create environment-specific configs:
+### Test auto-renewal
 
 ```bash
-# Staging
-docker-compose.staging.yml
-
-# Production
-docker-compose.production.yml
+sudo certbot renew --dry-run
+sudo systemctl status certbot.timer
 ```
 
-Deploy with:
+### Check certificate expiry
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
+echo | openssl s_client -connect yourdomain.com:443 2>/dev/null | \
+  openssl x509 -noout -dates
 ```
 
-### Custom Domain per Environment
+## Troubleshooting
 
-Create separate nginx configs:
-
-- `/etc/nginx/sites-available/traintracker-staging`
-- `/etc/nginx/sites-available/traintracker-production`
-
-Each pointing to different ports (8724, 3002, etc.).
-
-## Migration from Existing Deployment
-
-If you're migrating from another hosting setup:
-
-1. **Backup existing database:**
-   - Export from current hosting
-   - Convert to SQLite format if needed
-
-2. **Copy to VPS:**
+### Container not starting
 
 ```bash
-scp your-backup.db your-user@your-vps-ip:/opt/traintracker/backups/
+docker compose logs app     # check for startup errors
+docker compose logs nginx   # check for config errors
+docker compose ps           # look at STATUS column
 ```
 
-3. **Restore before first deployment:**
+Common causes:
+
+- Missing `.env` or invalid VAPID keys
+- Port 8724 already in use (`sudo lsof -i :8724`)
+- Database migration failures (check app logs)
+
+### 520 errors from Cloudflare
+
+This means Cloudflare can't connect to your origin over HTTPS. Most likely the host nginx HTTPS config is missing.
 
 ```bash
-ssh your-user@your-vps-ip
-cd /opt/traintracker
+# Check if certbot config is present
+sudo grep -l "ssl_certificate" /etc/nginx/sites-available/traintracker
 
-# Create volume
-docker volume create traintracker-db
-
-# Restore backup
-docker run --rm \
-  -v traintracker-db:/data \
-  -v $(pwd)/backups:/backup \
-  alpine cp /backup/your-backup.db /data/app.db
+# If not found, reinstall:
+sudo certbot --nginx -d yourdomain.com
+sudo systemctl reload nginx
 ```
 
-4. **Deploy application** using methods above
+### "Connection refused" to upstream in host nginx logs
 
-5. **Update DNS** to point to new VPS
-
-6. **Monitor** for issues
-
-## Cost Considerations
-
-### Recommended VPS Specs
-
-**Minimum:**
-
-- 1 vCPU
-- 1 GB RAM
-- 25 GB SSD
-- ~$6/month (DigitalOcean, Linode, Vultr)
-
-**Recommended:**
-
-- 2 vCPU
-- 2 GB RAM
-- 50 GB SSD
-- ~$12/month
-
-### Optimization
-
-- Use gzip compression (already configured)
-- Enable caching (already configured)
-- Use CDN for static assets (optional)
-- Monitor resource usage and scale as needed
-
-## Getting Help
-
-**Check logs first:**
+The Docker container isn't listening on port 8724.
 
 ```bash
-# Container logs
-docker compose logs -f
-
-# Host nginx logs
-sudo tail -f /var/log/nginx/traintracker-error.log
-
-# System logs
-sudo journalctl -u docker
+docker compose ps                                           # is nginx running?
+curl -I http://127.0.0.1:8724/health                       # can you reach it directly?
+docker compose up -d                                        # start any stopped containers
+docker compose exec nginx nginx -t                          # check container nginx config
 ```
 
-**Verify configuration:**
+If the nginx container won't start, the app container's health check may be failing (nginx `depends_on: condition: service_healthy`). Check `docker compose logs app`.
+
+### Firewall issues
 
 ```bash
+sudo ufw status
+
+# Allow HTTP/HTTPS if needed
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+```
+
+### Container accessible locally but not publicly
+
+```bash
+# Verify host nginx is running
+sudo systemctl status nginx
+
 # Test nginx config
 sudo nginx -t
 
-# Check Docker status
-docker compose ps
-docker compose config
+# Check host nginx error log
+sudo tail -20 /var/log/nginx/traintracker-error.log
+
+# Verify port mapping
+docker port traintracker-nginx
 ```
 
-**Test endpoints:**
+## Security
+
+### Firewall
 
 ```bash
-# Local
-curl -v http://localhost:8724/api/notifications/vapid-key
-
-# Public
-curl -v https://yourdomain.com/api/notifications/vapid-key
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 22/tcp    # SSH
+sudo ufw allow 80/tcp    # HTTP (for certbot challenges)
+sudo ufw allow 443/tcp   # HTTPS
+sudo ufw enable
 ```
 
-## Additional Resources
+### SSH hardening
 
-- [Docker Documentation](https://docs.docker.com/)
-- [Docker Compose Documentation](https://docs.docker.com/compose/)
-- [Nginx Documentation](https://nginx.org/en/docs/)
-- [Certbot Documentation](https://certbot.eff.org/docs/)
-- [DigitalOcean Tutorials](https://www.digitalocean.com/community/tutorials)
-- [Let's Encrypt Documentation](https://letsencrypt.org/docs/)
+In `/etc/ssh/sshd_config`:
+
+```
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+```
+
+```bash
+sudo systemctl restart sshd
+```
