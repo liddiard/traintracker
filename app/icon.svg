@@ -41,7 +41,7 @@
                               <linearGradient id="fill-color-gradient-render-3-0"
                                 x1="0.4999999999999999" y1="3.0616169978683836e-17"
                                 x2="0.5000000000000002" y2="1" gradientTransform="">
-                                <stop offset="0" stop-color="#006d93" stop-opacity="1" />
+                                <stop offset="0" stop-color="#298bb3" stop-opacity="1" />
                                 <stop offset="1" stop-color="#005074" stop-opacity="1" />
                               </linearGradient>
                               <pattern patternUnits="userSpaceOnUse" x="0" y="0" width="512"
@@ -66,7 +66,7 @@
                         <linearGradient id="fill-color-gradient-render-4-0" x1="0.4999999999999999"
                           y1="3.0616169978683836e-17" x2="0.5000000000000002" y2="1"
                           gradientTransform="">
-                          <stop offset="0" stop-color="#006d93" stop-opacity="1" />
+                          <stop offset="0" stop-color="#298bb3" stop-opacity="1" />
                           <stop offset="1" stop-color="#005074" stop-opacity="1" />
                         </linearGradient>
                         <pattern patternUnits="userSpaceOnUse" x="0" y="0" width="512" height="512"
@@ -87,92 +87,92 @@
                       <g id="shape-907d3d58-7df8-8080-8007-9d0b8726e319">
                         <g class="fills" id="fills-907d3d58-7df8-8080-8007-9d0b8726e319">
                           <path
-                            d="M-21,412C-21,412,229,326,291,218C400.03271484375,28.07147979736328,589,98,589,98" />
+                            d="M-14,395C-14,395,181.7515869140625,372.69915771484375,301,203C431,18,589,98,589,98" />
                         </g>
                         <g
-                          id="strokes-0ee30272-477d-804d-8007-9d24261e262c-907d3d58-7df8-8080-8007-9d0b8726e319"
+                          id="strokes-9f19adbf-86a0-80d1-8007-9e3bde08de77-907d3d58-7df8-8080-8007-9d0b8726e319"
                           class="strokes">
                           <g class="stroke-shape">
                             <path
-                              d="M-21,412C-21,412,229,326,291,218C400.03271484375,28.07147979736328,589,98,589,98"
+                              d="M-14,395C-14,395,181.7515869140625,372.69915771484375,301,203C431,18,589,98,589,98"
                               style="fill: none; stroke-width: 10; stroke: rgb(255, 255, 255); stroke-opacity: 1;" />
                           </g>
                         </g>
                       </g>
                       <g id="shape-907d3d58-7df8-8080-8007-9d0d9928d25b">
                         <g class="fills" id="fills-907d3d58-7df8-8080-8007-9d0d9928d25b">
-                          <path d="M30,366L49,413" />
+                          <path d="M25,360L39,410" />
                         </g>
                         <g
-                          id="strokes-0ee30272-477d-804d-8007-9d24261e92e7-907d3d58-7df8-8080-8007-9d0d9928d25b"
+                          id="strokes-9f19adbf-86a0-80d1-8007-9e3bde096cd4-907d3d58-7df8-8080-8007-9d0d9928d25b"
                           class="strokes">
                           <g class="stroke-shape">
-                            <path d="M30,366L49,413"
+                            <path d="M25,360L39,410"
                               style="fill: none; stroke-width: 10; stroke: rgb(255, 255, 255); stroke-opacity: 1;" />
                           </g>
                         </g>
                       </g>
                       <g id="shape-907d3d58-7df8-8080-8007-9d0dfd20a71e">
                         <g class="fills" id="fills-907d3d58-7df8-8080-8007-9d0dfd20a71e">
-                          <path d="M72,346L94,393" />
+                          <path d="M69,345L88,395" />
                         </g>
                         <g
-                          id="strokes-0ee30272-477d-804d-8007-9d24261efa6a-907d3d58-7df8-8080-8007-9d0dfd20a71e"
+                          id="strokes-9f19adbf-86a0-80d1-8007-9e3bde09e248-907d3d58-7df8-8080-8007-9d0dfd20a71e"
                           class="strokes">
                           <g class="stroke-shape">
-                            <path d="M72,346L94,393"
+                            <path d="M69,345L88,395"
                               style="fill: none; stroke-width: 10; stroke: rgb(255, 255, 255); stroke-opacity: 1;" />
                           </g>
                         </g>
                       </g>
                       <g id="shape-907d3d58-7df8-8080-8007-9d0e0873d7e0">
                         <g class="fills" id="fills-907d3d58-7df8-8080-8007-9d0e0873d7e0">
-                          <path d="M155,301L182,348" />
+                          <path d="M157,303L184,350" />
                         </g>
                         <g
-                          id="strokes-0ee30272-477d-804d-8007-9d24261f4cc6-907d3d58-7df8-8080-8007-9d0e0873d7e0"
+                          id="strokes-9f19adbf-86a0-80d1-8007-9e3bde0a048c-907d3d58-7df8-8080-8007-9d0e0873d7e0"
                           class="strokes">
                           <g class="stroke-shape">
-                            <path d="M155,301L182,348"
+                            <path d="M157,303L184,350"
                               style="fill: none; stroke-width: 10; stroke: rgb(255, 255, 255); stroke-opacity: 1;" />
                           </g>
                         </g>
                       </g>
                       <g id="shape-907d3d58-7df8-8080-8007-9d0e6c7da4cf">
                         <g class="fills" id="fills-907d3d58-7df8-8080-8007-9d0e6c7da4cf">
-                          <path d="M115,323L140,370" />
+                          <path d="M114,325L137,374" />
                         </g>
                         <g
-                          id="strokes-0ee30272-477d-804d-8007-9d24261f982d-907d3d58-7df8-8080-8007-9d0e6c7da4cf"
+                          id="strokes-9f19adbf-86a0-80d1-8007-9e3bde0a5159-907d3d58-7df8-8080-8007-9d0e6c7da4cf"
                           class="strokes">
                           <g class="stroke-shape">
-                            <path d="M115,323L140,370"
+                            <path d="M114,325L137,374"
                               style="fill: none; stroke-width: 10; stroke: rgb(255, 255, 255); stroke-opacity: 1;" />
                           </g>
                         </g>
                       </g>
                       <g id="shape-907d3d58-7df8-8080-8007-9d0e429df164">
                         <g class="fills" id="fills-907d3d58-7df8-8080-8007-9d0e429df164">
-                          <path d="M419,75L436,127" />
+                          <path d="M418,70L437,122" />
                         </g>
                         <g
-                          id="strokes-0ee30272-477d-804d-8007-9d24261fedc4-907d3d58-7df8-8080-8007-9d0e429df164"
+                          id="strokes-9f19adbf-86a0-80d1-8007-9e3bde0ae6e4-907d3d58-7df8-8080-8007-9d0e429df164"
                           class="strokes">
                           <g class="stroke-shape">
-                            <path d="M419,75L436,127"
+                            <path d="M418,70L437,122"
                               style="fill: none; stroke-width: 10; stroke: rgb(255, 255, 255); stroke-opacity: 1;" />
                           </g>
                         </g>
                       </g>
                       <g id="shape-907d3d58-7df8-8080-8007-9d0e4959b625">
                         <g class="fills" id="fills-907d3d58-7df8-8080-8007-9d0e4959b625">
-                          <path d="M467,61L477,115" />
+                          <path d="M466,57L476,111" />
                         </g>
                         <g
-                          id="strokes-0ee30272-477d-804d-8007-9d2426202c53-907d3d58-7df8-8080-8007-9d0e4959b625"
+                          id="strokes-9f19adbf-86a0-80d1-8007-9e3bde0b2a74-907d3d58-7df8-8080-8007-9d0e4959b625"
                           class="strokes">
                           <g class="stroke-shape">
-                            <path d="M467,61L477,115"
+                            <path d="M466,57L476,111"
                               style="fill: none; stroke-width: 10; stroke: rgb(255, 255, 255); stroke-opacity: 1;" />
                           </g>
                         </g>
@@ -218,7 +218,7 @@
                           style="fill: rgb(0, 157, 50); fill-opacity: 1;" />
                       </g>
                       <g
-                        id="strokes-0ee30272-477d-804d-8007-9d24262106ee-907d3d58-7df8-8080-8007-9d0b53d10f30"
+                        id="strokes-9f19adbf-86a0-80d1-8007-9e3bde0c3d88-907d3d58-7df8-8080-8007-9d0b53d10f30"
                         class="strokes">
                         <g class="inner-stroke-shape">
                           <defs>
