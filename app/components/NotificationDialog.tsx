@@ -8,7 +8,7 @@ import BellRinging from '@/app/img/bell-ringing.svg'
 import Info from '@/app/img/info.svg'
 import { classNames } from '../constants'
 import { getTrainMeta } from '../utils'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 interface NotificationDialogProps {
   stopName: string
@@ -33,6 +33,20 @@ export default function NotificationDialog({
     [trains, trainId],
   )
   const [permissionRequested, setPermissionRequested] = useState(false)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
+  // <dialog> has no declarative API for modal mode — showModal() must be called
+  // imperatively to enable the top-layer, ::backdrop, focus trapping, and Esc-to-close
+  // behaviors.
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) {
+      return
+    }
+    if (!dialog.open) {
+      dialog.showModal()
+    }
+  }, [])
 
   if (!train) return null
 
@@ -89,15 +103,17 @@ export default function NotificationDialog({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/50"
+    <dialog
+      ref={dialogRef}
       onClick={onClose}
+      aria-labelledby="notif-dialog-desc"
+      className="fixed inset-0 m-0 h-dvh max-h-none w-dvw max-w-none items-center justify-center border-none bg-transparent p-0 text-inherit backdrop:bg-black/50 open:flex"
     >
       <div
-        className="dark:bg-positron-gray-800 mx-4 flex w-full max-w-[400px] flex-col gap-4 rounded-lg bg-white p-6"
+        className="dark:bg-positron-gray-800 mx-4 flex w-full max-w-100 flex-col gap-4 rounded-lg bg-white p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <p>
+        <p id="notif-dialog-desc">
           Get a push notification when{' '}
           <span className="font-semibold whitespace-nowrap">
             {train.name} {train.number}
@@ -138,6 +154,6 @@ export default function NotificationDialog({
           Close
         </button>
       </div>
-    </div>
+    </dialog>
   )
 }
