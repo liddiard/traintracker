@@ -6,6 +6,7 @@ import '@/app/globals.css'
 import '@/app/app.css'
 import { getServerSettings } from '@/app/settings'
 import { SettingsProvider } from '@/app/providers/settings'
+import Icon from '@/app/icon.svg'
 
 export const metadata = pageMetadata
 
@@ -27,8 +28,15 @@ export default async function ContentLayout({
         <SettingsProvider initialSettings={settings}>
           <header className="bg-amtrak-midnight-blue text-white shadow-md">
             <div className="mx-auto flex max-w-xl items-center justify-between p-4">
-              <Link href="/" className="text-2xl font-bold text-white">
-                Train<span className="text-amtrak-blue-300">Tracker</span>
+              <Link
+                href="/"
+                className="flex items-center gap-2 text-2xl font-bold text-white"
+              >
+                <Icon className="h-8" />
+                <span>
+                  Train
+                  <span className="text-amtrak-blue-300">Tracker</span>
+                </span>
               </Link>
               <nav className="flex items-center gap-3 font-medium text-white sm:gap-5">
                 <Link href="/">Map</Link>
