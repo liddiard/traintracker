@@ -70,7 +70,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
         {post.frontmatter.author && ` • ${post.frontmatter.author}`}
       </time>
       <div
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: html as string }}
         className="prose dark:prose-invert"
       />
     </article>

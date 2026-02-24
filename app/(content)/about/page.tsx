@@ -21,7 +21,7 @@ export default async function About() {
   return (
     <article
       className="prose dark:prose-invert"
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: html as string }}
     />
   )
 }
