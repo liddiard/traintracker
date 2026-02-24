@@ -19,8 +19,9 @@ export default async function Privacy() {
   const html = marked.parse(markdown)
 
   return (
-    <article className="prose dark:prose-invert">
-      <div dangerouslySetInnerHTML={{ __html: html }} />
-    </article>
+    <article
+      className="prose dark:prose-invert"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   )
 }
