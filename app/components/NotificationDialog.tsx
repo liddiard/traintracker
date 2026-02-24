@@ -97,7 +97,7 @@ export default function NotificationDialog({
         className="dark:bg-positron-gray-800 mx-4 flex w-full max-w-[400px] flex-col gap-4 rounded-lg bg-white p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="leading-relaxed">
+        <p>
           Get a push notification when{' '}
           <span className="font-semibold whitespace-nowrap">
             {train.name} {train.number}
