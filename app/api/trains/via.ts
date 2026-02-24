@@ -1,3 +1,4 @@
+import { sanitize } from 'isomorphic-dompurify'
 import { StationResponse, Stop, Train } from '@/app/types'
 import { getStations } from '@/app/lib/stations'
 import { ViaStationInfo, ViaTrainInfo } from './types'
@@ -95,9 +96,11 @@ const processTrain = async (
   alerts:
     data.alerts?.map((alert) =>
       // Bold the header (seems to always be present) with markdown syntax
-      [`**${alert.header.en}**`, alert.description.en, alert.url.en]
-        .filter(Boolean)
-        .join('\n\n'),
+      sanitize(
+        [`**${alert.header.en}**`, alert.description.en, alert.url.en]
+          .filter(Boolean)
+          .join('\n\n'),
+      ),
     ) || [],
   stops: data.times.map((station) => processStop(station, stations)),
   track: await getTrack(parseInt(id).toString(), 'via'),

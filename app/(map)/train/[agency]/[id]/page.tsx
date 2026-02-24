@@ -4,7 +4,6 @@ import cn from 'classnames'
 import { JSX, useEffect, useMemo } from 'react'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 import {
   formatDate,
@@ -222,7 +221,7 @@ export default function TrainDetail() {
                 key={idx}
                 className="ml-4"
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(marked.parse(alert) as string),
+                  __html: marked.parse(alert) as string,
                 }}
               />
             ))}

@@ -9,6 +9,7 @@ import {
   AmtrakTrainInfoProperties,
 } from './types'
 import { getTrack } from './utils'
+import { sanitize } from 'isomorphic-dompurify'
 
 // heading name to degree mapping
 const headingToDegrees: Record<AmtrakHeading, number> = {
@@ -125,7 +126,7 @@ const processTrain = async (
     name: processRouteName(properties.RouteName),
     number: properties.TrainNum,
     status: properties.TrainState,
-    alerts: statusMessage ? [statusMessage] : [],
+    alerts: statusMessage ? [sanitize(statusMessage)] : [],
     coordinates: [train.geometry.coordinates[0], train.geometry.coordinates[1]],
     speed: Math.round(mphToKmh(parseFloat(properties.Velocity))),
     heading: headingToDegrees[properties.Heading] ?? null,
