@@ -94,7 +94,10 @@ const processTrain = async (
     : 'Predeparture',
   alerts:
     data.alerts?.map((alert) =>
-      [alert.header.en, alert.description.en, alert.url.en].join('\n\n'),
+      // Bold the header (seems to always be present) with markdown syntax
+      [`**${alert.header.en}**`, alert.description.en, alert.url.en]
+        .filter(Boolean)
+        .join('\n\n'),
     ) || [],
   stops: data.times.map((station) => processStop(station, stations)),
   track: await getTrack(parseInt(id).toString(), 'via'),

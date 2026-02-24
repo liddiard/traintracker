@@ -4,6 +4,8 @@ import cn from 'classnames'
 import { JSX, useEffect, useMemo } from 'react'
 import { notFound, useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import DOMPurify from 'dompurify'
+import { marked } from 'marked'
 import {
   formatDate,
   formatDuration,
@@ -208,28 +210,54 @@ export default function TrainDetail() {
         {renderTrainVelocity(train, trainMeta)}
       </div>
 
+      {train.alerts.length > 0 && (
+        <details className="bg-amtrak-yellow-100/40 dark:bg-amtrak-yellow-100/20 rounded-lg p-3">
+          <summary className="cursor-pointer font-semibold">
+            <Warning className="mr-2 ml-1 inline w-4 align-text-top" />
+            Alerts
+          </summary>
+          <ul className="mt-2 flex flex-col gap-2 text-sm">
+            {train.alerts.map((alert, idx) => (
+              <li
+                key={idx}
+                className="ml-4"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(marked.parse(alert) as string),
+                }}
+              />
+            ))}
+          </ul>
+        </details>
+      )}
+
       <CurrentSegment trainMeta={trainMeta} />
 
-      <div className="flex justify-center gap-2">
-        <label
-          className={cn(
-            'flex cursor-pointer items-center gap-[0.4em] rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors duration-300',
-            {
-              'border-black dark:border-white': !follow,
-              'border-amtrak-yellow-200 bg-amtrak-yellow-100/50 dark:bg-amtrak-yellow-100/20':
-                follow,
-            },
-          )}
-        >
-          <input
-            type="checkbox"
-            checked={follow}
-            onChange={handleFollow}
-            className="hidden"
-          />
-          <Crosshair className="inline h-4 w-4" /> Follow on Map
-        </label>
-      </div>
+      {train.coordinates ? (
+        <div className="flex justify-center gap-2">
+          <label
+            className={cn(
+              'flex cursor-pointer items-center gap-[0.4em] rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors duration-300',
+              {
+                'border-black dark:border-white': !follow,
+                'border-amtrak-yellow-200 bg-amtrak-yellow-100/50 dark:bg-amtrak-yellow-100/20':
+                  follow,
+              },
+            )}
+          >
+            <input
+              type="checkbox"
+              checked={follow}
+              onChange={handleFollow}
+              className="hidden"
+            />
+            <Crosshair className="inline h-4 w-4" /> Follow on Map
+          </label>
+        </div>
+      ) : (
+        <div className={classNames.textDeemphasized}>
+          This train isn’t broadcasting a GPS location.
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
         <div
@@ -240,22 +268,24 @@ export default function TrainDetail() {
         >
           <span>
             Last update{' '}
-            <time
+            <span
               className={cn({
                 'text-amtrak-yellow-500 dark:text-amtrak-yellow-300':
                   isStaleData,
               })}
             >
-              {train.updated
-                ? formatTime(train.updated, { timeFormat })
-                : 'unknown'}
-            </time>
-            {isStaleData && (
-              <Warning
-                alt="caution"
-                className="fill-amtrak-yellow-500 dark:fill-amtrak-yellow-300 mx-1 inline w-4 align-text-top"
-              />
-            )}
+              <time>
+                {train.updated
+                  ? formatTime(train.updated, { timeFormat })
+                  : 'unknown'}
+              </time>
+              {isStaleData && (
+                <Warning
+                  alt="caution"
+                  className="mx-1 inline w-4 align-text-top"
+                />
+              )}
+            </span>
           </span>
           <span className="flex items-center gap-2">
             Next check
