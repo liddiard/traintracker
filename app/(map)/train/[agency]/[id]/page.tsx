@@ -219,7 +219,7 @@ export default function TrainDetail() {
             {train.alerts.map((alert, idx) => (
               <li
                 key={idx}
-                className="ml-4"
+                className="ml-4 flex flex-col gap-2"
                 // alerts are sanitized in TrainTracker's server-side API to prevent XSS
                 dangerouslySetInnerHTML={{
                   __html: marked.parse(alert) as string,
