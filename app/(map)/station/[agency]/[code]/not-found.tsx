@@ -11,7 +11,7 @@ export default function NotFound() {
   const { code } = useParams()
   const pClassName = cn('text-center text-balance', classNames.textDeemphasized)
   return (
-    <div className="mx-3 my-8 flex flex-col items-center gap-6">
+    <div className="mx-3 my-8 flex flex-col items-center gap-4">
       <NoTrain className="text-positron-gray-400 mx-auto max-w-16" />
       <h1 className="text-center text-2xl font-semibold">Station Not Found</h1>
       {typeof code === 'string' ? (
@@ -21,7 +21,7 @@ export default function NotFound() {
         </p>
       ) : null}
       <Link href="/" className={cn(classNames.link, classNames.textAccent)}>
-        <ChevronLeft className="h-4" /> Back to Trains
+        <ChevronLeft className="h-4" /> All Trains
       </Link>
     </div>
   )
