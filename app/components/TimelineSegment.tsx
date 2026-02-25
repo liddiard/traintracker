@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import cn from 'classnames'
 import { Stop, NotificationType } from '../types'
 import { classNames } from '../constants'
@@ -46,6 +46,12 @@ function TimelineSegment({
   const agency = trainId.split('/')[0]
   const stationId = `${agency}/${code}`
 
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, [])
+
   const renderDayLine = () => {
     if (
       !prevStop ||
@@ -92,7 +98,8 @@ function TimelineSegment({
         >
           {formatTime(getScheduledTime(arrival)!, formatTimeOptions)}
         </time>
-        {delay !== 0 ? (
+        {/* getDelayColor requires CSS variables only available after client-side mount */}
+        {delay !== 0 && mounted ? (
           <time
             className={cn(
               'block dark:brightness-150',
