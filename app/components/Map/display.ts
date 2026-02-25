@@ -5,10 +5,8 @@ import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
-import { formatRgb } from 'culori'
 import {
   formatDuration,
-  getCSSVar,
   getTrainColor,
   getTrainMeta,
   getTrainShortcode,
@@ -17,133 +15,115 @@ import { Train, Station, TrainFeatureProperties } from '../../types'
 import { getExtrapolatedTrainPoint } from './calc'
 import { sourceId, routeToCodeMap, DETAIL_ZOOM_LEVEL } from './constants'
 
-// Lazy color getter to ensure CSS variables are available (after client-side mount)
-const getColors = () => ({
-  amtrakBlue400: formatRgb(getCSSVar('--color-amtrak-blue-400')) || '#003e7e',
-  amtrakBlue500: formatRgb(getCSSVar('--color-amtrak-blue-500')) || '#002f5f',
-  viaRed: formatRgb(getCSSVar('--color-via-red-400')) || '#ffd200',
-  brightlineYellow:
-    formatRgb(getCSSVar('--color-brightline-yellow-400')) || '#ffde00',
-})
-
-export const getTrackLayer = (): LineLayerSpecification => {
-  const colors = getColors()
-  return {
-    id: sourceId.track,
-    type: 'line',
-    source: sourceId.track,
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-    },
-    paint: {
-      'line-color': [
-        'match',
-        ['get', 'agency'],
-        'via',
-        colors.viaRed,
-        'brightline',
-        colors.brightlineYellow,
-        colors.amtrakBlue400,
-      ],
-      'line-width': 2,
-    },
-  }
+// Necessary to use hardcoded colors because during SSR, CSS variables aren't
+// available, and in 404 routes only server-side rendering runs (so CSS vars never
+// become available).
+// Should match values in @/app/globals.css
+const colors = {
+  amtrakBlue400: '#298bb3',
+  amtrakBlue500: '#006d93',
+  viaRed: '#ea212e',
+  brightlineYellow: '#997f00',
 }
 
-export const getStationLayer = (): CircleLayerSpecification => {
-  const colors = getColors()
-  return {
-    id: sourceId.stations,
-    type: 'circle',
-    source: sourceId.stations,
-    paint: {
-      'circle-color': 'white',
-      'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 4],
-      'circle-stroke-color': [
-        'match',
-        ['get', 'agency'],
-        'via',
-        colors.viaRed,
-        'brightline',
-        colors.brightlineYellow,
-        colors.amtrakBlue400,
-      ],
-      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 2],
-    },
-  }
+export const trackLayer: LineLayerSpecification = {
+  id: sourceId.track,
+  type: 'line',
+  source: sourceId.track,
+  layout: {
+    'line-join': 'round',
+    'line-cap': 'round',
+  },
+  paint: {
+    'line-color': [
+      'match',
+      ['get', 'agency'],
+      'via',
+      colors.viaRed,
+      'brightline',
+      colors.brightlineYellow,
+      colors.amtrakBlue400,
+    ],
+    'line-width': 2,
+  },
 }
 
-export const getStationLabelLayer = (): SymbolLayerSpecification => {
-  const colors = getColors()
-  return {
-    id: sourceId.stationLabels,
-    type: 'symbol',
-    source: sourceId.stations,
-    minzoom: 6,
-    layout: {
-      'text-field': [
-        'step',
-        ['zoom'],
-        ['get', 'code'],
-        10,
-        ['concat', ['get', 'code'], ' / ', ['get', 'name']],
-      ],
-      // font names from https://github.com/openmaptiles/fonts/
-      'text-font': ['Noto Sans Regular'],
-      'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 16],
-      'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
-      'text-radial-offset': 0.5,
-      'text-justify': 'auto',
-    },
-    paint: {
-      'text-color': [
-        'match',
-        ['get', 'agency'],
-        'via',
-        colors.viaRed,
-        'brightline',
-        colors.brightlineYellow,
-        colors.amtrakBlue400,
-      ],
-      'text-halo-color': 'white',
-      'text-halo-width': 1,
-      'text-halo-blur': 1,
-    },
-  }
+export const stationLayer: CircleLayerSpecification = {
+  id: sourceId.stations,
+  type: 'circle',
+  source: sourceId.stations,
+  paint: {
+    'circle-color': 'white',
+    'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 4],
+    'circle-stroke-color': [
+      'match',
+      ['get', 'agency'],
+      'via',
+      colors.viaRed,
+      'brightline',
+      colors.brightlineYellow,
+      colors.amtrakBlue400,
+    ],
+    'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0, 8, 2],
+  },
 }
 
-export const getTrainGPSLabelLayer = (): SymbolLayerSpecification => {
-  const colors = getColors()
-  return {
-    id: sourceId.trainGPS,
-    type: 'symbol',
-    source: sourceId.trainGPS,
-    minzoom: DETAIL_ZOOM_LEVEL,
-    layout: {
-      'text-field': ['get', 'lastUpdatedStr'],
-      'text-size': ['interpolate', ['linear'], ['zoom'], 3, 8, 10, 14],
-      'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
-      'text-radial-offset': [
-        'interpolate',
-        ['linear'],
-        ['zoom'],
-        5,
-        0.75,
-        10,
-        1,
-      ],
-      'text-justify': 'auto',
-      // font names from https://github.com/openmaptiles/fonts/
-      'text-font': ['Noto Sans Regular'],
-    },
-    paint: {
-      'text-color': colors.amtrakBlue500,
-      'text-halo-color': 'white',
-      'text-halo-width': 1,
-      'text-halo-blur': 1,
-    },
-  }
+export const stationLabelLayer: SymbolLayerSpecification = {
+  id: sourceId.stationLabels,
+  type: 'symbol',
+  source: sourceId.stations,
+  minzoom: 6,
+  layout: {
+    'text-field': [
+      'step',
+      ['zoom'],
+      ['get', 'code'],
+      10,
+      ['concat', ['get', 'code'], ' / ', ['get', 'name']],
+    ],
+    // font names from https://github.com/openmaptiles/fonts/
+    'text-font': ['Noto Sans Regular'],
+    'text-size': ['interpolate', ['linear'], ['zoom'], 3, 11, 12, 16],
+    'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+    'text-radial-offset': 0.5,
+    'text-justify': 'auto',
+  },
+  paint: {
+    'text-color': [
+      'match',
+      ['get', 'agency'],
+      'via',
+      colors.viaRed,
+      'brightline',
+      colors.brightlineYellow,
+      colors.amtrakBlue400,
+    ],
+    'text-halo-color': 'white',
+    'text-halo-width': 1,
+    'text-halo-blur': 1,
+  },
+}
+
+export const trainGPSLabelLayer: SymbolLayerSpecification = {
+  id: sourceId.trainGPS,
+  type: 'symbol',
+  source: sourceId.trainGPS,
+  minzoom: DETAIL_ZOOM_LEVEL,
+  layout: {
+    'text-field': ['get', 'lastUpdatedStr'],
+    'text-size': ['interpolate', ['linear'], ['zoom'], 3, 8, 10, 14],
+    'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+    'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 5, 0.75, 10, 1],
+    'text-justify': 'auto',
+    // font names from https://github.com/openmaptiles/fonts/
+    'text-font': ['Noto Sans Regular'],
+  },
+  paint: {
+    'text-color': colors.amtrakBlue500,
+    'text-halo-color': 'white',
+    'text-halo-width': 1,
+    'text-halo-blur': 1,
+  },
 }
 
 /**
