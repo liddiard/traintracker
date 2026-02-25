@@ -220,6 +220,7 @@ export default function TrainDetail() {
               <li
                 key={idx}
                 className="ml-4"
+                // alerts are sanitized in TrainTracker's server-side API to prevent XSS
                 dangerouslySetInnerHTML={{
                   __html: marked.parse(alert) as string,
                 }}
@@ -254,7 +255,7 @@ export default function TrainDetail() {
         </div>
       ) : (
         <div className={classNames.textDeemphasized}>
-          This train isn’t broadcasting a GPS location.
+          This train isn’t broadcasting a location.
         </div>
       )}
 

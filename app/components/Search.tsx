@@ -189,7 +189,7 @@ function Search({ id, className = '' }: SearchProps) {
         name="routeName"
         options={routeOptions}
         value={routeName}
-        className="grow text-black"
+        className="grow font-medium text-black"
         placeholder="Route name"
         onChange={(option) => {
           setRouteName(option as Option)
@@ -206,7 +206,7 @@ function Search({ id, className = '' }: SearchProps) {
         name="trainNumber"
         options={lineNumberOptions}
         value={trainNumber}
-        className="w-20 grow-0 text-black"
+        className="w-20 grow-0 font-medium text-black"
         placeholder="#"
         classNames={{
           menu: () => '',

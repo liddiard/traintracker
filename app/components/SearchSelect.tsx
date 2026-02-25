@@ -14,7 +14,7 @@ const selectClassNames = {
   // https://github.com/JedWatson/react-select/issues/5170
   container: () => 'grid grid-cols-[minmax(0,1fr)]',
   indicatorsContainer: () => 'hidden!',
-  menu: () => 'min-w-40!',
+  menu: () => 'min-w-40! dark:bg-positron-gray-700! dark:text-white!',
   control: () => 'bg-white/10! border! border-white/60!',
   singleValue: () => 'text-white!',
   input: () => 'text-white! cursor-text',
@@ -26,11 +26,12 @@ const selectTheme = (theme: Theme) =>
     ...theme,
     colors: {
       ...theme.colors,
+      // matches the Tailwind color definition for `amtrak-blue-500`
+      primary: 'rgb(0, 109, 147)',
       // matches the Tailwind color definition for `amtrak-blue-200`
-      primary: 'rgba(111, 203, 245, 1)',
-      primary25: 'rgba(111, 203, 245, 0.25)',
-      primary50: 'rgba(111, 203, 245, 0.5)',
       primary75: 'rgba(111, 203, 245, 0.75)',
+      primary50: 'rgba(111, 203, 245, 0.5)',
+      primary25: 'rgba(111, 203, 245, 0.25)',
     },
   }) as Theme
 
