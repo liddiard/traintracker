@@ -23,55 +23,6 @@ interface SettingsContextType {
   updateSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => void
 }
 
-/**
- * Retrieves user settings from cookies.
- *
- * Attempts to load a settings object from cookies. It validates that
- * each setting has a valid value. If the settings don't exist or can't be
- * parsed, returns the default settings. If any individual setting is invalid,
- * it falls back to the default value for the entire settings object or for
- * that specific setting.
- *
- * @returns {Settings} A validated settings object
- */
-const getSettingsFromCookie = (): Settings => {
-  if (typeof window === 'undefined') {
-    return defaultSettings
-  }
-
-  const cookies = cookie.parse(document.cookie)
-  const storedSettings = cookies[SETTINGS_COOKIE_NAME]
-
-  if (!storedSettings) {
-    return defaultSettings
-  }
-
-  let parsedSettings: Settings
-  try {
-    parsedSettings = JSON.parse(storedSettings)
-    if (typeof parsedSettings !== 'object' || parsedSettings === null) {
-      throw Error('Cookie settings is not an object:', parsedSettings)
-    }
-  } catch (error) {
-    console.warn('Failed to load settings from cookies, using defaults:', error)
-    return defaultSettings
-  }
-
-  // Validate that all required settings have valid values, falling back to
-  // defaults if not
-  return (
-    Object.entries(settingOptions) as Array<[keyof Settings, unknown[]]>
-  ).reduce(
-    (acc, [setting, options]) => ({
-      ...acc,
-      [setting]: options.includes(parsedSettings[setting])
-        ? parsedSettings[setting]
-        : defaultSettings[setting],
-    }),
-    {} as Settings,
-  )
-}
-
 const SettingsContext = createContext<SettingsContextType>({
   settings: defaultSettings,
   updateSetting: () => {},
@@ -79,16 +30,14 @@ const SettingsContext = createContext<SettingsContextType>({
 
 interface SettingsProviderProps {
   children: ReactNode
-  initialSettings?: Settings
+  initialSettings: Settings
 }
 
 export function SettingsProvider({
   children,
   initialSettings,
 }: SettingsProviderProps) {
-  const [settings, setSettings] = useState<Settings>(
-    () => initialSettings || getSettingsFromCookie(),
-  )
+  const [settings, setSettings] = useState<Settings>(initialSettings)
   const { colorMode } = settings
 
   // Ref for debouncing cookie writes

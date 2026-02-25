@@ -1,10 +1,34 @@
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import {
   defaultSettings,
   settingOptions,
   SETTINGS_COOKIE_NAME,
 } from './constants'
 import { Settings } from './types'
+
+/**
+ * Returns locale-aware defaults for units and timeFormat based on the
+ * Accept-Language request header. Defaults to miles + 12-hour time for US
+ * locales, kilometers + 24-hour for all others.
+ */
+async function getLocaleDefaults(): Promise<
+  Pick<Settings, 'units' | 'timeFormat'>
+> {
+  try {
+    const headerStore = await headers()
+    const acceptLanguage = headerStore.get('accept-language')
+    if (acceptLanguage) {
+      const primaryLocale = acceptLanguage.split(',')[0].split(';')[0].trim()
+      const { region } = new Intl.Locale(primaryLocale)
+      if (region === 'US') {
+        return { units: 'miles', timeFormat: 'hr12' }
+      }
+    }
+  } catch {
+    // fall through to non-US defaults
+  }
+  return { units: 'kilometers', timeFormat: 'hr24' }
+}
 
 /**
  * Retrieves user settings from cookies on the server side.
@@ -20,7 +44,7 @@ export async function getServerSettings(): Promise<Settings> {
   const settingsCookie = cookieStore.get(SETTINGS_COOKIE_NAME)
 
   if (!settingsCookie?.value) {
-    return defaultSettings
+    return { ...defaultSettings, ...(await getLocaleDefaults()) }
   }
 
   let parsedSettings: Settings
