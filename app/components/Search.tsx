@@ -208,9 +208,6 @@ function Search({ id, className = '' }: SearchProps) {
         value={trainNumber}
         className="w-20 grow-0 font-medium text-black"
         placeholder="#"
-        classNames={{
-          menu: () => '',
-        }}
         onChange={(option) => {
           setTrainNumber(option as Option)
         }}
