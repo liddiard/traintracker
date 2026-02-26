@@ -377,7 +377,12 @@ function Map() {
     <>
       <AttributionControl
         position="bottom-right"
-        style={controlStyle}
+        style={{
+          ...controlStyle,
+          // ensure the attribution control doesn't overlap with the settings button
+          // on mobile
+          maxWidth: isMobile ? 'calc(100% - 160px)' : '',
+        }}
         compact={isMobile}
       />
       <FullscreenControl position="bottom-right" style={controlStyle} />
