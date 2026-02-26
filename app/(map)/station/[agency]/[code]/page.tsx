@@ -18,6 +18,7 @@ import { useMemo, useState, useEffect } from 'react'
 import Pie from '@/app/img/pie.svg'
 import ChevronLeft from '@/app/img/chevron-left.svg'
 import NoTrain from '@/app/img/no-train.svg'
+import { useBottomSheet } from '@/app/providers/bottomSheet'
 
 type Sequence = 'First' | 'Intermediate' | 'Last'
 interface TrainStop {
@@ -30,6 +31,7 @@ export default function StationPage() {
   const { agency, code } = useParams()
   const searchParams = useSearchParams()
   const { trains, stations } = useTrains()
+  const { position } = useBottomSheet()
   const { settings } = useSettings()
   const { timeFormat, timeZone } = settings
 
@@ -261,11 +263,18 @@ export default function StationPage() {
 
   return (
     <div className="flex flex-col gap-4 py-3">
-      <header className="flex flex-col gap-3 px-3">
-        <Link href="/" className={cn(classNames.link, classNames.textAccent)}>
-          <ChevronLeft className="h-4" /> All Trains
-        </Link>
-        <h1 className="text-3xl font-bold">
+      <header className="flex flex-col gap-4 px-3">
+        {position === 'bottom' ? null : (
+          <Link href="/" className={cn(classNames.link, classNames.textAccent)}>
+            <ChevronLeft className="h-4" /> Trains
+          </Link>
+        )}
+        <h1
+          className={cn(
+            'font-bold transition-all duration-500',
+            position === 'bottom' ? 'text-xl' : 'text-3xl',
+          )}
+        >
           <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
             {station.code}
           </span>{' '}

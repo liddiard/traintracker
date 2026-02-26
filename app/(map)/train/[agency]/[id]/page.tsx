@@ -37,7 +37,7 @@ export default function TrainDetail() {
   const searchParams = useSearchParams()
   const TrainQueryParams = getTrainParams(searchParams)
   const { trains } = useTrains()
-  const { setPosition } = useBottomSheet()
+  const { position, setPosition } = useBottomSheet()
   const { settings, updateSetting } = useSettings()
   const { timeFormat, timeZone, follow } = settings
   const train = useMemo(
@@ -163,14 +163,22 @@ export default function TrainDetail() {
   const scheduledArrival = getScheduledTime(lastStop.arrival)
   return (
     <div className="flex flex-col gap-5 p-3 pb-4">
-      <Link
-        href={`/?${new URLSearchParams(TrainQueryParams).toString()}`}
-        className={cn(classNames.link, classNames.textAccent)}
+      {position === 'bottom' ? null : (
+        <Link
+          href={`/?${new URLSearchParams(TrainQueryParams).toString()}`}
+          className={cn(classNames.link, classNames.textAccent)}
+        >
+          <ChevronLeft className="h-4" />{' '}
+          {hasTrainQueryParams ? 'Back to Trains' : 'All Trains'}
+        </Link>
+      )}
+
+      <h1
+        className={cn(
+          'font-bold transition-all duration-500',
+          position === 'bottom' ? 'text-xl' : 'text-3xl',
+        )}
       >
-        <ChevronLeft className="h-4" />{' '}
-        {hasTrainQueryParams ? 'Back to Trains' : 'All Trains'}
-      </Link>
-      <h1 className="text-3xl font-bold">
         {train.name}{' '}
         <span className={classNames.textAccent}>{train.number}</span>
       </h1>
