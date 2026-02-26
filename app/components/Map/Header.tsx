@@ -3,6 +3,7 @@ import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import MagnifyingGlass from '../../img/magnifying-glass.svg'
 import XIcon from '@/app/img/x.svg'
+import AppIcon from '@/app/icon.svg'
 import Search from '../Search'
 import { useBottomSheet } from '@/app/providers/bottomSheet'
 import { usePathname } from 'next/navigation'
@@ -31,9 +32,10 @@ function Header() {
 
   return (
     <header className="absolute top-0 left-0 z-10 min-w-full bg-linear-to-b from-white to-transparent px-3 pt-2 pb-3 text-shadow-2xs text-shadow-white dark:from-black dark:text-white dark:text-shadow-black">
-      <div className="flex items-baseline justify-between gap-4">
-        <div className="flex shrink-0 items-baseline gap-2 md:shrink">
-          <Link href="/" className="hidden md:block">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex shrink-0 items-center gap-2 md:shrink">
+          <Link href="/" className="hidden items-center gap-1 md:flex">
+            <AppIcon className="h-7 rounded-md shadow-md" />
             <h1 className="text-xl font-bold">
               Train
               <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
@@ -45,7 +47,7 @@ function Header() {
               </sup>
             </h1>
           </Link>
-          <span className="hidden lg:block">
+          <span className="hidden cursor-default lg:block">
             Live tracking North American intercity passenger rail
           </span>
           <button

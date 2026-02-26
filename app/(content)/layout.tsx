@@ -6,7 +6,7 @@ import '@/app/globals.css'
 import '@/app/app.css'
 import { getServerSettings } from '@/app/settings'
 import { SettingsProvider } from '@/app/providers/settings'
-import Icon from '@/app/icon.svg'
+import AppIcon from '@/app/icon.svg'
 
 export const metadata = pageMetadata
 
@@ -32,7 +32,7 @@ export default async function ContentLayout({
                 href="/"
                 className="flex items-center gap-2 text-2xl font-bold text-white"
               >
-                <Icon className="h-8" />
+                <AppIcon className="h-8" />
                 <span>
                   Train
                   <span className="text-amtrak-blue-300">Tracker</span>
