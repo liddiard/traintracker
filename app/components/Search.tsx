@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { CSSProperties, useMemo, useRef, useState } from 'react'
 import { SelectInstance } from 'react-select'
 import cn from 'classnames'
 import { InputType, Option } from '../types'
@@ -89,6 +89,10 @@ function Search({ id, className = '' }: SearchProps) {
   const toSegmentSelect = useRef<SelectInstance<Option> | null>(null)
   const trainNumberSelect = useRef<SelectInstance<Option> | null>(null)
 
+  const wideDropdownStyle = {
+    menu: (baseStyles: CSSProperties) => ({ ...baseStyles, minWidth: '180px' }),
+  }
+
   /**
    * Returns a JSX element representing a search options component.
    *
@@ -171,6 +175,7 @@ function Search({ id, className = '' }: SearchProps) {
       )}
       required={true}
       autoFocus={isFrom}
+      styles={wideDropdownStyle}
     />
   )
 
@@ -199,6 +204,7 @@ function Search({ id, className = '' }: SearchProps) {
           }
         }}
         autoFocus={true}
+        styles={wideDropdownStyle}
       />
       <SearchSelect
         instanceId="trainNumber"
@@ -211,7 +217,6 @@ function Search({ id, className = '' }: SearchProps) {
         onChange={(option) => {
           setTrainNumber(option as Option)
         }}
-        onFocus={() => setTrainNumber(null)}
         inputType={InputType.NUMBER}
       />
     </div>

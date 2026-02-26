@@ -14,7 +14,7 @@ const selectClassNames = {
   // https://github.com/JedWatson/react-select/issues/5170
   container: () => 'grid grid-cols-[minmax(0,1fr)]',
   indicatorsContainer: () => 'hidden!',
-  menu: () => 'min-w-40! dark:bg-positron-gray-700! dark:text-white!',
+  menu: () => 'dark:bg-positron-gray-700! dark:text-white!',
   control: () => 'bg-white/10! border! border-white/60!',
   singleValue: () => 'text-white!',
   input: () => 'text-white! cursor-text',
@@ -67,6 +67,7 @@ function SearchSelect({
   ref = null,
   inputType = InputType.TEXT,
   required = false,
+  styles = {},
 }: {
   instanceId: string
   name: string
@@ -82,6 +83,7 @@ function SearchSelect({
   inputType?: InputType
   required?: boolean
   autoFocus?: boolean
+  styles?: object
 }) {
   return (
     <Select
@@ -101,6 +103,7 @@ function SearchSelect({
       required={required}
       autoFocus={autoFocus}
       isClearable={true}
+      styles={styles}
     />
   )
 }
