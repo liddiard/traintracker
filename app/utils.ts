@@ -396,18 +396,18 @@ export const formatDuration = (
  * Check if two dates are on different days, given their respective timezones.
  *
  * If `b` is not provided, the current date is used.
- * If `tzB` is not provided, the user's current timezone is used.
+ * If `tzA` or `tzB` is not provided, the user's current timezone is used.
  *
  * @param a - The first date
  * @param b - The second date (optional)
- * @param tzA - The timezone of the first date
+ * @param tzA - The timezone of the first date (optional)
  * @param tzB - The timezone of the second date (optional)
  * @returns Whether the two dates are in different days
  */
 export const dayDiffers = (
   a: Date,
   b: Date = new Date(),
-  tzA: string,
+  tzA: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
   tzB: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
 ) => formatDate(a, tzA) !== formatDate(b, tzB)
 

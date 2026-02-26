@@ -38,8 +38,9 @@ function TimelineSegment({
   const prevStop = stops[index - 1]
   const { code, name, arrival } = stop
   const { delay } = arrival
+  const useLocalTime = timeZone === 'local'
   const formatTimeOptions = {
-    tz: timeZone === 'local' ? stop.timezone : undefined,
+    tz: useLocalTime ? stop.timezone : undefined,
     timeFormat,
   }
   // Extract agency from trainId (format: "agency/id")
@@ -58,8 +59,8 @@ function TimelineSegment({
       !dayDiffers(
         arrival.time,
         prevStop.arrival.time,
-        stop.timezone,
-        prevStop.timezone,
+        useLocalTime ? stop.timezone : undefined,
+        useLocalTime ? prevStop.timezone : undefined,
       )
     ) {
       return null
@@ -71,7 +72,7 @@ function TimelineSegment({
       >
         <span
           className={cn(
-            'absolute right-0 bg-white pl-2 font-semibold',
+            'dark:bg-positron-gray-800 absolute right-0 bg-white pl-2 font-semibold',
             classNames.textDeemphasized,
           )}
         >
