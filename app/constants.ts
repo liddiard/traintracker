@@ -65,3 +65,6 @@ export const defaultSettings: Settings = {
   timeZone: 'local',
   follow: false,
 }
+
+// How tall the mobile bottom sheet is at its bottom-most position, in pixels
+export const SHEET_BOTTOM_HEIGHT = 70

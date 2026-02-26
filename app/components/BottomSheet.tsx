@@ -2,7 +2,7 @@
 
 import { ReactNode, useRef, useEffect, useCallback, useState } from 'react'
 import { Sheet, SheetRef, useScrollPosition } from 'react-modal-sheet'
-import { MOBILE_BREAKPOINT } from '../constants'
+import { MOBILE_BREAKPOINT, SHEET_BOTTOM_HEIGHT } from '../constants'
 import { useBottomSheet } from '../providers/bottomSheet'
 import { BottomSheetPosition } from '../types'
 import { keyMirror } from '../utils'
@@ -189,7 +189,7 @@ export default function BottomSheet({ children }: BottomSheetProps) {
     <Sheet
       isOpen={true}
       onClose={() => {}}
-      snapPoints={[0, 100, 0.5, 1]}
+      snapPoints={[0, SHEET_BOTTOM_HEIGHT, 0.5, 1]}
       initialSnap={initialSnap}
       disableDismiss={true}
       onSnap={handleSnap}

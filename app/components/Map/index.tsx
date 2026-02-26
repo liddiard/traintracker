@@ -16,7 +16,6 @@ import MapGL, {
   FullscreenControl,
   NavigationControl,
   AttributionControl,
-  LngLatBounds,
 } from 'react-map-gl/maplibre'
 import type {
   LngLatBoundsLike,
@@ -53,7 +52,7 @@ import TrainLabel from './TrainLabel'
 import MapSettings from './Settings'
 import Header from './Header'
 import { useBottomSheet } from '@/app/providers/bottomSheet'
-import { MOBILE_BREAKPOINT } from '@/app/constants'
+import { MOBILE_BREAKPOINT, SHEET_BOTTOM_HEIGHT } from '@/app/constants'
 
 const track = _track as FeatureCollection<LineString | MultiLineString>
 
@@ -73,7 +72,7 @@ function computePadding(
   const totalHeight = window.innerHeight - topMargin
   const sheetHeight =
     position === 'bottom'
-      ? 100
+      ? SHEET_BOTTOM_HEIGHT
       : position === 'middle'
         ? totalHeight * 0.5
         : totalHeight
