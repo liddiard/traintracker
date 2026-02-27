@@ -2,9 +2,9 @@
 
 TrainTracker aims to be the best way to browse and get updates on Amtrak, VIA Rail, and Brightline trains. I created it after moving to the US Northeast, where Amtrak is often a competitive alternative to flying or driving.
 
-It’s no secret that North American passenger rail lags behind much of Europe and Asia. The coverage, speed, and general user experience can leave something to be desired. I can’t do much to fix that myself, but as a software engineer and transit enthusiast, I can at least make the tracking of train journeys a bit less painful.
+It’s no secret that North American passenger rail lags behind much of Europe and Asia. The coverage, speed, and general rider experience can leave something to be desired. I can’t do much to fix that myself, but as a software engineer and transit enthusiast, I can at least make the tracking of train journeys a bit easier.
 
-I’ve long enjoyed sites that track other types of transportation with live maps and took inspiration from apps like [Flightradar24](https://www.flightradar24.com/) and [MarineTraffic](https://www.marinetraffic.com). The interactive map is the focal point, paired with train search and an in-depth timeline view. Using the web [Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API), TrainTracker can alert you when a train arrives at or departs a station.
+I’ve long been a fan of sites that track transportation with live maps and took inspiration from apps like [Flightradar24](https://www.flightradar24.com/) and [MarineTraffic](https://www.marinetraffic.com). The interactive map is the focal point, paired with train search and an in-depth timeline view. Using the web [Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API), TrainTracker can alert you when a train arrives at or departs a station.
 
 Unlike other rail trackers, TrainTracker also estimates trains’ locations in real time using a combination of last-reported GPS coordinates and timetable in an effort to provide the most up-to-date information.
 
@@ -59,6 +59,6 @@ See TrainTracker’s [GitHub issues](https://github.com/liddiard/traintracker/is
 
 ### How can I support TrainTracker?
 
-TrainTracker is entirely volunteer-built by me in my spare time. It actually loses money right now from domain registration and web hosting costs. If you find TrainTracker useful and can afford it, I’d [love a donation](https://ko-fi.com/liddiard) to keep it chugging along (had to get in a train pun!) and free for everyone.
+TrainTracker is entirely volunteer-built by me in my spare time. It loses money right now from domain registration and web hosting costs. If you find TrainTracker useful and can afford it, I’d [love a donation](https://ko-fi.com/liddiard) to keep it chugging along (yes, a train pun) and free for everyone.
 
-Another way to support is buying a product I recommend through the train travel [Gear Guide](/gear-guide). I receive a small commission on sales via the [Amazon Associates](https://affiliate-program.amazon.com/) program. This doesn't cost you anything more than what the product normally costs on Amazon.
+Another way to support is by buying a product I recommend through the train travel [Gear Guide](/gear-guide). I receive a small commission on sales via the [Amazon Associates](https://affiliate-program.amazon.com/) program. This doesn't cost you anything more than what the product normally costs on Amazon.
