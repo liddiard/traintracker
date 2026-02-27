@@ -1,16 +1,16 @@
-﻿OBJECTID,lon,lat,StaType,DateModif,StnType,ZipCode,State,City,Address2,Address1,Name,Code,StationName,StationFacilityName,StationAliases,x,y
+OBJECTID,lon,lat,StaType,DateModif,StnType,ZipCode,State,City,Address2,Address1,Name,Code,StationName,StationFacilityName,StationAliases,x,y
 1,-84.644832,43.39172,Station Building (with waiting room),2018-09-27T07:04:38,BUS,48801,MI,Alma, ,1105 Willow Run Drive, ,AAM,"Alma, MI", , ,-84.6448370052134,43.3917282758211
 2,-73.809184,42.744491,Curbside Bus Stop only (no shelter),2018-09-27T07:04:38,BUS,12211,NY,Albany, ,737 Albany Shaker Road,Albany Intl Airport,ABA,"Albany, NY",Albany Intl Airport, ,-73.8091855150354,42.7444996518371
 3,-90.314667,44.928553,Curbside Bus Stop only (no shelter),2018-09-28T07:04:39,BUS,54421,WI,Colby, ,1210 North Division St., ,ABB,"Abbotsford-Colby, WI", ,Colby,-90.3146738882451,44.9285611850779
 4,-76.16326,39.508447,Station Building (with waiting room),2018-09-14T07:04:39,TRAIN,21001,MD,Aberdeen, ,18 East Bel Air Avenue, ,ABE,"Aberdeen, MD", , ,-76.1632620593366,39.5084549403437
-5,-74.501475,39.424041,Platform with Shelter,2018-09-27T07:04:38,TRAIN,08201,NJ,Absecon, ,Shore Road and Ohio Avenue, ,ABN,"Absecon, NJ", , ,-74.5014765302998,39.4240489831207
+5,-74.501475,39.424041,Platform with Shelter,2018-09-27T07:04:38,TRAIN,8201,NJ,Absecon, ,Shore Road and Ohio Avenue, ,ABN,"Absecon, NJ", , ,-74.5014765302998,39.4240489831207
 6,-106.647975,35.082061,Station Building (with waiting room),2018-09-29T07:04:38,TRAIN,87102,NM,Albuquerque, ,320 1st Street SW, ,ABQ,"Albuquerque, NM", , ,-106.647985021302,35.0820666444239
 7,-121.816024,38.0177,Platform with Shelter,2017-11-06T07:04:20,TRAIN,94509,CA,Antioch, ,100 I Street, ,ACA,"Antioch-Pittsburg, CA", ,Pittsburg,-121.816037152762,38.0177050086558
-8,-74.434793,39.359556,Station Building (with waiting room),2018-04-13T07:04:13,BUS,08401,NJ,Atlantic City, ,1901 Atlantic Avenue, ,ACB,"Atlantic City, NJ", , ,-74.4347945050129,39.3595639719397
+8,-74.434793,39.359556,Station Building (with waiting room),2018-04-13T07:04:13,BUS,8401,NJ,Atlantic City, ,1901 Atlantic Avenue, ,ACB,"Atlantic City, NJ", , ,-74.4347945050129,39.3595639719397
 9,-90.624403,37.592161,Station Building (with waiting room),2018-09-29T07:04:39,TRAIN,63621,MO,Arcadia, ,13700 Highway 21, ,ACD,"Arcadia, MO", , ,-90.6244092225903,37.5921679303639
-10,-74.439903,39.362689,Station Building (with waiting room),2018-09-27T07:04:38,TRAIN,08401,NJ,Atlantic City, ,1 Atlantic City Expressway, ,ACY,"Atlantic City, NJ", , ,-74.439904506828,39.3626969722225
+10,-74.439903,39.362689,Station Building (with waiting room),2018-09-27T07:04:38,TRAIN,8401,NJ,Atlantic City, ,1 Atlantic City Expressway, ,ACY,"Atlantic City, NJ", , ,-74.439904506828,39.3626969722225
 11,-97.12551,34.172465,Platform only (no shelter),2024-06-08T07:05:50,TRAIN,73401,OK,Ardmore, ,251 East Main Street, ,ADM,"Ardmore, OK", , ,-97.1255176973313,34.172470981119
-12,-69.799133,44.355913,Curbside Bus Stop only (no shelter),2018-09-26T07:04:41,BUS,04330,ME,Augusta, ,9 Industrial Drive, ,AGM,"Augusta, ME", , ,-69.7991332904076,44.3559220831307
+12,-69.799133,44.355913,Curbside Bus Stop only (no shelter),2018-09-26T07:04:41,BUS,4330,ME,Augusta, ,9 Industrial Drive, ,AGM,"Augusta, ME", , ,-69.7991332904076,44.3559220831307
 13,-122.689591,42.185744,Curbside Bus Stop only (no shelter),2018-09-20T09:56:28,BUS,97520,OR,Ashland, ,499 Stadium Street,Southern Oregon University,AHL,"Ashland, OR",Southern Oregon University, ,-122.689604867697,42.185749253788
 14,-120.578288,37.364226,Curbside Bus Stop only (no shelter),2025-07-18T07:05:15,TRAIN,95301,CA,Atwater, ,5050 Santa Fe Drive,Castle Air Museum,AIR,"Atwater, CA",Castle Air Museum, ,-120.578300885572,37.3642310412468
 15,-82.639603,38.480875,Platform with Shelter,2017-11-06T07:04:22,TRAIN,41101,KY,Ashland, ,99 15th Street, ,AKY,"Ashland, KY", , ,-82.6396069802708,38.4808824755953
@@ -40,66 +40,66 @@
 39,-120.66476,35.488953,Curbside Bus Stop only (no shelter),2018-09-21T07:04:41,BUS,93422,CA,Atascadero, ,6000 Capistrano Avenue, ,ATA,"Atascadero, CA", , ,-120.664772706736,35.4889578593877
 40,-84.392477,33.799445,Station Building (with waiting room),2018-09-29T07:04:39,TRAIN,30309,GA,Atlanta, ,"1688 Peachtree Street, NW", ,ATL,"Atlanta, GA", ,Peachtree,-84.3924812066034,33.7994514447837
 41,-85.832145,33.649112,Station Building (with waiting room),2017-11-06T07:04:25,TRAIN,36201,AL,Anniston, ,126 West 4th Street, ,ATN,"Anniston, AL", , ,-85.8321496120008,33.6491183586758
-42,-74.907893,39.783504,Platform with Shelter,2018-09-27T07:04:39,TRAIN,08004,NJ,Atco, ,Cooper Road and Raritan Avenue, ,ATO,"Atco, NJ", , ,-74.9078946802357,39.7835120410613
-43,-70.266407,44.037697,Station Building (with waiting room),2020-11-18T07:03:56,BUS,04210,ME,Auburn, ,1707 S. Washington Street, ,AUR,"Auburn, ME", ,Lewiston,-70.2664074274821,44.0377060109128
+42,-74.907893,39.783504,Platform with Shelter,2018-09-27T07:04:39,TRAIN,8004,NJ,Atco, ,Cooper Road and Raritan Avenue, ,ATO,"Atco, NJ", , ,-74.9078946802357,39.7835120410613
+43,-70.266407,44.037697,Station Building (with waiting room),2020-11-18T07:03:56,BUS,4210,ME,Auburn, ,1707 S. Washington Street, ,AUR,"Auburn, ME", ,Lewiston,-70.2664074274821,44.0377060109128
 44,-97.75694,30.269449,Station Building (with waiting room),2017-11-06T07:04:26,TRAIN,78703,TX,Austin, ,250 North Lamar Boulevard, ,AUS,"Austin, TX", , ,-97.7569476293145,30.269454215596
 45,-75.471521,40.60405,Station Building (with waiting room),2023-02-01T07:07:21,BUS,18101,PA,Allentown, ,110 N 6th Street, ,AWN,"Allentown, PA", ,Lehigh University,-75.4715229087955,40.6040581821523
 46,-117.813137,44.781551,Station Building (with waiting room),2018-09-27T07:04:39,BUS,97814,OR,Baker City, ,515 Campbell Street, ,BAK,"Baker City, OR", , ,-117.813150518763,44.7815568991323
 47,-76.615688,39.307302,Station Building (with waiting room),2018-09-14T07:04:40,TRAIN,21201,MD,Baltimore, ,1500 North Charles Street,Penn Station,BAL,"Baltimore, MD",Penn Station,Penn Station,-76.6156901888681,39.3073098830818
 48,-86.111646,42.314519,Station Building (with waiting room),2017-11-06T07:04:27,TRAIN,49013,MI,Bangor, ,541 Railroad Street, ,BAM,"Bangor, MI", , ,-86.1116513414668,42.3145270120529
-49,-68.808747,44.816614,Station Building (with waiting room),2018-09-26T07:04:42,BUS,04401,ME,Bangor, ,1039 Union Street, ,BAN,"Bangor, ME", , ,-68.8087469832627,44.81662319569
+49,-68.808747,44.816614,Station Building (with waiting room),2018-09-26T07:04:42,BUS,4401,ME,Bangor, ,1039 Union Street, ,BAN,"Bangor, ME", , ,-68.8087469832627,44.81662319569
 50,-117.025435,34.90482,Platform with Shelter,2019-02-14T07:03:18,TRAIN,92311,CA,Barstow, ,685 North First Avenue,Harvey House Rail Depot,BAR,"Barstow, CA",Harvey House Rail Depot, ,-117.025447051247,34.9048250217433
 51,-89.334,30.308734,Platform only (no shelter),2025-07-08T02:04:06,TRAIN,39520,MS,Bay St. Louis, ,1928 Depot Way, ,BAS,"Bay Saint Louis, MS", , ,-89.3340054264864,30.3087395158193
 52,-118.2999,34.171299,Station Building (with waiting room),2024-08-22T10:54:58,TRAIN,91502,CA,Burbank, ,201 North Front Street,Downtown,BBK,"Burbank, CA",Downtown, ,-118.299912206351,34.1713038660964
 53,-116.998434,34.891277,Curbside Bus Stop only (no shelter),2021-12-01T07:04:03,BUS,92311,CA,Barstow, ,1611 East Main St,McDonald's restaurant,BBS,"Barstow, CA",McDonald's restaurant, ,-116.998446045596,34.8912820217799
-54,-71.075828,42.347317,Station Building (with waiting room),2018-12-13T07:03:24,TRAIN,02116,MA,Boston, ,145 Dartmouth Street,Back Bay Station,BBY,"Boston, MA",Back Bay Station,"Boston,Back Bay,westwood",-71.0758285958499,42.3473256703742
+54,-71.075828,42.347317,Station Building (with waiting room),2018-12-13T07:03:24,TRAIN,2116,MA,Boston, ,145 Dartmouth Street,Back Bay Station,BBY,"Boston, MA",Back Bay Station,"Boston,Back Bay,westwood",-71.0758285958499,42.3473256703742
 55,-118.628407,43.642314,Curbside Bus Stop only (no shelter),2018-06-15T07:04:17,BUS,97720,OR,Buchanan, ,42456 U.S. Highway 20, ,BCH,"Buchanan, OR", , ,-118.628420454452,43.6423197337963
 56,-77.29879,38.797271,Platform with Shelter,2018-09-14T07:04:41,TRAIN,22015,VA,Burke, ,10399 Premier Court, ,BCV,"Burke Centre, VA", , ,-77.298792370329,38.7972787551668
 57,-83.886922,43.601847,Station Building (with waiting room),2018-09-27T07:04:39,BUS,48708,MI,Bay City, ,1124 Washington Avenue, ,BCY,"Bay City, MI", , ,-83.8869267938141,43.6018553519741
-58,-73.08709,43.798342,Curbside Bus Stop only (no shelter),2021-06-25T07:04:13,BUS,05733,VT,Brandon, ,20 Park Street, ,BDN,"Brandon, VT", , ,-73.0870913496095,43.7983508715437
+58,-73.08709,43.798342,Curbside Bus Stop only (no shelter),2021-06-25T07:04:13,BUS,5733,VT,Brandon, ,20 Park Street, ,BDN,"Brandon, VT", , ,-73.0870913496095,43.7983508715437
 59,-82.457451,27.48585,Curbside Bus Stop only (no shelter),2025-04-18T07:04:41,BUS,34212,FL,Bradenton, ,8100 FL-64, ,BDT,"Bradenton, FL", ,Ellenton,-82.4574543872657,27.4858550598634
 60,-88.446964,44.729865,Curbside Bus Stop only (no shelter),2022-03-10T07:04:01,BUS,54107,WI,Bonduel, ,102 Express Way, ,BDU,"Bonduel, WI", , ,-88.4469703071525,44.7298732728242
 61,-122.511255,48.720263,Station Building (with waiting room),2017-11-06T07:04:29,TRAIN,98225,WA,Bellingham, ,401 Harris Avenue, ,BEL,"Bellingham, WA", , ,-122.51127019999,48.7202686526005
 62,-110.296904,31.968758,Platform with Shelter,2017-11-06T07:04:29,TRAIN,85602,AZ,Benson, ,105 East 4th Street, ,BEN,"Benson, AZ", , ,-110.296914563697,31.9687629941837
-63,-72.765274,41.635595,Platform with Shelter,2018-06-15T07:04:17,TRAIN,06037,CT,Berlin, ,51 Depot Road, ,BER,"Berlin, CT", , ,-72.7652751048108,41.6356034783966
+63,-72.765274,41.635595,Platform with Shelter,2018-06-15T07:04:17,TRAIN,6037,CT,Berlin, ,51 Depot Road, ,BER,"Berlin, CT", , ,-72.7652751048108,41.6356034783966
 64,-88.989116,42.490067,Curbside Bus Stop only (no shelter),2018-09-26T07:04:42,BUS,61080,IL,South Beloit, ,15766 Manchester Road, ,BET,"South Beloit, IL", , ,-88.9891222121776,42.4900748794455
 65,-119.00821,35.37214,Station Building (with waiting room),2018-09-14T07:04:41,TRAIN,93301,CA,Bakersfield, ,601 Truxtun Avenue, ,BFD,"Bakersfield, CA", , ,-119.00822242892,35.3721449515049
-66,-69.025984,44.422692,Curbside Bus Stop only (no shelter),2018-09-26T07:04:42,BUS,04915,ME,Belfast, ,22 Belmont Avenue, ,BFT,"Belfast, ME", , ,-69.0259840342739,44.4227011185186
+66,-69.025984,44.422692,Curbside Bus Stop only (no shelter),2018-09-26T07:04:42,BUS,4915,ME,Belfast, ,22 Belmont Avenue, ,BFT,"Belfast, ME", , ,-69.0259840342739,44.4227011185186
 67,-78.873748,42.878449,Station Building (with waiting room),2019-02-14T07:03:18,TRAIN,14203,NY,Buffalo, ,75 Exchange Street,Exchange Street Station,BFX,"Buffalo, NY",Exchange Street Station,Exchange,-78.8737511556291,42.8784574706265
 68,-85.483612,43.673347,Curbside Bus Stop only (no shelter),2018-09-27T07:04:40,BUS,49307,MI,Big Rapids, ,14219 Northland Drive, ,BGP,"Big Rapids, MI", , ,-85.4836172909893,43.6733552769187
 69,-86.807023,33.512937,Station Building (with waiting room),2018-09-15T07:04:39,TRAIN,35203,AL,Birmingham, ,1801 Morris Avenue, ,BHM,"Birmingham, AL", , ,-86.8070278819844,33.5129432926766
 70,-120.603551,43.814035,Curbside Bus Stop only (no shelter),2018-06-15T07:04:17,BUS,97712,OR,Brothers, ,34100 U.S. Highway 20, ,BHS,"Brothers, OR", , ,-120.603564818958,43.8140405602879
-71,-71.18743,44.45904,Curbside Bus Stop only (no shelter),2018-09-27T07:04:40,BUS,03570,NH,Berlin, ,318 Glen Avenue, ,BIN,"Berlin, NH", , ,-71.1874307628331,44.459049056543
+71,-71.18743,44.45904,Curbside Bus Stop only (no shelter),2018-09-27T07:04:40,BUS,3570,NH,Berlin, ,318 Glen Avenue, ,BIN,"Berlin, NH", , ,-71.1874307628331,44.459049056543
 72,-78.870218,40.968716,Curbside Bus Stop only (no shelter),2018-07-20T07:04:38,BUS,15715,PA,Big Run, ,401 East Main Street, ,BIR,"Big Run, PA", , ,-78.8702210056329,40.9687241177949
 73,-88.891134,30.39899,Platform only (no shelter),2025-03-21T07:06:38,TRAIN,39530,MS,Biloxi, ,890 Esters Blvd., ,BIX,"Biloxi, MS", , ,-88.8911393088938,30.3989955497035
 74,-124.288311,42.054793,Station Building (with waiting room),2018-09-27T07:04:40,BUS,97415,OR,Brookings, ,Highway 101 & 5th Street, ,BKO,"Brookings, OR", , ,-124.288325082206,42.0547981004087
 75,-123.114035,45.617864,Curbside Bus Stop only (no shelter),2020-07-08T14:48:43,BUS,97106,OR,Banks, ,118 Sunset Avenue, ,BKS,"Banks, OR", , ,-123.114049569728,45.6178694255868
 76,-122.300707,37.867254,Platform with Shelter,2018-09-14T07:04:41,TRAIN,94710,CA,Berkeley, ,700 University Avenue, ,BKY,"Berkeley, CA", , ,-122.300720207953,37.8672589604567
-77,-72.444597,43.13654,Station Building (with waiting room),2017-11-06T07:04:30,TRAIN,05101,VT,Bellows Falls, ,54 Depot Street, ,BLF,"Bellows Falls, VT", , ,-72.4445980935739,43.136548773028
+77,-72.444597,43.13654,Station Building (with waiting room),2017-11-06T07:04:30,TRAIN,5101,VT,Bellows Falls, ,54 Depot Street, ,BLF,"Bellows Falls, VT", , ,-72.4445980935739,43.136548773028
 78,-80.424583,37.232013,Curbside Bus Stop only (no shelter),2024-09-02T07:00:00,BUS,24061,VA,Blacksburg, ,250 Perry St,Virginia Tech,BLK,"Blacksburg, VA",Virginia Tech,Virginia Tech,-80.4245862319465,37.2320203166247
 79,-79.219778,40.444688,Curbside Bus Stop only (no shelter),2018-07-19T07:04:40,BUS,15717,PA,Blairsville, ,1601 Old William Penn Highway, ,BLS,"Blairsville, PA", , ,-79.2197810765845,40.4446960030042
-80,-73.214168,44.480327,Station Building (with waiting room),2021-10-21T07:04:21,BUS,05446,VT,Burlington, ,125 Pearl Street,Downtown Transit Center,BLT,"Burlington, VT",Downtown Transit Center, ,-73.214169439881,44.4803359890763
+80,-73.214168,44.480327,Station Building (with waiting room),2021-10-21T07:04:21,BUS,5446,VT,Burlington, ,125 Pearl Street,Downtown Transit Center,BLT,"Burlington, VT",Downtown Transit Center, ,-73.214169439881,44.4803359890763
 81,-94.127367,30.076458,Platform with Shelter,2017-11-06T07:04:31,TRAIN,77704,TX,Beaumont, ,2555 West Cedar Street, ,BMT,"Beaumont, TX", , ,-94.1273736964771,30.0764633046767
 82,-79.434531,36.094225,Station Building (with waiting room),2017-11-06T07:04:31,TRAIN,27217,NC,Burlington, ,101 North Main Street, ,BNC,"Burlington, NC", , ,-79.4345338663219,36.094232116932
 83,-121.301266,44.05822,Station Building (with waiting room),2024-05-29T07:07:56,BUS,97701,OR,Bend, ,334 Hawthorne Avenue, ,BND,"Bend, OR", , ,-121.301279977791,44.0582255104978
-84,-72.81635,41.274677,Station Building (with waiting room),2024-08-22T10:54:58,TRAIN,06405,CT,Branford, ,39 Maple Street, ,BNF,"Branford, CT", , ,-72.8163510993153,41.2746854073172
+84,-72.81635,41.274677,Station Building (with waiting room),2024-08-22T10:54:58,TRAIN,6405,CT,Branford, ,39 Maple Street, ,BNF,"Branford, CT", , ,-72.8163510993153,41.2746854073172
 85,-121.46873,45.71502,Platform with Shelter,2017-11-06T07:04:31,TRAIN,98605,WA,Bingen, ,Highway 14 and Walnut Street, ,BNG,"Bingen-White Salmon, WA", ,"White Salmon,Hood River,Dalles,The Dalles",-121.468744330773,45.7150256007008
-86,-73.19324,42.878777,Curbside Bus Stop only (no shelter),2019-03-18T07:03:26,BUS,05201,VT,Bennington, ,215 Pleasant Street,Green Mountain Express Bus Term,BNI,"Bennington, VT",Green Mountain Express Bus Term, ,-73.1932413222315,42.8787856988897
+86,-73.19324,42.878777,Curbside Bus Stop only (no shelter),2019-03-18T07:03:26,BUS,5201,VT,Bennington, ,215 Pleasant Street,Green Mountain Express Bus Term,BNI,"Bennington, VT",Green Mountain Express Bus Term, ,-73.1932413222315,42.8787856988897
 87,-88.984306,40.50901,Station Building (with waiting room),2018-09-29T07:04:39,TRAIN,61761,IL,Normal, ,11 Uptown Circle, ,BNL,"Bloomington-Normal, IL", , ,-88.9843120114106,40.5090175418661
 88,-119.064431,43.583713,Curbside Bus Stop only (no shelter),2018-06-14T07:04:19,BUS,97720,OR,Burns, ,230 Hines Boulevard, ,BNS,"Burns, OR", , ,-119.064444519548,43.5837186883047
-89,-71.061122,42.366235,Station Building (with waiting room),2018-12-13T07:03:25,TRAIN,02114,MA,Boston, ,135 Causeway Street,North Station,BON,"Boston, MA",North Station,North Station,-71.0611225916422,42.3662436747389
-90,-71.055304,42.352311,Station Building (with waiting room),2020-10-27T07:03:54,TRAIN,02110,MA,Boston, ,2 South Station,South Station,BOS,"Boston, MA",South Station,South Station,-71.0553045889242,42.3523196722564
-91,-72.556497,42.850849,Station Building (with waiting room),2017-11-06T07:04:32,TRAIN,05301,VT,Brattleboro, ,10 Vernon Road, ,BRA,"Brattleboro, VT", , ,-72.5564981122609,42.8508577159558
+89,-71.061122,42.366235,Station Building (with waiting room),2018-12-13T07:03:25,TRAIN,2114,MA,Boston, ,135 Causeway Street,North Station,BON,"Boston, MA",North Station,North Station,-71.0611225916422,42.3662436747389
+90,-71.055304,42.352311,Station Building (with waiting room),2020-10-27T07:03:54,TRAIN,2110,MA,Boston, ,2 South Station,South Station,BOS,"Boston, MA",South Station,South Station,-71.0553045889242,42.3523196722564
+91,-72.556497,42.850849,Station Building (with waiting room),2017-11-06T07:04:32,TRAIN,5301,VT,Brattleboro, ,10 Vernon Road, ,BRA,"Brattleboro, VT", , ,-72.5564981122609,42.8508577159558
 92,-89.773676,43.459349,Curbside Bus Stop only (no shelter),2022-03-16T07:04:11,BUS,53913,WI,Baraboo, ,Commerce Parkway & Gateway Drive, ,BRB,"Baraboo, WI", , ,-89.7736825490748,43.4593569898666
 93,-90.44107,31.582961,Station Building (with waiting room),2018-09-14T07:04:41,TRAIN,39601,MS,Brookhaven, ,440 North Railroad Avenue, ,BRH,"Brookhaven, MS", , ,-90.4410757878561,31.5829667502697
-94,-69.965541,43.911388,Station Building (with waiting room),2018-06-14T07:04:19,TRAIN,04011,ME,Brunswick, ,16 Station Avenue, ,BRK,"Brunswick, ME", , ,-69.965541319837,43.9113969970367
+94,-69.965541,43.911388,Station Building (with waiting room),2018-06-14T07:04:19,TRAIN,4011,ME,Brunswick, ,16 Station Avenue, ,BRK,"Brunswick, ME", , ,-69.965541319837,43.9113969970367
 95,-91.101951,40.805788,Station Building (with waiting room),2017-11-06T07:04:32,TRAIN,52601,IA,Burlington, ,300 South Main Street, ,BRL,"Burlington, IA", , ,-91.1019576439959,40.805795473898
 96,-113.013151,48.534067,Platform with Shelter,2017-11-06T07:04:32,TRAIN,59417,MT,Browning, ,Heart Butte Road and Depot Road, ,BRO,"Browning, MT", ,"glacier,east glacier",-113.013164378939,48.5340736767166
-97,-73.187539,41.178006,Station Building (with waiting room),2018-09-14T07:04:41,TRAIN,06604,CT,Bridgeport, ,525 Water Street, ,BRP,"Bridgeport, CT", , ,-73.1875402136882,41.1780143757262
+97,-73.187539,41.178006,Station Building (with waiting room),2018-09-14T07:04:41,TRAIN,6604,CT,Bridgeport, ,525 Water Street, ,BRP,"Bridgeport, CT", , ,-73.1875402136882,41.1780143757262
 98,-85.187825,42.318453,Station Building (with waiting room),2017-11-06T07:04:33,TRAIN,49017,MI,Battle Creek, ,119 McCamly Street South, ,BTL,"Battle Creek, MI", , ,-85.1878300639245,42.3184610624355
-99,-73.21927,44.4757,Station Building (with waiting room),2022-11-21T10:50:00,TRAIN,05401,VT,Burlington, ,1 Main Street,Union Station,BTN,"Burlington, VT",Union Station, ,-73.2192714413001,44.4757089878582
+99,-73.21927,44.4757,Station Building (with waiting room),2022-11-21T10:50:00,TRAIN,5401,VT,Burlington, ,1 Main Street,Union Station,BTN,"Burlington, VT",Union Station, ,-73.2192714413001,44.4757089878582
 100,-91.176374,30.449741,Station Building (with waiting room),2025-07-22T02:07:19,BUS,70802,LA,Baton Rouge, ,1253 Florida Boulevard, ,BTR,"Baton Rouge, LA", , ,-91.1763799328598,30.4497464838447
-101,-73.15546,44.469865,Station Building (with waiting room),2022-05-14T07:04:10,BUS,05403,VT,South Burlington, ,1200 Airport Drive,Burlington International Airport,BTV,"South Burlington, VT",Burlington International Airport,Burlington,-73.155461419808,44.4698739895575
+101,-73.15546,44.469865,Station Building (with waiting room),2022-05-14T07:04:10,BUS,5403,VT,South Burlington, ,1200 Airport Drive,Burlington International Airport,BTV,"South Burlington, VT",Burlington International Airport,Burlington,-73.155461419808,44.4698739895575
 102,-78.726584,42.907017,Station Building (with waiting room),2019-02-14T07:03:19,TRAIN,14043,NY,Depew, ,55 Dick Road,Depew Station,BUF,"Buffalo, NY",Depew Station,Depew,-78.7265871111005,42.9070254822843
 103,-120.186595,34.61066,Curbside Bus Stop only (no shelter),2018-09-21T07:04:41,BUS,93427,CA,Buellton, ,237 East Highway 246, ,BUL,"Buellton, CA", , ,-120.186607551464,34.610664802566
 104,-118.353767,34.193072,Platform with Shelter,2018-09-15T07:04:40,TRAIN,91505,CA,Burbank, ,3750 Empire Avenue,Hollywood Burbank Airport,BUR,"Burbank, CA",Hollywood Burbank Airport,Hollywood,-118.353779217036,34.19307686512
@@ -109,7 +109,7 @@
 108,-76.6943,39.192362,Station Building (with waiting room),2018-05-26T07:04:17,TRAIN,21240,MD,Baltimore, ,7 Amtrak Way, ,BWI,"BWI Marshall Airport, MD", ,"Baltimore,bwi airport",-76.6943022058441,39.1923698574059
 109,-84.551799,41.480319,Station Building (with waiting room),2017-11-06T07:04:34,TRAIN,43506,OH,Bryan, ,Paige and Lynn Street, ,BYN,"Bryan, OH", , ,-84.5518037939923,41.4803269479015
 110,-80.62519,34.248157,Station Building (with waiting room),2017-11-06T07:04:34,TRAIN,29020,SC,Camden, ,1060 West Dekalb Street, ,CAM,"Camden, SC", , ,-80.625193126039,34.2481636776695
-111,-71.126573,43.978298,Curbside Bus Stop only (no shelter),2018-09-27T07:04:41,BUS,03818,NH,Conway, ,13 West Main Street, ,CAY,"Conway, NH", , ,-71.1265737111908,43.9783069722728
+111,-71.126573,43.978298,Curbside Bus Stop only (no shelter),2018-09-27T07:04:41,BUS,3818,NH,Conway, ,13 West Main Street, ,CAY,"Conway, NH", , ,-71.1265737111908,43.9783069722728
 112,-106.980905,38.870357,Curbside Bus Stop only (no shelter),2022-09-02T07:04:42,BUS,81224,CO,Crested Butte, ,306 6th Street, ,CBC,"Crested Butte, CO", , ,-106.980915459951,38.8703631634931
 113,-123.961842,45.889496,Curbside Bus Stop only (no shelter),2018-09-27T07:04:41,BUS,97110,OR,Cannon Beach, ,1170 South Hemlock Street, ,CBO,"Cannon Beach, OR", , ,-123.961856755401,45.8895013519667
 114,-97.382333,32.349743,Platform with Shelter,2019-04-26T07:03:15,TRAIN,76031,TX,Cleburne, ,206 North Border Street, ,CBR,"Cleburne, TX", , ,-97.382340646271,32.3497486306683
@@ -118,7 +118,7 @@
 117,-116.798713,33.921492,Curbside Bus Stop only (no shelter),2019-01-12T07:03:23,BUS,92230,CA,Cabazon, ,49500 Seminole Drive, ,CBZ,"Cabazon, CA", , ,-116.798724929001,33.9214969225783
 118,-76.048392,38.561752,Curbside Bus Stop only (no shelter),2018-09-27T07:04:41,BUS,21613,MD,Cambridge, ,100 Heron Boulevard, ,CDE,"Cambridge, MD", , ,-76.0483939665266,38.5617597532883
 119,-89.216325,37.724581,Station Building (with waiting room),2025-04-26T07:03:51,TRAIN,62901,IL,Carbondale, ,401 South Illinois Avenue, ,CDL,"Carbondale, IL", , ,-89.2163308386253,37.7245880250551
-120,-69.078634,44.199095,Curbside Bus Stop only (no shelter),2018-09-26T07:04:43,BUS,04856,ME,Rockport, ,20 Commercial Street, ,CDN,"Camden-Rockport, ME", , ,-69.0786340388529,44.1991040763764
+120,-69.078634,44.199095,Curbside Bus Stop only (no shelter),2018-09-26T07:04:43,BUS,4856,ME,Rockport, ,20 Commercial Street, ,CDN,"Camden-Rockport, ME", , ,-69.0786340388529,44.1991040763764
 121,-85.570486,43.219603,Curbside Bus Stop only (no shelter),2022-08-15T07:04:38,BUS,49319,MI,Cedar Springs, ,4010 17 Mile Road, ,CDS,"Cedar Springs, MI", , ,-85.5704912699402,43.2196111956032
 122,-89.136118,38.527531,Station Building (with waiting room),2018-09-28T07:04:40,TRAIN,62801,IL,Centralia, ,110 South Oak St., ,CEN,"Centralia, IL", , ,-89.1361238808287,38.5275381782335
 123,-78.43533,41.021095,Station Building (with waiting room),2018-07-20T07:04:38,BUS,16830,PA,Clearfield, ,314 East Cherry Street, ,CFD,"Clearfield, PA", , ,-78.4353328736893,41.0211031456758
@@ -134,13 +134,13 @@
 133,-81.638494,38.346368,Station Building (with waiting room),2018-09-14T07:04:42,TRAIN,25314,WV,Charleston, ,350 MacCorkle Avenue - Southeast, ,CHW,"Charleston, WV", , ,-81.6384976704289,38.3463754924202
 134,-121.845861,39.723259,Platform only (no shelter),2018-09-14T07:04:42,TRAIN,95928,CA,Chico, ,450 Orange Street, ,CIC,"Chico, CA", , ,-121.845874372429,39.7232641454441
 135,-84.537061,39.109927,Station Building (with waiting room),2018-12-13T07:03:25,TRAIN,45203,OH,Cincinnati, ,1301 Western Avenue,Union Terminal,CIN,"Cincinnati, OH",Union Terminal,Union Terminal,-84.5370655923683,39.1099345113891
-136,-72.377644,43.36833,Platform with Shelter,2017-11-06T07:04:37,TRAIN,03743,NH,Claremont, ,Plains Road and Maple Avenue, ,CLA,"Claremont, NH", , ,-72.3776450869899,43.3683388180636
+136,-72.377644,43.36833,Platform with Shelter,2017-11-06T07:04:37,TRAIN,3743,NH,Claremont, ,Plains Road and Maple Avenue, ,CLA,"Claremont, NH", , ,-72.3776450869899,43.3683388180636
 137,-81.04049,33.994297,Station Building (with waiting room),2017-11-06T07:04:38,TRAIN,29201,SC,Columbia, ,850 Pulaski Street, ,CLB,"Columbia, SC", , ,-81.0404932362942,33.9943036079373
 138,-85.389748,44.270402,Curbside Bus Stop only (no shelter),2018-09-27T07:04:42,BUS,49601,MI,Cadillac, ,951 Casa Road, ,CLC,"Cadillac, MI", , ,-85.3897533267765,44.2704103809453
 139,-81.696172,41.505787,Station Building (with waiting room),2017-11-06T07:04:38,TRAIN,44114,OH,Cleveland, ,200 Cleveland Memorial Shoreway, ,CLE,"Cleveland, OH", , ,-81.6961759256405,41.5057950920571
 140,-79.827363,37.814521,Station Building (with waiting room),2018-09-14T07:04:43,TRAIN,24422,VA,Clifton Forge, ,307 East Ridgeway Street, ,CLF,"Clifton Forge, VA", , ,-79.8273660872419,37.8145284594741
 141,-117.716857,34.094469,Platform with Shelter,2018-09-21T07:04:42,BUS,91711,CA,Claremont, ,200 West First Street, ,CLM,"Claremont, CA", , ,-117.716869101882,34.0944738902025
-142,-72.52929,41.280743,Station Building (with waiting room),2024-08-22T10:54:58,TRAIN,06413,CT,Clinton, ,10 John Street Extension, ,CLN,"Clinton, CT", , ,-72.5292910070324,41.2807514179053
+142,-72.52929,41.280743,Station Building (with waiting room),2024-08-22T10:54:58,TRAIN,6413,CT,Clinton, ,10 John Street Extension, ,CLN,"Clinton, CT", , ,-72.5292910070324,41.2807514179053
 143,-77.993421,38.47236,Station Building (with waiting room),2017-11-06T07:04:38,TRAIN,22701,VA,Culpeper, ,111 South Commerce Street, ,CLP,"Culpeper, VA", , ,-77.9934235651805,38.4723676633624
 144,-84.767465,43.840968,Curbside Bus Stop only (no shelter),2018-09-27T07:04:42,BUS,48617,MI,Clare, ,10197 South Clare Avenue, ,CLR,"Clare, MI", , ,-84.7674700895253,43.8409763446824
 145,-80.822812,35.241403,Station Building (with waiting room),2017-11-06T07:04:38,TRAIN,28206,NC,Charlotte, ,1914 North Tryon Street, ,CLT,"Charlotte, NC", , ,-80.822815236446,35.2414098849709
@@ -148,7 +148,7 @@
 147,-119.034114,34.215933,Platform only (no shelter),2017-11-06T07:04:39,TRAIN,93010,CA,Camarillo, ,30 Lewis Road, ,CML,"Camarillo, CA", , ,-119.034126331996,34.2159378284983
 148,-121.781594,43.216784,Platform with Shelter,2018-09-14T07:04:43,TRAIN,97731,OR,Chemult, ,Palmer/Kranz Street and Depot Street, ,CMO,"Chemult, OR", , ,-121.78160790167,43.2167894074792
 149,-119.385865,35.864338,Platform only (no shelter),2022-01-19T07:04:10,TRAIN,93219,CA,Allensworth, ,4011 Grant Drive, ,CNL,"Col Allensworth State Park, CA", ,"Allensworth,Colonel Allensworth,cnl",-119.385877537656,35.8643429780603
-150,-73.171337,43.613382,Station Building (with waiting room),2017-11-06T07:04:39,TRAIN,05735,VT,Castleton, ,266 Main Street, ,CNV,"Castleton, VT", , ,-73.1713383645138,43.6133908345939
+150,-73.171337,43.613382,Station Building (with waiting room),2017-11-06T07:04:39,TRAIN,5735,VT,Castleton, ,266 Main Street, ,CNV,"Castleton, VT", , ,-73.1713383645138,43.6133908345939
 151,-119.55705,36.098516,Station Building (with waiting room),2018-09-14T07:04:43,TRAIN,93212,CA,Corcoran, ,1099 Otis Avenue, ,COC,"Corcoran, CA", , ,-119.557062588578,36.0985209903093
 152,-85.13338,39.645969,Platform with Shelter,2017-11-06T07:04:39,TRAIN,47331,IN,Connersville, ,1012 Eastern Avenue, ,COI,"Connersville, IN", , ,-85.1333848112845,39.6459765836846
 153,-75.820929,39.985688,Platform with Shelter,2024-07-20T07:00:00,TRAIN,19320,PA,Coatesville, ,Third Avenue and Fleetwood Street, ,COT,"Coatesville, PA", , ,-75.8209309812079,39.9856960476924
@@ -156,9 +156,9 @@
 155,-120.953075,39.099172,Station Building (with waiting room),2018-09-14T07:04:43,TRAIN,95713,CA,Colfax, ,99 Railroad Street, ,COX,"Colfax, CA", , ,-120.95308815151,39.0991771653127
 156,-120.998594,38.658499,Curbside Bus Stop only (no shelter),2021-06-23T07:04:14,BUS,95682,CA,Cameron Park, ,3952 Cambridge Rd, ,CPC,"Cameron Park, CA", ,"Cambridge Road,Cambridge Rd.",-120.998607102988,38.6585041242513
 157,-119.522975,34.39678,Platform with Shelter,2018-09-14T07:04:43,TRAIN,93013,CA,Carpinteria, ,475 Linden Avenue, ,CPN,"Carpinteria, CA", , ,-119.522987426421,34.3967848194129
-158,-124.193475,41.752373,Curbside Bus Stop only (no shelter),2018-09-21T07:04:42,BUS,95531,CA,Crescent City, ,1001 Front Street   , ,CRC,"Crescent City, CA", , ,-124.193489019583,41.7523780899771
+158,-124.193475,41.752373,Curbside Bus Stop only (no shelter),2018-09-21T07:04:42,BUS,95531,CA,Crescent City, ,1001 Front Street, ,CRC,"Crescent City, CA", , ,-124.193489019583,41.7523780899771
 159,-86.899187,40.044705,Platform with Shelter,2017-11-06T07:04:40,TRAIN,47933,IN,Crawfordsville, ,400 North Green Street, ,CRF,"Crawfordsville, IN", , ,-86.8991923648336,40.0447125689462
-160,-75.041824,39.928946,Station Building (with waiting room),2018-09-27T07:04:43,TRAIN,08002,NJ,Cherry Hill, ,Cornell Avenue & West Marlton Pike, ,CRH,"Cherry Hill, NJ", , ,-75.0418257312471,39.928954064988
+160,-75.041824,39.928946,Station Building (with waiting room),2018-09-27T07:04:43,TRAIN,8002,NJ,Cherry Hill, ,Cornell Avenue & West Marlton Pike, ,CRH,"Cherry Hill, NJ", , ,-75.0418257312471,39.928954064988
 161,-121.908797,36.539033,Curbside Bus Stop only (no shelter),2018-09-21T07:04:42,BUS,93923,CA,Carmel, ,3645 Rio Road, ,CRM,"Carmel, CA", , ,-121.90881000257,36.5390378745844
 162,-94.361617,41.05692,Station Building (with waiting room),2021-01-20T07:04:17,TRAIN,50801,IA,Creston, ,116 West Adams Street, ,CRN,"Creston, IA", , ,-94.3616245748648,41.0569273196403
 163,-73.882394,41.189903,Station Building (with waiting room),2017-11-06T07:04:41,TRAIN,10520,NY,Croton-on-Hudson, ,4 Veteran's Plaza and 1 Croton Point Avenue, ,CRT,"Croton-Harmon, NY", , ,-73.8823954384901,41.1899113536244
@@ -175,13 +175,13 @@
 174,-123.647,42.163002,Curbside Bus Stop only (no shelter),2018-09-27T07:04:43,BUS,97523,OR,Cave Junction, ,406 Redwood Coast Highway, ,CVJ,"Cave Junction, OR", , ,-123.647014006389,42.1630071657726
 175,-123.272751,44.564411,Curbside Bus Stop only (no shelter),2022-03-09T07:04:17,BUS,97331,OR,Corvallis, ,Southwest Jefferson Way,Oregon State University,CVO,"Corvallis, OR",Oregon State University, ,-123.272765381075,44.5644163489195
 176,-78.491684,38.031484,Station Building (with waiting room),2017-11-06T07:04:42,TRAIN,22903,VA,Charlottesville, ,810 West Main Street, ,CVS,"Charlottesville, VA", , ,-78.4916866923718,38.0314915550821
-177,-73.165387,44.594999,Curbside Bus Stop only (no shelter),2021-06-24T07:04:17,BUS,05446,VT,Colchester, ,Highway 7 at Brentwood Drive, ,CVT,"Colchester, VT", , ,-73.1653884325182,44.5950080111436
+177,-73.165387,44.594999,Curbside Bus Stop only (no shelter),2021-06-24T07:04:17,BUS,5446,VT,Colchester, ,Highway 7 at Brentwood Drive, ,CVT,"Colchester, VT", , ,-73.1653884325182,44.5950080111436
 178,-74.952187,40.071663,Platform with Shelter,2018-09-14T07:04:44,TRAIN,19020,PA,Cornwells Heights, ,700 Station Avenue, ,CWH,"Cornwells Heights, PA", , ,-74.9521887114503,40.0716710963064
 179,-118.599417,34.253205,Platform with Shelter,2017-11-06T07:04:43,TRAIN,91311,CA,Chatsworth, ,10040 Old Depot Plaza Road, ,CWT,"Chatsworth, CA", , ,-118.599429263629,34.2532098578127
 180,-78.782246,35.788294,Station Building (with waiting room),2017-11-06T07:04:43,TRAIN,27513,NC,Cary, ,211 North Academy Street, ,CYN,"Cary, NC", , ,-78.7822486529908,35.788301075175
 181,-96.804121,32.778637,Station Building (with waiting room),2019-02-14T07:03:19,BUS,75202,TX,Dallas, ,205 South Lamar Street,Greyhound Station,DAG,"Dallas, TX",Greyhound Station, ,-96.8041285259917,32.778642736614
 182,-96.807235,32.776094,Station Building (with waiting room),2019-05-10T07:03:12,TRAIN,75202,TX,Dallas, ,400 South Houston Street,Eddie Bernice Johnson Union Sta,DAL,"Dallas, TX",Eddie Bernice Johnson Union Sta,Union Station,-96.8072425269409,32.7760997363733
-183,-69.531009,44.032398,Curbside Bus Stop only (no shelter),2018-09-26T07:04:43,BUS,04543,ME,Damariscotta, ,167 Main Street, ,DAM,"Damariscotta, ME", , ,-69.5310091812574,44.0324070323404
+183,-69.531009,44.032398,Curbside Bus Stop only (no shelter),2018-09-26T07:04:43,BUS,4543,ME,Damariscotta, ,167 Main Street, ,DAM,"Damariscotta, ME", , ,-69.5310091812574,44.0324070323404
 184,-79.383968,36.58409,Station Building (with waiting room),2017-11-06T07:04:43,TRAIN,24541,VA,Danville, ,677 Craghead Street, ,DAN,"Danville, VA", , ,-79.3839708790149,36.5840972218533
 185,-84.27806,39.81762,Station Building (with waiting room),2021-09-30T07:04:21,BUS,45426,OH,Trotwood, ,5136 Salem Avenue, ,DAT,"Dayton-Trotwood, OH", ,Trotwood,-84.2780645711226,39.8176276569515
 186,-121.737707,38.543562,Station Building (with waiting room),2018-09-14T07:04:44,TRAIN,95616,CA,Davis, ,840 Second Street, ,DAV,"Davis, CA", , ,-121.737720203611,38.543567058203
@@ -195,7 +195,7 @@
 194,-83.235311,42.307167,Station Building (with waiting room),2018-09-14T07:04:44,TRAIN,48124,MI,Dearborn, ,21201 Michigan Avenue, ,DER,"Dearborn, MI", , ,-83.2353154687614,42.3071751611972
 195,-83.072397,42.368097,Station Building (with waiting room),2017-11-06T07:04:44,TRAIN,48202,MI,Detroit, ,11 West Baltimore Avenue, ,DET,"Detroit, MI", , ,-83.0724014240531,42.3681051803025
 196,-80.122147,26.317069,Station Building (with waiting room),2017-11-06T07:04:44,TRAIN,33442,FL,Deerfield Beach, ,1300 West Hillsboro Boulevard, ,DFB,"Deerfield Beach, FL", , ,-80.1221496742504,26.3170738249829
-197,-70.936013,43.139328,Station Building (with waiting room),2022-08-18T07:04:45,TRAIN,03824,NH,Durham, ,3 Depot Road,University of New Hampshire,DHM,"Durham, NH",University of New Hampshire, ,-70.9360135958971,43.1393368239316
+197,-70.936013,43.139328,Station Building (with waiting room),2022-08-18T07:04:45,TRAIN,3824,NH,Durham, ,3 Depot Road,University of New Hampshire,DHM,"Durham, NH",University of New Hampshire, ,-70.9360135958971,43.1393368239316
 198,-79.372301,34.417647,Station Building (with waiting room),2017-11-06T07:04:45,TRAIN,29536,SC,Dillon, ,100 North Railroad Avenue, ,DIL,"Dillon, SC", , ,-79.3723037604291,34.4176537579621
 199,-75.274378,44.504682,Curbside Bus Stop only (no shelter),2018-06-22T07:04:35,BUS,13630,NY,De Kalb Junction, ,4329 U.S. Highway 11, ,DKJ,"De Kalb Junction, NY", , ,-75.2743801232545,44.5046909136079
 200,-80.091154,26.454021,Platform with Shelter,2017-11-06T07:04:45,TRAIN,33444,FL,Delray Beach, ,345 South Congress Avenue, ,DLB,"Delray Beach, FL", , ,-80.0911566686642,26.4540258605199
@@ -205,7 +205,7 @@
 204,-78.906299,35.997347,Station Building (with waiting room),2018-09-15T07:04:40,TRAIN,27701,NC,Durham, ,601 West Main Street, ,DNC,"Durham, NC", , ,-78.9063017015773,35.9973541153206
 205,-81.143635,33.326184,Station Building (with waiting room),2017-11-06T07:04:45,TRAIN,29042,SC,Denmark, ,200 West Baruch Street, ,DNK,"Denmark, SC", , ,-81.143638233798,33.3261904570707
 206,-86.109041,41.980941,Station Building (with waiting room),2017-11-06T07:04:45,TRAIN,49047,MI,Dowagiac, ,200 Depot Drive, ,DOA,"Dowagiac, MI", , ,-86.1090463088896,41.9809489546474
-207,-70.878361,43.197968,Station Building (with waiting room),2017-11-06T07:04:46,TRAIN,03820,NH,Dover, ,33 Chestnut Street, ,DOV,"Dover, NH", , ,-70.878361580475,43.1979768364118
+207,-70.878361,43.197968,Station Building (with waiting room),2017-11-06T07:04:46,TRAIN,3820,NH,Dover, ,33 Chestnut Street, ,DOV,"Dover, NH", , ,-70.878361580475,43.1979768364118
 208,-75.710775,40.002193,Platform with Shelter,2017-11-06T07:04:46,TRAIN,19335,PA,Downingtown, ,159 Viaduct Avenue, ,DOW,"Downingtown, PA", , ,-75.7107769469716,40.0022010551884
 209,-88.088426,44.451367,Curbside Bus Stop only (no shelter),2019-07-11T07:03:38,BUS,54415,WI,De Pere, ,100 Lawrence Dr,De Pere Park and Ride,DPE,"Green Bay, WI",De Pere Park and Ride, ,-88.0884321660275,44.4513752510609
 210,-89.240254,38.012328,Station Building (with waiting room),2017-11-06T07:04:46,TRAIN,62832,IL,Du Quoin, ,20 North Chestnut Street, ,DQN,"Du Quoin, IL", , ,-89.2402598683129,38.0123350775077
@@ -224,14 +224,14 @@
 223,-78.726152,40.485126,Curbside Bus Stop only (no shelter),2018-09-27T07:04:45,BUS,15931,PA,Ebensburg, ,202 West High Street, ,EBN,"Ebensburg, PA", , ,-78.7261549262274,40.4851340311635
 224,-122.384141,47.811081,Station Building (with waiting room),2017-11-06T07:04:48,TRAIN,98020,WA,Edmonds, ,211 Railroad Avenue, ,EDM,"Edmonds, WA", , ,-122.38415595163,47.8110866214587
 225,-88.54711,39.117059,Station Building (with waiting room),2017-11-06T07:04:48,TRAIN,62401,IL,Effingham, ,401 West National Avenue, ,EFG,"Effingham, IL", , ,-88.547115762549,39.1170663159367
-226,-74.64802,39.526494,Platform with Shelter,2018-09-27T07:04:45,TRAIN,08215,NJ,Egg Harbor City, ,South Philadelphia Avenue & Atlantic Avenue, ,EGH,"Egg Harbor City, NJ", , ,-74.6480215825971,39.5265019984311
+226,-74.64802,39.526494,Platform with Shelter,2018-09-27T07:04:45,TRAIN,8215,NJ,Egg Harbor City, ,South Philadelphia Avenue & Atlantic Avenue, ,EGH,"Egg Harbor City, NJ", , ,-74.6480215825971,39.5265019984311
 227,-124.16933,40.800739,Curbside Bus Stop only (no shelter),2024-02-14T07:10:19,BUS,95501,CA,Eureka, ,6th and C Streets, ,EKA,"Eureka, CA", , ,-124.169343869611,40.800744029963
 228,-121.480807,38.424746,Curbside Bus Stop only (no shelter),2018-09-21T07:04:44,BUS,95758,CA,Elk Grove, ,9180 Harbour Point Drive, ,EKG,"Elk Grove, CA", , ,-121.480820149576,38.4247510677285
 229,-85.971848,41.680748,Station Building (with waiting room),2017-11-06T07:04:48,TRAIN,46515,IN,Elkhart, ,131 Tyler Avenue, ,EKH,"Elkhart, IN", , ,-85.9718532388246,41.6807559096128
 230,-115.75053,40.836483,Platform with Shelter,2017-11-06T07:04:48,TRAIN,89801,NV,Elko,1301 Sharps Access Road (Train 6),1300 Water Street (Train 5), ,ELK,"Elko, NV", , ,-115.750542494204,40.8364887375343
 231,-106.495644,31.757346,Station Building (with waiting room),2018-09-14T07:04:45,TRAIN,79901,TX,El Paso, ,700 West San Francisco Avenue,Union Depot,ELP,"El Paso, TX",Union Depot,Union Depot,-106.495653752275,31.7573511321423
 232,-123.615101,45.886845,Curbside Bus Stop only (no shelter),2018-09-29T07:04:40,BUS,97138,OR,Elsie, ,42362 US Highway 26, ,ELS,"Elsie, OR", , ,-123.615115702914,45.8868503879666
-233,-76.612234,40.147028,Station Building (with waiting room),2017-11-06T07:04:49,TRAIN,17022,PA,Elizabethtown, ,50 South Wilson Avenue , ,ELT,"Elizabethtown, PA", , ,-76.6122362402625,40.1470360502791
+233,-76.612234,40.147028,Station Building (with waiting room),2017-11-06T07:04:49,TRAIN,17022,PA,Elizabethtown, ,50 South Wilson Avenue, ,ELT,"Elizabethtown, PA", , ,-76.6122362402625,40.1470360502791
 234,-82.096685,41.370033,Station Building (with waiting room),2024-11-13T07:07:58,TRAIN,44035,OH,Elyria, ,410 East River Road, ,ELY,"Elyria, OH", , ,-82.0966890377854,41.3700410482501
 235,-87.089868,45.779858,Curbside Bus Stop only (no shelter),2018-09-27T07:04:45,BUS,49829,MI,Escanaba, ,2901 27th Avenue North, ,EMI,"Escanaba, MI", , ,-87.0898740257785,45.7798665198096
 236,-122.291615,37.840474,Station Building (with waiting room),2017-11-06T07:04:49,TRAIN,94608,CA,Emeryville, ,5885 Horton Street, ,EMY,"Emeryville, CA", , ,-122.291628203554,37.8404789588097
@@ -241,7 +241,7 @@
 240,-118.383533,33.906609,Curbside Bus Stop only (no shelter),2018-09-21T07:04:44,BUS,90245,CA,El Segundo, ,700 South Douglas Street, ,ESG,"El Segundo, CA", , ,-118.383545198504,33.9066138317919
 241,-113.610942,48.275543,Platform only (no shelter),2018-09-14T07:04:45,TRAIN,59916,MT,Essex, ,290 Izaak Walton Inn Road, ,ESM,"Essex, MT", , ,-113.610955443431,48.2755495940782
 242,-76.064904,38.811393,Curbside Bus Stop only (no shelter),2018-09-27T07:04:46,BUS,21601,MD,Easton, ,29137 Newman Road, ,ESN,"Easton, MD", , ,-76.0649059860023,38.8114008033515
-243,-73.110277,44.492466,Station Building (with waiting room),2022-07-21T07:04:25,TRAIN,05452,VT,Essex Junction, ,29 Railroad Avenue,Amtrak Station,ESX,"Essex Junction, VT",Amtrak Station,Burlington,-73.110278406805,44.4924749949535
+243,-73.110277,44.492466,Station Building (with waiting room),2022-07-21T07:04:25,TRAIN,5452,VT,Essex Junction, ,29 Railroad Avenue,Amtrak Station,ESX,"Essex Junction, VT",Amtrak Station,Burlington,-73.110278406805,44.4924749949535
 244,-123.092852,44.047504,Curbside Bus Stop only (no shelter),2024-04-02T07:06:59,BUS,97401,OR,Eugene, ,1100 Willamette Street,Chase Bank,EUB,"Eugene-Springfield, OR",Chase Bank,Springfield,-123.09286625508,44.047509335953
 245,-91.506339,44.796558,Curbside Bus Stop only (no shelter),2018-09-28T07:04:41,BUS,54702,WI,Eau Claire, ,642 University Drive,University of Wisconsin,EUC,"Eau Claire, WI",University of Wisconsin, ,-91.5063462194305,44.7965660860785
 246,-123.092361,44.055043,Station Building (with waiting room),2019-04-17T07:03:16,TRAIN,97401,OR,Eugene, ,433 Willamette Street,Amtrak Station,EUG,"Eugene, OR",Amtrak Station, ,-123.092375256607,44.0550483360339
@@ -249,8 +249,8 @@
 248,-75.799444,44.08427,Curbside Bus Stop only (no shelter),2018-06-22T07:04:35,BUS,13637,NY,Evans Mills, ,8650 Leray Street, ,EVM,"Evans Mills, NY", , ,-75.7994462620185,44.084278817689
 249,-122.197858,47.975401,Station Building (with waiting room),2017-11-06T07:04:51,TRAIN,98201,WA,Everett, ,3201 Smith Avenue, ,EVR,"Everett, WA", , ,-122.197872961542,47.9754066503992
 250,-110.957598,41.264175,Curbside Bus Stop only (no shelter),2018-09-28T07:04:41,BUS,82930,WY,Evanston, ,106 North 3rd Street, ,EVY,"Evanston, WY", , ,-110.957609613377,41.2641811673809
-251,-74.18229,40.696618,Station Building (with waiting room),2018-09-14T07:04:45,TRAIN,07114,NJ,Newark, ,3 Brewster Road,Liberty International Airport,EWR,"Newark, NJ",Liberty International Airport,"Liberty International,Liberty Airport,Liberty Intl",-74.1822915039689,40.6966262470508
-252,-70.9587,42.98102,Platform with Shelter,2018-09-14T07:04:46,TRAIN,03833,NH,Exeter, ,60 Lincoln Street, ,EXR,"Exeter, NH", , ,-70.9587005942117,42.9810287933397
+251,-74.18229,40.696618,Station Building (with waiting room),2018-09-14T07:04:45,TRAIN,7114,NJ,Newark, ,3 Brewster Road,Liberty International Airport,EWR,"Newark, NJ",Liberty International Airport,"Liberty International,Liberty Airport,Liberty Intl",-74.1822915039689,40.6966262470508
+252,-70.9587,42.98102,Platform with Shelter,2018-09-14T07:04:46,TRAIN,3833,NH,Exeter, ,60 Lincoln Street, ,EXR,"Exeter, NH", , ,-70.9587005942117,42.9810287933397
 253,-75.621713,40.019291,Station Building (with waiting room),2020-02-22T07:11:08,TRAIN,19341,PA,Exton, ,445 Walkertown Road, ,EXT,"Exton, PA", , ,-75.6217149199237,40.0192990616581
 254,-96.785372,46.880982,Station Building (with waiting room),2017-11-06T07:04:51,TRAIN,58102,ND,Fargo, ,420 4th Street North, ,FAR,"Fargo, ND", , ,-96.7853810345584,46.8809899937259
 255,-78.884788,35.054993,Station Building (with waiting room),2017-11-06T07:04:51,TRAIN,28301,NC,Fayetteville, ,472 Hay Street, ,FAY,"Fayetteville, NC", , ,-78.8847906455804,35.0549999141875
@@ -265,13 +265,13 @@
 264,-111.648871,35.197374,Station Building (with waiting room),2019-02-14T07:03:20,TRAIN,86001,AZ,Flagstaff, ,1 East Route 66,Amtrak Station,FLG,"Flagstaff, AZ",Amtrak Station, ,-111.648882075654,35.1973793757505
 265,-83.651728,43.015425,Station Building (with waiting room),2017-11-06T07:04:53,TRAIN,48503,MI,Flint, ,1407 South Dort Highway, ,FLN,"Flint, MI", , ,-83.6517326628184,43.0154332639983
 266,-79.757056,34.199157,Station Building (with waiting room),2017-11-06T07:04:53,TRAIN,29506,SC,Florence, ,805 East Day Street, ,FLO,"Florence, SC", , ,-79.7570588648118,34.1991636970212
-267,-91.313529,40.629558,Station Building (with waiting room),2021-12-16T07:04:20,TRAIN,52627,IA,Fort Madison,Suite 1,810 10th Street ,Historic Santa Fe Station,FMD,"Fort Madison, IA",Historic Santa Fe Station,"Ft Madison,Ft. Madison,Madison",-91.3135356860096,40.6295654312599
+267,-91.313529,40.629558,Station Building (with waiting room),2021-12-16T07:04:20,TRAIN,52627,IA,Fort Madison,Suite 1,810 10th Street,Historic Santa Fe Station,FMD,"Fort Madison, IA",Historic Santa Fe Station,"Ft Madison,Ft. Madison,Madison",-91.3135356860096,40.6295654312599
 268,-103.802818,40.247169,Station Building (with waiting room),2017-11-06T07:04:53,TRAIN,80701,CO,Fort Morgan, ,South Ensign Street and Main Street, ,FMG,"Fort Morgan, CO", ,"Ft Morgan,Ft. Morgan,Morgan",-103.802827890749,40.2471755719948
 269,-122.007496,37.559093,Station Building (with waiting room),2019-02-14T07:03:20,TRAIN,94536,CA,Fremont, ,37260 Fremont Boulevard,Amtrak/ACE Station,FMT,"Fremont, CA",Amtrak/ACE Station, ,-122.007509128138,37.5590979558676
 270,-119.782926,36.738457,Station Building (with waiting room),2018-09-29T07:04:41,TRAIN,93721,CA,Fresno, ,2650 Tulare Street, ,FNO,"Fresno, CA", , ,-119.782938690066,36.7384620377573
-271,-71.420033,42.275993,Platform with Shelter,2018-09-14T07:04:46,TRAIN,01702,MA,Framingham, ,417 Waverly Street, ,FRA,"Framingham, MA", , ,-71.42003370429,42.2760016457296
+271,-71.420033,42.275993,Platform with Shelter,2018-09-14T07:04:46,TRAIN,1702,MA,Framingham, ,417 Waverly Street, ,FRA,"Framingham, MA", , ,-71.42003370429,42.2760016457296
 272,-77.40558,39.411855,Station Building (with waiting room),2019-02-14T07:03:20,BUS,21704,MD,Frederick, ,100 South East Street,Transit Center/MARC Station,FRC,"Frederick, MD",Transit Center/MARC Station, ,-77.4055824419982,39.4118628746351
-273,-70.102358,43.855035,Station Building (with waiting room),2017-11-06T07:04:54,TRAIN,04032,ME,Freeport, ,23 Depot Road, ,FRE,"Freeport, ME", , ,-70.1023583623106,43.8550439824125
+273,-70.102358,43.855035,Station Building (with waiting room),2017-11-06T07:04:54,TRAIN,4032,ME,Freeport, ,23 Depot Road, ,FRE,"Freeport, ME", , ,-70.1023583623106,43.8550439824125
 274,-105.991608,39.225516,Curbside Bus Stop only (no shelter),2018-07-13T07:04:30,BUS,80421,CO,Fairplay, ,640 US Highway 285, ,FRP,"Fairplay, CO", , ,-105.991618278341,39.2255222795226
 275,-77.382299,39.416261,Curbside Bus Stop only (no shelter),2018-09-27T07:04:47,BUS,21705,MD,Frederick, ,1341 Hughes Ford Road,Frederick Municipal Airport,FRR,"Frederick, MD",Frederick Municipal Airport, ,-77.3823014344987,39.416268875996
 276,-121.92364,37.53915,Curbside Bus Stop only (no shelter),2018-09-29T07:04:41,BUS,94538,CA,Fremont, ,42801 Mission Blvd,VTA Transit Bus Stop,FRT,"Fremont, CA",VTA Transit Bus Stop, ,-121.923653113944,37.5391549602597
@@ -295,7 +295,7 @@
 294,-100.873256,37.964365,Station Building (with waiting room),2018-09-14T07:04:47,TRAIN,67846,KS,Garden City, ,100 North 7th Street, ,GCK,"Garden City, KS", , ,-100.873264940218,37.9643714246038
 295,-118.258868,34.123706,Platform with Shelter,2018-09-14T07:04:47,TRAIN,91204,CA,Glendale, ,400 West Cerritos Avenue, ,GDL,"Glendale, CA", , ,-118.258880195987,34.1237108633353
 296,-117.536887,47.626646,Curbside Bus Stop only (no shelter),2018-09-28T07:04:42,BUS,99224,WA,Spokane, ,9000 West Airport Drive,Spokane Airport,GEG,"Spokane, WA",Spokane Airport, ,-117.53690106702,47.6266521349393
-297,-72.600765,42.585458,Station Building (with waiting room),2018-09-14T07:04:47,TRAIN,01301,MA,Greenfield, ,12 Olive Street, ,GFD,"Greenfield, MA", , ,-72.6007661094004,42.585466665012
+297,-72.600765,42.585458,Station Building (with waiting room),2018-09-14T07:04:47,TRAIN,1301,MA,Greenfield, ,12 Olive Street, ,GFD,"Greenfield, MA", , ,-72.6007661094004,42.585466665012
 298,-97.110835,47.917522,Station Building (with waiting room),2017-11-06T07:04:57,TRAIN,58201,ND,Grand Forks, ,5555 DeMers Avenue, ,GFK,"Grand Forks, ND", , ,-97.11084430646,47.9175300989506
 299,-73.64486,43.308911,Curbside Bus Stop only (no shelter),2024-07-27T07:00:00,BUS,12801,NY,Glens Falls, ,2 Hudson Avenue, ,GFS,"Glens Falls, NY", ,"Glenns Falls,Hudson Falls",-73.6448614998099,43.3089197617135
 300,-106.636188,48.194854,Station Building (with waiting room),2017-11-06T07:04:57,TRAIN,59230,MT,Glasgow, ,424 1st  Avenue South, ,GGW,"Glasgow, MT", , ,-106.636199855105,48.1948612839986
@@ -333,7 +333,7 @@
 332,-79.100326,39.692354,Curbside Bus Stop only (no shelter),2018-09-27T07:04:48,BUS,21536,MD,Grantsville, ,3000 Chestnut Ridge Road, ,GTV,"Grantsville, MD", , ,-79.1003289868809,39.6923618623237
 333,-120.57341,34.962927,Station Building (with waiting room),2018-09-14T07:04:48,TRAIN,93434,CA,Guadalupe, ,330 Guadalupe Street, ,GUA,"Guadalupe, CA", ,santa maria,-120.57342264371,34.9629318143608
 334,-89.09478,30.369036,Platform only (no shelter),2025-03-21T07:06:38,TRAIN,39501,MS,Gulfport, ,1419 27th Avenue, ,GUF,"Gulfport, MS", , ,-89.0947853634926,30.3690415361584
-335,-72.67361,41.275369,Station Building (with waiting room),2024-08-22T10:54:59,TRAIN,06437,CT,Guilford, ,325 Old Whitfield Street, ,GUI,"Guilford, CT", , ,-72.6736110536434,41.2753774118868
+335,-72.67361,41.275369,Station Building (with waiting room),2024-08-22T10:54:59,TRAIN,6437,CT,Guilford, ,325 Old Whitfield Street, ,GUI,"Guilford, CT", , ,-72.6736110536434,41.2753774118868
 336,-106.922057,38.544173,Curbside Bus Stop only (no shelter),2024-07-12T07:00:00,BUS,81230,CO,Gunnison, ,411 East Tomichi Street, ,GUN,"Gunnison, CO", , ,-106.92206741139,38.5441791236716
 337,-120.629266,35.12126,Platform with Shelter,2020-03-06T07:11:09,TRAIN,93433,CA,Grover Beach, ,180 West Grand Avenue, ,GVB,"Grover Beach, CA", , ,-120.629278667266,35.1212648258461
 338,-75.467999,44.335612,Curbside Bus Stop only (no shelter),2018-06-22T07:04:36,BUS,13642,NY,Gouverneur, ,49 East Main Street, ,GVR,"Gouverneur, NY", , ,-75.4680011733186,44.3356208761379
@@ -351,19 +351,19 @@
 350,-122.869456,38.606841,Curbside Bus Stop only (no shelter),2018-07-14T07:04:32,BUS,95448,CA,Healdsburg, ,149 Healdsburg Avenue, ,HEA,"Healdsburg, CA", , ,-122.869469381605,38.6068459774558
 351,-91.432558,38.707283,Station Building (with waiting room),2017-11-06T07:05:02,TRAIN,65041,MO,Hermann, ,301 Wharf Street, ,HEM,"Hermann, MO", , ,-91.432564539857,38.7072900902175
 352,-110.853894,39.684036,Station Building (with waiting room),2017-11-06T07:05:02,TRAIN,84526,UT,Helper, ,1 Depot Street, ,HER,"Helper, UT", , ,-110.853905384066,39.6840419919672
-353,-72.681314,41.768761,Station Building (with waiting room),2017-11-06T07:05:02,TRAIN,06103,CT,Hartford, ,One Union Place, ,HFD,"Hartford, CT", , ,-72.6813150854701,41.7687695066808
+353,-72.681314,41.768761,Station Building (with waiting room),2017-11-06T07:05:02,TRAIN,6103,CT,Hartford, ,One Union Place, ,HFD,"Hartford, CT", , ,-72.6813150854701,41.7687695066808
 354,-77.731078,39.324452,Platform with Shelter,2018-09-14T07:04:48,TRAIN,25425,WV,Harpers Ferry, ,Potomac Street & Shenandoah Street, ,HFY,"Harpers Ferry, WV", , ,-77.7310805379901,39.3244598442996
 355,-78.01178,40.483665,Station Building (with waiting room),2017-11-06T07:05:03,TRAIN,16652,PA,Huntingdon, ,Fourth and Allegheny Streets, ,HGD,"Huntingdon, PA", , ,-78.01178270234,40.4836730606734
 356,-88.54963,47.118726,Curbside Bus Stop only (no shelter),2018-09-27T07:04:48,BUS,49931,MI,Houghton, ,Townsend Drive and Hubbell Street,Michigan Tech University,HGH,"Houghton, MI",Michigan Tech University, ,-88.5496366544252,47.1187346259979
 357,-84.80111,44.335421,Curbside Bus Stop only (no shelter),2018-09-27T07:04:49,BUS,48629,MI,Houghton Lake, ,9391 West Lake City Road, ,HGL,"Houghton Lake, MI", , ,-84.8011151526971,44.3354294244633
 358,-74.640035,44.966824,Curbside Bus Stop only (no shelter),2018-06-22T07:04:36,BUS,13655,NY,Hogansburg, ,935 State Highway 37, ,HGS,"Hogansburg, NY", , ,-74.6400369503133,44.9668330199624
-359,-71.086375,42.773297,Platform with Shelter,2017-11-06T07:05:03,TRAIN,01832,MA,Haverhill, ,Washington Street at Railroad Square, ,HHL,"Haverhill, MA", , ,-71.0863756239726,42.7733057503761
+359,-71.086375,42.773297,Platform with Shelter,2017-11-06T07:05:03,TRAIN,1832,MA,Haverhill, ,Washington Street at Railroad Square, ,HHL,"Haverhill, MA", , ,-71.0863756239726,42.7733057503761
 360,-80.892232,37.675037,Station Building (with waiting room),2018-09-14T07:04:48,TRAIN,25951,WV,Hinton, ,100 Second Avenue, ,HIN,"Hinton, WV", , ,-80.892235401279,37.6750443887177
 361,-124.072165,41.792839,Curbside Bus Stop only (no shelter),2018-09-26T07:04:45,BUS,95531,CA,Crescent City, ,2100 Highway 199, ,HIO,"Hiouchi, CA", ,Crescent City,-124.072179008158,41.7928441035343
 362,-88.580295,47.126982,Curbside Bus Stop only (no shelter),2018-09-27T07:04:49,BUS,49930,MI,Hancock, ,125 Quincy Street, ,HKM,"Hancock, MI", , ,-88.5803016653381,47.1269906252122
 363,-122.866305,45.537276,Curbside Bus Stop only (no shelter),2021-09-10T07:03:52,BUS,97006,OR,Hillsboro, ,2435 NE Town Center Drive, ,HLB,"Hillsboro, OR", , ,-122.86631951452,45.5372814462296
 364,-99.370077,40.436013,Platform only (no shelter),2021-06-16T07:04:08,TRAIN,68949,NE,Holdrege, ,200 East Avenue, ,HLD,"Holdrege, NE", , ,-99.3700858247944,40.4360199004594
-365,-72.602309,42.204156,Platform with Shelter,2017-11-06T07:05:03,TRAIN,01041,MA,Holyoke, ,74 Main Street, ,HLK,"Holyoke, MA", , ,-72.6023100861,42.2041645929736
+365,-72.602309,42.204156,Platform with Shelter,2017-11-06T07:05:03,TRAIN,1041,MA,Holyoke, ,74 Main Street, ,HLK,"Holyoke, MA", , ,-72.6023100861,42.2041645929736
 366,-90.462169,30.50718,Station Building (with waiting room),2017-11-06T07:05:03,TRAIN,70401,LA,Hammond, ,404 N.W. Railroad Avenue, ,HMD,"Hammond, LA", , ,-90.4621747426147,30.5071855206002
 367,-87.506511,41.691155,Station Building (with waiting room),2017-11-06T07:05:03,TRAIN,46320,IN,Hammond, ,1135 North Calumet Avenue, ,HMI,"Hammond-Whiting, IN", ,Whiting,-87.5065166951752,41.6911628281578
 368,-87.668685,41.562446,Station Building (with waiting room),2017-11-06T07:05:04,TRAIN,60430,IL,Homewood, ,18015 Park Avenue, ,HMW,"Homewood, IL", , ,-87.6686907302104,41.5624537972614
@@ -378,7 +378,7 @@
 377,-80.006097,35.957128,Station Building (with waiting room),2017-11-06T07:05:05,TRAIN,27260,NC,High Point, ,100 West High Avenue, ,HPT,"High Point, NC", , ,-80.0061000309405,35.9571350669214
 378,-117.605297,43.855307,Curbside Bus Stop only (no shelter),2018-09-27T07:04:50,BUS,97906,OR,Harper, ,3459 U.S. Highway 20, ,HRP,"Harper, OR", , ,-117.605310310951,43.8553128461271
 379,-124.081496,40.873347,Curbside Bus Stop only (no shelter),2022-03-04T07:04:02,BUS,95521,CA,Arcata, ,L K Wood Boulevard,Cal Poly Humboldt,HSU,"Arcata, CA",Cal Poly Humboldt,Humboldt State University,-124.081509867404,40.8733520428038
-380,-74.79934,39.631317,Platform with Shelter,2018-09-27T07:04:50,TRAIN,08037,NJ,Hammonton, ,Egg Harbor Road & Line Street, ,HTN,"Hammonton, NJ", , ,-74.7993416360752,39.6313250139163
+380,-74.79934,39.631317,Platform with Shelter,2018-09-27T07:04:50,TRAIN,8037,NJ,Hammonton, ,Egg Harbor Road & Line Street, ,HTN,"Hammonton, NJ", , ,-74.7993416360752,39.6313250139163
 381,-73.797729,42.253891,Station Building (with waiting room),2017-11-06T07:05:05,TRAIN,12534,NY,Hudson, ,69 South Front Street, ,HUD,"Hudson, NY", , ,-73.7977304788066,42.2538995601078
 382,-82.439735,38.41582,Station Building (with waiting room),2017-11-06T07:05:05,TRAIN,25701,WV,Huntington, ,1050 8th Avenue, ,HUN,"Huntington, WV", , ,-82.4397389163635,38.4158274719482
 383,-97.931522,38.055712,Station Building (with waiting room),2017-11-06T07:05:05,TRAIN,67501,KS,Hutchinson, ,North Walnut Street & East 3rd Avenue, ,HUT,"Hutchinson, KS", , ,-97.9315302137434,38.0557186143944
@@ -412,10 +412,10 @@
 411,-85.535201,44.584797,Curbside Bus Stop only (no shelter),2018-09-27T07:04:51,BUS,49649,MI,Kingsley, ,119 East Main Street (Hwy 113), ,KGS,"Kingsley, MI", , ,-85.535206405879,44.5848054236128
 412,-122.500484,47.802025,Curbside Bus Stop only (no shelter),2019-02-16T07:03:16,BUS,98346,WA,Kingston, ,10960 State Route 104,Henery Hardware,KGW,"Kingston - Westbound, WA",Henery Hardware, ,-122.500498967643,47.8020306080343
 413,-97.728617,31.121152,Station Building (with waiting room),2018-09-27T07:04:51,BUS,76541,TX,Killeen, ,200 East Avenue C, ,KIL,"Killeen, TX", , ,-97.7286246655861,31.1211573821471
-414,-71.560597,41.483959,Station Building (with waiting room),2018-02-18T07:04:25,TRAIN,02892,RI,West Kingston, ,1 Railroad Avenue, ,KIN,"Kingston, RI", , ,-71.5605977042553,41.4839674888137
+414,-71.560597,41.483959,Station Building (with waiting room),2018-02-18T07:04:25,TRAIN,2892,RI,West Kingston, ,1 Railroad Avenue, ,KIN,"Kingston, RI", , ,-71.5605977042553,41.4839674888137
 415,-81.404234,28.293835,Station Building (with waiting room),2017-11-06T07:05:08,TRAIN,34741,FL,Kissimmee, ,111 East Dakin Avenue, ,KIS,"Kissimmee, FL", , ,-81.4042371073041,28.2938402829077
 416,-87.86543,41.119259,Station Building (with waiting room),2017-11-06T07:05:09,TRAIN,60901,IL,Kankakee, ,199 South East Avenue, ,KKI,"Kankakee, IL", , ,-87.8654357453369,41.1192667090737
-417,-72.794305,43.627005,Curbside Bus Stop only (no shelter),2018-09-27T07:04:51,BUS,05751,VT,Killington, ,228 East Mountain Road, ,KLT,"Killington, VT", , ,-72.7943062410203,43.6270138509531
+417,-72.794305,43.627005,Curbside Bus Stop only (no shelter),2018-09-27T07:04:51,BUS,5751,VT,Killington, ,228 East Mountain Road, ,KLT,"Killington, VT", , ,-72.7943062410203,43.6270138509531
 418,-77.584478,35.243706,Station Building (with waiting room),2018-09-27T07:04:51,BUS,28504,NC,Kinston, ,101 East New Bern Road, ,KNC,"Kinston, NC", , ,-77.5844802608625,35.2437129992889
 419,-114.052816,35.188279,Station Building (with waiting room),2017-11-06T07:05:09,TRAIN,86401,AZ,Kingman, ,402 Andy Devine, ,KNG,"Kingman, AZ", , ,-114.052827539229,35.1882842322845
 420,-84.506535,46.273752,Curbside Bus Stop only (no shelter),2022-08-15T07:04:38,BUS,49752,MI,Kinross Charter Twp, ,6737 M-80, ,KNS,"Kinross Charter Twp, MI", , ,-84.5065402829567,46.2737607512534
@@ -424,7 +424,7 @@
 423,-73.786232,44.188528,Curbside Bus Stop only (no shelter),2018-06-22T07:04:37,BUS,12943,NY,Keene Valley, ,1770 Route 73, ,KVL,"Keene Valley, NY", , ,-73.7862336080351,44.1885369159954
 424,-90.406761,38.581067,Station Building (with waiting room),2017-11-06T07:05:10,TRAIN,63122,MO,Kirkwood, ,110 West Argonne Drive, ,KWD,"Kirkwood, MO", , ,-90.4067672433884,38.5810741225516
 425,-79.385083,40.317405,Platform only (no shelter),2020-10-06T07:05:18,TRAIN,15650,PA,Latrobe, ,329 McKinley Avenue,Amtrak Station,LAB,"Latrobe, PA",Amtrak Station, ,-79.3850861185755,40.3174129716664
-426,-118.077612,45.326472,Station Building (with waiting room),2018-09-27T07:04:52,BUS,97850,OR,La Grande, ,2204 East Penn Avenue , ,LAE,"La Grande, OR", , ,-118.077625672127,45.3264779148236
+426,-118.077612,45.326472,Station Building (with waiting room),2018-09-27T07:04:52,BUS,97850,OR,La Grande, ,2204 East Penn Avenue, ,LAE,"La Grande, OR", , ,-118.077625672127,45.3264779148236
 427,-86.895901,40.419347,Station Building (with waiting room),2019-06-12T07:03:27,TRAIN,47901,IN,Lafayette, ,200 North Second Street,Amtrak Station,LAF,"Lafayette, IN",Amtrak Station, ,-86.8959063966946,40.4193546371294
 428,-87.871545,41.815634,Station Building (with waiting room),2018-09-28T07:04:42,TRAIN,60525,IL,La Grange, ,25 West Burlington Avenue, ,LAG,"La Grange, IL", , ,-87.8715508146311,41.8156418296329
 429,-103.543576,37.988249,Station Building (with waiting room),2017-11-06T07:05:10,TRAIN,81050,CO,La Junta, ,1 West First Street, ,LAJ,"La Junta, CO", , ,-103.543585582916,37.9882552632587
@@ -441,9 +441,9 @@
 440,-124.010371,44.996526,Curbside Bus Stop only (no shelter),2020-07-01T07:00:00,BUS,97367,OR,Lincoln City, ,1725 NW 44th St., ,LCO,"Lincoln City, OR", , ,-124.010385576918,44.9965312993805
 441,-106.78006,32.3055,Curbside Bus Stop only (no shelter),2022-06-11T07:04:31,BUS,88005,NM,Las Cruces, ,300 West Lohman Avenue, ,LCR,"Las Cruces, NM", , ,-106.780069847555,32.305505207599
 442,-118.136432,34.6963,Platform with Shelter,2018-09-26T07:04:47,BUS,93534,CA,Lancaster, ,44812 Sierra Highway, ,LCS,"Lancaster, CA", , ,-118.136444223608,34.696304932781
-443,-69.008642,44.282075,Curbside Bus Stop only (no shelter),2018-09-26T07:04:47,BUS,04849,ME,Lincolnville, ,2512 Atlantic Highway, ,LCV,"Lincolnville, ME", , ,-69.0086420199847,44.2820840932918
+443,-69.008642,44.282075,Curbside Bus Stop only (no shelter),2018-09-26T07:04:47,BUS,4849,ME,Lincolnville, ,2512 Atlantic Highway, ,LCV,"Lincolnville, ME", , ,-69.0086420199847,44.2820840932918
 444,-108.707025,32.35007,Platform with Shelter,2019-12-03T07:03:23,TRAIN,88045,NM,Lordsburg, ,Center Street and East Motel Drive, ,LDB,"Lordsburg, NM", , ,-108.707035260991,32.3500751254868
-445,-75.000759,39.83383,Station Building (with waiting room),2018-09-27T07:04:52,TRAIN,08083,NJ,Somerdale, ,Station Avenue & White Horse Road West, ,LDW,"Lindenwold, NJ", , ,-75.0007607122875,39.833838047672
+445,-75.000759,39.83383,Station Building (with waiting room),2018-09-27T07:04:52,TRAIN,8083,NJ,Somerdale, ,Station Avenue & White Horse Road West, ,LDW,"Lindenwold, NJ", , ,-75.0007607122875,39.833838047672
 446,-94.377972,38.912623,Platform with Shelter,2017-11-06T07:05:12,TRAIN,64063,MO,Lee's Summit, ,217 SW Main Street, ,LEE,"Lee's Summit, MO", , ,-94.3779793631146,38.9126299634502
 447,-123.727964,39.878226,Curbside Bus Stop only (no shelter),2018-09-26T07:04:47,BUS,95585,CA,Leggett, ,69501 Highway 101 North, ,LEG,"Leggett, CA", , ,-123.72797767354,39.8782310038538
 448,-120.644604,47.597678,Curbside Bus Stop only (no shelter),2023-02-10T07:07:00,BUS,98826,WA,Leavenworth, ,200 Ward Strasse,Wilkommen Park and Ride,LEV,"Leavenworth, WA",Wilkommen Park and Ride, ,-120.644618613468,47.5976837998105
@@ -489,7 +489,7 @@
 488,-115.149734,36.164458,Curbside Bus Stop only (no shelter),2021-03-23T07:03:54,BUS,89101,NV,Las Vegas, ,624 South 1st Street, ,LVS,"Las Vegas, NV", , ,-115.14974583296,36.1644632812511
 489,-115.163629,36.068464,Curbside Bus Stop only (no shelter),2021-12-02T07:04:36,BUS,89119,NV,Las Vegas, ,6675 Gilespie Street,South Strip Transfer Terminal,LVT,"Las Vegas, NV",South Strip Transfer Terminal, ,-115.163640825553,36.0684692698121
 490,-94.728322,32.494032,Station Building (with waiting room),2017-11-06T07:05:17,TRAIN,75602,TX,Longview, ,905 Pacific Avenue, ,LVW,"Longview, TX", , ,-94.7283289768442,32.4940377694034
-491,-120.643965,47.606493,Platform with Shelter,2019-02-14T07:03:22,TRAIN,98826,WA,Leavenworth, ,11645 North Road ,Icicle Station,LWA,"Leavenworth, WA",Icicle Station, ,-120.643979614857,47.6064988005714
+491,-120.643965,47.606493,Platform with Shelter,2019-02-14T07:03:22,TRAIN,98826,WA,Leavenworth, ,11645 North Road,Icicle Station,LWA,"Leavenworth, WA",Icicle Station, ,-120.643979614857,47.6064988005714
 492,-77.574643,40.597123,Curbside Bus Stop only (no shelter),2019-02-14T07:03:22,BUS,17044,PA,Lewistown, ,6 West Market Street,Laskaris restaurant,LWB,"Lewistown, PA",Laskaris restaurant, ,-77.5746455734039,40.5971311000412
 493,-117.005923,46.426931,Curbside Bus Stop only (no shelter),2018-09-26T07:04:48,BUS,83501,ID,Lewiston, ,1920 Highway 128, ,LWN,"Lewiston, ID", , ,-117.005936701491,46.426937104148
 494,-79.156934,37.406439,Station Building (with waiting room),2017-11-06T07:05:18,TRAIN,24501,VA,Lynchburg, ,825 Kemper Street, ,LYH,"Lynchburg, VA", , ,-79.156936858109,37.4064464016767
@@ -500,35 +500,35 @@
 499,-107.872242,48.360477,Station Building (with waiting room),2017-11-06T07:05:18,TRAIN,59538,MT,Malta, ,51 South 1st Street East, ,MAL,"Malta, MT", , ,-107.872254186826,48.3604841805846
 500,-88.376045,39.48273,Station Building (with waiting room),2017-11-06T07:05:18,TRAIN,61938,IL,Mattoon, ,1718 Broadway Avenue, ,MAT,"Mattoon, IL", , ,-88.3760507445158,39.4827373913532
 501,-83.771074,38.652148,Station Building (with waiting room),2017-11-06T07:05:18,TRAIN,41056,KY,Maysville, ,West Front Street & Rosemary Clooney Street, ,MAY,"Maysville, KY", , ,-83.771078330907,38.6521554593225
-502,-73.169775,44.017425,Platform with Shelter,2022-05-14T07:04:10,TRAIN,05753,VT,Middlebury, ,30 Middle Seymour Street ,Amtrak Station,MBY,"Middlebury, VT",Amtrak Station, ,-73.1697763927624,44.0174339077669
+502,-73.169775,44.017425,Platform with Shelter,2022-05-14T07:04:10,TRAIN,5753,VT,Middlebury, ,30 Middle Seymour Street,Amtrak Station,MBY,"Middlebury, VT",Amtrak Station, ,-73.1697763927624,44.0174339077669
 503,-90.451334,31.244467,Station Building (with waiting room),2017-11-06T07:05:19,TRAIN,39648,MS,McComb, ,114 North Railroad Avenue, ,MCB,"McComb, MS", , ,-90.451339774799,31.2444726785847
 504,-120.476805,37.307183,Station Building (with waiting room),2017-11-06T07:05:19,TRAIN,95340,CA,Merced, ,324 West 24th Street, ,MCD,"Merced, CA", , ,-120.476817862972,37.3071880425907
 505,-97.404756,31.443352,Station Building (with waiting room),2019-11-05T07:03:19,TRAIN,76657,TX,McGregor, ,1 Amtrak Boulevard, ,MCG,"McGregor, TX", , ,-97.4047636009775,31.4433574571104
 506,-100.625792,40.197634,Station Building (with waiting room),2017-11-06T07:05:19,TRAIN,69001,NE,McCook, ,101 Norris Avenue, ,MCK,"McCook, NE", , ,-100.62580111332,40.1976407813338
 507,-73.563719,45.516933,Station Building (with waiting room),2024-08-22T10:54:59,BUS,H2L 4E9,QC,Montreal , ,1717 Rue Berri,Gare d'autocars / Bus Terminal,MCT,"Montreal, QC",Gare d'autocars / Bus Terminal, ,-73.5637206345793,45.5169421571819
-508,-73.058331,43.177711,Curbside Bus Stop only (no shelter),2019-02-14T07:03:23,BUS,05255,VT,Manchester Center, ,75 Bonnet Street,Tour Bus Parking Area,MCV,"Manchester Center, VT",Tour Bus Parking Area, ,-73.0583322978281,43.1777197588473
-509,-72.800678,41.539385,Platform with Shelter,2018-06-15T07:04:18,TRAIN,06450,CT,Meriden, ,60 State Street, ,MDN,"Meriden, CT", , ,-72.8006791106314,41.5393934588654
+508,-73.058331,43.177711,Curbside Bus Stop only (no shelter),2019-02-14T07:03:23,BUS,5255,VT,Manchester Center, ,75 Bonnet Street,Tour Bus Parking Area,MCV,"Manchester Center, VT",Tour Bus Parking Area, ,-73.0583322978281,43.1777197588473
+509,-72.800678,41.539385,Platform with Shelter,2018-06-15T07:04:18,TRAIN,6450,CT,Meriden, ,60 State Street, ,MDN,"Meriden, CT", , ,-72.8006791106314,41.5393934588654
 510,-119.920202,37.544143,Curbside Bus Stop only (no shelter),2018-09-26T07:04:49,BUS,95345,CA,Midpines, ,6979 Highway 140, ,MDP,"Midpines, CA", , ,-119.920214800395,37.5441481038942
 511,-120.07498,37.022471,Platform with Shelter,2017-11-06T07:05:20,TRAIN,93638,CA,Madera, ,18770 Road 26, ,MDR,"Madera, CA", , ,-120.074992767643,37.0224760443741
-512,-72.59704,41.283527,Station Building (with waiting room),2024-08-22T10:54:59,TRAIN,06443,CT,Madison, ,79 Bradley Road, ,MDS,"Madison, CT", , ,-72.5970410294791,41.2835354162719
+512,-72.59704,41.283527,Station Building (with waiting room),2024-08-22T10:54:59,TRAIN,6443,CT,Madison, ,79 Bradley Road, ,MDS,"Madison, CT", , ,-72.5970410294791,41.2835354162719
 513,-89.11792,41.549584,Station Building (with waiting room),2017-11-06T07:05:20,TRAIN,61342,IL,Mendota, ,783 Main Street, ,MDT,"Mendota, IL", , ,-89.1179261520611,41.5495917138946
 514,-87.450266,37.256047,Curbside Bus Stop only (no shelter),2022-11-21T10:50:01,BUS,42431,KY,Madisonville, ,99 Free Henry Ford Road, ,MDV,"Madisonville, KY", , ,-87.4502713022491,37.2560540201662
 515,-121.966252,47.858216,Curbside Bus Stop only (no shelter),2019-02-16T07:03:16,BUS,98272,WA,Monroe, ,19746 US Highway 2,Grocery Outlet,MEE,"Monroe - Eastbound, WA",Grocery Outlet, ,-121.966266894929,47.8582216699323
 516,-88.696568,32.364166,Station Building (with waiting room),2018-07-06T07:04:34,TRAIN,39301,MS,Meridian, ,1901 Front Street,Union Station,MEI,"Meridian, MS",Union Station,Union Station,-88.6965733497284,32.3641719789522
 517,-90.059109,35.132458,Station Building (with waiting room),2019-07-09T07:03:15,TRAIN,38103,TN,Memphis,Main and Carolina Entrance,545 South Main Street,Central Station,MEM,"Memphis, TN",Central Station, ,-90.0591148877747,35.1324644883067
-518,-74.329583,40.568056,Station Building (with waiting room),2019-08-19T07:03:16,TRAIN,08830,NJ,Iselin, ,100 Middlesex-Essex Turnpike, ,MET,"Metropark, NJ", ,iselin,-74.329584542979,40.5680642163942
+518,-74.329583,40.568056,Station Building (with waiting room),2019-08-19T07:03:16,TRAIN,8830,NJ,Iselin, ,100 Middlesex-Essex Turnpike, ,MET,"Metropark, NJ", ,iselin,-74.329584542979,40.5680642163942
 519,-121.966193,47.858463,Curbside Bus Stop only (no shelter),2019-02-16T07:03:16,BUS,98272,WA,Monroe, ,19721 US Highway 2,Shell gas station,MEW,"Monroe - Westbound, WA",Shell gas station, ,-121.966207895378,47.8584686699205
 520,-122.874414,42.367913,Curbside Bus Stop only (no shelter),2019-02-14T07:03:23,BUS,97504,OR,Medford, ,1000 Terminal Loop Parkway,Rogue Valley Int'l Airport,MFA,"Medford, OR",Rogue Valley Int'l Airport, ,-122.874427925667,42.367918249455
 521,-122.871538,42.324198,Station Building (with waiting room),2024-08-22T10:54:59,BUS,97501,OR,Medford, ,220 S. Front Street,Front Street Station,MFR,"Medford, OR",Front Street Station, ,-122.871551918081,42.3242032468116
 522,-121.650004,37.130085,Platform with Shelter,2018-09-26T07:04:49,BUS,95037,CA,Morgan Hill, ,17300 Depot Street, ,MHC,"Morgan Hill, CA", , ,-121.650017026652,37.1300899442811
 523,-76.71568,34.721383,Curbside Bus Stop only (no shelter),2018-09-27T07:04:56,BUS,28557,NC,Morehead City, ,1001 Arendell Street, ,MHD,"Morehead City, NC", , ,-76.7156819712656,34.7213899125567
 524,-94.366995,32.551549,Station Building (with waiting room),2018-09-15T07:04:41,TRAIN,75670,TX,Marshall, ,800 North Washington Street, ,MHL,"Marshall, TX", , ,-94.367001885664,32.5515547952776
-525,-71.466051,42.986893,Station Building (with waiting room),2018-09-27T07:04:56,BUS,03101,NH,Manchester, ,119 Canal Street, ,MHT,"Manchester, NH", , ,-71.466051762435,42.9869017782833
+525,-71.466051,42.986893,Station Building (with waiting room),2018-09-27T07:04:56,BUS,3101,NH,Manchester, ,119 Canal Street, ,MHT,"Manchester, NH", , ,-71.466051762435,42.9869017782833
 526,-80.257759,25.849554,Station Building (with waiting room),2017-11-06T07:05:22,TRAIN,33147,FL,Miami, ,8303 NW 37th Avenue, ,MIA,"Miami, FL", , ,-80.2577617013305,25.8495587045718
 527,-76.736482,40.195658,Platform with Shelter,2022-06-11T07:04:31,TRAIN,17057,PA,Middletown, ,270 West Emaus Street, ,MID,"Middletown, PA", , ,-76.7364842825544,40.1956660548943
 528,-77.375012,40.578793,Curbside Bus Stop only (no shelter),2018-09-27T07:04:56,BUS,17059,PA,Mifflintown, ,9 Stop Plaza Drive, ,MIF,"Mifflintown, PA", , ,-77.3750145093231,40.5788011045439
 529,-95.4891,32.662049,Station Building (with waiting room),2017-11-06T07:05:22,TRAIN,75773,TX,Mineola, ,115 East Front Street, ,MIN,"Mineola, TX", , ,-95.4891071828573,32.6620547700739
-530,-73.174466,44.010209,Curbside Bus Stop only (no shelter),2022-03-16T07:04:11,BUS,05753,VT,Middlebury, ,130 Storrs Avenue,Middlebury College,MIY,"Middlebury, VT",Middlebury College, ,-73.1744673933794,44.0102179067006
+530,-73.174466,44.010209,Curbside Bus Stop only (no shelter),2022-03-16T07:04:11,BUS,5753,VT,Middlebury, ,130 Storrs Avenue,Middlebury College,MIY,"Middlebury, VT",Middlebury College, ,-73.1744673933794,44.0102179067006
 531,-76.503443,40.109165,Platform with Shelter,2019-08-24T07:03:19,TRAIN,17552,PA,Mount Joy, ,25 South Market Street, ,MJY,"Mount Joy, PA", , ,-76.5034452036372,40.1091730467157
 532,-87.924359,42.940583,Station Building (with waiting room),2019-07-01T07:03:27,TRAIN,53221,WI,Milwaukee, ,5601 South 6th Street,General Mitchell Int'l Airport,MKA,"Milwaukee Airport-Trains, WI",General Mitchell Int'l Airport,"General Mitchell,Mitchell",-87.9243649468024,42.9405910161407
 533,-87.903077,42.947175,Curbside Bus Stop only (no shelter),2019-07-01T07:03:27,BUS,53207,WI,Milwaukee, ,5300 South Howell Avenue,General Mitchell Int'l Airport,MKB,"Milwaukee Airport-Buses, WI",General Mitchell Int'l Airport, ,-87.9030829414401,42.9471830181598
@@ -551,7 +551,7 @@
 550,-117.288588,33.912758,Curbside Bus Stop only (no shelter),2018-09-26T07:04:49,BUS,92518,CA,Riverside, ,14160 Meridian Parkway, ,MOV,"Moreno Valley, CA", , ,-117.28860001387,33.9127628937137
 551,-118.878059,34.28476,Platform only (no shelter),2018-09-14T07:04:50,TRAIN,93021,CA,Moorpark, ,300 High Street, ,MPK,"Moorpark, CA", , ,-118.878071311656,34.2847648451341
 552,-123.85849,44.02687,Platform only (no shelter),2024-12-08T07:06:18,BUS,97453,OR,Mapleton, ,10785 OR-126, ,MPL,"Mapleton, OR", , ,-123.858504365645,44.0268752600727
-553,-72.606394,44.255749,Station Building (with waiting room),2017-11-06T07:05:24,TRAIN,05602,VT,Montpelier, ,297 Junction Road, ,MPR,"Montpelier-Berlin, VT", ,Berlin,-72.6063952224652,44.2557579713145
+553,-72.606394,44.255749,Station Building (with waiting room),2017-11-06T07:05:24,TRAIN,5602,VT,Montpelier, ,297 Junction Road, ,MPR,"Montpelier-Berlin, VT", ,Berlin,-72.6063952224652,44.2557579713145
 554,-84.772629,43.58182,Station Building (with waiting room),2018-09-27T07:04:56,BUS,48858,MI,Mt. Pleasant, ,300 East Broomfield Street,Central Michigan University,MPT,"Mt. Pleasant, MI",Central Michigan University, ,-84.7726340639192,43.5818283005527
 555,-87.452499,46.557825,Station Building (with waiting room),2018-09-27T07:04:56,BUS,49855,MI,Marquette, ,1325 Commerce Drive, ,MQT,"Marquette, MI", , ,-87.4525052389859,46.5578336152807
 556,-77.961014,39.458661,Station Building (with waiting room),2018-05-16T07:04:26,TRAIN,25401,WV,Martinsburg, ,229 East Martin Street, ,MRB,"Martinsburg, WV", , ,-77.9610166176254,39.4586688621169
@@ -559,7 +559,7 @@
 558,-119.966205,37.485747,Curbside Bus Stop only (no shelter),2019-02-14T07:03:23,BUS,95338,CA,Mariposa, ,Highway 140 and 7th Street,Midtown YARTS bus stop,MRM,"Mariposa, CA",Midtown YARTS bus stop, ,-119.96621780098,37.4857520951428
 559,-119.974222,37.491268,Curbside Bus Stop only (no shelter),2019-02-14T07:03:24,BUS,95338,CA,Mariposa, ,4974 Joe Howard Street,Mariposa Park and Ride,MRP,"Mariposa, CA",Mariposa Park and Ride, ,-119.974234803156,37.4912730952634
 560,-121.597259,39.143721,Station Building (with waiting room),2018-09-26T07:04:50,BUS,95901,CA,Marysville, ,858 I Street, ,MRV,"Marysville, CA", , ,-121.597272257896,39.1437261187481
-561,-121.894331,36.597611,Curbside Bus Stop only (no shelter),2019-02-14T07:03:24,BUS,93940,CA,Monterey, ,500 Tyler Street ,Transit Plaza,MRY,"Monterey, CA",Transit Plaza, ,-121.894344006646,36.5976158811599
+561,-121.894331,36.597611,Curbside Bus Stop only (no shelter),2019-02-14T07:03:24,BUS,93940,CA,Monterey, ,500 Tyler Street,Transit Plaza,MRY,"Monterey, CA",Transit Plaza, ,-121.894344006646,36.5976158811599
 562,-93.210772,44.882625,Curbside Bus Stop only (no shelter),2018-09-27T07:04:57,BUS,55111,MN,St. Paul, ,4300 Glumack Drive,Minneapolis-St Paul Intl Airport,MSL,"St. Paul-Minneapolis, MN",Minneapolis-St Paul Intl Airport,"St Paul,Saint Paul,Minneapolis",-93.210779722925,44.8826329829686
 563,-89.397612,43.071201,Curbside Bus Stop only (no shelter),2020-07-08T14:48:43,BUS,53706,WI,Madison, ,250 North Lake Street,Univ of Wisc - Gordon Center,MSN,"Madison, WI",Univ of Wisc - Gordon Center, ,-89.3976183953343,43.0712089506463
 564,-93.085355,44.947661,Station Building (with waiting room),2018-09-15T07:04:41,TRAIN,55101,MN,St. Paul, ,240 Kellogg Boulevard East,Union Depot,MSP,"St. Paul-Minneapolis, MN",Union Depot,"Minneapolis,St Paul,Saint Paul,Union Depot",-93.0853626957673,44.9476690011535
@@ -575,18 +575,18 @@
 574,-121.90164,36.61768,Curbside Bus Stop only (no shelter),2019-02-14T07:03:24,BUS,93940,CA,Monterey, ,886 Cannery Row,Monterey Bay Aquarium,MYA,"Monterey, CA",Monterey Bay Aquarium, ,-121.901653009717,36.6176848821339
 575,-121.877311,36.591861,Curbside Bus Stop only (no shelter),2019-02-14T07:03:24,BUS,93940,CA,Monterey, ,1 Old Golf Course Road,Hyatt Regency Hotel,MYH,"Monterey, CA",Hyatt Regency Hotel, ,-121.877324003352,36.5918658813602
 576,-121.895837,36.599285,Curbside Bus Stop only (no shelter),2022-12-15T07:06:57,BUS,93940,CA,Monterey, ,438 Calle Principal,Calle Principal Parking Garage,MYM,"Monterey, CA",Calle Principal Parking Garage, ,-121.895850007067,36.5992898811993
-577,-71.963093,41.350934,Station Building (with waiting room),2018-09-14T07:04:50,TRAIN,06355,CT,Mystic, ,2 Roosevelt Avenue, ,MYS,"Mystic, CT", , ,-71.9630938276269,41.3509424499409
+577,-71.963093,41.350934,Station Building (with waiting room),2018-09-14T07:04:50,TRAIN,6355,CT,Mystic, ,2 Roosevelt Avenue, ,MYS,"Mystic, CT", , ,-71.9630938276269,41.3509424499409
 578,-121.892522,36.595379,Curbside Bus Stop only (no shelter),2019-02-14T07:03:24,BUS,93940,CA,Monterey, ,351 Fremont Street,Chevron gas station,MYT,"Monterey, CA",Chevron gas station, ,-121.892535006277,36.5953838808643
 579,-121.801379,36.653516,Curbside Bus Stop only (no shelter),2023-02-01T07:07:22,TRAIN,93955,CA,Seaside-Marina, ,5101 4th Avenue,CSU-Monterey Bay,MYU,"Seaside-Marina, CA",CSU-Monterey Bay, ,-121.801391998635,36.6535208924122
 580,-116.529658,43.588257,Curbside Bus Stop only (no shelter),2018-09-26T07:04:51,BUS,83687,ID,Nampa, ,3319 Garrity Boulevard, ,NAM,"Nampa, ID", , ,-116.529671068921,43.5882629225773
 581,-122.280022,38.297617,Curbside Bus Stop only (no shelter),2018-05-26T07:04:18,BUS,94559,CA,Napa, ,625 Burnell Street, ,NAP,"Napa, CA", , ,-122.280035256167,38.2976219976335
-582,-74.446265,40.496522,Station Building (with waiting room),2018-09-14T07:04:50,TRAIN,08901,NJ,New Brunswick, ,French and Albany Streets, ,NBK,"New Brunswick, NJ", , ,-74.4462665759944,40.4965301986859
+582,-74.446265,40.496522,Station Building (with waiting room),2018-09-14T07:04:50,TRAIN,8901,NJ,New Brunswick, ,French and Albany Streets, ,NBK,"New Brunswick, NJ", , ,-74.4462665759944,40.4965301986859
 583,-89.262264,36.112711,Station Building (with waiting room),2017-11-06T07:05:28,TRAIN,38059,TN,Newbern, ,108 Jefferson St, ,NBN,"Newbern-Dyersburg, TN", ,Dyersburg,-89.2622697327359,36.1127177153931
 584,-77.036948,35.104416,Curbside Bus Stop only (no shelter),2018-10-22T07:08:02,BUS,28560,NC,New Bern, ,203 South Front Street, ,NBR,"New Bern, NC", ,"Havelock,Morehead City",-77.0369500874341,35.1044229866449
 585,-86.745782,41.796656,Platform with Shelter,2017-11-06T07:05:28,TRAIN,49117,MI,New Buffalo, ,226 North Whittaker Street, ,NBU,"New Buffalo, MI", , ,-86.7457874805828,41.7966638878519
 586,-94.677186,31.703839,Curbside Bus Stop only (no shelter),2024-05-24T16:48:58,BUS,75965,TX,Nacogdoches, ,10175 US Highway 259, ,NCG,"Nacogdoches, TX", , ,-94.6771929200815,31.7038446151731
 587,-76.871494,38.948098,Station Building (with waiting room),2017-11-06T07:05:28,TRAIN,20784,MD,New Carrollton, ,4300 Garden City Drive, ,NCR,"New Carrollton, MD", , ,-76.8714962467028,38.9481058018575
-588,-71.129461,44.054485,Station Building (with waiting room),2018-09-27T07:04:58,BUS,03860,NH,North Conway, ,2760 White Mountain Highway, ,NCW,"North Conway, NH", , ,-71.1294617166758,44.0544939856775
+588,-71.129461,44.054485,Station Building (with waiting room),2018-09-27T07:04:58,BUS,3860,NH,North Conway, ,2760 White Mountain Highway, ,NCW,"North Conway, NH", , ,-71.1294617166758,44.0544939856775
 589,-114.606188,34.840616,Platform only (no shelter),2024-06-08T07:05:50,TRAIN,92363,CA,Needles, ,950 Front Street, ,NDL,"Needles, CA", , ,-114.60619961146,34.8406211570249
 590,-97.344886,38.046976,Station Building (with waiting room),2017-11-06T07:05:29,TRAIN,67114,KS,Newton, ,414 North Main Street, ,NEW,"Newton, KS", , ,-97.3448940628354,38.0469826466036
 591,-76.98243,40.447646,Curbside Bus Stop only (no shelter),2018-07-19T07:04:41,BUS,17069,PA,New Buffalo, ,3298 Susquehanna Trail, ,NFF,"New Buffalo, PA", , ,-76.9824323766833,40.4476540946819
@@ -594,10 +594,10 @@
 593,-79.055276,43.109908,Station Building (with waiting room),2017-11-06T07:05:29,TRAIN,14305,NY,Niagara Falls, ,825 Depot Avenue West, ,NFL,"Niagara Falls, NY", , ,-79.0552792326621,43.1099165035854
 594,-79.063291,43.108736,Station Building (with waiting room),2017-11-06T07:05:29,TRAIN,L2E 2R6,ON,Niagara Falls, ,4267 Bridge Street, ,NFS,"Niagara Falls, ON", , ,-79.063294235189,43.1087445033929
 595,-118.527338,34.379451,Platform with Shelter,2018-09-26T07:04:51,BUS,91321,CA,Santa Clarita, ,24300 Railroad Avenue, ,NHL,"Santa Clarita-Newhall, CA", ,Newhall,-118.527350261624,34.3794558757825
-596,-72.626379,42.318858,Platform with Shelter,2017-11-06T07:05:29,TRAIN,01060,MA,Northampton, ,170 Pleasant Street, ,NHT,"Northampton, MA", , ,-72.6263801009815,42.3188666136097
-597,-72.92667,41.297714,Station Building (with waiting room),2018-04-27T07:04:12,TRAIN,06519,CT,New Haven, ,50 Union Avenue,Union Station,NHV,"New Haven, CT",Union Station,Union Station,-72.9266711368261,41.2977224076719
+596,-72.626379,42.318858,Platform with Shelter,2017-11-06T07:05:29,TRAIN,1060,MA,Northampton, ,170 Pleasant Street, ,NHT,"Northampton, MA", , ,-72.6263801009815,42.3188666136097
+597,-72.92667,41.297714,Station Building (with waiting room),2018-04-27T07:04:12,TRAIN,6519,CT,New Haven, ,50 Union Avenue,Union Station,NHV,"New Haven, CT",Union Station,Union Station,-72.9266711368261,41.2977224076719
 598,-91.823809,30.008415,Platform only (no shelter),2018-09-14T07:04:51,TRAIN,70560,LA,New Iberia, ,402 West Washington Street, ,NIB,"New Iberia, LA", , ,-91.8238150862764,30.008420367813
-599,-72.093225,41.354267,Station Building (with waiting room),2017-11-06T07:05:29,TRAIN,06320,CT,New London, ,27 Water Street,Union Station,NLC,"New London, CT",Union Station,Union Station,-72.0932258700642,41.3542754465237
+599,-72.093225,41.354267,Station Building (with waiting room),2017-11-06T07:05:29,TRAIN,6320,CT,New London, ,27 Water Street,Union Station,NLC,"New London, CT",Union Station,Union Station,-72.0932258700642,41.3542754465237
 600,-86.252372,41.837412,Station Building (with waiting room),2017-11-06T07:05:30,TRAIN,49120,MI,Niles, ,598 Dey Street, ,NLS,"Niles, MI", , ,-86.2523773373222,41.837419921987
 601,-90.078291,29.946085,Station Building (with waiting room),2018-07-06T07:04:34,TRAIN,70113,LA,New Orleans, ,1001 Loyola Avenue,Union Passenger Terminal,NOL,"New Orleans, LA",Union Passenger Terminal,Union Passenger Depot,-90.0782966140365,29.9460904120648
 602,-97.443013,35.219963,Platform only (no shelter),2024-06-08T07:05:50,TRAIN,73069,OK,Norman, ,200 South Jones Avenue, ,NOR,"Norman, OK", , ,-97.4430208519732,35.2199691549462
@@ -609,10 +609,10 @@
 608,-75.753513,39.669686,Platform with Shelter,2024-11-13T07:07:58,TRAIN,19713,DE,Newark, ,110 Station Way,Thomas R. Carper Station,NRK,"Newark, DE",Thomas R. Carper Station, ,-75.7535149398074,39.6696939876158
 609,-73.784329,40.911451,Station Building (with waiting room),2018-09-14T07:04:51,TRAIN,10801,NY,New Rochelle, ,1 Railroad Plaza, ,NRO,"New Rochelle, NY", , ,-73.7843303896635,40.9114593030402
 610,-78.706292,35.794203,Platform only (no shelter),2018-09-29T07:04:45,TRAIN,27607,NC,Raleigh, ,1025 Blue Ridge Road, ,NSF,"North Carolina State Fair, NC", ,"raleigh,fair,state fair,nc state fair",-78.706294629668,35.7942100791741
-611,-71.503866,42.790718,Curbside Bus Stop only (no shelter),2018-09-27T07:04:58,BUS,03064,NH,Nashua, ,8 North Southwood Drive, ,NSH,"Nashua, NH", , ,-71.503866762935,42.7907267404794
+611,-71.503866,42.790718,Curbside Bus Stop only (no shelter),2018-09-27T07:04:58,BUS,3064,NH,Nashua, ,8 North Southwood Drive, ,NSH,"Nashua, NH", , ,-71.503866762935,42.7907267404794
 612,-86.77305,36.152068,Station Building (with waiting room),2022-05-28T07:04:15,BUS,37203,TN,Nashville, ,709 Rep John Lewis Way South, ,NVL,"Nashville, TN", , ,-86.7730550316501,36.1520748350275
-613,-74.16475,40.734706,Station Building (with waiting room),2018-09-14T07:04:51,TRAIN,07102,NJ,Newark, ,1 Raymond Plaza West,Penn Station,NWK,"Newark, NJ",Penn Station,Penn Station,-74.1647515009911,40.7347142553436
-614,-71.317116,41.488656,Station Building (with waiting room),2018-05-16T07:04:26,BUS,02840,RI,Newport, ,39 America's Cup Avenue, ,NWP,"Newport, RI", , ,-71.3171166255434,41.4886644978528
+613,-74.16475,40.734706,Station Building (with waiting room),2018-09-14T07:04:51,TRAIN,7102,NJ,Newark, ,1 Raymond Plaza West,Penn Station,NWK,"Newark, NJ",Penn Station,Penn Station,-74.1647515009911,40.7347142553436
+614,-71.317116,41.488656,Station Building (with waiting room),2018-05-16T07:04:26,BUS,2840,RI,Newport, ,39 America's Cup Avenue, ,NWP,"Newport, RI", , ,-71.3171166255434,41.4886644978528
 615,-76.229473,43.071924,Platform with Shelter,2022-08-05T07:04:27,TRAIN,13209,NY,Syracuse, ,581 State Fair Boulevard, ,NYF,"New York State Fair, NY", , ,-76.2294753239453,43.0719326180432
 616,-73.996327,40.751038,Station Building (with waiting room),2022-08-04T07:04:30,TRAIN,10001,NY,New York, ,351 West 31st Street,Moynihan Train Hall at Penn Sta.,NYP,"New York, NY",Moynihan Train Hall at Penn Sta.,"nyc,Penn Station,Moynihan Train Hall,new york city,newyork",-73.9963284479714,40.7510462639657
 617,-122.198147,37.752499,Platform with Shelter,2019-02-14T07:03:24,TRAIN,94621,CA,Oakland, ,700 73rd Avenue,Coliseum/Airport Station,OAC,"Oakland, CA",Coliseum/Airport Station, ,-122.19816017899,37.7525039587713
@@ -633,12 +633,12 @@
 632,-95.927201,41.249697,Station Building (with waiting room),2024-09-26T07:00:00,TRAIN,68108,NE,Omaha, ,1003 South 9th Street, ,OMA,"Omaha, NE", , ,-95.9272090188653,41.2497042509765
 633,-117.649569,34.061672,Platform only (no shelter),2018-09-14T07:04:51,TRAIN,91764,CA,Ontario, ,198 East Emporia Street, ,ONA,"Ontario, CA", , ,-117.649581087478,34.0616768905604
 634,-116.951325,44.024071,Station Building (with waiting room),2018-09-27T07:04:59,BUS,97914,OR,Ontario, ,842 Southeast 1st Avenue, ,ONT,"Ontario, OR", , ,-116.951338223213,44.0240769208982
-635,-70.376225,43.514326,Platform only (no shelter),2018-09-14T07:04:51,TRAIN,04064,ME,Old Orchard Beach, ,11 First Street, ,ORB,"Old Orchard Beach, ME", , ,-70.3762254325132,43.514334911432
+635,-70.376225,43.514326,Platform only (no shelter),2018-09-14T07:04:51,TRAIN,4064,ME,Old Orchard Beach, ,11 First Street, ,ORB,"Old Orchard Beach, ME", , ,-70.3762254325132,43.514334911432
 636,-122.595925,45.366146,Platform with Shelter,2017-11-06T07:05:34,TRAIN,97045,OR,Oregon City, ,1757 Washington Street, ,ORC,"Oregon City, OR", , ,-122.595939437451,45.3661514642117
 637,-81.381516,28.525926,Station Building (with waiting room),2018-09-14T07:04:51,TRAIN,32806,FL,Orlando, ,1400 Sligh Boulevard, ,ORL,"Orlando, FL", ,Disney,-81.3815191090275,28.5259313394678
-638,-68.670015,44.903283,Curbside Bus Stop only (no shelter),2018-09-26T07:04:52,BUS,04469,ME,Orono, ,8 Gym Drive,University of Maine,ORO,"Orono, ME",University of Maine, ,-68.6700149419108,44.9032922152145
+638,-68.670015,44.903283,Curbside Bus Stop only (no shelter),2018-09-26T07:04:52,BUS,4469,ME,Orono, ,8 Gym Drive,University of Maine,ORO,"Orono, ME",University of Maine, ,-68.6700149419108,44.9032922152145
 639,-121.572193,39.496793,Curbside Bus Stop only (no shelter),2023-10-13T07:08:46,BUS,95965,CA,Oroville, ,2525 Feather River Boulevard, ,ORV,"Oroville, CA", , ,-121.572206299723,39.4967981492212
-640,-72.376818,41.30039,Station Building (with waiting room),2018-09-14T07:04:52,TRAIN,06475,CT,Old Saybrook, ,455 Boston Post Road, ,OSB,"Old Saybrook, CT", , ,-72.3768189585254,41.3003984266189
+640,-72.376818,41.30039,Station Building (with waiting room),2018-09-14T07:04:52,TRAIN,6475,CT,Old Saybrook, ,455 Boston Post Road, ,OSB,"Old Saybrook, CT", , ,-72.3768189585254,41.3003984266189
 641,-93.764894,41.037116,Station Building (with waiting room),2017-11-06T07:05:34,TRAIN,50213,IA,Osceola, ,Main & East Clay Streets, ,OSC,"Osceola, IA", , ,-93.7649014096164,41.0371233533741
 642,-117.37943,33.192515,Station Building (with waiting room),2018-02-18T07:04:26,TRAIN,92054,CA,Oceanside, ,235 South Tremont Street, ,OSD,"Oceanside, CA", , ,-117.379441973602,33.1925198054172
 643,-88.551236,43.994303,Curbside Bus Stop only (no shelter),2023-07-23T07:00:00,BUS,54902,WI,Oshkosh, ,525 West 20th Avenue,Special Stop at EAA Air Show,OSH,"Oshkosh, WI",Special Stop at EAA Air Show,"Wittman,EAA Air Show",-88.5512422510617,43.9943111500973
@@ -659,7 +659,7 @@
 658,-89.466815,41.385191,Station Building (with waiting room),2017-11-06T07:05:36,TRAIN,61356,IL,Princeton, ,107 Bicentennial Drive, ,PCT,"Princeton, IL", , ,-89.4668212361405,41.3851986661511
 659,-120.789419,38.73302,Curbside Bus Stop only (no shelter),2018-09-26T07:04:52,BUS,95667,CA,Placerville, ,2894 Mosquito Road, ,PCV,"Placerville, CA", , ,-120.789432079512,38.7330251464217
 660,-122.592529,45.588232,Curbside Bus Stop only (no shelter),2021-05-21T07:03:59,BUS,97218,OR,Portland, ,7000 Northwest Airport Way,Portland International Airport,PDA,"Portland, OR",Portland International Airport, ,-122.592543483181,45.5882374775469
-661,-116.398519,33.725715,Curbside Bus Stop only (no shelter),2018-09-26T07:04:52,BUS,92260,CA,Palm Desert, ,44449 Towne Center Way , ,PDC,"Palm Desert, CA", , ,-116.398530843648,33.7257199211635
+661,-116.398519,33.725715,Curbside Bus Stop only (no shelter),2018-09-26T07:04:52,BUS,92260,CA,Palm Desert, ,44449 Towne Center Way, ,PDC,"Palm Desert, CA", , ,-116.398530843648,33.7257199211635
 662,-121.671367,36.789513,Curbside Bus Stop only (no shelter),2018-09-26T07:04:52,BUS,93907,CA,Prunedale, ,Highway 156 and Hwy 101, ,PDL,"Prunedale, CA", , ,-121.67137999268,36.7895179132606
 663,-122.676806,45.528724,Station Building (with waiting room),2018-11-06T07:03:24,TRAIN,97209,OR,Portland, ,800 NW Sixth Avenue,Union Station,PDX,"Portland, OR",Union Station,Union Station,-122.67682048385,45.5287294652854
 664,-118.76318,45.673293,Station Building (with waiting room),2018-09-27T07:04:59,BUS,97801,OR,Pendleton, ,2101 SE Court Avenue, ,PEN,"Pendleton, OR", , ,-118.763193863791,45.6732988719621
@@ -672,9 +672,9 @@
 671,-89.593643,40.689364,Station Building (with waiting room),2020-07-25T07:00:00,BUS,61602,IL,Peoria, ,407 Southwest Adams Street,City Link Transit Center,PIA,"Peoria, IL",City Link Transit Center, ,-89.5936492039959,40.6893715395242
 672,-89.68026,30.524606,Station Building (with waiting room),2018-09-14T07:04:52,TRAIN,39466,MS,Picayune, ,200 Highway 11 South, ,PIC,"Picayune, MS", , ,-89.6802655308519,30.5246115504698
 673,-79.469659,35.188281,Platform only (no shelter),2024-07-09T02:00:00,TRAIN,28374,NC,Pinehurst, ,100 Beulah Hill Road South, ,PIH,"Pinehurst, NC", , ,-79.4696618288389,35.1882879221706
-674,-73.2538,42.451558,Station Building (with waiting room),2018-09-14T07:04:52,TRAIN,01201,MA,Pittsfield, ,1 Columbus Avenue, ,PIT,"Pittsfield, MA", , ,-73.2538013144841,42.4515666166591
+674,-73.2538,42.451558,Station Building (with waiting room),2018-09-14T07:04:52,TRAIN,1201,MA,Pittsfield, ,1 Columbus Avenue, ,PIT,"Pittsfield, MA", , ,-73.2538013144841,42.4515666166591
 675,-89.61482,40.699375,Curbside Bus Stop only (no shelter),2020-07-25T07:00:00,BUS,61625,IL,Peoria, ,1501 West Bradley Avenue,Bradley University,PIU,"Peoria, IL",Bradley University, ,-89.6148262106746,40.6993825398795
-676,-74.623976,40.31585,Station Building (with waiting room),2018-09-14T07:04:53,TRAIN,08550,NJ,Princeton Junction, ,2 Wallace Circle, ,PJC,"Princeton Junction, NJ", , ,-74.6239776215537,40.3158581563913
+676,-74.623976,40.31585,Station Building (with waiting room),2018-09-14T07:04:53,TRAIN,8550,NJ,Princeton Junction, ,2 Wallace Circle, ,PJC,"Princeton Junction, NJ", , ,-74.6239776215537,40.3158581563913
 677,-105.39697,39.467318,Curbside Bus Stop only (no shelter),2023-07-31T07:00:00,BUS,80470,CO,Pine, ,76 Mount Evans Boulevard, ,PJT,"Pine Junction, CO", , ,-105.39698017114,39.4673243534791
 678,-73.446284,44.696728,Station Building (with waiting room),2017-11-06T07:05:38,TRAIN,12901,NY,Plattsburgh, ,Bridge and Dock Streets, ,PLB,"Plattsburgh, NY", , ,-73.4462855330814,44.6967370186231
 679,-76.11276,43.553987,Curbside Bus Stop only (no shelter),2018-09-27T07:04:59,BUS,13142,NY,Pulaski, ,3739 State Route 13, ,PLK,"Pulaski, NY", , ,-76.1127623224087,43.5539957104836
@@ -682,12 +682,12 @@
 681,-78.223033,40.901,Curbside Bus Stop only (no shelter),2018-07-19T07:04:41,BUS,16866,PA,Philipsburg, ,4th & Alder Streets, ,PLP,"Philipsburg, PA", , ,-78.2230357985626,40.9010081319901
 682,-121.882639,37.658152,Platform with Shelter,2017-11-06T07:05:38,TRAIN,94566,CA,Pleasanton, ,4950 Pleasanton Avenue, ,PLS,"Pleasanton, CA", ,dublin,-121.88265212061,37.6581569732491
 683,-118.120737,34.591238,Curbside Bus Stop only (no shelter),2018-09-26T07:04:53,BUS,93550,CA,Palmdale, ,39000 Clock Tower Plaza Drive, ,PMD,"Palmdale, CA", , ,-118.120749212002,34.5912429219563
-684,-75.062022,39.978052,Platform with Shelter,2018-09-27T07:04:59,TRAIN,08110,NJ,Pennsauken, ,215 Derousse Avenue, ,PNK,"Pennsauken, NJ", , ,-75.0620237404544,39.9780600741923
+684,-75.062022,39.978052,Platform with Shelter,2018-09-27T07:04:59,TRAIN,8110,NJ,Pennsauken, ,215 Derousse Avenue, ,PNK,"Pennsauken, NJ", , ,-75.0620237404544,39.9780600741923
 685,-83.292325,42.632771,Station Building (with waiting room),2018-09-14T07:04:53,TRAIN,48342,MI,Pontiac, ,51000 Woodward Avenue, ,PNT,"Pontiac, MI", , ,-83.2923295159401,42.632779215556
 686,-89.467627,43.547079,Platform with Shelter,2017-11-06T07:05:39,TRAIN,53901,WI,Portage, ,400 West Oneida Street, ,POG,"Portage, WI", , ,-89.4676334694642,43.5470870228406
 687,-73.458753,44.042297,Station Building (with waiting room),2018-09-14T07:04:53,TRAIN,12974,NY,Port Henry, ,20 Park Place, ,POH,"Port Henry, NY", , ,-73.4587544896865,44.0423059018801
 688,-88.637198,40.878687,Station Building (with waiting room),2017-11-06T07:05:39,TRAIN,61764,IL,Pontiac, ,711 West Water Street, ,PON,"Pontiac, IL", , ,-88.6372039468241,40.8786946255309
-689,-70.291258,43.654097,Station Building (with waiting room),2018-09-14T07:04:53,TRAIN,04102,ME,Portland, ,100 Thompson's Point Road, ,POR,"Portland, ME", , ,-70.2912584134171,43.6541059395577
+689,-70.291258,43.654097,Station Building (with waiting room),2018-09-14T07:04:53,TRAIN,4102,ME,Portland, ,100 Thompson's Point Road, ,POR,"Portland, ME", , ,-70.2912584134171,43.6541059395577
 690,-117.750621,34.059224,Platform only (no shelter),2018-09-14T07:04:53,TRAIN,91768,CA,Pomona, ,100 West Commercial Street, ,POS,"Pomona, CA", , ,-117.750633104693,34.0592288843998
 691,-73.93749,41.707056,Station Building (with waiting room),2018-09-14T07:04:53,TRAIN,12601,NY,Poughkeepsie, ,41 Main Street, ,POU,"Poughkeepsie, NY", , ,-73.9374914882142,41.7070644514426
 692,-120.68786,35.622683,Platform only (no shelter),2017-11-06T07:05:39,TRAIN,93446,CA,Paso Robles, ,800 Pine Street, ,PRB,"Paso Robles, CA", , ,-120.687872722571,35.6226878706219
@@ -708,13 +708,13 @@
 707,-74.985477,44.668619,Curbside Bus Stop only (no shelter),2022-11-21T10:50:01,BUS,13676,NY,Potsdam, ,19 Main Street, ,PTD,"Potsdam, NY", , ,-74.9854790406963,44.6686279540592
 708,-82.443805,42.960419,Station Building (with waiting room),2017-11-06T07:05:41,TRAIN,48060,MI,Port Huron, ,2223 16th Street, ,PTH,"Port Huron, MI", , ,-82.4438092844254,42.9604273157792
 709,-122.818437,48.049493,Curbside Bus Stop only (no shelter),2019-01-11T07:03:27,BUS,98368,WA,Port Townsend, ,63 4 Corners Road, ,PTO,"Port Townsend, WA", , ,-122.818452079428,48.0494985855382
-710,-70.804088,43.059678,Station Building (with waiting room),2018-09-27T07:05:00,BUS,03801,NH,Portsmouth, ,185 Grafton Drive, ,PTS,"Portsmouth, NH", , ,-70.8040885475938,43.0596868130515
+710,-70.804088,43.059678,Station Building (with waiting room),2018-09-27T07:05:00,BUS,3801,NH,Portsmouth, ,185 Grafton Drive, ,PTS,"Portsmouth, NH", , ,-70.8040885475938,43.0596868130515
 711,-75.00135,44.664184,Curbside Bus Stop only (no shelter),2023-05-17T07:00:00,BUS,13699,NY,Potsdam, ,8 Clarkson Avenue,Clarkson University,PTU,"Potsdam, NY",Clarkson University, ,-75.0013520462896,44.6641929524508
 712,-117.150847,46.738721,Curbside Bus Stop only (no shelter),2022-08-15T07:04:38,BUS,99163,WA,Pullman, ,1255 NE North Fairway Road, ,PUL,"Pullman, WA", , ,-117.150860795961,46.738727111945
 713,-78.971581,40.944654,Station Building (with waiting room),2018-07-19T07:04:42,BUS,15767,PA,Punxsutawney, ,222 North Findley Street, ,PUN,"Punxsutawney, PA", , ,-78.9715840357689,40.944662108702
 714,-97.357416,35.012033,Station Building (with waiting room),2017-11-06T07:05:42,TRAIN,73080,OK,Purcell, ,East Main Street and North Santa Fe Avenue, ,PUR,"Purcell, OK", , ,-97.357423814724,35.0120391217383
-715,-71.413478,41.82949,Station Building (with waiting room),2019-02-14T07:03:26,TRAIN,02903,RI,Providence, ,100 Gaspee Street,Amtrak/MBTA Station,PVD,"Providence, RI",Amtrak/MBTA Station, ,-71.4134786761022,41.8294985606604
-716,-71.397973,41.816277,Station Building (with waiting room),2019-02-14T07:03:26,BUS,02903,RI,Providence, ,25 India Street,Seastreak Ferry Terminal,PVF,"Providence, RI",Seastreak Ferry Terminal, ,-71.397973670755,41.81628555863
+715,-71.413478,41.82949,Station Building (with waiting room),2019-02-14T07:03:26,TRAIN,2903,RI,Providence, ,100 Gaspee Street,Amtrak/MBTA Station,PVD,"Providence, RI",Amtrak/MBTA Station, ,-71.4134786761022,41.8294985606604
+716,-71.397973,41.816277,Station Building (with waiting room),2019-02-14T07:03:26,BUS,2903,RI,Providence, ,25 India Street,Seastreak Ferry Terminal,PVF,"Providence, RI",Seastreak Ferry Terminal, ,-71.397973670755,41.81628555863
 717,-97.21846,34.741735,Station Building (with waiting room),2017-11-06T07:05:42,TRAIN,73075,OK,Pauls Valley, ,South Santa Fe Street and East Paul Avenue, ,PVL,"Pauls Valley, OK", , ,-97.2184677604897,34.7417410806936
 718,-75.650845,40.244388,Platform with Shelter,2022-06-29T07:04:17,BUS,19464,PA,Pottstown, ,51 South Hanover Street, ,PWN,"Pottstown, PA", , ,-75.6508469432278,40.2443961052271
 719,-112.119188,33.639498,Curbside Bus Stop only (no shelter),2019-10-23T07:03:19,BUS,85053,AZ,Phoenix, ,2717 W. Bell Road,Denny's Restaurant,PXN,"Phoenix - North, AZ",Denny's Restaurant, ,-112.119199041954,33.6395031407806
@@ -734,7 +734,7 @@
 733,-85.521804,43.88684,Curbside Bus Stop only (no shelter),2018-09-29T07:04:46,BUS,49677,MI,Reed City, ,US 10 & 220th Ave., ,REE,"Reed City, MI", , ,-85.5218093251937,43.886848310326
 734,-87.155121,40.943281,Platform with Shelter,2017-11-06T07:05:44,TRAIN,47978,IN,Rensselaer, ,776 North Cullen Street, ,REN,"Rensselaer, IN", , ,-87.1551265206312,40.9432887164347
 735,-78.647784,35.777209,Station Building (with waiting room),2018-12-15T07:03:26,TRAIN,27603,NC,Raleigh, ,510 West Martin Street,Union Station,RGH,"Raleigh, NC",Union Station,Union Station,-78.6477866114082,35.777216078204
-736,-73.951278,41.921346,Station Building (with waiting room),2017-11-06T07:05:44,TRAIN,12574,NY,Rhinecliff, ,455 Rhinecliff Road , ,RHI,"Rhinecliff, NY", , ,-73.9512795067279,41.921354491603
+736,-73.951278,41.921346,Station Building (with waiting room),2017-11-06T07:05:44,TRAIN,12574,NY,Rhinecliff, ,455 Rhinecliff Road, ,RHI,"Rhinecliff, NY", , ,-73.9512795067279,41.921354491603
 737,-122.35413,37.936752,Platform with Shelter,2018-09-19T07:04:40,TRAIN,94801,CA,Richmond, ,1700 Nevin Avenue, ,RIC,"Richmond, CA", , ,-122.354143224513,37.9367569622441
 738,-119.503819,43.541868,Curbside Bus Stop only (no shelter),2018-06-15T07:04:19,BUS,97758,OR,Riley, ,105 U.S. Highway 20, ,RIL,"Riley, OR", , ,-119.503832586735,43.5418736443465
 739,-117.369988,33.97567,Platform with Shelter,2018-09-26T07:04:54,TRAIN,92507,CA,Riverside, ,4066 Vine Street, ,RIV,"Riverside, CA", , ,-117.370000032281,33.9756748962445
@@ -750,32 +750,32 @@
 749,-121.885168,42.276897,Curbside Bus Stop only (no shelter),2018-01-25T07:04:18,BUS,97601,OR,Klamath Falls, ,5500 Running Y Road, ,RNY,"Running Y Ranch, OR", ,Klamath Falls,-121.885181759382,42.2769023325266
 750,-77.607884,43.16269,Station Building (with waiting room),2018-11-06T07:03:25,BUS,14604,NY,Rochester, ,186 Cumberland Street,Bus Terminal,ROB,"Rochester, NY",Bus Terminal, ,-77.6078867746853,43.1626985769205
 751,-77.608057,43.163411,Station Building (with waiting room),2019-03-29T07:03:24,TRAIN,14605,NY,Rochester, ,320 Central Avenue,Louise M. Slaughter Station,ROC,"Rochester, NY",Louise M. Slaughter Station, ,-77.6080597749377,43.163419577462
-752,-69.10822,44.107267,Station Building (with waiting room),2018-09-26T07:04:54,BUS,04841,ME,Rockland, ,517A Main Street, ,ROD,"Rockland, ME", , ,-69.1082200437522,44.1072760589435
+752,-69.10822,44.107267,Station Building (with waiting room),2018-09-26T07:04:54,BUS,4841,ME,Rockland, ,517A Main Street, ,ROD,"Rockland, ME", , ,-69.1082200437522,44.1072760589435
 753,-75.44996,43.199425,Station Building (with waiting room),2017-11-06T07:05:45,TRAIN,13440,NY,Rome, ,6599 Martin Street, ,ROM,"Rome, NY", , ,-75.449962080742,43.1994336731311
 754,-83.14701,42.488439,Platform with Shelter,2017-11-06T07:05:46,TRAIN,48069,MI,Royal Oak, ,202 South Sherman Drive, ,ROY,"Royal Oak, MI", , ,-83.1470144584894,42.4884471978504
 755,-122.709749,38.347328,Curbside Bus Stop only (no shelter),2018-09-26T07:04:55,BUS,94928,CA,Rohnert Park, ,6335 Commerce Blvd, ,RPC,"Rohnert Park, CA", ,Sonoma State University,-122.709762326054,38.347332968974
-756,-72.665459,43.922398,Platform only (no shelter),2018-09-14T07:04:55,TRAIN,05060,VT,Randolph, ,South Main and Salisbury Streets, ,RPH,"Randolph, VT", , ,-72.665460218659,43.9224069092678
+756,-72.665459,43.922398,Platform only (no shelter),2018-09-14T07:04:55,TRAIN,5060,VT,Randolph, ,South Main and Salisbury Streets, ,RPH,"Randolph, VT", , ,-72.665460218659,43.9224069092678
 757,-124.120214,43.695675,Curbside Bus Stop only (no shelter),2018-09-27T07:05:01,BUS,97467,OR,Reedsport, ,2012 Winchester Avenue, ,RPT,"Reedsport, OR", , ,-124.120228342213,43.6956802150328
 758,-123.228077,44.924788,Curbside Bus Stop only (no shelter),2020-07-10T07:05:08,BUS,97371,OR,Rickreall, ,520 South Pacific Hwy, ,RRL,"Rickreall, OR", , ,-123.228091445141,44.9247933746965
 759,-73.371093,44.99487,Platform only (no shelter),2018-09-14T07:04:55,TRAIN,12979,NY,Rouses Point, ,68 Pratt Street, ,RSP,"Rouses Point, NY", , ,-73.3710945297777,44.994879073847
 760,-121.286286,38.750016,Platform with Shelter,2017-11-06T07:05:46,TRAIN,95678,CA,Roseville, ,201 Pacific Street, ,RSV,"Roseville, CA", , ,-121.286299159175,38.750021110261
 761,-109.256217,41.577206,Station Building (with waiting room),2018-09-28T07:04:45,BUS,82901,WY,Rock Springs, ,1695 Sunset Drive, ,RSY,"Rock Springs, WY", , ,-109.256228296859,41.5772123372781
-762,-72.979324,43.607876,Station Building (with waiting room),2021-06-25T07:04:14,BUS,05701,VT,Rutland, ,102 West Street,MVRTD Transit Center,RTC,"Rutland, VT",MVRTD Transit Center, ,-72.9793253015032,43.6078848406311
-763,-71.147894,42.210242,Station Building (with waiting room),2018-09-29T07:04:46,TRAIN,02090,MA,Westwood, ,50 University Avenue, ,RTE,"Route 128, MA", ,"Boston,128",-71.1478946109101,42.2102506417615
+762,-72.979324,43.607876,Station Building (with waiting room),2021-06-25T07:04:14,BUS,5701,VT,Rutland, ,102 West Street,MVRTD Transit Center,RTC,"Rutland, VT",MVRTD Transit Center, ,-72.9793253015032,43.6078848406311
+763,-71.147894,42.210242,Station Building (with waiting room),2018-09-29T07:04:46,TRAIN,2090,MA,Westwood, ,50 University Avenue, ,RTE,"Route 128, MA", ,"Boston,128",-71.1478946109101,42.2102506417615
 764,-88.159126,40.310905,Platform with Shelter,2019-08-11T07:03:19,TRAIN,61866,IL,Rantoul, ,East Grove Ave and North Kentucky Ave., ,RTL,"Rantoul, IL", , ,-88.1591317555056,40.3109125514226
 765,-118.36534,47.119405,Curbside Bus Stop only (no shelter),2018-09-28T07:04:45,BUS,99169,WA,Ritzville, ,1503 South Smittys Blvd., ,RTZ,"Ritzville, WA", , ,-118.365354102897,47.1194110129403
-766,-72.981538,43.605756,Station Building (with waiting room),2022-02-11T07:04:26,TRAIN,05701,VT,Rutland, ,25 Evelyn Street,James M Jeffords Station ,RUD,"Rutland, VT",James M Jeffords Station , ,-72.9815393019288,43.6057648403998
+766,-72.981538,43.605756,Station Building (with waiting room),2022-02-11T07:04:26,TRAIN,5701,VT,Rutland, ,25 Evelyn Street,James M Jeffords Station ,RUD,"Rutland, VT",James M Jeffords Station , ,-72.9815393019288,43.6057648403998
 767,-99.997556,48.369846,Station Building (with waiting room),2017-11-06T07:05:47,TRAIN,58368,ND,Rugby, ,201 West Dewey Street, ,RUG,"Rugby, ND", , ,-99.9975661878668,48.3698539092826
 768,-77.429512,37.534209,Station Building (with waiting room),2017-11-06T07:05:47,TRAIN,23219,VA,Richmond, ,1500 East Main Street,Main Street Station,RVM,"Richmond, VA",Main Street Station,Main Street,-77.4295143364133,37.5342164917149
 769,-77.496943,37.617693,Station Building (with waiting room),2017-11-06T07:05:47,TRAIN,23228,VA,Richmond, ,7519 Staples Mill Road,Staples Mill Road Station,RVR,"Richmond, VA",Staples Mill Road Station,Staples Mills Road,-77.4969453617127,37.6177005067814
 770,-107.224461,41.776377,Curbside Bus Stop only (no shelter),2018-09-28T07:04:45,BUS,82301,WY,Rawlins, ,1400 South Higley Boulevard, ,RWY,"Rawlins, WY", , ,-107.224471876773,41.7763835202482
-771,-73.086191,44.81236,Station Building (with waiting room),2017-11-06T07:05:47,TRAIN,05478,VT,St Albans, ,40 Federal Street, ,SAB,"St. Albans, VT", ,"St Albans,Saint Albans,Albans",-73.0861924216744,44.812369052637
+771,-73.086191,44.81236,Station Building (with waiting room),2017-11-06T07:05:47,TRAIN,5478,VT,St Albans, ,40 Federal Street, ,SAB,"St. Albans, VT", ,"St Albans,Saint Albans,Albans",-73.0861924216744,44.812369052637
 772,-121.500704,38.584004,Station Building (with waiting room),2018-09-14T07:04:55,TRAIN,95814,CA,Sacramento, ,401 I Street,Sacramento Valley Station,SAC,"Sacramento, CA",Sacramento Valley Station, ,-121.500717171959,38.5840090798416
 773,-105.921959,35.799738,Curbside Bus Stop only (no shelter),2017-11-06T07:05:48,BUS,87506,NM,Santa Fe, ,198 State Road 592,Four Seasons Area,SAE,"Santa Fe, NM",Four Seasons Area, ,-105.921968921838,35.7997437928476
 774,-105.946599,35.684265,Station Building (with waiting room),2018-09-27T07:05:01,BUS,87501,NM,Santa Fe, ,410 South Guadalupe Street,Central Area,SAF,"Santa Fe, NM",Central Area, ,-105.946608916869,35.6842707742705
 775,-80.466323,35.667496,Station Building (with waiting room),2017-11-06T07:05:48,TRAIN,28144,NC,Salisbury, ,215 Depot Street, ,SAL,"Salisbury, NC", , ,-80.4663261533824,35.6675029886894
 776,-117.169576,32.716169,Station Building (with waiting room),2017-11-06T07:05:48,TRAIN,92101,CA,San Diego, ,1050 Kettner Boulevard,Santa Fe Depot,SAN,"San Diego, CA",Santa Fe Depot, ,-117.169587902823,32.7161737605631
-777,-70.449139,43.496191,Station Building (with waiting room),2018-09-14T07:04:55,TRAIN,04072,ME,Saco, ,138 Main Street, ,SAO,"Saco, ME", , ,-70.4491394563033,43.496199905342
+777,-70.449139,43.496191,Station Building (with waiting room),2018-09-14T07:04:55,TRAIN,4072,ME,Saco, ,138 Main Street, ,SAO,"Saco, ME", , ,-70.4491394563033,43.496199905342
 778,-119.06906,34.346197,Curbside Bus Stop only (no shelter),2018-09-29T07:04:46,BUS,93060,CA,Santa Paula, ,327 South Palm Avenue, ,SAP,"Santa Paula, CA", , ,-119.069072348837,34.3462018404636
 779,-73.810027,43.08281,Station Building (with waiting room),2017-11-06T07:05:48,TRAIN,12866,NY,Saratoga Springs, ,26 Station Lane, ,SAR,"Saratoga Springs, NY", , ,-73.8100285381154,43.0828187144721
 780,-98.478143,29.41935,Station Building (with waiting room),2017-11-06T07:05:48,TRAIN,78205,TX,San Antonio, ,350 Hoefgen Street, ,SAS,"San Antonio, TX", , ,-98.4781507683864,29.419355022787
@@ -784,7 +784,7 @@
 783,-122.27625,45.400668,Curbside Bus Stop only (no shelter),2021-05-21T07:03:59,BUS,97055,OR,Sandy, ,37601 Highway 26, ,SAY,"Sandy, OR", , ,-122.276264394505,45.4006734988262
 784,-119.692785,34.413718,Station Building (with waiting room),2019-02-14T07:03:26,TRAIN,93101,CA,Santa Barbara, ,209 State Street,Amtrak Station,SBA,"Santa Barbara, CA",Amtrak Station, ,-119.692797455781,34.4137228114316
 785,-81.434202,27.496632,Platform with Shelter,2024-11-13T07:07:58,TRAIN,33870,FL,Sebring, ,601 East Center Avenue, ,SBG,"Sebring, FL", , ,-81.4342050911336,27.496637087567
-786,-70.883909,42.891524,Station Building (with waiting room),2020-12-02T07:04:21,BUS,03874,NH,Seabrook, ,13 Batchelder Road, ,SBK,"Seabrook, NH", , ,-70.8839095639916,42.8915327792264
+786,-70.883909,42.891524,Station Building (with waiting room),2020-12-02T07:04:21,BUS,3874,NH,Seabrook, ,13 Batchelder Road, ,SBK,"Seabrook, NH", , ,-70.8839095639916,42.8915327792264
 787,-119.848296,34.414945,Curbside Bus Stop only (no shelter),2018-02-18T07:04:27,BUS,93106,CA,Santa Barbara, ,552 University Road,"Univ of California, Snta Barbara",SBU,"Santa Barbara, CA","Univ of California, Snta Barbara", ,-119.84830848064,34.4149498022412
 788,-111.856649,48.506748,Station Building (with waiting room),2017-11-06T07:05:49,TRAIN,59474,MT,Shelby, ,230 West Central Avenue, ,SBY,"Shelby, MT", , ,-111.856662124189,48.5067547943533
 789,-79.256017,43.147829,Station Building (with waiting room),2017-11-06T07:05:49,TRAIN,L2S 2K3,ON,St. Catharines, ,5 Great Western St., ,SCA,"St. Catharines, ON", ,"St Catharines,Saint Catharines,Sainte Catharines,Catharines",-79.2560203000238,43.1478375013569
@@ -846,7 +846,7 @@
 845,-90.818639,43.923258,Platform only (no shelter),2022-03-16T07:04:12,BUS,54656,WI,Sparta, ,711 Avon Road, ,SPA,"Sparta, WI", , ,-90.8186459087799,43.9232659979871
 846,-81.936917,34.953736,Station Building (with waiting room),2017-11-06T07:05:55,TRAIN,29303,SC,Spartanburg, ,290 Magnolia Street, ,SPB,"Spartanburg, SC", , ,-81.9369205518423,34.9537427830172
 847,-118.274928,33.74899,Curbside Bus Stop only (no shelter),2019-02-14T07:03:29,BUS,90731,CA,San Pedro, ,Berth 95,Catalina Express Terminal,SPD,"San Pedro, CA",Catalina Express Terminal,long beach,-118.27494016794,33.7489948208454
-848,-72.592905,42.105987,Station Building (with waiting room),2018-06-19T07:04:15,TRAIN,01103,MA,Springfield, ,55 Frank B. Murray Street, ,SPG,"Springfield, MA", , ,-72.5929060770398,42.1059955745634
+848,-72.592905,42.105987,Station Building (with waiting room),2018-06-19T07:04:15,TRAIN,1103,MA,Springfield, ,55 Frank B. Murray Street, ,SPG,"Springfield, MA", , ,-72.5929060770398,42.1059955745634
 849,-89.651384,39.802323,Station Building (with waiting room),2017-11-06T07:05:56,TRAIN,62701,IL,Springfield, ,100 North Third Street, ,SPI,"Springfield, IL", , ,-89.6513901373598,39.8023303810444
 850,-117.415455,47.65672,Station Building (with waiting room),2019-02-14T07:03:29,TRAIN,99201,WA,Spokane, ,221 West 1st Avenue,Amtrak Station,SPK,"Spokane, WA",Amtrak Station, ,-117.415469050904,47.6567261495359
 851,-94.795331,46.354601,Station Building (with waiting room),2018-09-14T07:04:57,TRAIN,56479,MN,Staples, ,First Avenue N.E. and Fourth Street N.E., ,SPL,"Staples, MN", , ,-94.795339389368,46.3546090770579
@@ -858,7 +858,7 @@
 857,-82.456626,27.337166,Curbside Bus Stop only (no shelter),2018-09-26T07:04:57,BUS,34232,FL,Sarasota, ,5600 Fruitville Road, ,SRA,"Sarasota, FL", , ,-82.4566293816953,27.3371710241975
 858,-122.732483,38.457123,Curbside Bus Stop only (no shelter),2023-08-06T07:00:00,BUS,95401,CA,Santa Rosa, ,2012 Range Avenue, ,SRC,"Santa Rosa, CA", , ,-122.732496343089,38.4571279761671
 859,-75.671028,41.41019,Station Building (with waiting room),2018-07-19T07:04:42,BUS,18503,PA,Scranton, ,30 Lackawanna Avenue, ,SRN,"Scranton, PA", , ,-75.6710300260284,41.4101983302398
-860,-68.909658,44.460756,Curbside Bus Stop only (no shelter),2018-09-26T07:04:58,BUS,04974,ME,Searsport, ,161 East Main Street, ,SRT,"Searsport, ME", , ,-68.9096579973174,44.4607651287142
+860,-68.909658,44.460756,Curbside Bus Stop only (no shelter),2018-09-26T07:04:58,BUS,4974,ME,Searsport, ,161 East Main Street, ,SRT,"Searsport, ME", , ,-68.9096579973174,44.4607651287142
 861,-123.915788,46.001637,Curbside Bus Stop only (no shelter),2019-02-14T07:03:29,BUS,97138,OR,Seaside, ,1100 12th Avenue,Seaside Cinema,SSD,"Seaside, OR",Seaside Cinema, ,-123.91580277273,46.0016423624722
 862,-76.862247,40.798142,Curbside Bus Stop only (no shelter),2018-07-19T07:04:42,BUS,17870,PA,Selinsgrove, ,105 South Market Street, ,SSG,"Selinsgrove, PA", ,Susquehanna University,-76.8622493628673,40.7981501670793
 863,-123.920961,46.000094,Curbside Bus Stop only (no shelter),2024-03-29T07:06:53,BUS,97138,OR,Seaside, ,930 North Holladay Drive,Seaside Lodge & Int'l Hostel,SSH,"Seaside, OR",Seaside Lodge & Int'l Hostel, ,-123.920975773396,46.000099361995
@@ -869,11 +869,11 @@
 868,-113.584426,37.094661,Curbside Bus Stop only (no shelter),2021-03-05T07:03:50,BUS,84770,UT,St. George, ,805 South Bluff Street, ,STG,"St. George, UT", ,"St George,Saint George,George",-113.584437632588,37.0946664922696
 869,-84.721153,45.858556,Station Building (with waiting room),2018-09-27T07:05:03,BUS,49781,MI,St. Ignace, ,700 West US Hwy 2, ,STI,"St. Ignace, MI", ,"St Ignace,Saint Ignace,Ignace",-84.7211583002486,45.8585646739926
 870,-90.203973,38.624195,Station Building (with waiting room),2018-09-14T07:04:57,TRAIN,63103,MO,St. Louis, ,430 South 15th Street,Gateway Station,STL,"St. Louis, MO",Gateway Station,"St Louis,Saint Louis,Louis",-90.2039791903787,38.6242021406577
-871,-73.54216,41.04713,Station Building (with waiting room),2018-09-14T07:04:57,TRAIN,06902,CT,Stamford, ,Washington Blvd and South State Street, ,STM,"Stamford, CT", , ,-73.542161320187,41.0471383380395
+871,-73.54216,41.04713,Station Building (with waiting room),2018-09-14T07:04:57,TRAIN,6902,CT,Stamford, ,Washington Blvd and South State Street, ,STM,"Stamford, CT", , ,-73.542161320187,41.0471383380395
 872,-102.389379,48.319813,Station Building (with waiting room),2017-11-06T07:05:58,TRAIN,58784,ND,Stanley, ,Main Street & Railroad Avenue, ,STN,"Stanley, ND", , ,-102.389389814643,48.3198206918447
 873,-121.562472,44.297476,Curbside Bus Stop only (no shelter),2023-04-03T11:48:08,BUS,97759,OR,Sisters, ,1001 West Rail Way, ,STO,"Sisters, OR", , ,-121.56248606392,44.297481501018
 874,-82.644428,27.843029,Curbside Bus Stop only (no shelter),2021-11-25T07:04:16,BUS,33702,FL,St. Petersburg, ,793 77th Avenue N, ,STP,"St. Petersburg, FL", ,"St Petersburg,Saint Petersburg,Petersburg,Clearwater,Pinellas Park,Pinella's Park,Pinelas Park,Pinelas Park",-82.6444314516744,27.8430341419882
-875,-72.922086,41.305253,Station Building (with waiting room),2023-02-09T07:07:25,TRAIN,06519,CT,New Haven, ,259 State Street,State Street Station,STS,"New Haven, CT",State Street Station, ,-72.9220871354408,41.3052614090689
+875,-72.922086,41.305253,Station Building (with waiting room),2023-02-09T07:07:25,TRAIN,6519,CT,New Haven, ,259 State Street,State Street Station,STS,"New Haven, CT",State Street Station, ,-72.9220871354408,41.3052614090689
 876,-122.349935,48.242638,Platform only (no shelter),2017-11-06T07:05:59,TRAIN,98292,WA,Stanwood, ,27111 Florence Way, ,STW,"Stanwood, WA", , ,-122.34995005226,48.2426436475985
 877,-122.041099,38.243401,Station Building (with waiting room),2017-11-06T07:05:59,TRAIN,94585,CA,Suisun City, ,177 Main Street, ,SUI,"Suisun-Fairfield, CA", ,Fairfield,-122.041112213935,38.2434060106104
 878,-121.446097,43.873858,Curbside Bus Stop only (no shelter),2018-09-27T07:05:04,BUS,97707,OR,Sunriver, ,56896 Venture Lane, ,SUN,"Sunriver, OR", , ,-121.446110966373,43.8738634841425
@@ -903,12 +903,12 @@
 902,-90.505331,43.986007,Station Building (with waiting room),2017-11-06T07:06:01,TRAIN,54660,WI,Tomah, ,North Superior Avenue and Washington Street, ,TOH,"Tomah, WI", , ,-90.5053378254294,43.9860150273712
 903,-83.541721,41.638345,Station Building (with waiting room),2018-09-14T07:04:58,TRAIN,43604,OH,Toledo, ,415 Emerald Avenue, ,TOL,"Toledo, OH", , ,-83.5417255022329,41.6383530270303
 904,-95.664916,39.051415,Station Building (with waiting room),2017-11-06T07:06:02,TRAIN,66607,KS,Topeka, ,500 SE Holliday Place, ,TOP,"Topeka, KS", , ,-95.6649237192117,39.0514219117768
-905,-82.450777,27.952492,Station Building (with waiting room),2018-07-06T07:04:35,TRAIN,33602,FL,Tampa, ,601 North Nebraska Avenue ,Union Station,TPA,"Tampa, FL",Union Station,Union Station,-82.4507803996764,27.9524971732848
+905,-82.450777,27.952492,Station Building (with waiting room),2018-07-06T07:04:35,TRAIN,33602,FL,Tampa, ,601 North Nebraska Avenue,Union Station,TPA,"Tampa, FL",Union Station,Union Station,-82.4507803996764,27.9524971732848
 906,-97.345792,31.095883,Station Building (with waiting room),2017-11-06T07:06:02,TRAIN,76501,TX,Temple, ,315 West Avenue B, ,TPL,"Temple, TX", , ,-97.3457995682351,31.0958883917776
 907,-123.824635,45.456486,Curbside Bus Stop only (no shelter),2020-07-10T07:05:09,BUS,97141,OR,Tillamook, ,3600 3rd Street,Park & Ride,TPR,"Tillamook, OR",Park & Ride, ,-123.82464964377,45.4564913430571
 908,-121.436094,37.761409,Curbside Bus Stop only (no shelter),2019-02-14T07:03:30,BUS,95376,CA,Tracy, ,725 West Clover Road,Wendy's restaurant,TRA,"Tracy, CA",Wendy's restaurant, ,-121.436107064162,37.7614140148847
 909,-121.43397,37.696211,Platform with Shelter,2019-02-14T07:03:30,TRAIN,95377,CA,Tracy, ,4800 Tracy Boulevard,ACE Station,TRC,"Tracy, CA",ACE Station, ,-121.433983056064,37.6962160092425
-910,-74.75444,40.219011,Station Building (with waiting room),2018-09-14T07:04:58,TRAIN,08609,NJ,Trenton, ,72 South Clinton Avenue, ,TRE,"Trenton, NJ", , ,-74.7544416570654,40.2190191324944
+910,-74.75444,40.219011,Station Building (with waiting room),2018-09-14T07:04:58,TRAIN,8609,NJ,Trenton, ,72 South Clinton Avenue, ,TRE,"Trenton, NJ", , ,-74.7544416570654,40.2190191324944
 911,-124.086997,43.982227,Platform only (no shelter),2020-12-01T07:04:07,BUS,97439,OR,Florence, ,5647 OR-126,Three Rivers Casino,TRF,"Florence, OR",Three Rivers Casino, ,-124.087011390953,43.982232234687
 912,-104.507981,37.172688,Platform only (no shelter),2017-11-06T07:06:02,TRAIN,81082,CO,Trinidad, ,110 West Pine Street, ,TRI,"Trinidad, CO", , ,-104.507990726481,37.1726940821346
 913,-120.798009,37.527229,Platform with Shelter,2018-09-14T07:04:58,TRAIN,95316,CA,Denair, ,3800 Santa Fe Avenue, ,TRK,"Turlock-Denair, CA", ,Denair,-120.798021938244,37.5272340399888
@@ -942,12 +942,12 @@
 941,-90.863828,32.329456,Station Building (with waiting room),2022-11-21T10:50:01,BUS,39180,MS,Vicksburg, ,3046 Indiana Avenue, ,VKS,"Vicksburg, MS", , ,-90.8638339415687,32.3294618900123
 942,-88.897649,37.415384,Curbside Bus Stop only (no shelter),2018-09-26T07:05:00,BUS,62995,IL,Vienna, ,504 West Vine Street, ,VNA,"Vienna, IL", , ,-88.8976547249708,37.4153909826715
 943,-118.448206,34.211294,Station Building (with waiting room),2018-09-14T07:05:00,TRAIN,91405,CA,Van Nuys, ,7724 Van Nuys Boulevard, ,VNC,"Van Nuys, CA", , ,-118.448218234185,34.2112988621933
-944,-73.248824,44.180921,Station Building (with waiting room),2022-07-16T07:04:08,TRAIN,05456,VT,Ferrisburgh, ,49 Park Lane, ,VRN,"Ferrisburgh-Vergennes, VT", ,vergennes,-73.2488254302427,44.1809299345437
+944,-73.248824,44.180921,Station Building (with waiting room),2022-07-16T07:04:08,TRAIN,5456,VT,Ferrisburgh, ,49 Park Lane, ,VRN,"Ferrisburgh-Vergennes, VT", ,vergennes,-73.2488254302427,44.1809299345437
 945,-117.292956,34.5372,Platform only (no shelter),2019-07-27T07:03:17,TRAIN,92395,CA,Victorville, ,16858 South D Street,Amtrak Station,VRV,"Victorville, CA",Amtrak Station, ,-117.292968065651,34.5372049647021
 946,-123.352301,44.051247,Platform only (no shelter),2020-11-19T07:04:08,BUS,97487,OR,Veneta, ,25042 W Broadway, ,VTA,"Veneta, OR", , ,-123.352315294904,44.0512523109043
-947,-72.751806,44.335011,Station Building (with waiting room),2017-11-06T07:06:06,TRAIN,05676,VT,Waterbury, ,US Highway 2 and Park Row, ,WAB,"Waterbury-Stowe, VT", ,Stowe,-72.751807276407,44.3350199800155
+947,-72.751806,44.335011,Station Building (with waiting room),2017-11-06T07:06:06,TRAIN,5676,VT,Waterbury, ,US Highway 2 and Park Row, ,WAB,"Waterbury-Stowe, VT", ,Stowe,-72.751807276407,44.3350199800155
 948,-119.332309,35.594092,Platform with Shelter,2017-11-06T07:06:06,TRAIN,93280,CA,Wasco, ,700 G Street, ,WAC,"Wasco, CA", , ,-119.332321503061,35.5940969539127
-949,-72.976604,43.476047,Curbside Bus Stop only (no shelter),2021-06-25T07:04:14,BUS,05773,VT,Wallingford, ,309 North Main Street, ,WAG,"Wallingford, VT", , ,-72.9766052917561,43.4760558164896
+949,-72.976604,43.476047,Curbside Bus Stop only (no shelter),2021-06-25T07:04:14,BUS,5773,VT,Wallingford, ,309 North Main Street, ,WAG,"Wallingford, VT", , ,-72.9766052917561,43.4760558164896
 950,-91.012717,38.561466,Station Building (with waiting room),2017-11-06T07:06:06,TRAIN,63090,MO,Washington, ,301 West Front Street, ,WAH,"Washington, MO", , ,-91.0127234108063,38.5614730871784
 951,-93.7409,38.76275,Station Building (with waiting room),2017-11-06T07:06:06,TRAIN,64093,MO,Warrensburg, ,100 South Holden Street, ,WAR,"Warrensburg, MO", , ,-93.7409071775106,38.7627569733639
 952,-77.006422,38.896993,Station Building (with waiting room),2018-04-28T07:04:12,TRAIN,20002,DC,Washington, ,50 Massachusetts Avenue NE,Union Station,WAS,"Washington, DC",Union Station,Union Station,-77.0064242857458,38.8970007864616
@@ -959,13 +959,13 @@
 958,-77.247852,38.658915,Platform with Shelter,2017-11-06T07:06:07,TRAIN,22194,VA,Woodbridge, ,1040 Express Way, ,WDB,"Woodbridge, VA", , ,-77.2478543462723,38.6589227293134
 959,-89.777451,43.626509,Station Building (with waiting room),2018-09-14T07:05:00,TRAIN,53965,WI,Wisconsin Dells, ,100 LaCrosse Street, ,WDL,"Wisconsin Dells, WI", , ,-89.777457569936,43.6265170168132
 960,-82.166727,29.790507,Station Building (with waiting room),2018-09-26T07:05:00,BUS,32694,FL,Waldo, ,14648 NE 147th Avenue, ,WDO,"Waldo, FL", , ,-82.1667303822476,29.7905126188559
-961,-69.382112,44.101471,Curbside Bus Stop only (no shelter),2018-09-26T07:05:00,BUS,04572,ME,Waldoboro, ,1519 Atlantic Highway, ,WDR,"Waldoboro, ME", , ,-69.3821121356288,44.1014800496469
+961,-69.382112,44.101471,Curbside Bus Stop only (no shelter),2018-09-26T07:05:00,BUS,4572,ME,Waldoboro, ,1519 Atlantic Highway, ,WDR,"Waldoboro, ME", , ,-69.3821121356288,44.1014800496469
 962,-120.307306,47.421062,Curbside Bus Stop only (no shelter),2024-03-23T07:06:41,BUS,98801,WA,Wenatchee, ,300 South Columbia Street,Link Transit Columbia Station,WEC,"Wenatchee, WA",Link Transit Columbia Station, ,-120.307320513806,47.4210678262795
 963,-97.381842,37.274929,Curbside Bus Stop only (no shelter),2021-02-24T07:04:27,BUS,67152,KS,Wellington, ,1400 East 16th Street, ,WEL,"Wellington, KS", , ,-97.3818500026325,37.2749355146925
-964,-70.612192,43.320836,Station Building (with waiting room),2017-11-06T07:06:08,TRAIN,04090,ME,Wells, ,696 Sanford Road, ,WEM,"Wells, ME", , ,-70.6121925000304,43.3208448680801
+964,-70.612192,43.320836,Station Building (with waiting room),2017-11-06T07:06:08,TRAIN,4090,ME,Wells, ,696 Sanford Road, ,WEM,"Wells, ME", , ,-70.6121925000304,43.3208448680801
 965,-120.306552,47.421556,Platform with Shelter,2018-11-06T07:03:26,TRAIN,98801,WA,Wenatchee, ,1 Kittitas Street,Amtrak Station,WEN,"Wenatchee, WA",Amtrak Station, ,-120.30656651377,47.4215618258592
 966,-118.448979,34.068772,Curbside Bus Stop only (no shelter),2018-09-26T07:05:00,BUS,90024,CA,Los Angeles, ,592 Gayley Ave., ,WES,"Westwood UCLA, CA", , ,-118.448991222809,34.0687768461057
-967,-72.825221,41.456969,Platform with Shelter,2017-11-08T07:04:19,TRAIN,06492,CT,Wallingford, ,343 North Cherry St.  , ,WFD,"Wallingford, CT", , ,-72.8252221136629,41.4569774419783
+967,-72.825221,41.456969,Platform with Shelter,2017-11-08T07:04:19,TRAIN,6492,CT,Wallingford, ,343 North Cherry St., ,WFD,"Wallingford, CT", , ,-72.8252221136629,41.4569774419783
 968,-114.335575,48.413474,Station Building (with waiting room),2017-11-06T07:06:08,TRAIN,59937,MT,Whitefish, ,500 Depot Street, ,WFH,"Whitefish, MT", , ,-114.335588625142,48.4134805292061
 969,-122.529506,43.757389,Platform only (no shelter),2020-11-20T07:04:08,BUS,97492,OR,Westfir, ,46433 Westfir Road, ,WFR,"Westfir, OR", , ,-122.529520115485,43.7573943720508
 970,-113.979164,48.496218,Platform only (no shelter),2018-09-14T07:05:00,TRAIN,59936,MT,West Glacier, ,12544 US Highway 2 East, ,WGL,"West Glacier, MT", ,glacier,-113.979177571541,48.4962245731381
@@ -981,32 +981,32 @@
 980,-77.000806,41.240347,Station Building (with waiting room),2018-07-19T07:04:42,BUS,17701,PA,Williamsport, ,11 West Church Street, ,WLM,"Williamsport, PA", ,"Lockhaven University,Pennsylvania College,Lycoming College",-77.0008084372044,41.2403552457473
 981,-77.908029,35.723135,Station Building (with waiting room),2017-11-06T07:06:10,TRAIN,27893,NC,Wilson, ,401 East Nash Street, ,WLN,"Wilson, NC", ,Goldsboro,-77.9080313842402,35.7231420922931
 982,-110.694981,35.021666,Platform with Shelter,2018-09-14T07:05:00,TRAIN,86047,AZ,Winslow, ,303 East Second Street (Route 66), ,WLO,"Winslow, AZ", , ,-110.694991869695,35.0216714074285
-983,-71.82978,41.381081,Platform with Shelter,2017-11-06T07:06:10,TRAIN,02891,RI,Westerly, ,14 Railroad Avenue, ,WLY,"Westerly, RI", , ,-71.82978078609,41.3810894604892
+983,-71.82978,41.381081,Platform with Shelter,2017-11-06T07:06:10,TRAIN,2891,RI,Westerly, ,14 Railroad Avenue, ,WLY,"Westerly, RI", , ,-71.82978078609,41.3810894604892
 984,-112.198135,35.25114,Station Building (with waiting room),2018-11-06T07:03:26,BUS,86046,AZ,Williams, ,1150 West Cataract Lake Road,Holiday Inn Express,WMH,"Williams, AZ",Holiday Inn Express, ,-112.198146188921,35.2511453504614
 985,-77.874895,34.251192,Station Building (with waiting room),2018-09-27T07:05:06,BUS,28405,NC,Wilmington, ,505 Cando Street, ,WMN,"Wilmington, NC", , ,-77.8748973007683,34.2511987710133
 986,-121.263777,44.763884,Curbside Bus Stop only (no shelter),2021-07-01T07:04:09,BUS,97761,OR,Warm Springs, ,2172 Highway 26, ,WMS,"Warm Springs, OR", , ,-121.263791105265,44.7638895607694
-987,-72.642253,41.852013,Platform with Shelter,2017-11-06T07:06:11,TRAIN,06095,CT,Windsor, ,41 Central Street, ,WND,"Windsor, CT", , ,-72.6422540776536,41.8520215245715
-988,-72.626101,41.913956,Platform with Shelter,2017-11-06T07:06:11,TRAIN,06096,CT,Windsor Locks, ,South Main Street at Stanton Road, ,WNL,"Windsor Locks, CT", , ,-72.6261020759944,41.9139645366161
-989,-72.384985,43.479908,Platform only (no shelter),2017-11-06T07:06:11,TRAIN,05089,VT,Windsor, ,26 Depot Avenue, ,WNM,"Windsor-Mt. Ascutney, VT", ,"Mt. Ascutney,Mt Ascutney,mount ascutney",-72.3849860961356,43.4799168380847
+987,-72.642253,41.852013,Platform with Shelter,2017-11-06T07:06:11,TRAIN,6095,CT,Windsor, ,41 Central Street, ,WND,"Windsor, CT", , ,-72.6422540776536,41.8520215245715
+988,-72.626101,41.913956,Platform with Shelter,2017-11-06T07:06:11,TRAIN,6096,CT,Windsor Locks, ,South Main Street at Stanton Road, ,WNL,"Windsor Locks, CT", , ,-72.6261020759944,41.9139645366161
+989,-72.384985,43.479908,Platform only (no shelter),2017-11-06T07:06:11,TRAIN,5089,VT,Windsor, ,26 Depot Avenue, ,WNM,"Windsor-Mt. Ascutney, VT", ,"Mt. Ascutney,Mt Ascutney,mount ascutney",-72.3849860961356,43.4799168380847
 990,-117.73221,40.969044,Platform with Shelter,2017-11-06T07:06:11,TRAIN,89445,NV,Winnemucca, ,209 Railroad Street, ,WNN,"Winnemucca, NV", , ,-117.732222869563,40.9690495870687
 991,-83.043073,42.317834,Station Building (with waiting room),2024-03-29T07:06:53,BUS,N9A 7B8,ON,Windsor, ,300 Chatham Street West, ,WNO,"Windsor, ON", , ,-83.0430774110097,42.3178421724488
 992,-90.956766,36.06766,Station Building (with waiting room),2017-11-06T07:06:11,TRAIN,72476,AR,Walnut Ridge, ,109 Southwest Front Street, ,WNR,"Walnut Ridge, AR", , ,-90.956772199966,36.0676666277317
 993,-80.245561,36.099779,Station Building (with waiting room),2019-02-14T07:03:31,BUS,27101,NC,Winston-Salem, ,100 West 5th Street,Clark Campbell Transp Center,WNS,"Winston-Salem, NC",Clark Campbell Transp Center, ,-80.2455641113997,36.0997860887475
 994,-123.901883,46.161461,Curbside Bus Stop only (no shelter),2018-09-27T07:05:06,BUS,97146,OR,Warrenton, ,695 S. Highway 101, ,WNT,"Warrenton, OR", , ,-123.901897805244,46.1614663724754
-995,-71.143823,42.517358,Station Building (with waiting room),2018-09-14T07:05:00,TRAIN,01801,MA,Woburn, ,100 Atlantic Avenue, ,WOB,"Woburn, MA", , ,-71.1438236275021,42.5173667002656
-996,-71.794812,42.261478,Station Building (with waiting room),2018-09-14T07:05:01,TRAIN,01604,MA,Worcester, ,2 Washington Square,Union Station,WOR,"Worcester, MA",Union Station,Union Station,-71.7948128261014,42.2614866305491
+995,-71.143823,42.517358,Station Building (with waiting room),2018-09-14T07:05:00,TRAIN,1801,MA,Woburn, ,100 Atlantic Avenue, ,WOB,"Woburn, MA", , ,-71.1438236275021,42.5173667002656
+996,-71.794812,42.261478,Station Building (with waiting room),2018-09-14T07:05:01,TRAIN,1604,MA,Worcester, ,2 Washington Square,Union Station,WOR,"Worcester, MA",Union Station,Union Station,-71.7948128261014,42.2614866305491
 997,-80.062184,26.712554,Station Building (with waiting room),2017-11-06T07:06:12,TRAIN,33401,FL,West Palm Beach, ,209 South Tamarind Avenue, ,WPB,"West Palm Beach, FL", , ,-80.0621866673013,26.7125589258113
 998,-81.351993,28.597099,Station Building (with waiting room),2018-09-14T07:05:01,TRAIN,32789,FL,Winter Park, ,148 West Morse Boulevard, ,WPK,"Winter Park, FL", , ,-81.3519961020807,28.5971043575676
 999,-105.763245,39.887584,Platform with Shelter,2018-11-06T07:03:26,TRAIN,80402,CO,Winter Park, ,85 Parsenn Road,Winter Park Resort Trn Platform,WPR,"Winter Park, CO",Winter Park Resort Trn Platform,ski train,-105.763255303279,39.8875903853225
 1000,-105.761836,39.88369,Curbside Bus Stop only (no shelter),2018-11-06T07:03:26,BUS,80402,CO,Winter Park, ,Cabriolet Way,Winter Park Shuttle Bus Stop,WPS,"Winter Park, CO",Winter Park Shuttle Bus Stop, ,-105.761846302942,39.8836963845539
 1001,-105.642736,48.091672,Station Building (with waiting room),2017-11-06T07:06:12,TRAIN,59201,MT,Wolf Point, ,320 Front Street, ,WPT,"Wolf Point, MT", , ,-105.642747591607,48.0916793676117
-1002,-72.317272,43.647785,Station Building (with waiting room),2017-11-06T07:06:12,TRAIN,05001,VT,White River Junction, ,102 Railroad Row, ,WRJ,"White River Junction, VT", , ,-72.3172730851769,43.6477938710369
+1002,-72.317272,43.647785,Station Building (with waiting room),2017-11-06T07:06:12,TRAIN,5001,VT,White River Junction, ,102 Railroad Row, ,WRJ,"White River Junction, VT", , ,-72.3172730851769,43.6477938710369
 1003,-75.932599,43.984472,Station Building (with waiting room),2024-08-22T10:54:59,BUS,13601,NY,Watertown, ,1003 Coffeen Street, ,WRT,"Watertown, NY", , ,-75.9326012979818,43.9844807948853
-1004,-72.448,41.288787,Station Building (with waiting room),2023-02-09T07:07:25,TRAIN,06498,CT,Westbrook, ,101 Norris Avenue, ,WSB,"Westbrook, CT", , ,-72.4480009810404,41.2887954222026
+1004,-72.448,41.288787,Station Building (with waiting room),2023-02-09T07:07:25,TRAIN,6498,CT,Westbrook, ,101 Norris Avenue, ,WSB,"Westbrook, CT", , ,-72.4480009810404,41.2887954222026
 1005,-89.624628,44.959456,Curbside Bus Stop only (no shelter),2019-02-14T07:03:32,BUS,54403,WI,Wausau, ,555 Jefferson Street,Transit Center,WSJ,"Wausau, WI",Transit Center, ,-89.6246346879881,44.9594642341999
 1006,-73.451773,44.187288,Station Building (with waiting room),2018-09-14T07:05:01,TRAIN,12993,NY,Westport, ,6705 Main Street, ,WSP,"Westport, NY", , ,-73.4517744972839,44.1872969281983
 1007,-80.304004,37.786443,Platform with Shelter,2017-11-06T07:06:13,TRAIN,24986,WV,White Sulphur Springs, ,315 West Main Street, ,WSS,"White Sulphur Springs, WV", , ,-80.3040072299734,37.7864504345839
-1008,-69.70923,43.975966,Curbside Bus Stop only (no shelter),2019-08-01T07:03:17,BUS,04578,ME,Wiscasset, ,639 Bath Road, ,WST,"Wiscasset, ME", , ,-69.7092302372344,43.9759750169666
+1008,-69.70923,43.975966,Curbside Bus Stop only (no shelter),2019-08-01T07:03:17,BUS,4578,ME,Wiscasset, ,639 Bath Road, ,WST,"Wiscasset, ME", , ,-69.7092302372344,43.9759750169666
 1009,-89.635643,44.854324,Station Building (with waiting room),2019-02-14T07:03:32,BUS,54474,WI,Rothschild, ,2415 Trailwood Lane,Lamers Connect bus station,WSU,"Wausau-Rothschild, WI",Lamers Connect bus station,Rothschild,-89.6356496772884,44.854332217725
 1010,-81.734878,28.002146,Station Building (with waiting room),2017-11-06T07:06:13,TRAIN,33880,FL,Winter Haven, ,1800 7th Street SW, ,WTH,"Winter Haven, FL", , ,-81.7348811943163,28.0021512034766
 1011,-85.024298,41.431816,Station Building (with waiting room),2017-11-06T07:06:13,TRAIN,46793,IN,Waterloo, ,485 West Van Vleek Street, ,WTI,"Waterloo, IN", , ,-85.0243029325096,41.431823915143
@@ -1027,3 +1027,4 @@
 1026,-119.586318,37.748042,Curbside Bus Stop only (no shelter),2024-05-24T16:48:58,BUS,95389,CA,Yosemite National Park, ,9035 Village Drive,Yosemite Village,YOV,"Yosemite National Park, CA",Yosemite Village, ,-119.586330768631,37.7480471471144
 1027,-119.649293,37.869636,Curbside Bus Stop only (no shelter),2019-02-14T07:03:33,BUS,95389,CA,Yosemite National Park, ,Old Tioga Road at Highway 120 East,White Wolf Lodge,YOW,"Yosemite National Park, CA",White Wolf Lodge, ,-119.64930579349,37.8696411536054
 1028,-114.615571,32.723139,Platform only (no shelter),2017-11-06T07:06:15,TRAIN,85364,AZ,Yuma, ,281 Gila Street, ,YUM,"Yuma, AZ", , ,-114.615582448127,32.7231438904693
+custom-1,-79.058342,43.109237,,2026-02-27T09:14:15,TRAIN,,,,,,,CBN,US-Canada Border,,,,

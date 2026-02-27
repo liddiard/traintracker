@@ -64,6 +64,7 @@ export const stationCodeToName: Record<string, string> = {
   BNC: 'Burlington',
   BTN: 'Burlington',
   BWI: 'Baltimore Airport',
+  CBN: 'US-Canada Border',
   CML: 'Camarillo',
   CAM: 'Camden',
   CDL: 'Carbondale',
