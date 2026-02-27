@@ -43,11 +43,12 @@ const processStop = (
   timezone: 'America/New_York', // all current Brightline stations are in US Eastern Time
   arrival: {
     time: new Date(((arrival?.time || departure?.time) as number) * 1000),
-    delay: arrival?.delay ?? 0,
+    // convert seconds to minutes
+    delay: (arrival?.delay ?? 0) / 60,
   },
   departure: {
     time: new Date(((departure?.time || arrival?.time) as number) * 1000),
-    delay: departure?.delay ?? 0,
+    delay: (departure?.delay ?? 0) / 60,
   },
 })
 
