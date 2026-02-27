@@ -48,7 +48,9 @@ function TrainLabelInner({
     markerRef.current?.setSubpixelPositioning(true)
   }, [lng, lat])
 
-  if (!animPosition?.coordinates || zoom < DETAIL_ZOOM_LEVEL) {
+  // don't render the label if the train is missing location data, or if the map is
+  // zoomed out and the train isn't selected
+  if (!animPosition?.coordinates || (zoom < DETAIL_ZOOM_LEVEL && !isSelected)) {
     return null
   }
 
