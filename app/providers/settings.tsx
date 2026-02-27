@@ -46,17 +46,31 @@ export function SettingsProvider({
   // keep dark/light class name in sync with setting + current system
   // preference (if "auto")
   useEffect(() => {
-    const { classList } = document.documentElement
-    // clear existing color theme class names
-    settingOptions.colorMode.forEach((c) => classList.remove(c))
-    if (
-      colorMode === 'dark' ||
-      (colorMode === 'auto' &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      classList.add('dark')
-    } else {
-      classList.add('light')
+    const colorSchemeHandler = () => {
+      const { classList } = document.documentElement
+      // clear existing color theme class names
+      settingOptions.colorMode.forEach((c) => classList.remove(c))
+      if (
+        colorMode === 'dark' ||
+        (colorMode === 'auto' &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        classList.add('dark')
+      } else {
+        classList.add('light')
+      }
+    }
+
+    // immediately call when the app's color mode setting changes
+    colorSchemeHandler()
+
+    // if the app color mode setting is "auto", attach a listener to detect when the
+    // OS-level color mode changes
+    if (colorMode === 'auto') {
+      window
+        .matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', colorSchemeHandler)
+      return () => document.removeEventListener('change', colorSchemeHandler)
     }
   }, [colorMode])
 
