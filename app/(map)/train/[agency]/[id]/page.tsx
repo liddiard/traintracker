@@ -220,8 +220,10 @@ export default function TrainDetail() {
       {train.alerts.length > 0 && (
         <details className="bg-amtrak-yellow-100/40 dark:bg-amtrak-yellow-100/20 rounded-lg p-3">
           <summary className="cursor-pointer font-semibold">
-            <Warning className="mr-2 ml-1 inline w-4 align-text-top" />
-            Alerts
+            <span className="mx-1 inline-flex items-center gap-1">
+              <Warning className="w-4" />
+              Alerts
+            </span>
           </summary>
           <ul className="mt-2 flex flex-col gap-2 text-sm">
             {train.alerts.map((alert, idx) => (
