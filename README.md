@@ -4,10 +4,10 @@ Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨�
 
 ## Features
 
-🚆 Train search, filter, and sort
-📍 Live train positions updated continuously on a map, extrapolated between GPS updates
-🔔 Per-stop push notifications for arrivals and departures
-🌗 Light/dark mode, configurable units, and timezone display
+- 🚆 Train search, filter, and sort
+- 📍 Live train positions updated continuously on a map, extrapolated between GPS updates
+- 🔔 Per-stop push notifications for arrivals and departures
+- 🌗 Light/dark mode, configurable units, and timezone display
 
 ## Getting Started
 
