@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚄 TrainTracker
+
+Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline. Check train schedules with a live-updating timeline, and visualize realtime positions on an interactive map.
+
+## Features
+
+- Train search, filter, and sort
+- Live train positions updated continuously on a map, extrapolated between GPS updates
+- Per-stop push notifications for arrivals and departures
+- Light/dark mode, configurable units, and timezone display
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Opens at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy `.env.example` to `.env` and fill in your VAPID keys (required for push notifications):
 
-## Learn More
+```bash
+cp .env.example .env
+```
 
-To learn more about Next.js, take a look at the following resources:
+Generate VAPID keys with:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npx web-push generate-vapid-keys
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Commands
 
-## Deploy on Vercel
+| Command            | Description                  |
+| ------------------ | ---------------------------- |
+| `npm run dev`      | Start the development server |
+| `npm run build`    | Build for production         |
+| `npm start`        | Run the production build     |
+| `npm run lint`     | Lint and format check        |
+| `npx tsc --noEmit` | Type check                   |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Data flow
+
+1. **API layer** (`app/api/trains/`) — Fetches and decrypts train data from Amtrak, VIA Rail, and Brightline data providers
+2. **Train provider** (`app/providers/train.tsx`) — Polls the API seconds and distributes data via React context
+3. **Track snapping** (`app/components/Map/calc.ts`) — Snaps GPS coordinates to the nearest point on track geometries using Turf.js; extrapolates position between updates based on timetable
+4. **Map rendering** (`app/components/Map/`) — Displays trains on a MapLibre GL map via `react-map-gl` with custom markers, labels, and route styling
+
+### Key directories
+
+```
+app/
+├── api/             # Next.js API routes (trains, notifications)
+├── components/      # React components (Map, timeline, notifications)
+│   └── Map/         # Map system: rendering, track snapping, display logic
+├── providers/       # React context providers (train data, settings)
+├── lib/             # Shared utilities (Prisma client, notification polling)
+└── types.ts         # Shared TypeScript types
+public/
+└── map_data/        # GeoJSON track geometries
+db/
+├── schema.prisma    # Database schema
+└── migrations/      # Prisma migrations
+```
+
+### GTFS data import
+
+On startup, `app/lib/gtfs-import.ts` downloads and parses GTFS feeds for each agency, then:
+
+1. Imports stops and trips into the SQLite database (used at runtime for station lookups and track shape resolution)
+2. Generates `public/map_data/track.json` — the GeoJSON LineString features used to render tracks on the map
+
+Results are cached for 24 hours (tracked via `GtfsImportMeta`) so subsequent restarts skip the download. In production the filesystem is read-only, so the GeoJSON is pre-built during the Docker image build and only the database upsert runs at startup.
+
+### Database
+
+Uses **SQLite** via **Prisma**. The database file (`db/app.db`) is created automatically on first run; migrations run on startup. The schema has four models:
+
+| Model              | Purpose                                                                                |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| `PushSubscription` | Web push credentials, plus the train, stop, and notification type a user subscribed to |
+| `GtfsStop`         | Station records from GTFS feeds (code, name, coordinates, timezone)                    |
+| `GtfsTrip`         | Trip records linking train numbers to GTFS shape IDs                                   |
+| `GtfsImportMeta`   | Singleton that records the last successful import time for the 24-hour cache           |
+
+### Push notifications
+
+A server-side background poller (`app/lib/notifications.ts`) checks train status every 30 seconds and sends web push notifications 5 minutes before a subscribed arrival or departure. A service worker (`public/service-worker.js`) handles delivery in the browser background.
+
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for instructions on deploying to a VPS with Docker and nginx.
