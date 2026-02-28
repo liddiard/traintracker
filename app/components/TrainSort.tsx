@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import cn from 'classnames'
 import SortAsc from '../img/sort-asc.svg'
 import SortDesc from '../img/sort-desc.svg'
@@ -42,6 +42,15 @@ interface TrainSortParams {
 
 function TrainSort({ sort = 'number', sortDir, agency = '' }: TrainSortParams) {
   const router = useRouter()
+  const [agenciesFilterElIsScrollable, setAgenciesFilterElIsScrollable] =
+    useState(false)
+  const agenciesFilterRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!agenciesFilterRef.current) return
+    const el = agenciesFilterRef.current
+    setAgenciesFilterElIsScrollable(el.scrollWidth > el.clientWidth)
+  }, [])
 
   const handleSortChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
     const url = new URL(window.location.href)
@@ -68,10 +77,21 @@ function TrainSort({ sort = 'number', sortDir, agency = '' }: TrainSortParams) {
     sortDir === 'desc'
       ? 'Current sort: descending. Click for ascending sort.'
       : 'Current sort: ascending. Click for descending sort.'
+
   return (
     <div className="mx-3 mt-4 mb-2 flex flex-col gap-2">
-      <div className="dark:after:to-positron-gray-800 relative [scrollbar-width:thin] after:pointer-events-none after:absolute after:top-0 after:right-0 after:block after:h-full after:w-4 after:bg-linear-to-r after:from-transparent after:to-white">
-        <div className="flex gap-2 overflow-x-auto pr-4">
+      <div
+        className={cn('dark:after:to-positron-gray-800 relative', {
+          '[scrollbar-width:thin] after:pointer-events-none after:absolute after:top-0 after:right-0 after:block after:h-full after:w-4 after:bg-linear-to-r after:from-transparent after:to-white':
+            agenciesFilterElIsScrollable,
+        })}
+      >
+        <div
+          className={cn('flex gap-2 overflow-x-auto', {
+            'pr-4': agenciesFilterElIsScrollable,
+          })}
+          ref={agenciesFilterRef}
+        >
           {agencies.map(({ name, value, selected }) => (
             <Fragment key={value}>
               <input

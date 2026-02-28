@@ -11,9 +11,9 @@ export default function NotFound() {
       <NoTrain className="text-positron-gray-400 mx-auto max-w-16" />
       <h1 className="text-center text-2xl font-semibold">Train Not Found</h1>
       <p className={pClassName}>
-        If you were previously tracking a train, it probably arrived at its
-        final destination. TrainTracker only tracks trains that are in transit
-        or recently arrived.
+        If you were previously tracking a train, it likely arrived at its final
+        destination. TrainTracker only tracks trains that are in transit or
+        recently arrived.
       </p>
       <Link href="/" className={cn(classNames.link, classNames.textAccent)}>
         <ChevronLeft className="h-4" /> All Trains
