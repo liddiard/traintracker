@@ -420,7 +420,7 @@ function Map() {
   const { shortcode, gpsCoordinates } = selectedTrain?.properties ?? {}
 
   return (
-    <div className="bg-positron-gray-500 h-full w-full">
+    <div className="dark:bg-positron-gray-700 bg-positron-gray-200 bg-pository h-full w-full">
       <Header />
       {/* https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/map */}
       <MapGL
