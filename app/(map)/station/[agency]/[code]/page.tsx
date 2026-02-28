@@ -46,7 +46,7 @@ export default function StationPage() {
   // Re-running this effect on searchParams change restores the correct title.
   useEffect(() => {
     if (station) {
-      document.title = `${station.code} / ${station.name} | TrainTracker`
+      document.title = `${station.name} / ${station.code} | TrainTracker`
     }
   }, [station, searchParams])
 
@@ -275,10 +275,11 @@ export default function StationPage() {
             position === 'bottom' ? 'text-xl' : 'text-3xl',
           )}
         >
+          {station.name}
+          <span className="text-positron-gray-400 mx-2">/</span>
           <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
             {station.code}
-          </span>{' '}
-          <span className="text-positron-gray-400">/</span> {station.name}
+          </span>
         </h1>
 
         <div className="flex gap-2 text-lg">

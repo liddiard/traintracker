@@ -79,7 +79,7 @@ export const stationLabelLayer: SymbolLayerSpecification = {
       ['zoom'],
       ['get', 'code'],
       10,
-      ['concat', ['get', 'code'], ' / ', ['get', 'name']],
+      ['concat', ['get', 'name'], ' / ', ['get', 'code']],
     ],
     // font names from https://github.com/openmaptiles/fonts/
     'text-font': ['Noto Sans Regular'],
