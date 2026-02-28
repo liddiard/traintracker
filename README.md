@@ -1,13 +1,13 @@
-# 🚄 TrainTracker
+# 🚄 [TrainTracker](https://traintracker.app)
 
 Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline. Check train schedules with a live-updating timeline, and visualize realtime positions on an interactive map.
 
 ## Features
 
-- Train search, filter, and sort
-- Live train positions updated continuously on a map, extrapolated between GPS updates
-- Per-stop push notifications for arrivals and departures
-- Light/dark mode, configurable units, and timezone display
+🚆 Train search, filter, and sort
+📍 Live train positions updated continuously on a map, extrapolated between GPS updates
+🔔 Per-stop push notifications for arrivals and departures
+🌗 Light/dark mode, configurable units, and timezone display
 
 ## Getting Started
 
