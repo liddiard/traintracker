@@ -1,14 +1,14 @@
 import { Feature, Point } from 'geojson'
 import { amtrakDecryptResponse, amtrakParseDate } from '../utils'
 import { getStations } from '@/app/lib/stations'
-import { mphToKmh, msToMins } from '@/app/utils'
+import { dateToIsoString, mphToKmh, msToMins } from '@/app/utils'
 import { Train, Stop, StationResponse } from '@/app/types'
 import {
   AmtrakHeading,
   AmtrakStationInfoProperties,
   AmtrakTrainInfoProperties,
 } from './types'
-import { getTrack } from './utils'
+import { getTrack, getTrainId } from './utils'
 import { sanitize } from 'isomorphic-dompurify'
 
 // heading name to degree mapping
@@ -117,12 +117,16 @@ const processTrain = async (
 ): Promise<Train> => {
   const { properties } = train
   const statusMessage = properties.StatusMsg?.trim()
+  const stops = processStops(properties, stations)
+
   return {
     updated: amtrakParseDate(properties.updated_at, {
       tzCode: 'E', // "Updated" times seem to always been in Eastern Time
       hr24: false,
     }),
-    id: `amtrak/${properties.OBJECTID.toString()}`,
+    // None of the "ID"-related properties on Amtrak's API response appear to be stable
+    // throughout a train's journey. Hence, creating our own.
+    id: getTrainId('amtrak', properties.TrainNum, stops[0].departure.time),
     name: processRouteName(properties.RouteName),
     number: properties.TrainNum,
     status: properties.TrainState,
@@ -130,7 +134,7 @@ const processTrain = async (
     coordinates: [train.geometry.coordinates[0], train.geometry.coordinates[1]],
     speed: Math.round(mphToKmh(parseFloat(properties.Velocity))),
     heading: headingToDegrees[properties.Heading] ?? null,
-    stops: processStops(properties, stations),
+    stops,
     track: await getTrack(properties.TrainNum, 'amtrak'),
   }
 }

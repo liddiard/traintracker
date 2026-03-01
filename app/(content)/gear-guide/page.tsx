@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import cn from 'classnames'
-import { formatPostDate, getAllPosts, getIsoDateString } from './utils'
+import { formatPostDate, getAllPosts } from './utils'
+import { dateToIsoString } from '@/app/utils'
 import { classNames } from '@/app/constants'
 import type { Metadata } from 'next'
-import { get } from 'node:http'
 
 export const metadata: Metadata = {
   title: 'Gear Guide',
@@ -50,7 +50,7 @@ export default async function GearGuidePage() {
                 </Link>
                 <time
                   className={classNames.textDeemphasized}
-                  dateTime={getIsoDateString(date)}
+                  dateTime={dateToIsoString(date)}
                 >
                   {formatPostDate(date)}
                 </time>

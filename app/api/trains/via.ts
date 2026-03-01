@@ -3,7 +3,7 @@ import { StationResponse, Stop, Train } from '@/app/types'
 import { getStations } from '@/app/lib/stations'
 import { ViaStationInfo, ViaTrainInfo } from './types'
 import { msToMins } from '@/app/utils'
-import { getTrack } from './utils'
+import { getTrack, getTrainId } from './utils'
 
 const API_ENDPOINT = 'https://tsimobile.viarail.ca/data/allData.json'
 
@@ -78,33 +78,37 @@ const processStop = (
 const processTrain = async (
   [id, data]: [string, ViaTrainInfo],
   stations: StationResponse,
-): Promise<Train> => ({
-  // VIA Rail train IDs sometimes include the date, like "692 (01-22)"
-  // Replace the space with an underscore to make the ID URL-friendly
-  id: `via/${id.replace(' ', '_')}`,
-  name: getTrainName(id) || 'VIA Rail',
-  number: parseInt(id).toString(), // remove the date string (e.g. 5-09) sometimes present after the train number
-  coordinates: data.lng ? [data.lng, data.lat] : null,
-  speed: data.speed ?? null,
-  heading: data.direction ?? null,
-  updated: data.poll ? new Date(data.poll) : null,
-  status: data.departed
-    ? data.arrived
-      ? 'Completed'
-      : 'Active'
-    : 'Predeparture',
-  alerts:
-    data.alerts?.map((alert) =>
-      // Bold the header (seems to always be present) with markdown syntax
-      sanitize(
-        [`**${alert.header.en}**`, alert.description.en, alert.url.en]
-          .filter(Boolean)
-          .join('\n\n'),
-      ),
-    ) || [],
-  stops: data.times.map((station) => processStop(station, stations)),
-  track: await getTrack(parseInt(id).toString(), 'via'),
-})
+): Promise<Train> => {
+  // remove the date string (e.g. 5-09) sometimes present after the train number
+  const number = parseInt(id).toString()
+  const stops = data.times.map((station) => processStop(station, stations))
+
+  return {
+    id: getTrainId('via', number, stops[0].departure.time),
+    name: getTrainName(id) || 'VIA Rail',
+    number,
+    coordinates: data.lng ? [data.lng, data.lat] : null,
+    speed: data.speed ?? null,
+    heading: data.direction ?? null,
+    updated: data.poll ? new Date(data.poll) : null,
+    status: data.departed
+      ? data.arrived
+        ? 'Completed'
+        : 'Active'
+      : 'Predeparture',
+    alerts:
+      data.alerts?.map((alert) =>
+        // Bold the header (seems to always be present) with markdown syntax
+        sanitize(
+          [`**${alert.header.en}**`, alert.description.en, alert.url.en]
+            .filter(Boolean)
+            .join('\n\n'),
+        ),
+      ) || [],
+    stops,
+    track: await getTrack(parseInt(id).toString(), 'via'),
+  }
+}
 
 const get = async () => {
   try {

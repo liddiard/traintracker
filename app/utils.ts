@@ -393,6 +393,15 @@ export const formatDuration = (
 }
 
 /**
+ * Returns a date string in YYYY-MM-DD format, suitable for the datetime attribute of
+ * the <time> element
+ * @param date
+ * @returns Date string in YYYY-MM-DD format
+ */
+export const dateToIsoString = (date: Date): string =>
+  date.toISOString().split('T')[0]
+
+/**
  * Check if two dates are on different days, given their respective timezones.
  *
  * If `b` is not provided, the current date is used.

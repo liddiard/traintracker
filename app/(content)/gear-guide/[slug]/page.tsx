@@ -1,12 +1,8 @@
 import { notFound } from 'next/navigation'
 import { marked } from 'marked'
 import cn from 'classnames'
-import {
-  getPostBySlug,
-  getAllPosts,
-  formatPostDate,
-  getIsoDateString,
-} from '../utils'
+import { getPostBySlug, getAllPosts, formatPostDate } from '../utils'
+import { dateToIsoString } from '@/app/utils'
 import { classNames } from '@/app/constants'
 import type { Metadata } from 'next'
 
@@ -64,7 +60,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
       </h1>
       <time
         className={cn('mb-8 block', classNames.textDeemphasized)}
-        dateTime={getIsoDateString(date)}
+        dateTime={dateToIsoString(date)}
       >
         {formatPostDate(date)}
         {post.frontmatter.author && ` • ${post.frontmatter.author}`}

@@ -106,9 +106,6 @@ export function getPostBySlug(slug: string): BlogPost | null {
   }
 }
 
-export const getIsoDateString = (date: Date): string =>
-  date.toISOString().split('T')[0]
-
 export const formatPostDate = (date: Date): string =>
   date.toLocaleDateString(Intl.DateTimeFormat().resolvedOptions().locale, {
     year: 'numeric',

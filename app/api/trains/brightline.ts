@@ -2,7 +2,7 @@ import GtfsRealtimeBindings, { transit_realtime } from 'gtfs-realtime-bindings'
 import { distance, point } from '@turf/turf'
 import { getStations } from '@/app/lib/stations'
 import { Stop, Train, TrainStatus, StationResponse } from '@/app/types'
-import { getTrack } from './utils'
+import { getTrack, getTrainId } from './utils'
 
 // Source: http://feed.gobrightline.com/
 const API_ENDPOINTS = {
@@ -155,7 +155,7 @@ const processTrain = async (
   if (!train.vehicle?.trip?.tripId) {
     return null
   }
-  const trainNumber = parseTrainNumber(train.vehicle.trip.tripId)
+  const number = parseTrainNumber(train.vehicle.trip.tripId)
   const { timestamp, position } = train.vehicle
   const { longitude, latitude } = position || {}
   const stops = (trip?.tripUpdate?.stopTimeUpdate || []).map((stop) =>
@@ -168,9 +168,13 @@ const processTrain = async (
   const speed = calculateSpeed(coordinates, stops, stations)
 
   return {
-    id: `brightline/${trainNumber}`,
+    id: getTrainId(
+      'brightline',
+      number,
+      stops[0]?.departure.time || new Date(),
+    ),
     name: 'Brightline',
-    number: trainNumber,
+    number,
     updated: timestamp ? new Date((timestamp as number) * 1000) : null,
     status,
     alerts: [],
@@ -178,7 +182,7 @@ const processTrain = async (
     speed,
     heading: position?.bearing ? position.bearing : null,
     stops,
-    track: await getTrack(trainNumber, 'brightline'),
+    track: await getTrack(number, 'brightline'),
   }
 }
 
