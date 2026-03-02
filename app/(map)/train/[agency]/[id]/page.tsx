@@ -152,7 +152,7 @@ export default function TrainDetail() {
     )
   }
 
-  const routeImageSrc = `/img/route/${train.name}.jpg`
+  const routeImageSrc = `/img/route/${train.name.replace('/', '-')}.jpg`
   const timezonesDiffer = train.stops[0].timezone !== train.stops[0].timezone
   const hasTrainQueryParams = !!Object.entries(TrainQueryParams).length
   const minsSinceLastUpdate =
