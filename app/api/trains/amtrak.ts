@@ -157,7 +157,9 @@ const get = async () => {
   const processedTrains = await Promise.all(
     trains.features.map((train) => processTrain(train, stations)),
   )
-  return processedTrains.filter((train) => train && train.stops.length > 0)
+  return processedTrains.filter(
+    (train): train is Train => train !== null && train.stops.length > 0,
+  )
 }
 
 export default get
