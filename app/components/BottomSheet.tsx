@@ -201,11 +201,12 @@ export default function BottomSheet({ children }: BottomSheetProps) {
       ref={sheetRef}
     >
       <Sheet.Container>
-        <Sheet.Header />
+        <Sheet.Header style={{ zIndex: 1 }} />
         <Sheet.Content
           // Disable library's scroll handling - we're using a custom scroller
           disableScroll
           disableDrag={shouldDisableDrag}
+          style={{ marginTop: '-20px' }}
         >
           {/* Custom scroller
            * https://github.com/Temzasse/react-modal-sheet/tree/main?tab=readme-ov-file#creating-custom-scrollers
@@ -216,6 +217,7 @@ export default function BottomSheet({ children }: BottomSheetProps) {
               height: '100%',
               overflowY: 'auto',
               WebkitOverflowScrolling: 'touch',
+              borderRadius: '8px 8px 0 0',
             }}
             className="dark:bg-positron-gray-800 dark:text-white"
           >

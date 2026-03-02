@@ -262,7 +262,7 @@ export default function StationPage() {
   )
 
   return (
-    <div className="flex flex-col gap-4 py-3">
+    <div className="flex flex-col gap-4 py-3 pt-6 md:pt-3">
       <header className="flex flex-col gap-4 px-3">
         {position === 'bottom' ? null : (
           <Link href="/" className={cn(classNames.link, classNames.textAccent)}>
