@@ -114,10 +114,18 @@ const processStops = (
 const processTrain = async (
   train: Feature<Point, AmtrakTrainInfoProperties>,
   stations: StationResponse,
-): Promise<Train> => {
+): Promise<Train | null> => {
   const { properties } = train
   const statusMessage = properties.StatusMsg?.trim()
   const stops = processStops(properties, stations)
+  const departureTime = stops[0]?.departure?.time
+
+  if (!departureTime) {
+    console.warn(
+      `Amtrak train ${properties.TrainNum} has no departure time, skipping.`,
+    )
+    return null
+  }
 
   return {
     updated: amtrakParseDate(properties.updated_at, {
@@ -126,7 +134,7 @@ const processTrain = async (
     }),
     // None of the "ID"-related properties on Amtrak's API response appear to be stable
     // throughout a train's journey. Hence, creating our own.
-    id: getTrainId('amtrak', properties.TrainNum, stops[0].departure.time),
+    id: getTrainId('amtrak', properties.TrainNum, departureTime),
     name: processRouteName(properties.RouteName),
     number: properties.TrainNum,
     status: properties.TrainState,
@@ -149,7 +157,7 @@ const get = async () => {
   const processedTrains = await Promise.all(
     trains.features.map((train) => processTrain(train, stations)),
   )
-  return processedTrains.filter((train) => train.stops.length > 0)
+  return processedTrains.filter((train) => train && train.stops.length > 0)
 }
 
 export default get
