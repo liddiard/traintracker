@@ -182,7 +182,17 @@ export default function TrainDetail() {
           onLoad={() => setShowRouteImage(true)}
         />
         {showRouteImage && (
-          <div className="absolute inset-0 h-full w-full bg-linear-to-t from-black/60 to-transparent" />
+          <>
+            <div className="absolute inset-0 h-full w-full bg-linear-to-t from-black/50 to-transparent" />
+            <Link
+              href="https://docs.google.com/spreadsheets/d/10WPpJFmGOAUSi2fSzgOVq-DvypYsICuGrVRDrEmkeTY/edit?usp=sharing"
+              className="absolute right-0 bottom-0 z-10 p-1 text-xs text-white/80 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Photo credits
+            </Link>
+          </>
         )}
         <div
           className={cn(
