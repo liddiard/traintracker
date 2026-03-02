@@ -80,8 +80,8 @@ function Header() {
           <Link href="/gear-guide" className="xs:block hidden">
             Gear Guide
           </Link> */}
+          <Link href="/support">❤️ Support</Link>
           <Link href="/about">About</Link>
-          <Link href="/privacy">Privacy</Link>
         </nav>
       </div>
       {showSearch && (

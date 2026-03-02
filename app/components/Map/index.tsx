@@ -384,6 +384,7 @@ function Map() {
           maxWidth: isMobile ? 'calc(100% - 160px)' : '',
         }}
         compact={isMobile}
+        customAttribution="<a href='/privacy'>Privacy Policy</a>"
       />
       <FullscreenControl position="bottom-right" style={controlStyle} />
       {viewState.bearing || !isMobile ? (
