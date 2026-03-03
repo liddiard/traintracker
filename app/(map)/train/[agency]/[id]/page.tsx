@@ -190,7 +190,7 @@ export default function TrainDetail() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Photo credits
+              Photo Credits
             </Link>
           </>
         )}
@@ -226,7 +226,7 @@ export default function TrainDetail() {
             {train.name}{' '}
             <span
               className={
-                showRouteImage ? 'text-amtrak-blue-300' : classNames.textAccent
+                showRouteImage ? 'text-amtrak-blue-200' : classNames.textAccent
               }
             >
               {train.number}
