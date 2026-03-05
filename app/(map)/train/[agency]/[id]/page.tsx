@@ -152,7 +152,12 @@ export default function TrainDetail() {
     )
   }
 
-  const routeImageSrc = `/img/route/${train.name.replace('/', '-')}.jpg`
+  // Workaround for Next.js image optimizer bug: when a local image path contains
+  // non-ASCII characters (e.g. en dash) AND spaces, the internal mock request in
+  // fetchInternalImage (image-optimizer.js) passes the raw decoded path as req.url,
+  // which the file server can't resolve (returns 404). Pre-encoding the filename
+  // ensures proper double-encoding through the /_next/image pipeline.
+  const routeImageSrc = `/img/route/${encodeURIComponent(train.name.replace('/', '-'))}.jpg`
   const timezonesDiffer = train.stops[0].timezone !== train.stops[0].timezone
   const hasTrainQueryParams = !!Object.entries(TrainQueryParams).length
   const minsSinceLastUpdate =
