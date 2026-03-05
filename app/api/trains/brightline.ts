@@ -172,6 +172,7 @@ const processTrain = async (
       'brightline',
       number,
       stops[0]?.departure.time || new Date(),
+      stops[0]?.timezone,
     ),
     name: 'Brightline',
     number,

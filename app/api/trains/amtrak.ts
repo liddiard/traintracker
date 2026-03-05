@@ -134,7 +134,12 @@ const processTrain = async (
     }),
     // None of the "ID"-related properties on Amtrak's API response appear to be stable
     // throughout a train's journey. Hence, creating our own.
-    id: getTrainId('amtrak', properties.TrainNum, departureTime),
+    id: getTrainId(
+      'amtrak',
+      properties.TrainNum,
+      departureTime,
+      stops[0]?.timezone,
+    ),
     name: processRouteName(properties.RouteName),
     number: properties.TrainNum,
     status: properties.TrainState,

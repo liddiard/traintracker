@@ -84,7 +84,7 @@ const processTrain = async (
   const stops = data.times.map((station) => processStop(station, stations))
 
   return {
-    id: getTrainId('via', number, stops[0].departure.time),
+    id: getTrainId('via', number, stops[0].departure.time, stops[0]?.timezone),
     name: getTrainName(id) || 'VIA Rail',
     number,
     coordinates: data.lng ? [data.lng, data.lat] : null,

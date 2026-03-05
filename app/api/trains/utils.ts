@@ -31,10 +31,12 @@ export async function getTrack(
  * @param agency - The agency operating the train (e.g., 'amtrak', 'via')
  * @param trainNum - The train number as a string
  * @param departureTime - The departure time of the train as a Date object
+ * @param departureTz - The timezone of the departure time (e.g., 'America/New_York')
  * @returns A stable train ID in the format "agency/trainNum_YYYY-MM-DD"
  */
 export const getTrainId = (
   agency: string,
   trainNum: string,
   departureTime: Date,
-) => `${agency}/${trainNum}_${dateToIsoString(departureTime)}`
+  departureTz?: string,
+) => `${agency}/${trainNum}_${dateToIsoString(departureTime, departureTz)}`

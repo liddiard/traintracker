@@ -396,10 +396,17 @@ export const formatDuration = (
  * Returns a date string in YYYY-MM-DD format, suitable for the datetime attribute of
  * the <time> element
  * @param date
+ * @param tz - Optional timezone (defaults to UTC)
  * @returns Date string in YYYY-MM-DD format
  */
-export const dateToIsoString = (date: Date): string =>
-  date.toISOString().split('T')[0]
+export const dateToIsoString = (date: Date, tz?: string): string =>
+  // en-CA produces the desired YYYY-MM-DD format
+  new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: tz || 'UTC',
+  }).format(date)
 
 /**
  * Check if two dates are on different days, given their respective timezones.
