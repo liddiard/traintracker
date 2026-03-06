@@ -67,4 +67,4 @@ export const defaultSettings: Settings = {
 }
 
 // How tall the mobile bottom sheet is at its bottom-most position, in pixels
-export const SHEET_BOTTOM_HEIGHT = 70
+export const SHEET_BOTTOM_HEIGHT = 60

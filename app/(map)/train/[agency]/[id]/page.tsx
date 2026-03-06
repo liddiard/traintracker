@@ -170,12 +170,13 @@ export default function TrainDetail() {
   const { firstStop, lastStop } = trainMeta
   const scheduledDeparture = getScheduledTime(firstStop.departure)
   const scheduledArrival = getScheduledTime(lastStop.arrival)
+  const sheetAtBottom = position === 'bottom'
 
   return (
     <>
       <div
         className={cn('relative', {
-          'aspect-[1.618] text-white text-shadow-[0_0_10px_black]':
+          'aspect-[1.618] bg-black text-white text-shadow-[0_0_10px_black]':
             showRouteImage,
         })}
       >
@@ -183,7 +184,10 @@ export default function TrainDetail() {
           src={routeImageSrc}
           alt=""
           fill
-          className={cn('object-cover', { invisible: !showRouteImage })}
+          className={cn('object-cover transition-opacity duration-250', {
+            invisible: !showRouteImage,
+            'opacity-50': sheetAtBottom,
+          })}
           onLoad={() => setShowRouteImage(true)}
         />
         {showRouteImage && (
@@ -206,7 +210,7 @@ export default function TrainDetail() {
             { 'pt-6': !showRouteImage },
           )}
         >
-          {position === 'bottom' ? null : (
+          {sheetAtBottom ? null : (
             <Link
               href={`/?${new URLSearchParams(TrainQueryParams).toString()}`}
               className={cn(
@@ -225,7 +229,7 @@ export default function TrainDetail() {
           <h1
             className={cn(
               'font-bold text-balance transition-[font-size] duration-500',
-              position === 'bottom' ? 'text-xl' : 'text-3xl',
+              sheetAtBottom ? 'text-xl' : 'text-3xl',
             )}
           >
             {train.name}{' '}
