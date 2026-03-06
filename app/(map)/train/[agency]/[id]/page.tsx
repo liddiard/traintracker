@@ -158,7 +158,8 @@ export default function TrainDetail() {
   // which the file server can't resolve (returns 404). Pre-encoding the filename
   // ensures proper double-encoding through the /_next/image pipeline.
   const routeImageSrc = `/img/route/${encodeURIComponent(train.name.replace('/', '-'))}.jpg`
-  const timezonesDiffer = train.stops[0].timezone !== train.stops[0].timezone
+  const timezonesDiffer =
+    train.stops[0].timezone !== train.stops[train.stops.length - 1].timezone
   const hasTrainQueryParams = !!Object.entries(TrainQueryParams).length
   const minsSinceLastUpdate =
     train.updated && msToMins(new Date().getTime() - train.updated.valueOf())
