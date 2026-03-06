@@ -63,7 +63,7 @@ export default async function MapLayout({
                   <Search id="sidebar" />
                   {children}
                 </div>
-                <div className="relative h-full w-full md:w-3/4">
+                <div className="relative h-full w-full md:flex-1">
                   <Map />
                 </div>
               </div>
