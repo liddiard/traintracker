@@ -7,6 +7,7 @@ import {
   formatDate,
   formatTime,
   getDelayColor,
+  getOffset,
   getScheduledTime,
 } from '../utils'
 import { useSettings } from '../providers/settings'
@@ -36,6 +37,7 @@ function TimelineSegment({
   const { timeFormat, timeZone } = settings
   const stop = stops[index]
   const prevStop = stops[index - 1]
+  const timezonesDiffer = prevStop && stop.timezone !== prevStop.timezone
   const { code, name, arrival } = stop
   const { delay } = arrival
   const useLocalTime = timeZone === 'local'
@@ -112,6 +114,14 @@ function TimelineSegment({
             {formatTime(arrival.time, formatTimeOptions)}
           </time>
         ) : null}
+        {timezonesDiffer && useLocalTime && (
+          <div className={cn('text-sm', classNames.textDeemphasized)}>
+            UTC
+            <span className="font-semibold">
+              {getOffset(stop.timezone) / 60}
+            </span>
+          </div>
+        )}
       </div>
       <div className="z-10 mx-0.5 my-1 aspect-square w-3 rounded-full bg-white" />
       <div className="flex items-start gap-1 leading-snug">
