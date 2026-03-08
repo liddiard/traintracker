@@ -48,14 +48,18 @@ export default function TrainDetail() {
 
   const [showRouteImage, setShowRouteImage] = useState(false)
 
-  // searchParams is included as a dependency because the map calls router.replace()
-  // on every zoom/pan, which causes Next.js to reset the title to the layout default.
-  // Re-running this effect on searchParams change restores the correct title.
+  // Defer title change to next frame so it runs after Next.js's internal head manager
+  // effect, which fires after ours (parent effects run after child effects) and would
+  // otherwise overwrite document.title with the layout default.
   useEffect(() => {
     if (train) {
-      document.title = `${train.name} ${train.number} | TrainTracker`
+      const title = `${train.name} ${train.number} | TrainTracker`
+      const id = setTimeout(() => {
+        document.title = title
+      }, 0)
+      return () => clearTimeout(id)
     }
-  }, [train, searchParams])
+  }, [train])
 
   if (!train) {
     return notFound()

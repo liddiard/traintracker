@@ -1,6 +1,6 @@
 'use client'
 
-import { notFound, useParams, useSearchParams } from 'next/navigation'
+import { notFound, useParams } from 'next/navigation'
 import Link from 'next/link'
 import cn from 'classnames'
 import { useTrains } from '@/app/providers/train'
@@ -29,7 +29,6 @@ interface TrainStop {
 
 export default function StationPage() {
   const { agency, code } = useParams()
-  const searchParams = useSearchParams()
   const { trains, stations } = useTrains()
   const { position } = useBottomSheet()
   const { settings } = useSettings()
@@ -41,14 +40,18 @@ export default function StationPage() {
     (s) => s.agency === stationAgency && s.code === stationCode,
   )
 
-  // searchParams is included as a dependency because the map calls router.replace()
-  // on every zoom/pan, which causes Next.js to reset the title to the layout default.
-  // Re-running this effect on searchParams change restores the correct title.
+  // Defer title change to next frame so it runs after Next.js's internal head manager
+  // effect, which fires after ours (parent effects run after child effects) and would
+  // otherwise overwrite document.title with the layout default.
   useEffect(() => {
     if (station) {
-      document.title = `${station.name} / ${station.code} | TrainTracker`
+      const title = `${station.name} / ${station.code} | TrainTracker`
+      const id = setTimeout(() => {
+        document.title = title
+      }, 0)
+      return () => clearTimeout(id)
     }
-  }, [station, searchParams])
+  }, [station])
 
   const [mounted, setMounted] = useState(false)
   useEffect(() => {

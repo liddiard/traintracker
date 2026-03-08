@@ -323,14 +323,12 @@ function Map() {
     ) {
       updateTrains()
     }
-
     // we just got finished flying to a train; start following it
     if (flyingToTrain.current) {
       flyingToTrain.current = false
       updateSetting('follow', true)
       followSetting.current = true
     }
-
     // arbitrary sleep to prevent a race condition between updating the URL here and
     // `navigateToTrain`, which also updates the URL and causes the map to move
     await sleep(100)
@@ -338,7 +336,12 @@ function Map() {
     url.searchParams.set('lat', latitude.toFixed(5))
     url.searchParams.set('lng', longitude.toFixed(5))
     url.searchParams.set('z', zoom.toFixed(1))
-    await router.replace(url.toString(), { scroll: false })
+    // Use the browser History API directly instead of router.replace() to avoid
+    // triggering Next.js's navigation cycle. router.replace() causes Next.js to
+    // re-resolve page metadata and reset <title> to the layout default on every
+    // zoom/pan. These params are only read on initial mount (to seed the map's
+    // view state), so bypassing the router has no effect on app behavior.
+    window.history.replaceState(null, '', url.toString())
   }
 
   // redirect to a train by id, where `id` is in the format: <agency>/<operator_id>
