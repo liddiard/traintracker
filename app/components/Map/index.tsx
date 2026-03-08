@@ -147,7 +147,12 @@ function Map() {
   } | null>(null)
 
   const mapRef = useRef<MapRef>(null)
+  // ID of the train that we've most recently flown to
   const flownToTrain = useRef<string>(null)
+  // whether or not we're currently flying to a train
+  const flyingToTrain = useRef(false)
+  // whether or not we're currently following a train on the map, stored in a ref to
+  // avoid triggering re-renders
   const followSetting = useRef<boolean>(null)
 
   // use refs so the data update interval doesn't restart on API updates
@@ -281,12 +286,7 @@ function Map() {
         padding: computePadding('middle', isMobile),
       })
       flownToTrain.current = selectedTrain.id as string
-      // after flyTo, immediately update train positions and follow the new train
-      setTimeout(() => {
-        updateTrains()
-        updateSetting('follow', true)
-        followSetting.current = true
-      }, 5000)
+      flyingToTrain.current = true
     }
     followSetting.current = settings.follow
   }, [
@@ -323,6 +323,14 @@ function Map() {
     ) {
       updateTrains()
     }
+
+    // we just got finished flying to a train; start following it
+    if (flyingToTrain.current) {
+      flyingToTrain.current = false
+      updateSetting('follow', true)
+      followSetting.current = true
+    }
+
     // arbitrary sleep to prevent a race condition between updating the URL here and
     // `navigateToTrain`, which also updates the URL and causes the map to move
     await sleep(100)
