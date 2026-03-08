@@ -75,7 +75,7 @@ function Search({ id, className = '' }: SearchProps) {
     [routes, routeName, trainNums],
   )
 
-  const [searchType, setSearchType] = useState<SearchType>(SearchType.Segment)
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.Line)
   const [from, setFrom] = useState<Option | null>(
     getOption(stationOptions, query.get('from')),
   )
@@ -113,24 +113,6 @@ function Search({ id, className = '' }: SearchProps) {
           <input
             type="radio"
             name="type"
-            id={`${id}-segment`}
-            value="segment"
-            checked={searchType === SearchType.Segment}
-            onChange={() => setSearchType(SearchType.Segment)}
-            className="hidden"
-          />
-          <label
-            htmlFor={`${id}-segment`}
-            className={cn(labelClassNames, {
-              [selectedLabelClassNames]: searchType === SearchType.Segment,
-            })}
-            tabIndex={0}
-          >
-            Route
-          </label>
-          <input
-            type="radio"
-            name="type"
             id={`${id}-line`}
             value="line"
             checked={searchType === SearchType.Line}
@@ -145,6 +127,24 @@ function Search({ id, className = '' }: SearchProps) {
             tabIndex={0}
           >
             Number
+          </label>
+          <input
+            type="radio"
+            name="type"
+            id={`${id}-segment`}
+            value="segment"
+            checked={searchType === SearchType.Segment}
+            onChange={() => setSearchType(SearchType.Segment)}
+            className="hidden"
+          />
+          <label
+            htmlFor={`${id}-segment`}
+            className={cn(labelClassNames, {
+              [selectedLabelClassNames]: searchType === SearchType.Segment,
+            })}
+            tabIndex={0}
+          >
+            Route
           </label>
         </div>
       </div>
@@ -195,7 +195,7 @@ function Search({ id, className = '' }: SearchProps) {
         options={routeOptions}
         value={routeName}
         className="grow font-medium text-black"
-        placeholder="Route name"
+        placeholder="Train name"
         onChange={(option) => {
           setRouteName(option as Option)
           setTrainNumber(null)
@@ -250,9 +250,9 @@ function Search({ id, className = '' }: SearchProps) {
     >
       {renderSearchOptions()}
       <div className="flex gap-2">
-        {searchType === SearchType.Segment
-          ? renderSegmentSearch()
-          : renderLineSearch()}
+        {searchType === SearchType.Line
+          ? renderLineSearch()
+          : renderSegmentSearch()}
         <button
           aria-label="Search"
           className="bg-amtrak-blue-500 active:bg-amtrak-blue-600 shrink-0 rounded px-2 hover:cursor-pointer"
