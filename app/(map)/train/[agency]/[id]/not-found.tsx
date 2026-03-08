@@ -12,7 +12,7 @@ export default function NotFound() {
       <h1 className="text-center text-2xl font-semibold">Train Not Found</h1>
       <p className={pClassName}>
         If you were previously tracking a train, it likely arrived at its final
-        destination. TrainTracker only tracks trains that are in transit or
+        destination. TrainTracker only shows trains that are in transit or
         recently arrived.
       </p>
       <Link href="/" className={cn(classNames.link, classNames.textAccent)}>

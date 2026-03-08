@@ -62,7 +62,12 @@ function TrainLabelInner({
       // values
       rotation={0.1}
       ref={markerRef}
-      onClick={() => navigateToTrain(id)}
+      onClick={(ev) => {
+        // when train and station labels overlap, only trigger navigation on the train
+        // label
+        ev.originalEvent.stopPropagation()
+        navigateToTrain(id)
+      }}
       className="cursor-pointer p-2"
       anchor="left"
       offset={[6, 0]}

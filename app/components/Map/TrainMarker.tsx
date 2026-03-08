@@ -73,7 +73,12 @@ function TrainMarkerInner({
       style={{
         zIndex: isSelected ? 1 : 'unset',
       }}
-      onClick={() => navigateToTrain(id)}
+      onClick={(ev) => {
+        // when train marker and station label overlap, only trigger navigation on the
+        // train
+        ev.originalEvent.stopPropagation()
+        navigateToTrain(id)
+      }}
     >
       {heading === null || zoom < DETAIL_ZOOM_LEVEL ? (
         <Circle className="w-2" style={sharedStyles} />
