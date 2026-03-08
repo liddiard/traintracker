@@ -37,7 +37,7 @@ function TimelineSegment({
   const { timeFormat, timeZone } = settings
   const stop = stops[index]
   const prevStop = stops[index - 1]
-  // Whether the train's first and last stops have different UTC offsets.
+  // Whether the train's previous and current stops have different UTC offsets.
   // Comparing UTC offset rather than timezone to display offsets if Daylight Saving
   // Time effectivness changes while train is en route.
   const offsetsDiffer =
