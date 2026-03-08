@@ -176,7 +176,7 @@ const createTrainFeature = (
   const color = getTrainColor(trainMeta)
   // existing coordinates for this train (which may have previously been
   // snapped/extrapolated by this function), otherwise use raw GPS coordinates
-  const prevCoords = prevTrain?.geometry.coordinates ?? train.coordinates
+  const prevCoords = train.coordinates ?? prevTrain?.geometry.coordinates
 
   let coordinates, heading, isExtrapolated
   // if the map is zoomed in enough that we care about showing the train
