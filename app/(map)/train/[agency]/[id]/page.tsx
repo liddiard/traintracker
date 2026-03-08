@@ -104,7 +104,7 @@ export default function TrainDetail() {
       </time>
       {displayTz ? (
         <div className={cn('text-sm', classNames.textDeemphasized)}>
-          UTC<span className="font-semibold">{getOffset(tz) / 60}</span>
+          UTC<span className="font-semibold">{getOffset(tz, date) / 60}</span>
         </div>
       ) : (
         <div />
@@ -158,8 +158,13 @@ export default function TrainDetail() {
   // which the file server can't resolve (returns 404). Pre-encoding the filename
   // ensures proper double-encoding through the /_next/image pipeline.
   const routeImageSrc = `/img/route/${encodeURIComponent(train.name.replace('/', '-'))}.jpg`
-  const timezonesDiffer =
-    train.stops[0].timezone !== train.stops[train.stops.length - 1].timezone
+  const { firstStop, lastStop } = trainMeta
+  // Whether the train's first and last stops have different UTC offsets.
+  // Comparing UTC offset rather than timezone to display offsets if Daylight Saving
+  // Time effectivness changes while train is en route.
+  const offsetsDiffer =
+    getOffset(firstStop.timezone, firstStop.departure.time) !==
+    getOffset(lastStop.timezone, lastStop.arrival.time)
   const hasTrainQueryParams = !!Object.entries(TrainQueryParams).length
   const minsSinceLastUpdate =
     train.updated && msToMins(new Date().getTime() - train.updated.valueOf())
@@ -168,7 +173,6 @@ export default function TrainDetail() {
     minsSinceLastUpdate &&
     ![TimeStatus.PREDEPARTURE, TimeStatus.COMPLETE].includes(trainMeta.code!) &&
     minsSinceLastUpdate > 10
-  const { firstStop, lastStop } = trainMeta
   const scheduledDeparture = getScheduledTime(firstStop.departure)
   const scheduledArrival = getScheduledTime(lastStop.arrival)
   const sheetAtBottom = position === 'bottom'
@@ -259,7 +263,7 @@ export default function TrainDetail() {
               stationCode: firstStop.code,
               date: scheduledDeparture,
               tz: firstStop.timezone,
-              displayTz: timeZone === 'local' && timezonesDiffer,
+              displayTz: timeZone === 'local' && offsetsDiffer,
             })}
           <CaretRight
             alt="to"
@@ -274,7 +278,7 @@ export default function TrainDetail() {
               stationCode: lastStop.code,
               date: scheduledArrival,
               tz: lastStop.timezone,
-              displayTz: timeZone === 'local' && timezonesDiffer,
+              displayTz: timeZone === 'local' && offsetsDiffer,
             })}
         </div>
         <div className="flex items-baseline gap-3">

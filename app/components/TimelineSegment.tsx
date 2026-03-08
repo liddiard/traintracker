@@ -37,7 +37,13 @@ function TimelineSegment({
   const { timeFormat, timeZone } = settings
   const stop = stops[index]
   const prevStop = stops[index - 1]
-  const timezonesDiffer = prevStop && stop.timezone !== prevStop.timezone
+  // Whether the train's first and last stops have different UTC offsets.
+  // Comparing UTC offset rather than timezone to display offsets if Daylight Saving
+  // Time effectivness changes while train is en route.
+  const offsetsDiffer =
+    prevStop &&
+    getOffset(prevStop.timezone, prevStop.arrival.time) !==
+      getOffset(stop.timezone, stop.arrival.time)
   const { code, name, arrival } = stop
   const { delay } = arrival
   const useLocalTime = timeZone === 'local'
@@ -114,11 +120,11 @@ function TimelineSegment({
             {formatTime(arrival.time, formatTimeOptions)}
           </time>
         ) : null}
-        {timezonesDiffer && useLocalTime && (
+        {offsetsDiffer && useLocalTime && (
           <div className={cn('text-sm', classNames.textDeemphasized)}>
             UTC
             <span className="font-semibold">
-              {getOffset(stop.timezone) / 60}
+              {getOffset(stop.timezone, arrival.time) / 60}
             </span>
           </div>
         )}

@@ -272,9 +272,11 @@ export const findTrainsFromSegment = (
  * @returns {number} The offset in minutes.
  */
 export const getOffset = (timeZone = 'UTC', date = new Date()) => {
-  const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }))
-  const tzDate = new Date(date.toLocaleString('en-US', { timeZone }))
-  return (tzDate.getTime() - utcDate.getTime()) / 6e4
+  const utcDate = Date.parse(
+    date.toLocaleString('en-US', { timeZone: 'UTC' }) + ' Z',
+  )
+  const tzDate = Date.parse(date.toLocaleString('en-US', { timeZone }) + ' Z')
+  return (tzDate - utcDate) / 6e4
 }
 
 interface FormatTimeOptions {
