@@ -120,17 +120,19 @@ function Map() {
             latitude,
             zoom,
           }
-        : // default to bounding box of all tracks plus a 10-degree margin in each direction,
-          // calculated statically for performance using Turf.js:
+        : // default to bounding box of all tracks plus a 10-degree margin in each
+          // direction, calculated statically for performance using Turf.js:
           // const turf = require('@turf/turf')
           // const track = require('./public/map_data/track.json')
           // const bbox = turf.bbox(track)
           {
             bounds: [
               -130.35971 - 5,
-              25.78015,
+              25.78015 - 5,
               -63.26974 + 5,
-              58.76772,
+              // less margin to the north because the Mercator projection stretches
+              // high latitudes
+              58.76772 + 2,
             ] as LngLatBoundsLike,
             zoom,
           },
