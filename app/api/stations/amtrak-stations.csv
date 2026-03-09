@@ -1027,4 +1027,4 @@ OBJECTID,lon,lat,StaType,DateModif,StnType,ZipCode,State,City,Address2,Address1,
 1026,-119.586318,37.748042,Curbside Bus Stop only (no shelter),2024-05-24T16:48:58,BUS,95389,CA,Yosemite National Park, ,9035 Village Drive,Yosemite Village,YOV,"Yosemite National Park, CA",Yosemite Village, ,-119.586330768631,37.7480471471144
 1027,-119.649293,37.869636,Curbside Bus Stop only (no shelter),2019-02-14T07:03:33,BUS,95389,CA,Yosemite National Park, ,Old Tioga Road at Highway 120 East,White Wolf Lodge,YOW,"Yosemite National Park, CA",White Wolf Lodge, ,-119.64930579349,37.8696411536054
 1028,-114.615571,32.723139,Platform only (no shelter),2017-11-06T07:06:15,TRAIN,85364,AZ,Yuma, ,281 Gila Street, ,YUM,"Yuma, AZ", , ,-114.615582448127,32.7231438904693
-custom-1,-79.058342,43.109237,,2026-02-27T09:14:15,TRAIN,,,,,,,CBN,US-Canada Border,,,,
+custom-1,-79.058342,43.109237,,2026-02-27T09:14:15,TRAIN,,,,,,,CBN,US–Canada Border,,,,
