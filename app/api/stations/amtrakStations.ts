@@ -700,6 +700,7 @@ export const stationCodeToTz: Record<string, string> = {
   CAM: 'America/New_York',
   CAS: 'America/Denver',
   CAY: 'America/New_York',
+  CBN: 'America/New_York',
   CBO: 'America/Los_Angeles',
   CBR: 'America/Chicago',
   CBS: 'America/Chicago',
