@@ -266,17 +266,35 @@ export const findTrainsFromSegment = (
 
 /**
  * Get the offset in minutes between the given timezone and UTC.
- * Source: https://stackoverflow.com/a/68593283
  * @param {string} [timeZone='UTC'] The timezone to calculate the offset for.
  * @param {Date} [date=new Date()] The date to calculate the offset for.
  * @returns {number} The offset in minutes.
  */
 export const getOffset = (timeZone = 'UTC', date = new Date()) => {
-  const utcDate = Date.parse(
-    date.toLocaleString('en-US', { timeZone: 'UTC' }) + ' Z',
+  // Need to use `formatToParts` because Safari returns NaN when using the approach
+  // suggested here: https://stackoverflow.com/questions/21327371/get-timezone-offset-from-timezone-name-using-javascript/68593283#comment135298347_68593283
+  const parts = Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(date)
+  const get = (type: string) =>
+    parseInt(parts.find((p) => p.type === type)!.value)
+  // Treat the local-time components as if they were UTC to compute the offset
+  const localAsUtc = Date.UTC(
+    get('year'),
+    get('month') - 1,
+    get('day'),
+    get('hour') % 24, // hour12:false can return 24 for midnight in some engines
+    get('minute'),
+    get('second'),
   )
-  const tzDate = Date.parse(date.toLocaleString('en-US', { timeZone }) + ' Z')
-  return (tzDate - utcDate) / 6e4
+  return (localAsUtc - date.getTime()) / 6e4
 }
 
 interface FormatTimeOptions {
