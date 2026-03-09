@@ -11,19 +11,26 @@ const API_ENDPOINT = 'https://tsimobile.viarail.ca/data/allData.json'
 const trainNamesToNumbers: Record<string, number[]> = {
   Canadian: [1, 2],
   Ocean: [14, 15],
-  Corridor: [
-    61, 63, 65, 67, 69, 669, 60, 62, 64, 66, 68, 668, 41, 45, 47, 53, 55, 59,
-    643, 645, 40, 42, 44, 46, 48, 50, 52, 54, 29, 31, 33, 35, 37, 39, 633, 20,
-    22, 24, 26, 28, 38, 622, 87, 84, 71, 73, 75, 79, 70, 72, 76, 78, 43, 82, 83,
-    624, 641, 644, 646, 647,
+  'Toronto – Montreal Corridor': [
+    61, 63, 65, 67, 69, 669, 60, 62, 64, 66, 68, 668,
   ],
+  'Toronto – Ottawa Corridor': [
+    41, 43, 45, 47, 53, 55, 59, 643, 645, 40, 42, 44, 46, 48, 50, 52, 54, 641,
+    644, 646, 647,
+  ],
+  'London – Toronto Corridor': [82, 83],
+  'Ottawa – Quebec City Corridor': [
+    29, 31, 33, 35, 37, 39, 633, 20, 22, 24, 26, 28, 38, 622, 624,
+  ],
+  'Sarnia – Toronto Corridor': [87, 84],
+  'Windsor – Toronto Corridor': [71, 73, 75, 79, 70, 72, 76, 78],
   'Maple Leaf': [97, 98],
-  'Jasper–Prince Rupert': [5, 6],
-  'Montreal–Jonquière': [600, 602, 601],
-  'Montreal–Senneterre': [604, 606, 603],
-  'Sudbury–White River': [186, 185],
-  'Winnipeg–Churchill': [690, 692, 691, 693],
-  'The Pas–Pukatawagan': [290, 291],
+  'Jasper – Prince Rupert': [5, 6],
+  'Montreal – Jonquière': [600, 602, 601],
+  'Montreal – Senneterre': [604, 606, 603],
+  'Sudbury – White River': [186, 185],
+  'Winnipeg – Churchill': [690, 692, 691, 693],
+  'The Pas – Pukatawagan': [290, 291],
 }
 
 const getTrainName = (id: string) => {

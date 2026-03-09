@@ -161,7 +161,8 @@ export default function TrainDetail() {
   // fetchInternalImage (image-optimizer.js) passes the raw decoded path as req.url,
   // which the file server can't resolve (returns 404). Pre-encoding the filename
   // ensures proper double-encoding through the /_next/image pipeline.
-  const routeImageSrc = `/img/route/${encodeURIComponent(train.name.replace('/', '-'))}.jpg`
+  const routeImageSrc = `/img/route/${encodeURIComponent(train.name.replace(new RegExp('\/|:|↔|–', 'g'), '-'))}.jpg`
+  console.log(routeImageSrc)
   const { firstStop, lastStop } = trainMeta
   // Whether the train's first and last stops have different UTC offsets.
   // Comparing UTC offset rather than timezone to display offsets if Daylight Saving
