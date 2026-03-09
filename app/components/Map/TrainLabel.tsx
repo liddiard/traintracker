@@ -78,10 +78,13 @@ function TrainLabelInner({
     >
       <span
         className={cn(
+          // Safari doesn't properly render the backdrop filters or semi-opaque
+          // background over the WebGL canvas, so give non-selected labels a text
+          // shadow to help with contrast.
           'rounded-full px-2 py-[0.1em] text-sm font-medium backdrop-blur-xs backdrop-brightness-120',
           isSelected
             ? 'bg-amtrak-bright-blue-400 text-white'
-            : 'border border-white/50 bg-white/35',
+            : 'border border-white/50 bg-white/35 text-shadow-2xs text-shadow-white',
         )}
       >
         {name}
