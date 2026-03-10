@@ -99,12 +99,12 @@ export default function TrainDetail() {
         {stationName}
       </div>
       <time>
+        {formatDate(date, timeZone === 'local' ? tz : undefined)}
+        {', '}
         {formatTime(date, {
           tz: timeZone === 'local' ? tz : undefined,
           timeFormat,
         })}
-        {' '}
-        {formatDate(date, timeZone === 'local' ? tz : undefined)}
       </time>
       {displayTz ? (
         <div className={cn('text-sm', classNames.textDeemphasized)}>
