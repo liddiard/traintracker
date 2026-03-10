@@ -84,7 +84,7 @@ function TrainLabelInner({
           'rounded-full px-2 py-[0.1em] text-sm font-medium backdrop-blur-xs backdrop-brightness-120',
           isSelected
             ? 'bg-amtrak-bright-blue-400 text-white'
-            : 'border border-white/50 bg-white/35 text-shadow-2xs text-shadow-white',
+            : 'border border-white/50 bg-white/40 text-shadow-2xs text-shadow-white',
         )}
       >
         {name}
