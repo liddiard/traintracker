@@ -294,7 +294,7 @@ export const getOffset = (timeZone = 'UTC', date = new Date()) => {
     get('minute'),
     get('second'),
   )
-  return (localAsUtc - date.getTime()) / 6e4
+  return Math.round((localAsUtc - date.getTime()) / 6e4)
 }
 
 interface FormatTimeOptions {
