@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import cn from 'classnames'
-import { TrainMeta } from '@/app/types'
+import { Stop, TrainMeta } from '@/app/types'
 import { formatDuration, getCurrentSegmentProgress } from '../utils'
 import Progress from './Progress'
+import Link from 'next/link'
 
 interface CurrentSegmentProps {
   trainMeta: TrainMeta
@@ -14,6 +15,7 @@ function CurrentSegment({ trainMeta }: CurrentSegmentProps) {
   const { minsToDeparture, minsToArrival, percent } =
     getCurrentSegmentProgress(trainMeta)
   const { prevStop, curStop, nextStop } = trainMeta
+  const agency = trainMeta.id.split('/')[0]
   const atStation = !!minsToDeparture
 
   // when the stations change, cancel the previous animation so the progress
@@ -23,6 +25,15 @@ function CurrentSegment({ trainMeta }: CurrentSegmentProps) {
       progressValueRef.current.getAnimations()[0]?.cancel()
     }
   }, [prevStop?.code, nextStop?.code, curStop?.code])
+
+  const renderEndpoint = (station: Stop, className = '') => (
+    <Link
+      href={`/station/${agency}/${station.code}`}
+      className={cn('hover:underline', className)}
+    >
+      {station.name}
+    </Link>
+  )
 
   let segmentStartStation
   let segmentEndStation
@@ -47,6 +58,10 @@ function CurrentSegment({ trainMeta }: CurrentSegmentProps) {
     return null
   }
 
+  if (!segmentStartStation || !segmentEndStation) {
+    return null
+  }
+
   return (
     <section className="flex flex-col gap-2">
       <h2 className="text-lg font-bold">
@@ -54,9 +69,9 @@ function CurrentSegment({ trainMeta }: CurrentSegmentProps) {
       </h2>
 
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 leading-tight font-semibold text-balance">
-        <span>{segmentStartStation?.name}</span>
+        {renderEndpoint(segmentStartStation)}
         <span>→</span>
-        <span className="text-right">{segmentEndStation?.name}</span>
+        {renderEndpoint(segmentEndStation, 'text-right')}
       </div>
 
       <Progress
