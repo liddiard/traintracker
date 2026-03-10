@@ -1,6 +1,6 @@
 # Support TrainTracker
 
-TrainTracker completely free to use, and I plan to keep it that way. But it does cost money to keep running and develop. If you enjoy the site and can afford it, I’d really appreciate a donation to keep it chugging along and to invest in building [new features](https://github.com/liddiard/traintracker/issues).
+TrainTracker is completely free to use, and I plan to keep it that way. But it does cost money to maintain and develop. If you enjoy the site and can afford it, I'd really appreciate a donation to help it stay chugging along and to invest in building [new features](https://github.com/liddiard/traintracker/issues).
 
 Here’s what TrainTracker costs to run as of 2026:
 
