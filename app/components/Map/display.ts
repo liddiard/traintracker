@@ -174,9 +174,6 @@ const createTrainFeature = (
   const agency = id.split('/')[0]
   const trainMeta = getTrainMeta(train)
   const color = getTrainColor(trainMeta)
-  // existing coordinates for this train (which may have previously been
-  // snapped/extrapolated by this function), otherwise use raw GPS coordinates
-  const prevCoords = train.coordinates ?? prevTrain?.geometry.coordinates
 
   let coordinates, heading, isExtrapolated
   // if the map is zoomed in enough that we care about showing the train
@@ -185,7 +182,9 @@ const createTrainFeature = (
   if (
     map &&
     map.getZoom() >= DETAIL_ZOOM_LEVEL &&
-    map.getBounds().contains(prevCoords as LngLatLike)
+    [train.coordinates, prevTrain?.geometry.coordinates]
+      .filter(Boolean)
+      .some((c) => map.getBounds().contains(c as LngLatLike))
   ) {
     // if we've identified a track for this train, extrapolate its current
     // position along it based on last update and next station ETA
@@ -197,14 +196,14 @@ const createTrainFeature = (
           stations,
         )
       : null
-    coordinates = extrapolated?.point.geometry.coordinates ?? prevCoords
+    coordinates = extrapolated?.point.geometry.coordinates ?? train.coordinates
     heading = extrapolated?.heading
     isExtrapolated = !!extrapolated
   }
   // train is outside the map viewport or we're zoomed far out; just return
   // its raw GPS position
   else {
-    coordinates = prevCoords
+    coordinates = train.coordinates
     isExtrapolated = false
   }
 
