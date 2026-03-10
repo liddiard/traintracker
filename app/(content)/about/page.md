@@ -1,6 +1,8 @@
 # About TrainTracker
 
-TrainTracker aims to be the best way to browse and get updates on Amtrak, VIA Rail, and Brightline trains. I created it after moving to the US Northeast, where Amtrak is often a competitive alternative to flying or driving.
+<img src="/img/mug.png" style="float: right; max-width: 240px; margin: 0; margin-left: 1em; margin-bottom: 1em;">
+
+TrainTracker aims to be the best way to browse and get updates on Amtrak, VIA Rail, and Brightline trains. I, [Harrison Liddiard](https://harrisonliddiard.com), created it after moving to the US Northeast, where Amtrak is often a competitive alternative to flying or driving.
 
 It’s no secret that North American passenger rail lags behind much of Europe and Asia. The coverage, speed, and general rider experience can leave something to be desired. I can’t do much to fix that myself, but as a software engineer and transit enthusiast, I can at least make the tracking of train journeys a bit easier.
 
@@ -29,6 +31,14 @@ Enterprising [people have figured out](https://suddenlygreg.com/blog/2023-11-02-
 **Brightline** provides realtime updates in the industry-standard GTFS format, which TrainTracker uses [from their site](http://feed.gobrightline.com/).
 
 TrainTracker follows responsible caching practices to ensure it doesn’t impose a traffic burden on these upstream data providers.
+
+## Is TrainTracker open source?
+
+Yes! The respository on GitHub is [liddiard/traintracker](https://github.com/liddiard/traintracker). You’re welcome to fork it and/or contribute per the CONTRIBUTING.md file.
+
+While I would love to at least semi-monetize this to cover hosting and development costs, I love open source at heart. The US and Canadian agency-built UIs are just not great. My feeling is public transit; public source code. Maybe our governments should take the hint (especially looking at you with your obfuscated API, Amtrak). 👀
+
+If you do want to support hosting costs and development, [that would be very welcome](/support). 🙂
 
 ### Why doesn’t TrainTracker support other transit agencies?
 
