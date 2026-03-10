@@ -41,7 +41,7 @@ export const pageMetadata: Metadata = {
     default: 'TrainTracker',
   },
   description:
-    '🚄 Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline ',
+    '🚄 Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline. Follow your train journey on an interactive map.',
   manifest: '/site.webmanifest',
 }
 

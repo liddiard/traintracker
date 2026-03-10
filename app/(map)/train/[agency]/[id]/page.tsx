@@ -92,7 +92,7 @@ export default function TrainDetail() {
       <div className="text-3xl">{stationCode}</div>
       <div
         className={cn(
-          'mb-2 leading-tight font-semibold',
+          'mb-2 leading-tight font-semibold text-balance',
           classNames.textDeemphasized,
         )}
       >
