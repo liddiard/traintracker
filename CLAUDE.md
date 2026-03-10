@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Next.js application that tracks and visualizes real-time Amtrak, VIA Rail, and Brightline train positions and schedules on an interactive map. The app fetches train data from the Amtraker API, snaps train positions to track geometries using Turf.js, and displays them on a MapLibre map with route-specific styling.
+This is a Next.js application that tracks and visualizes real-time Amtrak, VIA Rail, and Brightline train positions and schedules on an interactive map. The app fetches train data directly from each agency's data providers (Amtrak's encrypted API, VIA Rail's JSON feed, and Brightline's GTFS feed), snaps train positions to track geometries using Turf.js, and displays them on a MapLibre map with route-specific styling.
 
 ## General instructions
 
@@ -51,7 +51,7 @@ npm run lint
 
 ### Data Flow
 
-1. **API Layer** (`app/api/trains/route.ts`): Fetches train data from Amtraker API with 1-minute cache
+1. **API Layer** (`app/api/trains/`): Fetches and decrypts train data directly from each agency's data providers
 2. **Data Transformation** (`app/utils.ts`): `formatTrainResponse` converts raw API data to typed Train objects with Date objects
 3. **Train Context Provider** (`app/providers/train.tsx`): Polls train data every 15 seconds and provides it to the app
 4. **Settings Context Provider** (`app/providers/settings.tsx`): Manages user settings (map style, color theme, units, time format, timezone) with localStorage persistence
