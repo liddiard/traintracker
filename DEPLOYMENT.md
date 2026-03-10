@@ -33,7 +33,7 @@ Next.js App (:3000, internal)
 
 - **Host nginx** manages SSL and domain routing centrally (shared with other apps on the VPS)
 - **Container nginx** provides application-specific caching, rate limiting, and optimization
-- Container nginx config (`nginx.conf`) stays in version control
+- Container nginx config (`docker/nginx.conf`) stays in version control
 
 ## Prerequisites
 
@@ -94,7 +94,7 @@ PORT=8724
 
 ### 3. Configure the deployment script
 
-On your local machine, edit `deploy.sh`:
+On your local machine, edit `scripts/deploy.sh`:
 
 ```bash
 VPS_HOST="your-vps-hostname-or-ip"
@@ -113,8 +113,8 @@ ssh-copy-id your-user@your-vps
 ### 4. Deploy
 
 ```bash
-chmod +x deploy.sh
-./deploy.sh
+chmod +x scripts/deploy.sh
+./scripts/deploy.sh
 ```
 
 The script syncs files, deploys the nginx config, builds and starts Docker containers, and verifies the deployment.
@@ -133,7 +133,7 @@ Follow the prompts to obtain an SSL certificate.
 ### Automated (recommended)
 
 ```bash
-./deploy.sh
+./scripts/deploy.sh
 ```
 
 ### Manual
@@ -152,7 +152,7 @@ docker compose up -d --build
 
 ### Updating the host nginx config
 
-> **WARNING — Certbot footgun:** The `nginx-vps.conf` template in this repo is an HTTP-only server block. When you deploy it (either via `deploy.sh` or manually with `sed`), it **overwrites the certbot-managed config** at `/etc/nginx/sites-available/traintracker`, which includes the HTTPS server block, SSL certificate paths, and HTTP→HTTPS redirect that certbot added.
+> **WARNING — Certbot footgun:** The `docker/nginx-vps.conf` template in this repo is an HTTP-only server block. When you deploy it (either via `deploy.sh` or manually with `sed`), it **overwrites the certbot-managed config** at `/etc/nginx/sites-available/traintracker`, which includes the HTTPS server block, SSL certificate paths, and HTTP→HTTPS redirect that certbot added.
 >
 > **After any update to the host nginx config, you must re-run certbot to restore HTTPS:**
 >
@@ -170,7 +170,7 @@ docker compose up -d --build
 
 ### Updating the container nginx config
 
-Changes to `nginx.conf` are picked up when the container restarts. To reload without a full restart (avoids the `depends_on: service_healthy` wait):
+Changes to `docker/nginx.conf` are picked up when the container restarts. To reload without a full restart (avoids the `depends_on: service_healthy` wait):
 
 ```bash
 docker compose exec nginx nginx -s reload
@@ -178,7 +178,7 @@ docker compose exec nginx nginx -s reload
 
 ## Nginx Configuration
 
-### `nginx-vps.conf` — Host nginx (template)
+### `docker/nginx-vps.conf` — Host nginx (template)
 
 Deployed to `/etc/nginx/sites-available/traintracker` with domain substitution. Handles:
 
@@ -190,7 +190,7 @@ Deployed to `/etc/nginx/sites-available/traintracker` with domain substitution. 
 
 Certbot adds the HTTPS server block, SSL cert paths, and HTTP→HTTPS redirect to the deployed copy.
 
-### `nginx.conf` — Container nginx
+### `docker/nginx.conf` — Container nginx
 
 Mounted read-only into the Docker container. Handles:
 

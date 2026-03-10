@@ -86,7 +86,7 @@ COPY --chown=nextjs:nodejs --from=builder /app/node_modules/.bin/prisma ./node_m
 COPY --chown=nextjs:nodejs --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 # Copy entrypoint script (needs to run as root initially for permission fixes)
-COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=755 docker/docker-entrypoint.sh /usr/local/bin/
 
 EXPOSE 3000
 

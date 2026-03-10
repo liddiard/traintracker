@@ -104,7 +104,7 @@ fi
 info "Deploying host nginx configuration..."
 
 # Copy nginx config to VPS (to temp location first)
-scp nginx-vps.conf ${VPS_USER}@${VPS_HOST}:/tmp/traintracker-nginx.conf
+scp docker/nginx-vps.conf ${VPS_USER}@${VPS_HOST}:/tmp/traintracker-nginx.conf
 
 # Move to sites-available and update domain placeholder
 ssh ${VPS_USER}@${VPS_HOST} << EOF
