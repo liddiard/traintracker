@@ -69,6 +69,4 @@ See TrainTracker’s [GitHub issues](https://github.com/liddiard/traintracker/is
 
 ### How can I support TrainTracker?
 
-TrainTracker is entirely volunteer-built by me in my spare time. It loses money right now from domain registration and web hosting costs. If you find TrainTracker useful and can afford it, I’d [love a donation](https://ko-fi.com/liddiard) to keep it chugging along (yes, a train pun) and free for everyone.
-
-Another way to support is by buying a product I recommend through the train travel [Gear Guide](/gear-guide). I receive a small commission on sales via the [Amazon Associates](https://affiliate-program.amazon.com/) program. This doesn't cost you anything more than what the product normally costs on Amazon.
+TrainTracker is entirely volunteer-built by me in my spare time. It loses money right now from domain registration and web hosting costs. If you find TrainTracker useful and can afford it, I’d [love a donation](https://ko-fi.com/liddiard) to keep it chugging along (yes, a train pun) and free for everyone!
