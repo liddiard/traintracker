@@ -12,12 +12,11 @@ Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨�
 
 ## Getting Started
 
+First, ensure your Node and NPM package versions match those found in package.json > "engines". Then,
+
 ```bash
 npm install
-npm run dev
 ```
-
-Opens at [http://localhost:3000](http://localhost:3000).
 
 ### Environment variables
 
@@ -32,6 +31,16 @@ Generate VAPID keys with:
 ```bash
 npx web-push generate-vapid-keys
 ```
+
+### Database setup
+
+```bash
+npx prisma generate  # Create Prisma client
+npx prisma db push   # Create database tables
+npm run dev
+```
+
+Opens at [http://localhost:3000](http://localhost:3000).
 
 ## Commands
 
