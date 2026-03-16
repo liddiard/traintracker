@@ -68,3 +68,7 @@ export const defaultSettings: Settings = {
 
 // How tall the mobile bottom sheet is at its bottom-most position, in pixels
 export const SHEET_BOTTOM_HEIGHT = 60
+
+// link to image attributions
+export const PHOTO_CREDITS_LINK =
+  'https://docs.google.com/spreadsheets/d/10WPpJFmGOAUSi2fSzgOVq-DvypYsICuGrVRDrEmkeTY/edit?usp=sharing'

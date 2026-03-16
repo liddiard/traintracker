@@ -23,7 +23,7 @@ import CaretRight from '@/app/img/caret-right.svg'
 import Pie from '@/app/img/pie.svg'
 import Warning from '@/app/img/warning.svg'
 import Pointer from '@/app/img/pointer.svg'
-import { classNames } from '@/app/constants'
+import { classNames, PHOTO_CREDITS_LINK } from '@/app/constants'
 import { useTrains } from '@/app/providers/train'
 import { useSettings } from '@/app/providers/settings'
 import CurrentSegment from '@/app/components/CurrentSegment'
@@ -48,12 +48,12 @@ export default function TrainDetail() {
 
   const [showRouteImage, setShowRouteImage] = useState(false)
 
-  // Defer title change to next frame so it runs after Next.js's internal head manager
-  // effect, which fires after ours (parent effects run after child effects) and would
-  // otherwise overwrite document.title with the layout default.
   useEffect(() => {
     if (train) {
       const title = `${train.name} ${train.number} | TrainTracker`
+      // Defer title change to next frame so it runs after Next.js's internal head
+      // manager effect, which fires after ours (parent effects run after child
+      // effects) and would otherwise overwrite document.title with the layout default.
       const id = setTimeout(() => {
         document.title = title
       }, 0)
@@ -204,7 +204,7 @@ export default function TrainDetail() {
           <>
             <div className="absolute inset-0 h-full w-full bg-linear-to-t from-black/50 to-transparent" />
             <Link
-              href="https://docs.google.com/spreadsheets/d/10WPpJFmGOAUSi2fSzgOVq-DvypYsICuGrVRDrEmkeTY/edit?usp=sharing"
+              href={PHOTO_CREDITS_LINK}
               className="absolute right-0 bottom-0 z-10 p-1 text-xs text-white/80 hover:underline"
               target="_blank"
               rel="noopener noreferrer"

@@ -11,6 +11,7 @@ import ServiceWorkerRegistration from '@/app/components/ServiceWorkerRegistratio
 import { Station } from '@/app/types'
 import { inter, pageMetadata } from '@/app/constants'
 import { BottomSheetProvider } from '@/app/providers/bottomSheet'
+import SidebarContainer from '@/app/components/SidebarContainer'
 
 export const metadata = pageMetadata
 
@@ -59,10 +60,10 @@ export default async function MapLayout({
             <BottomSheetProvider>
               <div className="flex h-screen flex-nowrap">
                 {/* Desktop sidebar - visible at md and above */}
-                <div className="dark:bg-positron-gray-800 relative z-10 hidden overflow-y-auto shadow-lg md:block md:w-1/4 md:max-w-90 md:min-w-75 dark:text-white">
+                <SidebarContainer>
                   <Search id="sidebar" />
                   {children}
-                </div>
+                </SidebarContainer>
                 <div className="relative h-full w-full md:flex-1">
                   <Map />
                 </div>
