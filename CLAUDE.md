@@ -8,7 +8,7 @@ This is a Next.js application that tracks and visualizes real-time Amtrak, VIA R
 
 ## General instructions
 
-Always use context7 when I need code generation, setup or configuration steps, or library/API documentation related to Next.js and external pacakges from NPM. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
+Always use Context7 when you need to reference library/API documentation related to Next.js, Capacitor, and other external packages from NPM. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
 
 ## Testing changes
 
@@ -72,6 +72,7 @@ The database is queried by the notification API endpoints and the background pol
 The map visualization system is the core feature and has several interconnected parts:
 
 - **Track Snapping** (`calc.ts`): Snaps GPS-reported train positions to the nearest point on Amtrak track geometries using Turf.js operations
+
   - `snapTrainToTrack`: Finds nearby track features using bounding box clipping and snaps train to nearest point
   - `getExtrapolatedTrainPoint`: Extrapolates train position based on timetable when between stations
   - `getHeading`: Calculates train bearing/heading along track geometry
@@ -117,18 +118,21 @@ The app supports web push notifications for train arrival and departure alerts. 
 **Architecture:**
 
 - **Background Polling** (`app/lib/notifications.ts`): Server-side polling system that checks train status every 30 seconds
+
   - Queries active (unsent) subscriptions from database
   - Fetches current train data and compares with scheduled times
   - Sends push notifications 5 minutes before arrival/departure
   - Marks subscriptions as `sent: true` after sending to prevent duplicates
 
 - **Notification API** (`app/api/notifications/route.ts`): RESTful endpoint using HTTP methods
+
   - `GET` - Check active subscriptions for a device + train (query params: `endpoint`, `trainId`)
   - `POST` - Create new subscription (body: `subscription`, `trainId`, `stopCode`, `notificationType`, `timeFormat`)
   - `DELETE` - Remove subscription (body: `endpoint`, `trainId`, `stopCode`, `notificationType`)
   - Enforces 20 subscription limit per device
 
 - **Service Worker** (`public/service-worker.js`): Handles push events in the browser background
+
   - Registered on app load via `ServiceWorkerRegistration` component
   - Receives push notifications and displays them to the user
   - Works even when the browser tab is not active
