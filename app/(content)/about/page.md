@@ -1,7 +1,5 @@
 # About TrainTracker
 
-<img src="/img/mug.png" style="float: right; max-width: 240px; margin: 0; margin-left: 1em; margin-bottom: 1em;">
-
 TrainTracker aims to be the best way to browse and get updates on Amtrak, VIA Rail, and Brightline trains. I, [Harrison Liddiard](https://harrisonliddiard.com), created it after moving to the US Northeast, where Amtrak is often a competitive alternative to flying or driving.
 
 It’s no secret that North American passenger rail lags behind much of Europe and Asia. The coverage, speed, and general rider experience can leave something to be desired. I can’t do much to fix that myself, but as a software engineer and transit enthusiast, I can at least make the tracking of train journeys a bit easier.
