@@ -71,6 +71,7 @@ export const routeToCodeMap: Record<string, string> = {
   'Saluki/Illinois Service': 'SU',
   'San Joaquins': 'SJ',
   'Silver Meteor': 'SM',
+  'Silver Service / Palmetto': 'PM',
   'Southwest Chief': 'SC',
   'Sunset Limited': 'SL',
   'Texas Eagle': 'TE',
