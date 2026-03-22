@@ -41,10 +41,6 @@ function Header() {
               <span className="text-amtrak-blue-500 dark:text-amtrak-blue-300">
                 Tracker
               </span>
-              <sup className="text-amtrak-yellow-400 dark:text-amtrak-yellow-200 font-semibold">
-                {' '}
-                beta
-              </sup>
             </h1>
           </Link>
           <span className="hidden cursor-default lg:block">
