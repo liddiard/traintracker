@@ -36,6 +36,7 @@ export const classNames: Record<string, string> = {
 
 // default metadata for all pages
 export const pageMetadata: Metadata = {
+  metadataBase: new URL('https://traintracker.app'),
   title: {
     template: '%s | TrainTracker',
     default: 'TrainTracker',
@@ -43,6 +44,16 @@ export const pageMetadata: Metadata = {
   description:
     '🚄 Live tracking North American intercity passenger rail – 🇺🇸 Amtrak, 🇨🇦 VIA Rail, 🌴 Brightline. Follow your train journey on an interactive map.',
   manifest: '/site.webmanifest',
+  // Absolute URLs required here: the image lives in public/ (not app/), so there's
+  // no file-based metadata route for Next.js to auto-discover. Without these explicit
+  // entries, /_not-found and other routes outside the route-group layouts would have
+  // no OG image at all.
+  openGraph: {
+    images: ['https://traintracker.app/opengraph-image.png'],
+  },
+  twitter: {
+    images: ['https://traintracker.app/opengraph-image.png'],
+  },
 }
 
 // browser cookie used to store user settings
