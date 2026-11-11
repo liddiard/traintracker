@@ -12,7 +12,7 @@ const trainNamesToNumbers: Record<string, number[]> = {
   Canadian: [1, 2],
   Ocean: [14, 15],
   'Toronto–Montreal Corridor': [
-    61, 63, 65, 67, 69, 669, 60, 62, 64, 66, 68, 668,
+    61, 63, 65, 67, 69, 669, 60, 62, 64, 66, 68, 664, 665, 668,
   ],
   'Toronto–Ottawa Corridor': [
     41, 43, 45, 47, 53, 55, 59, 643, 645, 40, 42, 44, 46, 48, 50, 52, 54, 641,
