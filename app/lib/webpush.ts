@@ -1,4 +1,4 @@
-import webpush from 'web-push'
+import { sendNotification, setVapidDetails } from 'web-push'
 
 let vapidConfigured = false
 
@@ -24,7 +24,7 @@ function ensureVapidConfigured() {
     )
   }
 
-  webpush.setVapidDetails(
+  setVapidDetails(
     process.env.VAPID_SUBJECT!,
     process.env.VAPID_PUBLIC_KEY!,
     process.env.VAPID_PRIVATE_KEY!,
@@ -56,7 +56,7 @@ export async function sendPushNotification(
   console.log('[WebPush] Payload:', JSON.stringify(payload, null, 2))
 
   try {
-    const result = await webpush.sendNotification(
+    const result = await sendNotification(
       pushSubscription,
       JSON.stringify(payload),
       { TTL: 60 * 60 }, // attempt to deliver for 1 hour

@@ -29,7 +29,17 @@ import type {
 } from 'react-map-gl/maplibre'
 import { FeatureCollection, MultiLineString, Point, LineString } from 'geojson'
 import { booleanContains, bboxPolygon, point } from '@turf/turf'
+import { setWorkerUrl } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+
+// MapLibre v6 can't detect the worker URL reliably inside a bundler, so point
+// it at the asset emitted by Next.js/Turbopack.
+setWorkerUrl(
+  new URL(
+    'maplibre-gl/dist/maplibre-gl-worker.mjs',
+    import.meta.url,
+  ).toString(),
+)
 
 import { useTrains } from '../../providers/train'
 import { useSettings } from '../../providers/settings'

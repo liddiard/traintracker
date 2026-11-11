@@ -49,31 +49,23 @@ export const useAnimatedPosition = (
       return
     }
 
-    // If we don't have an animated position yet, initialize without animating
-    if (!animPosition) {
-      setAnimPosition({ coordinates, heading })
-      return
-    }
+    const target = { coordinates, heading }
 
-    // If skipAnimation is true, jump immediately without animating
-    if (skipAnimation) {
-      if (animFrameId.current !== null) {
-        cancelAnimationFrame(animFrameId.current)
-        animFrameId.current = null
+    // If we don't have an animated position yet or skipAnimation is true, jump
+    // immediately to the target without animating.
+    if (animPosition && !skipAnimation) {
+      // Store the current animated position as the starting point
+      fromPosition.current = {
+        coordinates: animPosition.coordinates,
+        heading: animPosition.heading,
       }
-      setAnimPosition({ coordinates, heading })
-      // Set fromPosition so next animation starts from here
-      fromPosition.current = { coordinates, heading }
-      return
+      animStartTime.current = performance.now()
+    } else {
+      fromPosition.current = target
+      // A start time in the past makes the first frame finish immediately
+      animStartTime.current = performance.now() - duration
     }
-
-    // Store the current animated position as the starting point
-    fromPosition.current = {
-      coordinates: animPosition.coordinates,
-      heading: animPosition.heading,
-    }
-    toPosition.current = { coordinates, heading }
-    animStartTime.current = performance.now()
+    toPosition.current = target
 
     // Cancel any existing animation before starting a new one
     if (animFrameId.current !== null) {

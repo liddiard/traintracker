@@ -94,14 +94,12 @@ export function SettingsProvider({
         }
         cookieTimeoutRef.current = setTimeout(() => {
           try {
-            const cookieString = cookie.serialize(
-              SETTINGS_COOKIE_NAME,
-              JSON.stringify(newSettings),
-              {
-                path: '/',
-                maxAge: 365 * 24 * 60 * 60, // 1 year
-              },
-            )
+            const cookieString = cookie.stringifySetCookie({
+              name: SETTINGS_COOKIE_NAME,
+              value: JSON.stringify(newSettings),
+              path: '/',
+              maxAge: 365 * 24 * 60 * 60, // 1 year
+            })
             document.cookie = cookieString
           } catch (error) {
             console.warn('Failed to save settings to cookies:', error)

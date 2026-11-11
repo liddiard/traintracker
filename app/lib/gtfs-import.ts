@@ -1,5 +1,5 @@
 import {
-  Config,
+  GtfsSqliteImportConfig,
   importGtfs,
   openDb,
   getStops,
@@ -176,9 +176,9 @@ export async function importGtfsData(): Promise<void> {
 
   console.log('Importing GTFS data...')
 
-  let config: Config | null = null
+  let config: GtfsSqliteImportConfig | null = null
   try {
-    config = gtfsConfig as Config
+    config = gtfsConfig as GtfsSqliteImportConfig
 
     // Download and parse GTFS feeds
     await importGtfs(config)
