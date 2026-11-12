@@ -51,7 +51,7 @@ docker-compose.yml
 
 # Documentation
 README.md
-CLAUDE.md
+AGENTS.md
 *.md
 
 # Husky
